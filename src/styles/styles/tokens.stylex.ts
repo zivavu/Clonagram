@@ -1,9 +1,9 @@
 import * as stylex from '@stylexjs/stylex';
 export const colors = stylex.defineVars({
-	bg: 'light-dark(#ffffff, #000000)',
-	bgSecondary: 'light-dark(#fafafa, #121212)',
+	bg: 'light-dark(#ffffff, #0c1014)',
+	bgSecondary: 'light-dark(#fafafa, #1f1f22)',
 	bgElevated: 'light-dark(#ffffff, #1c1c1c)',
-	border: 'light-dark(#dbdbdb, #262626)',
+	border: 'light-dark(#dbdbdb, #494D53)',
 	textPrimary: 'light-dark(#000000, #f5f5f5)',
 	textSecondary: 'light-dark(#737373, #a8a8a8)',
 	textMuted: 'light-dark(#c7c7c7, #555555)',
