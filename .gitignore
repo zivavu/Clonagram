@@ -23,7 +23,11 @@
 # misc
 .DS_Store
 *.pem
-supabase
+/supabase
+AGENTS.md
+CLAUDE.md
+/scripts
+
 
 # debug
 npm-debug.log*

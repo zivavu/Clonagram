@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:types": "npx supabase gen types typescript --project-id pggvzapkivjgsybyzjok > src/types/database.ts"
   },
   "dependencies": {
     "@mux/mux-node": "^14.0.0",
@@ -30,10 +31,12 @@
     "@upstash/redis": "^1.37.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "lucide-react": "^1.8.0",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-dropzone": "^15.0.0",
+    "react-hook-form": "^7.72.1",
     "react-intersection-observer": "^10.0.3"
   },
   "devDependencies": {
