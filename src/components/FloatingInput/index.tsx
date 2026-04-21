@@ -1,7 +1,7 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
 import { InputHTMLAttributes, useState } from 'react';
-import { colors, fonts, radii } from '../../styles/styles/tokens.stylex';
+import { colors, fonts, radii } from '../../styles/tokens.stylex';
 
 interface FloatingInputProps extends Omit<
 	InputHTMLAttributes<HTMLInputElement>,
@@ -25,13 +25,11 @@ const styles = stylex.create({
 		fontSize: '14px',
 		fontFamily: fonts.body,
 		color: colors.textPrimary,
-		backgroundColor: colors.bg,
+		backgroundColor: colors.bgSecondary,
 		borderWidth: '1px',
 		borderStyle: 'solid',
 		borderColor: colors.border,
-		borderRadius: radii.sm,
-		outline: 'none',
-		boxSizing: 'border-box',
+		borderRadius: radii.lg,
 		transition: 'border-color 0.15s ease',
 	},
 	inputFocused: {
@@ -42,7 +40,8 @@ const styles = stylex.create({
 		left: '12px',
 		top: '50%',
 		transform: 'translateY(-50%)',
-		fontSize: '14px',
+		fontSize: '16px',
+		fontWeight: '600',
 		fontFamily: fonts.body,
 		color: colors.textSecondary,
 		pointerEvents: 'none',

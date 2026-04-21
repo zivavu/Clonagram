@@ -4,11 +4,15 @@ export const colors = stylex.defineVars({
 	bgSecondary: 'light-dark(#fafafa, #1f1f22)',
 	bgElevated: 'light-dark(#ffffff, #1c1c1c)',
 	border: 'light-dark(#dbdbdb, #494D53)',
-	textPrimary: 'light-dark(#000000, #f5f5f5)',
+	textPrimary: 'light-dark(#000000, #F2F4F6)',
 	textSecondary: 'light-dark(#737373, #a8a8a8)',
 	textMuted: 'light-dark(#c7c7c7, #555555)',
-	accent: '#0095f6',
+	buttonHover: 'light-dark(#f2f4f6, #353538)',
+	accent: '#0064e0',
 	accentHover: '#1877f2',
+	accentText: '#6078d4',
+	accentTextHover: '#7b90e4',
+	primaryButton: '#0064E0',
 	danger: '#ed4956',
 	storyGradientStart: '#f09433',
 	storyGradientEnd: '#bc1888',
@@ -25,10 +29,12 @@ export const spacing = stylex.defineVars({
 export const radii = stylex.defineVars({
 	sm: '4px',
 	md: '8px',
+	lg: '12px',
+	xl: '22px',
 	full: '9999px',
 });
 
 export const fonts = stylex.defineVars({
-	body: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+	body: 'var(--font-dm-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
 	size: { default: '14px' },
 });
