@@ -10,6 +10,7 @@
 		"db:types": "npx supabase gen types typescript --project-id pggvzapkivjgsybyzjok > src/types/database.ts"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^5.2.2",
 		"@mux/mux-node": "^14.0.1",
 		"@mux/mux-player-react": "^3.11.8",
 		"@radix-ui/react-avatar": "^1.1.11",
@@ -37,7 +38,8 @@
 		"react-dom": "19.2.4",
 		"react-dropzone": "^15.0.0",
 		"react-hook-form": "^7.73.1",
-		"react-intersection-observer": "^10.0.3"
+		"react-intersection-observer": "^10.0.3",
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@stylexjs/babel-plugin": "^0.18.3",

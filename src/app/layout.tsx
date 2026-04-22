@@ -21,7 +21,7 @@ const chivo = localFont({
 });
 
 export const metadata: Metadata = {
-	title: 'Instagram',
+	title: 'Clonagram',
 	description: 'Instagram clone',
 };
 

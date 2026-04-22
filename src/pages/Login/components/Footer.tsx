@@ -14,7 +14,7 @@ const footerLinks = [
 	'Cookie Settings',
 	'Terms',
 	'Locations',
-	'Instagram Lite',
+	'Clonagram Lite',
 	'Meta AI',
 	'Threads',
 	'Contact Uploading & Non-Users',
@@ -24,7 +24,7 @@ const footerLinks = [
 const styles = stylex.create({
 	footer: {
 		width: '100%',
-		height: '135px',
+		minHeight: '135px',
 		paddingTop: '22px',
 		paddingBottom: '20px',
 		paddingLeft: '32px',
@@ -87,7 +87,7 @@ export default function Footer() {
 					English
 					<ChevronDown size={14} />
 				</button>
-				<span>© 2026 Instagram from Meta</span>
+				<span>© {new Date().getFullYear()} Clonagram from Zivavu</span>
 			</div>
 		</footer>
 	);

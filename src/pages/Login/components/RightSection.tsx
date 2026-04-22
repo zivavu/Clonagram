@@ -1,10 +1,15 @@
 'use client';
 
 import LoginPageButton from '@/src/components/LoginPageButton';
+import { createClient } from '@/src/lib/supabase/client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
 import { ApertureIcon, ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import z from 'zod';
 import FloatingInput from '../../../components/FloatingInput';
 import { colors, radius } from '../../../styles/tokens.stylex';
 
@@ -79,7 +84,50 @@ const GoogleIcon = (
 	<Image src="/icons/google.svg" alt="" aria-hidden width={20} height={20} />
 );
 
+const schema = z.object({
+	email: z.email(),
+	password: z.string().min(8),
+});
+
 export default function RightSection() {
+	const supabase = createClient();
+	const router = useRouter();
+	const {
+		register,
+		handleSubmit,
+		formState: { isSubmitting, isValid },
+	} = useForm({
+		resolver: zodResolver(schema),
+	});
+
+	async function singInUser(formData: z.infer<typeof schema>) {
+		const { data, error } = await supabase.auth.signInWithPassword({
+			email: formData.email,
+			password: formData.password,
+		});
+		if (error) {
+			console.error(error);
+		}
+		if (data) {
+			console.log(data);
+			if (data.user?.confirmed_at === null) {
+				console.log('User is not confirmed');
+			} else router.push('/');
+		}
+	}
+
+	async function signInWithGoogle() {
+		const { error } = await supabase.auth.signInWithOAuth({
+			provider: 'google',
+			options: {
+				redirectTo: `${window.location.origin}/auth/callback`,
+			},
+		});
+		if (error) {
+			console.error(error);
+		}
+	}
+
 	return (
 		<div {...stylex.props(styles.root)}>
 			<div {...stylex.props(styles.titleContainer)}>
@@ -88,11 +136,22 @@ export default function RightSection() {
 				</Link>
 				Log into Clonagram
 			</div>
-			<FloatingInput label="Mobile number, username or email" />
-			<FloatingInput label="Password" type="password" />
+			<FloatingInput
+				label="Mobile number, username or email"
+				{...register('email')}
+				autoComplete="off"
+			/>
+			<FloatingInput
+				label="Password"
+				type="password"
+				{...register('password')}
+				autoComplete="new-password"
+			/>
 			<LoginPageButton
 				variant="primary"
 				text="Log in"
+				disabled={isSubmitting || !isValid}
+				onClick={handleSubmit(singInUser)}
 				style={{ marginTop: '12px' }}
 			/>
 			<LoginPageButton variant="transparent" text="Forgot password?" />
@@ -100,6 +159,7 @@ export default function RightSection() {
 				variant="outlined"
 				text="Log in with Google"
 				icon={GoogleIcon}
+				onClick={signInWithGoogle}
 				style={{ marginTop: '42px' }}
 			/>
 			<LoginPageButton
