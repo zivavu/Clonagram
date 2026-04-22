@@ -2,7 +2,7 @@
 
 import LoginPageButton from '@/src/components/LoginPageButton';
 import * as stylex from '@stylexjs/stylex';
-import { ChevronLeft } from 'lucide-react';
+import { ApertureIcon, ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import FloatingInput from '../../../components/FloatingInput';
@@ -40,13 +40,24 @@ const styles = stylex.create({
 	},
 	titleContainer: {
 		fontSize: '1.125rem',
-		fontWeight: '600',
+		fontWeight: '500',
 		color: colors.textPrimary,
 		alignSelf: 'flex-start',
 		display: 'flex',
 		alignItems: 'center',
 		gap: '12px',
 		marginBottom: '10px',
+	},
+	zetaContainer: {
+		display: 'flex',
+		alignItems: 'center',
+		gap: '4px',
+		marginTop: '8px',
+	},
+	zetaText: {
+		fontSize: '1rem',
+		fontWeight: '500',
+		color: colors.textPrimary,
 	},
 	reportContent: {
 		marginTop: '42px',
@@ -96,6 +107,10 @@ export default function RightSection() {
 				text="Create new account"
 				style={{ borderColor: colors.accent, color: colors.accent }}
 			/>
+			<div {...stylex.props(styles.zetaContainer)}>
+				<ApertureIcon />
+				<span {...stylex.props(styles.zetaText)}>Zeta</span>
+			</div>
 			<span {...stylex.props(styles.reportContent)}>
 				You can also{' '}
 				<Link href="/" {...stylex.props(styles.reportContentLink)}>

@@ -41,7 +41,7 @@ const styles = stylex.create({
 		top: '50%',
 		transform: 'translateY(-50%)',
 		fontSize: '16px',
-		fontWeight: '600',
+		fontWeight: '400',
 		fontFamily: fonts.body,
 		color: colors.textSecondary,
 		pointerEvents: 'none',

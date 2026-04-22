@@ -105,4 +105,6 @@ const loginCardPeople = [
 	},
 ] as const;
 
+export type LoginCardPerson = (typeof loginCardPeople)[number];
+
 export default loginCardPeople;

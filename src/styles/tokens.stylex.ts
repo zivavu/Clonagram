@@ -11,7 +11,7 @@ export const colors = stylex.defineVars({
 	accent: '#0064e0',
 	accentHover: '#1877f2',
 	accentText: '#6078d4',
-	accentTextHover: '#7b90e4',
+	accentTextHover: '#708dff',
 	primaryButton: '#0064E0',
 	danger: '#ed4956',
 	storyGradientStart: '#f09433',
@@ -27,14 +27,11 @@ export const spacing = stylex.defineVars({
 });
 
 export const radius = stylex.defineVars({
-	sm: '4px',
-	md: '8px',
-	lg: '12px',
+	xs: '4px',
+	sm: '8px',
+	md: '12px',
+	lg: '16px',
 	xl: '22px',
+	xxl: '28px',
 	full: '9999px',
-});
-
-export const fonts = stylex.defineVars({
-	body: 'var(--font-chivo), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-	size: { default: '14px' },
 });

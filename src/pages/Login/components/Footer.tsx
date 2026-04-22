@@ -37,6 +37,7 @@ const styles = stylex.create({
 		flexDirection: 'column',
 		alignItems: 'center',
 		gap: '18px',
+		fontWeight: 300,
 		fontSize: '0.75rem',
 	},
 	footerLinks: {
@@ -67,6 +68,7 @@ const styles = stylex.create({
 		alignItems: 'center',
 		gap: '6px',
 		color: '#9ea4b0',
+		fontWeight: 300,
 	},
 });
 
