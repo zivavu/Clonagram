@@ -1,10 +1,11 @@
 'use client';
 
 import LoginPageButton from '@/src/components/LoginPageButton';
+import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
 import { createClient } from '@/src/lib/supabase/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
-import { ApertureIcon, ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -31,14 +32,9 @@ const styles = stylex.create({
 		gap: '1rem',
 	},
 	backButton: {
-		backgroundColor: 'transparent',
-		border: 'none',
-		cursor: 'pointer',
 		borderRadius: radius.full,
 		padding: '8px',
 		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
 		':hover': {
 			backgroundColor: colors.buttonHover,
 		},
@@ -52,17 +48,6 @@ const styles = stylex.create({
 		alignItems: 'center',
 		gap: '12px',
 		marginBottom: '10px',
-	},
-	zetaContainer: {
-		display: 'flex',
-		alignItems: 'center',
-		gap: '4px',
-		marginTop: '8px',
-	},
-	zetaText: {
-		fontSize: '1rem',
-		fontWeight: '500',
-		color: colors.textPrimary,
 	},
 	reportContent: {
 		marginTop: '42px',
@@ -166,11 +151,9 @@ export default function RightSection() {
 				variant="outlined"
 				text="Create new account"
 				style={{ borderColor: colors.accent, color: colors.accent }}
+				linkProps={{ href: '/emailsignup' }}
 			/>
-			<div {...stylex.props(styles.zetaContainer)}>
-				<ApertureIcon />
-				<span {...stylex.props(styles.zetaText)}>Zeta</span>
-			</div>
+			<ZetaLogo rootProps={{ style: { marginTop: '8px' } }} />
 			<span {...stylex.props(styles.reportContent)}>
 				You can also{' '}
 				<Link href="/" {...stylex.props(styles.reportContentLink)}>

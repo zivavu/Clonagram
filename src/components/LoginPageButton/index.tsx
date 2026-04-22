@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import Link from 'next/link';
 import { ReactNode } from 'react';
 import { colors, radius } from '../../styles/tokens.stylex';
 
@@ -7,6 +8,7 @@ interface LoginPageButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElem
 	borderColor?: 'primary' | 'gray';
 	variant: 'transparent' | 'primary' | 'outlined';
 	icon?: ReactNode;
+	linkProps?: React.ComponentProps<typeof Link>;
 }
 
 const styles = stylex.create({
@@ -36,8 +38,8 @@ const styles = stylex.create({
 		backgroundColor: colors.accent,
 		fontSize: '15px',
 		':disabled': {
-			opacity: 0.4,
-			cursor: 'not-allowed',
+			color: colors.textSecondary,
+			opacity: 0.6,
 		},
 		':hover': {
 			backgroundColor: colors.accentHover,
@@ -49,9 +51,6 @@ const styles = stylex.create({
 		borderWidth: '1px',
 		borderStyle: 'solid',
 		color: colors.textPrimary,
-		':disabled': {
-			cursor: 'not-allowed',
-		},
 		':hover': {
 			backgroundColor: colors.buttonHover,
 		},
@@ -62,8 +61,17 @@ export default function LoginPageButton({
 	text,
 	variant = 'transparent',
 	icon,
+	linkProps,
 	...props
 }: LoginPageButtonProps) {
+	if (linkProps) {
+		return (
+			<Link {...linkProps} {...stylex.props(styles.root, styles[variant])}>
+				{icon}
+				{text}
+			</Link>
+		);
+	}
 	return (
 		<button {...stylex.props(styles.root, styles[variant])} {...props}>
 			{icon}
