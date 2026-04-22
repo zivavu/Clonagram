@@ -1,7 +1,7 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
 import { InputHTMLAttributes, useState } from 'react';
-import { colors, fonts, radii } from '../../styles/tokens.stylex';
+import { colors, fonts, radius } from '../../styles/tokens.stylex';
 
 interface FloatingInputProps extends Omit<
 	InputHTMLAttributes<HTMLInputElement>,
@@ -29,7 +29,7 @@ const styles = stylex.create({
 		borderWidth: '1px',
 		borderStyle: 'solid',
 		borderColor: colors.border,
-		borderRadius: radii.lg,
+		borderRadius: radius.lg,
 		transition: 'border-color 0.15s ease',
 	},
 	inputFocused: {

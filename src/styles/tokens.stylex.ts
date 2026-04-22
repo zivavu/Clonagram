@@ -26,7 +26,7 @@ export const spacing = stylex.defineVars({
 	xl: '32px',
 });
 
-export const radii = stylex.defineVars({
+export const radius = stylex.defineVars({
 	sm: '4px',
 	md: '8px',
 	lg: '12px',
@@ -35,6 +35,6 @@ export const radii = stylex.defineVars({
 });
 
 export const fonts = stylex.defineVars({
-	body: 'var(--font-dm-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+	body: 'var(--font-chivo), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
 	size: { default: '14px' },
 });

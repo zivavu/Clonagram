@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import { ReactNode } from 'react';
-import { colors, radii } from '../../styles/tokens.stylex';
+import { colors, radius } from '../../styles/tokens.stylex';
 
 interface LoginPageButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	text: string;
@@ -17,8 +17,8 @@ const styles = stylex.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		gap: '10px',
-		borderRadius: radii.xl,
-		fontWeight: '600',
+		borderRadius: radius.xl,
+		fontWeight: 500,
 		fontSize: '15px',
 		cursor: 'pointer',
 		':disabled': {
