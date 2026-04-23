@@ -3,7 +3,7 @@ import * as stylex from '@stylexjs/stylex';
 import { InputHTMLAttributes, useState } from 'react';
 import { colors, radius } from '../../styles/tokens.stylex';
 
-interface FloatingInputProps extends Omit<
+export interface FloatingInputProps extends Omit<
 	InputHTMLAttributes<HTMLInputElement>,
 	'placeholder'
 > {

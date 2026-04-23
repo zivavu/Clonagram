@@ -121,24 +121,26 @@ export default function RightSection() {
 				</Link>
 				Log into Clonagram
 			</div>
-			<FloatingInput
-				label="Mobile number, username or email"
-				{...register('email')}
-				autoComplete="off"
-			/>
-			<FloatingInput
-				label="Password"
-				type="password"
-				{...register('password')}
-				autoComplete="new-password"
-			/>
-			<LoginPageButton
-				variant="primary"
-				text="Log in"
-				disabled={isSubmitting || !isValid}
-				onClick={handleSubmit(singInUser)}
-				style={{ marginTop: '12px' }}
-			/>
+			<form onSubmit={handleSubmit(singInUser)} style={{ display: 'contents' }}>
+				<FloatingInput
+					label="Mobile number, username or email"
+					{...register('email')}
+					autoComplete="off"
+				/>
+				<FloatingInput
+					label="Password"
+					type="password"
+					{...register('password')}
+					autoComplete="new-password"
+				/>
+				<LoginPageButton
+					variant="primary"
+					text="Log in"
+					disabled={isSubmitting || !isValid}
+					style={{ marginTop: '12px' }}
+					type="submit"
+				/>
+			</form>
 			<LoginPageButton variant="transparent" text="Forgot password?" />
 			<LoginPageButton
 				variant="outlined"

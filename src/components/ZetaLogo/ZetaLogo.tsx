@@ -21,7 +21,7 @@ export default function ZetaLogo({
 	});
 	return (
 		<div {...stylex.props(styles.root)} {...rootProps}>
-			<ApertureIcon size={20} />
+			<ApertureIcon size={20} color={colors.textPrimary} />
 			<span {...stylex.props(styles.zetaText)}>Zeta</span>
 		</div>
 	);

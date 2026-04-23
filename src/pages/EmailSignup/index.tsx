@@ -26,16 +26,21 @@ export default function EmailSignupPage() {
 				backgroundColor: colors.buttonHover,
 			},
 		},
-		title: {
-			fontSize: '1.8rem',
-			fontWeight: '450',
-			color: colors.textPrimary,
-			marginTop: '16px',
-		},
 		contentContainer: {
 			display: 'flex',
 			flexDirection: 'column',
 			padding: '0 20px',
+		},
+		title: {
+			fontSize: '1.5rem',
+			fontWeight: '450',
+			color: colors.textPrimary,
+			marginTop: '16px',
+		},
+		description: {
+			fontSize: '0.9375rem',
+			fontWeight: '400',
+			marginTop: '4px',
 		},
 	});
 
@@ -47,6 +52,9 @@ export default function EmailSignupPage() {
 			<div {...stylex.props(styles.contentContainer)}>
 				<ZetaLogo />
 				<h1 {...stylex.props(styles.title)}>Get started on Clonagram</h1>
+				<span {...stylex.props(styles.description)}>
+					Sign up to see photos and videos from your friends.
+				</span>
 			</div>
 		</div>
 	);
