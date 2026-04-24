@@ -4,6 +4,7 @@ export const colors = stylex.defineVars({
    bgSecondary: 'light-dark(#fafafa, #1f1f22)',
    bgElevated: 'light-dark(#ffffff, #1c1c1c)',
    border: 'light-dark(#dbdbdb, #494D53)',
+   borderMuted: 'light-dark(#e0e0e0, #262626)',
    textPrimary: 'light-dark(#000000, #F2F4F6)',
    textSecondary: 'light-dark(#737373, #a8a8a8)',
    textMuted: 'light-dark(#c7c7c7, #555555)',
