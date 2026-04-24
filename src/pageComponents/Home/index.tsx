@@ -9,7 +9,6 @@ import RightSidebar from './components/RightSidebar';
 const styles = stylex.create({
    root: {
       gap: '12px',
-      height: '100%',
       backgroundColor: colors.bg,
       display: 'flex',
       flexDirection: 'row',
@@ -19,7 +18,7 @@ const styles = stylex.create({
       flexDirection: 'column',
       gap: '12px',
       padding: '36px',
-      paddingTop: '48px',
+      paddingTop: '44px',
       paddingBottom: '26px',
    },
    forYouFollowingSwitch: {

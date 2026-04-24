@@ -1,6 +1,6 @@
 'use client';
 
-import AuthPagesFooter from '@/src/components/AuthPagesFooter/Footer';
+import AuthPagesFooter from '@/src/components/AuthPagesFooter';
 import BirthdatePicker from '@/src/components/BirthdatePicker';
 import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';

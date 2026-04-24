@@ -4,18 +4,8 @@ import './globals.css';
 import { Providers } from './providers';
 
 const chivo = localFont({
-   src: [
-      {
-         path: '../../public/Chivo/Chivo-VariableFont_wght.ttf',
-         weight: '100 900',
-         style: 'normal',
-      },
-      {
-         path: '../../public/Chivo/Chivo-Italic-VariableFont_wght.ttf',
-         weight: '100 900',
-         style: 'italic',
-      },
-   ],
+   src: '../../public/Chivo/Chivo-VariableFont_wght.ttf',
+   weight: '100 900',
    variable: '--font-chivo',
    display: 'swap',
 });
@@ -27,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
    return (
-      <html lang="en" className={chivo.variable}>
+      <html lang="en" className={`${chivo.variable} ${chivo.className}`}>
          <body>
             <Providers>{children}</Providers>
          </body>

@@ -2,8 +2,8 @@ import * as stylex from '@stylexjs/stylex';
 import { HeartIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useSyncExternalStore } from 'react';
+import loginCardPeople, { LoginCardPerson } from '../../../pageComponents/Login/loginCardPeople';
 import { colors, radius } from '../../../styles/tokens.stylex';
-import loginCardPeople, { LoginCardPerson } from '../loginCardPeople';
 
 function getRandomDistinctPeople(people: readonly LoginCardPerson[], count: number) {
    return [...people].sort(() => Math.random() - 0.5).slice(0, count);

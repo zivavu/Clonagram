@@ -1,7 +1,7 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import AuthPagesFooter from '../../components/AuthPagesFooter/Footer';
+import AuthPagesFooter from '../../components/AuthPagesFooter';
 import { colors } from '../../styles/tokens.stylex';
 import LeftSection from './components/LeftSection';
 import RightSection from './components/RightSection';

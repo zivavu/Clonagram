@@ -1,4 +1,4 @@
-import EmailSignUpPage from '@/src/pages/EmailSignup';
+import EmailSignUpPage from '@/src/pageComponents/EmailSignup';
 
 export default function EmailSignup() {
    return <EmailSignUpPage />;

@@ -27,18 +27,17 @@ const navItems = [
 ];
 
 const styles = stylex.create({
-   leftSidebar: {
+   root: {
       width: '280px',
-      height: '100%',
       padding: '16px',
-      paddingBottom: '26px',
    },
    leftSidebarContent: {
       display: 'flex',
       flexDirection: 'column',
-      height: '100%',
+      height: '100svh',
       width: 'min-content',
       justifyContent: 'space-between',
+      paddingBottom: '36px',
       gap: '12px',
       '--label-display': 'none',
       ':hover': {
@@ -78,7 +77,7 @@ const styles = stylex.create({
 export default function LeftSidebar({ url }: { url: string | null }) {
    const pathname = url ? new URL(url).pathname : '/';
    return (
-      <div {...stylex.props(styles.leftSidebar)}>
+      <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.leftSidebarContent)}>
             <Link href="/" {...stylex.props(styles.navItem)}>
                <Image
@@ -87,6 +86,7 @@ export default function LeftSidebar({ url }: { url: string | null }) {
                   width={26}
                   height={26}
                   style={{ filter: 'brightness(0) invert(1)' }}
+                  loading="eager"
                />
             </Link>
             <nav {...stylex.props(styles.nav)}>
