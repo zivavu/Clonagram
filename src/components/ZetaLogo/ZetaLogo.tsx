@@ -2,7 +2,13 @@ import * as stylex from '@stylexjs/stylex';
 import { ApertureIcon } from 'lucide-react';
 import { colors } from '../../styles/tokens.stylex';
 
-export default function ZetaLogo({ rootProps }: { rootProps?: React.ComponentProps<'div'> }) {
+export interface ZetaLogoProps {
+   rootProps?: React.ComponentProps<'div'>;
+   useText?: boolean;
+   iconSize?: number;
+}
+
+export default function ZetaLogo({ rootProps, useText = true, iconSize = 20 }: ZetaLogoProps) {
    const styles = stylex.create({
       root: {
          display: 'flex',
@@ -15,10 +21,11 @@ export default function ZetaLogo({ rootProps }: { rootProps?: React.ComponentPro
          color: colors.textPrimary,
       },
    });
+
    return (
       <div {...stylex.props(styles.root)} {...rootProps}>
-         <ApertureIcon size={20} color={colors.textPrimary} />
-         <span {...stylex.props(styles.zetaText)}>Zeta</span>
+         <ApertureIcon size={iconSize} color={colors.textPrimary} />
+         {useText && <span {...stylex.props(styles.zetaText)}>Zeta</span>}
       </div>
    );
 }
