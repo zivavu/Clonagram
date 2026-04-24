@@ -1,108 +1,97 @@
 const loginCardPeople = [
-	{
-		src: 'erik-torres-4vQtupdTSvI-unsplash.jpg',
-		alt: 'A woman in a red and yellow coat is dancing',
-		photographerName: 'Erik Torres',
-		photographerUrl: 'https://unsplash.com/@theeriktornes',
-		photoUrl:
-			'https://unsplash.com/photos/a-woman-in-a-red-and-yellow-coat-is-dancing-4vQtupdTSvI',
-	},
-	{
-		src: 'baran-lotfollahi-cdZcKaTehbs-unsplash.jpg',
-		alt: 'Woman in brown coat and green scarf',
-		photographerName: 'Baran Lotfollahi',
-		photographerUrl: 'https://unsplash.com/@baranlotfollahi',
-		photoUrl:
-			'https://unsplash.com/photos/woman-in-brown-coat-and-green-scarf-cdZcKaTehbs',
-	},
-	{
-		src: 'behrooz-zyiBFu965kI-unsplash.jpg',
-		alt: 'A woman squatting on the ground in front of a graffiti covered wall',
-		photographerName: 'Behrooz',
-		photographerUrl: 'https://unsplash.com/@behroozrahimi',
-		photoUrl:
-			'https://unsplash.com/photos/a-woman-squatting-on-the-ground-in-front-of-a-graffiti-covered-wall-zyiBFu965kI',
-	},
-	{
-		src: 'alex-roosso-o3zlxuQimSk-unsplash.jpg',
-		alt: 'A woman in overalls holding a baseball bat',
-		photographerName: 'alex Roosso',
-		photographerUrl: 'https://unsplash.com/@roosso',
-		photoUrl:
-			'https://unsplash.com/photos/a-woman-in-overalls-holding-a-baseball-bat-o3zlxuQimSk',
-	},
-	{
-		src: 'sed-creatives-sardar-yB_wHrjHWEw-unsplash.jpg',
-		alt: 'A person lying on the ground',
-		photographerName: 'Sed "Creatives" Sardar',
-		photographerUrl: 'https://unsplash.com/@sedcreatives',
-		photoUrl:
-			'https://unsplash.com/photos/a-person-lying-on-the-ground-yB_wHrjHWEw',
-	},
-	{
-		src: 'virginia-berbece-GCmqm5q4AgY-unsplash.jpg',
-		alt: 'A close-up of a person near a plant',
-		photographerName: 'Virginia Berbece',
-		photographerUrl: 'https://unsplash.com/@virginiaberbece',
-		photoUrl:
-			'https://unsplash.com/photos/a-close-up-of-a-person-near-a-plant-GCmqm5q4AgY',
-	},
-	{
-		src: 'olga-nevajno-IJKWqqH7cZA-unsplash.jpg',
-		alt: 'A woman with a veil on her head',
-		photographerName: 'Olga Nevajno',
-		photographerUrl: 'https://unsplash.com/@princeska77',
-		photoUrl:
-			'https://unsplash.com/photos/a-woman-with-a-veil-on-her-head-IJKWqqH7cZA',
-	},
-	{
-		src: 'see-plus-NP3s9BYOqAc-unsplash.jpg',
-		alt: 'A woman with freckles on her face looking through a tree',
-		photographerName: 'see plus',
-		photographerUrl: 'https://unsplash.com/@seeplus',
-		photoUrl:
-			'https://unsplash.com/photos/a-woman-with-freckles-on-her-face-looking-through-a-tree-NP3s9BYOqAc',
-	},
-	{
-		src: 'juan-ordonez-QtDSDm0RX50-unsplash.jpg',
-		alt: '2 women standing beside brown wooden door',
-		photographerName: 'Juan Ordonez',
-		photographerUrl: 'https://unsplash.com/@juzu_me',
-		photoUrl:
-			'https://unsplash.com/photos/2-women-standing-beside-brown-wooden-door-QtDSDm0RX50',
-	},
-	{
-		src: 'jennifer-marquez-HvkDYluePqw-unsplash.jpg',
-		alt: 'Woman in white tank top lying on bed',
-		photographerName: 'Jennifer Marquez',
-		photographerUrl: 'https://unsplash.com/@jamscreativephotography',
-		photoUrl:
-			'https://unsplash.com/photos/woman-in-white-tank-top-lying-on-bed-HvkDYluePqw',
-	},
-	{
-		src: 'ali-pazani-LzyQ3WV_-pc-unsplash.jpg',
-		alt: 'Girl in pink blue and green hoodie',
-		photographerName: 'Ali Pazani',
-		photographerUrl: 'https://unsplash.com/@alipzn',
-		photoUrl:
-			'https://unsplash.com/photos/girl-in-pink-blue-and-green-hoodie-LzyQ3WV_-pc',
-	},
-	{
-		src: 'connor-botts-k6rQYHBIAfs-unsplash.jpg',
-		alt: 'Man sitting near wall wearing black framed sunglasses',
-		photographerName: 'CONNOR BOTTS',
-		photographerUrl: 'https://unsplash.com/@cinemamaster',
-		photoUrl:
-			'https://unsplash.com/photos/man-sitting-near-wall-wearing-black-framed-sunglasses-k6rQYHBIAfs',
-	},
-	{
-		src: 'brooke-cagle-oTweoxMKdkA-unsplash.jpg',
-		alt: 'Jolly woman using peace hand gesture',
-		photographerName: 'Brooke Cagle',
-		photographerUrl: 'https://unsplash.com/@brookecagle',
-		photoUrl:
-			'https://unsplash.com/photos/selective-focus-photography-of-jolly-woman-using-peace-hand-gesture-oTweoxMKdkA',
-	},
+   {
+      src: 'erik-torres-4vQtupdTSvI-unsplash.jpg',
+      alt: 'A woman in a red and yellow coat is dancing',
+      photographerName: 'Erik Torres',
+      photographerUrl: 'https://unsplash.com/@theeriktornes',
+      photoUrl: 'https://unsplash.com/photos/a-woman-in-a-red-and-yellow-coat-is-dancing-4vQtupdTSvI',
+   },
+   {
+      src: 'baran-lotfollahi-cdZcKaTehbs-unsplash.jpg',
+      alt: 'Woman in brown coat and green scarf',
+      photographerName: 'Baran Lotfollahi',
+      photographerUrl: 'https://unsplash.com/@baranlotfollahi',
+      photoUrl: 'https://unsplash.com/photos/woman-in-brown-coat-and-green-scarf-cdZcKaTehbs',
+   },
+   {
+      src: 'behrooz-zyiBFu965kI-unsplash.jpg',
+      alt: 'A woman squatting on the ground in front of a graffiti covered wall',
+      photographerName: 'Behrooz',
+      photographerUrl: 'https://unsplash.com/@behroozrahimi',
+      photoUrl:
+         'https://unsplash.com/photos/a-woman-squatting-on-the-ground-in-front-of-a-graffiti-covered-wall-zyiBFu965kI',
+   },
+   {
+      src: 'alex-roosso-o3zlxuQimSk-unsplash.jpg',
+      alt: 'A woman in overalls holding a baseball bat',
+      photographerName: 'alex Roosso',
+      photographerUrl: 'https://unsplash.com/@roosso',
+      photoUrl: 'https://unsplash.com/photos/a-woman-in-overalls-holding-a-baseball-bat-o3zlxuQimSk',
+   },
+   {
+      src: 'sed-creatives-sardar-yB_wHrjHWEw-unsplash.jpg',
+      alt: 'A person lying on the ground',
+      photographerName: 'Sed "Creatives" Sardar',
+      photographerUrl: 'https://unsplash.com/@sedcreatives',
+      photoUrl: 'https://unsplash.com/photos/a-person-lying-on-the-ground-yB_wHrjHWEw',
+   },
+   {
+      src: 'virginia-berbece-GCmqm5q4AgY-unsplash.jpg',
+      alt: 'A close-up of a person near a plant',
+      photographerName: 'Virginia Berbece',
+      photographerUrl: 'https://unsplash.com/@virginiaberbece',
+      photoUrl: 'https://unsplash.com/photos/a-close-up-of-a-person-near-a-plant-GCmqm5q4AgY',
+   },
+   {
+      src: 'olga-nevajno-IJKWqqH7cZA-unsplash.jpg',
+      alt: 'A woman with a veil on her head',
+      photographerName: 'Olga Nevajno',
+      photographerUrl: 'https://unsplash.com/@princeska77',
+      photoUrl: 'https://unsplash.com/photos/a-woman-with-a-veil-on-her-head-IJKWqqH7cZA',
+   },
+   {
+      src: 'see-plus-NP3s9BYOqAc-unsplash.jpg',
+      alt: 'A woman with freckles on her face looking through a tree',
+      photographerName: 'see plus',
+      photographerUrl: 'https://unsplash.com/@seeplus',
+      photoUrl: 'https://unsplash.com/photos/a-woman-with-freckles-on-her-face-looking-through-a-tree-NP3s9BYOqAc',
+   },
+   {
+      src: 'juan-ordonez-QtDSDm0RX50-unsplash.jpg',
+      alt: '2 women standing beside brown wooden door',
+      photographerName: 'Juan Ordonez',
+      photographerUrl: 'https://unsplash.com/@juzu_me',
+      photoUrl: 'https://unsplash.com/photos/2-women-standing-beside-brown-wooden-door-QtDSDm0RX50',
+   },
+   {
+      src: 'jennifer-marquez-HvkDYluePqw-unsplash.jpg',
+      alt: 'Woman in white tank top lying on bed',
+      photographerName: 'Jennifer Marquez',
+      photographerUrl: 'https://unsplash.com/@jamscreativephotography',
+      photoUrl: 'https://unsplash.com/photos/woman-in-white-tank-top-lying-on-bed-HvkDYluePqw',
+   },
+   {
+      src: 'ali-pazani-LzyQ3WV_-pc-unsplash.jpg',
+      alt: 'Girl in pink blue and green hoodie',
+      photographerName: 'Ali Pazani',
+      photographerUrl: 'https://unsplash.com/@alipzn',
+      photoUrl: 'https://unsplash.com/photos/girl-in-pink-blue-and-green-hoodie-LzyQ3WV_-pc',
+   },
+   {
+      src: 'connor-botts-k6rQYHBIAfs-unsplash.jpg',
+      alt: 'Man sitting near wall wearing black framed sunglasses',
+      photographerName: 'CONNOR BOTTS',
+      photographerUrl: 'https://unsplash.com/@cinemamaster',
+      photoUrl: 'https://unsplash.com/photos/man-sitting-near-wall-wearing-black-framed-sunglasses-k6rQYHBIAfs',
+   },
+   {
+      src: 'brooke-cagle-oTweoxMKdkA-unsplash.jpg',
+      alt: 'Jolly woman using peace hand gesture',
+      photographerName: 'Brooke Cagle',
+      photographerUrl: 'https://unsplash.com/@brookecagle',
+      photoUrl:
+         'https://unsplash.com/photos/selective-focus-photography-of-jolly-woman-using-peace-hand-gesture-oTweoxMKdkA',
+   },
 ] as const;
 
 export type LoginCardPerson = (typeof loginCardPeople)[number];

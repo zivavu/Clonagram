@@ -1,64 +1,64 @@
 @layer resets {
-	*,
-	*::before,
-	*::after {
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-	}
+   *,
+   *::before,
+   *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+   }
 
-	html,
-	body {
-		height: 100%;
-	}
+   html,
+   body {
+      height: 100%;
+   }
 
-	html {
-		color-scheme: light dark;
-	}
-	span {
-		font-family: var(--font-chivo);
-	}
+   html {
+      color-scheme: light dark;
+   }
+   span {
+      font-family: var(--font-chivo);
+   }
 
-	body {
-		font-family:
-			var(--font-chivo),
-			-apple-system,
-			BlinkMacSystemFont,
-			'Segoe UI',
-			sans-serif;
-		font-size: 14px;
-		-webkit-font-smoothing: antialiased;
-	}
+   body {
+      font-family:
+         var(--font-chivo),
+         -apple-system,
+         BlinkMacSystemFont,
+         'Segoe UI',
+         sans-serif;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+   }
 
-	img,
-	video {
-		display: block;
-		max-width: 100%;
-	}
+   img,
+   video {
+      display: block;
+      max-width: 100%;
+   }
 
-	button {
-		font-family:
-			var(--font-chivo),
-			-apple-system,
-			BlinkMacSystemFont,
-			'Segoe UI',
-			sans-serif;
-		cursor: pointer;
-		border: none;
-		background: none;
-	}
+   button {
+      font-family:
+         var(--font-chivo),
+         -apple-system,
+         BlinkMacSystemFont,
+         'Segoe UI',
+         sans-serif;
+      cursor: pointer;
+      border: none;
+      background: none;
+   }
 
-	button:focus,
-	input:focus,
-	textarea:focus,
-	select:focus {
-		outline: none;
-	}
+   button:focus,
+   input:focus,
+   textarea:focus,
+   select:focus {
+      outline: none;
+   }
 
-	a {
-		color: inherit;
-		text-decoration: none;
-	}
+   a {
+      color: inherit;
+      text-decoration: none;
+   }
 }
 
 @stylex;
