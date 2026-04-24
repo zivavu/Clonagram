@@ -29,77 +29,96 @@ const navItems = [
    { href: '/profile', icon: User, label: 'Profile' },
 ];
 
-export default function Home() {
-   const pathname = usePathname();
+const styles = stylex.create({
+   root: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
+      height: '100%',
+   },
+   rightSidebar: {
+      width: '214px',
+      height: '100%',
+      padding: '16px',
+      paddingBottom: '26px',
+   },
+   rightSidebarContent: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      width: 'min-content',
+      justifyContent: 'space-between',
+      gap: '12px',
+      '--label-display': 'none',
+      ':hover': {
+         '--label-display': 'block',
+         width: '100%',
+      },
+   },
+   nav: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '4px',
+   },
+   navItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      padding: '12px 8px',
+      borderRadius: radius.md,
+      color: colors.textPrimary,
+      transition: 'background-color 0.15s ease',
 
-   const styles = stylex.create({
-      root: {
-         display: 'flex',
-         flexDirection: 'column',
-         gap: '12px',
-         height: '100%',
-      },
-      rightSidebar: {
-         width: '652px',
-         height: '100%',
-         display: 'flex',
-         flexDirection: 'column',
-         justifyContent: 'space-between',
-         gap: '12px',
-         padding: '16px',
-         paddingBottom: '26px',
-      },
-      nav: {
-         display: 'flex',
-         flexDirection: 'column',
-         gap: '12px',
-      },
-      navItem: {
-         display: 'flex',
-         alignItems: 'center',
-         padding: '8px',
-         width: 'fit-content',
-         borderRadius: radius.md,
-         color: colors.textPrimary,
-         transition: 'background-color 0.15s ease',
-
-         ':hover': {
-            backgroundColor: colors.buttonHover,
-         },
-      },
-      navItemActive: {
+      ':hover': {
          backgroundColor: colors.buttonHover,
       },
-   });
+   },
+   navItemActive: {
+      fontWeight: 600,
+      color: colors.textPrimary,
+   },
+   navItemLabel: {
+      fontSize: '1rem',
+      fontWeight: 300,
+      color: colors.textPrimary,
+      display: 'var(--label-display)',
+   },
+});
+
+export default function Home() {
+   const pathname = usePathname();
 
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.rightSidebar)}>
-            <Link href="/" {...stylex.props(styles.navItem)}>
-               <ZetaLogo useText={false} iconSize={26} />
-            </Link>
-            <nav {...stylex.props(styles.nav)}>
-               {navItems.map(({ href, icon: Icon, label }) => {
-                  const isActive = pathname === href;
-                  return (
-                     <Link
-                        key={href}
-                        href={href}
-                        aria-label={label}
-                        {...stylex.props(styles.navItem, isActive && styles.navItemActive)}
-                     >
-                        <Icon size={26} strokeWidth={isActive ? 2.25 : 1.75} />
-                     </Link>
-                  );
-               })}
-            </nav>
-            <div {...stylex.props(styles.nav)}>
-               <button aria-label="More" {...stylex.props(styles.navItem)}>
-                  <Menu size={26} strokeWidth={1.75} />
-               </button>
-               <button aria-label="Apps" {...stylex.props(styles.navItem)}>
-                  <LayoutGrid size={26} strokeWidth={1.75} />
-               </button>
+            <div {...stylex.props(styles.rightSidebarContent)}>
+               <Link href="/" {...stylex.props(styles.navItem)}>
+                  <ZetaLogo useText={false} iconSize={26} />
+               </Link>
+               <nav {...stylex.props(styles.nav)}>
+                  {navItems.map(({ href, icon: Icon, label }) => {
+                     const isActive = pathname === href;
+                     return (
+                        <Link
+                           key={href}
+                           href={href}
+                           aria-label={label}
+                           {...stylex.props(styles.navItem, isActive && styles.navItemActive)}
+                        >
+                           <Icon size={26} strokeWidth={isActive ? 2.25 : 1.75} />
+                           <span {...stylex.props(styles.navItemLabel)}>{label}</span>
+                        </Link>
+                     );
+                  })}
+               </nav>
+               <div {...stylex.props(styles.nav)}>
+                  <button aria-label="More" {...stylex.props(styles.navItem)}>
+                     <Menu size={26} strokeWidth={1.75} />
+                  </button>
+                  <button aria-label="Apps" {...stylex.props(styles.navItem)}>
+                     <LayoutGrid size={26} strokeWidth={1.75} />
+                  </button>
+               </div>
             </div>
          </div>
       </div>
