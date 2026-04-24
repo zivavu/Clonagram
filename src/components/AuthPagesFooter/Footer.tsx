@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
-import { colors } from '../../../styles/tokens.stylex';
+import { colors } from '../../styles/tokens.stylex';
 
 const footerLinks = [
 	'Meta',
@@ -22,7 +22,7 @@ const footerLinks = [
 ] as const;
 
 const styles = stylex.create({
-	footer: {
+	root: {
 		width: '100%',
 		minHeight: '135px',
 		paddingTop: '22px',
@@ -72,9 +72,11 @@ const styles = stylex.create({
 	},
 });
 
-export default function Footer() {
+export default function AuthPagesFooter({
+	...props
+}: React.ComponentProps<'footer'>) {
 	return (
-		<footer {...stylex.props(styles.footer)}>
+		<footer {...stylex.props(styles.root)} {...props}>
 			<div {...stylex.props(styles.footerLinks)}>
 				{footerLinks.map((item) => (
 					<Link key={item} href="/" {...stylex.props(styles.footerLink)}>
@@ -87,7 +89,7 @@ export default function Footer() {
 					English
 					<ChevronDown size={14} />
 				</button>
-				<span>© {new Date().getFullYear()} Clonagram from Zivavu</span>
+				<span>© {new Date().getFullYear()} Clonagram from Zeta</span>
 			</div>
 		</footer>
 	);

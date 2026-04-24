@@ -15,6 +15,9 @@
 	html {
 		color-scheme: light dark;
 	}
+	span {
+		font-family: var(--font-chivo);
+	}
 
 	body {
 		font-family:

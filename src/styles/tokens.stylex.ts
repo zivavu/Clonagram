@@ -10,7 +10,7 @@ export const colors = stylex.defineVars({
 	buttonHover: 'light-dark(#f2f4f6, #353538)',
 	accent: '#0064e0',
 	accentHover: '#1877f2',
-	accentText: '#6078d4',
+	accentText: 'rgb(75, 169, 254)',
 	accentTextHover: '#708dff',
 	primaryButton: '#0064E0',
 	danger: '#ed4956',

@@ -1,8 +1,8 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
+import AuthPagesFooter from '../../components/AuthPagesFooter/Footer';
 import { colors } from '../../styles/tokens.stylex';
-import Footer from './components/Footer';
 import LeftSection from './components/LeftSection';
 import RightSection from './components/RightSection';
 
@@ -29,7 +29,7 @@ export default function LoginPage() {
 				<LeftSection />
 				<RightSection />
 			</div>
-			<Footer />
+			<AuthPagesFooter />
 		</div>
 	);
 }
