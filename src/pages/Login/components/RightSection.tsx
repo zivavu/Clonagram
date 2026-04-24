@@ -5,14 +5,13 @@ import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
 import { createClient } from '@/src/lib/supabase/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
-import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import FloatingInput from '../../../components/FloatingInput';
-import { colors, radius } from '../../../styles/tokens.stylex';
+import { colors } from '../../../styles/tokens.stylex';
 
 const styles = stylex.create({
    root: {
@@ -24,20 +23,11 @@ const styles = stylex.create({
       borderLeftStyle: 'solid',
       borderLeftColor: colors.border,
       padding: '52px',
-      paddingTop: '96px',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       alignItems: 'center',
       gap: '1rem',
-   },
-   backButton: {
-      borderRadius: radius.full,
-      padding: '8px',
-      display: 'flex',
-      ':hover': {
-         backgroundColor: colors.buttonHover,
-      },
    },
    titleContainer: {
       fontSize: '1.125rem',
@@ -50,7 +40,7 @@ const styles = stylex.create({
       marginBottom: '10px',
    },
    reportContent: {
-      marginTop: '42px',
+      marginTop: '22px',
       fontSize: '0.8125rem',
       color: colors.textSecondary,
    },
@@ -113,12 +103,7 @@ export default function RightSection() {
 
    return (
       <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.titleContainer)}>
-            <Link href="/" {...stylex.props(styles.backButton)}>
-               <ChevronLeft />
-            </Link>
-            Log into Clonagram
-         </div>
+         <div {...stylex.props(styles.titleContainer)}>Log into Clonagram</div>
          <form onSubmit={handleSubmit(singInUser)} style={{ display: 'contents' }}>
             <FloatingInput label="Mobile number, username or email" {...register('email')} autoComplete="off" />
             <FloatingInput label="Password" type="password" {...register('password')} autoComplete="new-password" />

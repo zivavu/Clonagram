@@ -1,6 +1,7 @@
 'use client';
 
 import AuthPagesFooter from '@/src/components/AuthPagesFooter/Footer';
+import BirthdatePicker from '@/src/components/BirthdatePicker';
 import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
@@ -70,6 +71,11 @@ const styles = stylex.create({
          textDecoration: 'underline',
       },
    },
+   topLabel: {
+      fontSize: '1.125rem',
+      fontWeight: '500',
+      color: colors.textPrimary,
+   },
 });
 
 const schema = z.object({
@@ -114,7 +120,7 @@ export default function EmailSignUpPage() {
                      </Link>
                   </span>
                   <EmailSignupInput label="Password" topLabel="Password" {...register('password')} />
-                  <EmailSignupInput label="Birthdate" topLabel="Birthdate" {...register('birthdate')} />
+                  <BirthdatePicker />
                   <EmailSignupInput label="Full Name" topLabel="Name" {...register('fullName')} />
                   <EmailSignupInput label="Username" topLabel="Username" {...register('username')} />
 
