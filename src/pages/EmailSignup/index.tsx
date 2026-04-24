@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import z from 'zod';
 import { colors, radius } from '../../styles/tokens.stylex';
 
@@ -78,19 +78,32 @@ const styles = stylex.create({
    },
 });
 
+const birthdateSchema = z
+   .object({
+      month: z.number().int().min(1).max(12).nullable(),
+      day: z.number().int().min(1).max(31).nullable(),
+      year: z.number().int().nullable(),
+   })
+   .refine(v => v.month !== null && v.day !== null && v.year !== null, {
+      message: 'Birthdate is required',
+   });
+
 const schema = z.object({
    email: z.email(),
    password: z.string().min(8),
-   birthdate: z.date(),
+   birthdate: birthdateSchema,
    fullName: z.string().min(1),
    username: z.string().min(1),
 });
 
-type EmailSignupFormData = z.infer<typeof schema>;
+export type EmailSignupFormData = z.infer<typeof schema>;
 
 export default function EmailSignUpPage() {
-   const { register, handleSubmit } = useForm<EmailSignupFormData>({
+   const { register, handleSubmit, control } = useForm<EmailSignupFormData>({
       resolver: zodResolver(schema),
+      defaultValues: {
+         birthdate: { month: null, day: null, year: null },
+      },
    });
 
    const onSubmit = (data: EmailSignupFormData) => {
@@ -120,7 +133,11 @@ export default function EmailSignUpPage() {
                      </Link>
                   </span>
                   <EmailSignupInput label="Password" topLabel="Password" {...register('password')} />
-                  <BirthdatePicker />
+                  <Controller
+                     control={control}
+                     name="birthdate"
+                     render={({ field }) => <BirthdatePicker value={field.value} onChange={field.onChange} />}
+                  />
                   <EmailSignupInput label="Full Name" topLabel="Name" {...register('fullName')} />
                   <EmailSignupInput label="Username" topLabel="Username" {...register('username')} />
 

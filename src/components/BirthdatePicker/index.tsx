@@ -8,10 +8,7 @@ import {
 } from '@radix-ui/react-dropdown-menu';
 import * as stylex from '@stylexjs/stylex';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
 import { colors, radius } from '../../styles/tokens.stylex';
-
-const CURRENT_YEAR = new Date().getFullYear();
 
 const styles = stylex.create({
    wrapper: {
@@ -103,91 +100,71 @@ export interface BirthdateValue {
 
 export interface BirthdatePickerProps {
    topLabel?: string;
-   value?: BirthdateValue;
-   defaultValue?: BirthdateValue;
-   onChange?: (value: BirthdateValue) => void;
-   yearRange?: number;
+   value: BirthdateValue;
+   onChange: (value: BirthdateValue) => void;
 }
 
-export default function BirthdatePicker({
-   topLabel = 'Birthdate',
-   value,
-   defaultValue,
-   onChange,
-   yearRange = 100,
-}: BirthdatePickerProps) {
-   const isControlled = value !== undefined;
+export default function BirthdatePicker({ topLabel = 'Birthdate', value, onChange }: BirthdatePickerProps) {
+   const update = (patch: Partial<BirthdateValue>) => onChange({ ...value, ...patch });
 
-   const [internalValue, setInternalValue] = useState<BirthdateValue>(
-      defaultValue ?? { month: null, day: null, year: null },
+   const currentYear = new Date().getFullYear();
+
+   const monthLength = new Date(value.year ?? new Date().getFullYear(), value.month ?? 1, 0).getDate();
+
+   const monthNames = Array.from({ length: 12 }, (_, i) =>
+      new Date(currentYear, i, 1).toLocaleString('en-US', {
+         month: 'long',
+      }),
    );
-
-   const current = isControlled ? value : internalValue;
-
-   const update = (patch: Partial<BirthdateValue>) => {
-      const next = { ...current, ...patch };
-      if (!isControlled) setInternalValue(next);
-      onChange?.(next);
-   };
+   const BirthdateParts = [
+      {
+         label: 'Month',
+         value: value.month,
+         onChange: (value: number) => update({ month: value }),
+         options: Array.from({ length: 12 }, (_, i) => i + 1),
+      },
+      {
+         label: 'Day',
+         value: value.day,
+         onChange: (value: number) => update({ day: value }),
+         options: Array.from({ length: monthLength }, (_, i) => i + 1),
+      },
+      {
+         label: 'Year',
+         value: value.year,
+         onChange: (value: number) => update({ year: value }),
+         options: Array.from({ length: 100 }, (_, i) => currentYear - i),
+      },
+   ] as const;
 
    return (
       <div {...stylex.props(styles.wrapper)}>
          <label {...stylex.props(styles.topLabel)}>{topLabel}</label>
          <div {...stylex.props(styles.container)}>
-            <DropdownMenu>
-               <DropdownMenuTrigger {...stylex.props(styles.trigger)}>
-                  <span {...stylex.props(styles.triggerLabel, current.month !== null && styles.triggerLabelFloated)}>
-                     Month
-                  </span>
-                  {current.month !== null && <span>{current.month}</span>}
-                  <ChevronDown size={16} color="var(--colors-textSecondary)" />
-               </DropdownMenuTrigger>
-               <DropdownMenuContent {...stylex.props(styles.content)}>
-                  {Array.from({ length: 12 }, (_, i) => (
-                     <DropdownMenuItem key={i} {...stylex.props(styles.item)} onSelect={() => update({ month: i + 1 })}>
-                        {i + 1}
-                     </DropdownMenuItem>
-                  ))}
-               </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DropdownMenu>
-               <DropdownMenuTrigger {...stylex.props(styles.trigger)}>
-                  <span {...stylex.props(styles.triggerLabel, current.day !== null && styles.triggerLabelFloated)}>
-                     Day
-                  </span>
-                  {current.day !== null && <span>{current.day}</span>}
-                  <ChevronDown size={16} color="var(--colors-textSecondary)" />
-               </DropdownMenuTrigger>
-               <DropdownMenuContent {...stylex.props(styles.content)}>
-                  {Array.from({ length: 31 }, (_, i) => (
-                     <DropdownMenuItem key={i} {...stylex.props(styles.item)} onSelect={() => update({ day: i + 1 })}>
-                        {i + 1}
-                     </DropdownMenuItem>
-                  ))}
-               </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DropdownMenu>
-               <DropdownMenuTrigger {...stylex.props(styles.trigger)}>
-                  <span {...stylex.props(styles.triggerLabel, current.year !== null && styles.triggerLabelFloated)}>
-                     Year
-                  </span>
-                  {current.year !== null && <span>{current.year}</span>}
-                  <ChevronDown size={16} color="var(--colors-textSecondary)" />
-               </DropdownMenuTrigger>
-               <DropdownMenuContent {...stylex.props(styles.content)}>
-                  {Array.from({ length: yearRange }, (_, i) => (
-                     <DropdownMenuItem
-                        key={i}
-                        {...stylex.props(styles.item)}
-                        onSelect={() => update({ year: CURRENT_YEAR - i })}
-                     >
-                        {CURRENT_YEAR - i}
-                     </DropdownMenuItem>
-                  ))}
-               </DropdownMenuContent>
-            </DropdownMenu>
+            {BirthdateParts.map(part => (
+               <DropdownMenu key={part.label}>
+                  <DropdownMenuTrigger {...stylex.props(styles.trigger)}>
+                     <span {...stylex.props(styles.triggerLabel, part.value !== null && styles.triggerLabelFloated)}>
+                        {part.label}
+                     </span>
+                     {part.value !== null && (
+                        <span>{part.label === 'Month' ? monthNames[part.value - 1] : part.value}</span>
+                     )}
+                     <ChevronDown size={16} color="var(--colors-textSecondary)" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent {...stylex.props(styles.content)}>
+                     {part.options.map(option => (
+                        <DropdownMenuItem
+                           key={option.toString()}
+                           {...stylex.props(styles.item)}
+                           onSelect={() => part.onChange(option)}
+                        >
+                           {part.label === 'Month' ? monthNames[option - 1] : option.toString()}
+                        </DropdownMenuItem>
+                     ))}
+                  </DropdownMenuContent>
+               </DropdownMenu>
+            ))}
          </div>
       </div>
    );
