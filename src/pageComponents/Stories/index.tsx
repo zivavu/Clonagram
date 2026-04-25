@@ -9,18 +9,18 @@ import { colors, radius } from '../../styles/tokens.stylex';
 
 const DESKTOP_SIDE_W = 205;
 const DESKTOP_SIDE_H = Math.round((DESKTOP_SIDE_W * 16) / 9);
-const DESKTOP_GAP = 24;
+const DESKTOP_GAP = 58;
 const MOBILE_BP = 640;
 const SWIPE_THRESHOLD = 40;
 
 interface Layout {
-   mainW: number;
-   mainH: number;
-   sideW: number;
-   sideH: number;
+   mainWidth: number;
+   mainHeight: number;
+   sideWidth: number;
+   sideHeight: number;
    gap: number;
-   tx: number;
-   mobile: boolean;
+   xOffset: number;
+   isMobile: boolean;
 }
 
 function computeLayout(index: number): Layout {
@@ -30,26 +30,34 @@ function computeLayout(index: number): Layout {
    if (vw < MOBILE_BP) {
       const mainW = vw;
       const mainH = Math.round((mainW * 16) / 9);
-      return { mainW, mainH, sideW: mainW, sideH: mainH, gap: 0, tx: -index * mainW, mobile: true };
+      return {
+         mainWidth: mainW,
+         mainHeight: mainH,
+         sideWidth: mainW,
+         sideHeight: mainH,
+         gap: 0,
+         xOffset: -index * mainW,
+         isMobile: true,
+      };
    }
 
    const mainH = Math.round(vh * 0.94);
    const mainW = Math.round((mainH * 9) / 16);
    return {
-      mainW,
-      mainH,
-      sideW: DESKTOP_SIDE_W,
-      sideH: DESKTOP_SIDE_H,
+      mainWidth: mainW,
+      mainHeight: mainH,
+      sideWidth: DESKTOP_SIDE_W,
+      sideHeight: DESKTOP_SIDE_H,
       gap: DESKTOP_GAP,
-      tx: vw / 2 - index * (DESKTOP_SIDE_W + DESKTOP_GAP) - mainW / 2,
-      mobile: false,
+      xOffset: vw / 2 - index * (DESKTOP_SIDE_W + DESKTOP_GAP) - mainW / 2,
+      isMobile: false,
    };
 }
 
 const styles = stylex.create({
    root: {
       position: 'relative',
-      height: '100dvh',
+      height: '100svh',
       overflow: 'hidden',
       display: 'flex',
       alignItems: 'center',
@@ -78,6 +86,30 @@ const styles = stylex.create({
    },
    storyRounded: {
       borderRadius: radius.md,
+   },
+   sideStoryOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(38, 38, 38, 0.7)',
+      zIndex: 1,
+   },
+   sideStoryUsername: {
+      fontSize: '0.85rem',
+      fontWeight: 600,
+      color: colors.textPrimary,
+      marginTop: 8,
+   },
+   sideStoryTimestamp: {
+      fontSize: '0.85rem',
+      fontWeight: 300,
+      marginTop: 4,
    },
    navBtn: {
       position: 'absolute',
@@ -109,7 +141,7 @@ const styles = stylex.create({
    navIconLeft: { transform: 'rotate(180deg)' },
 });
 
-const ICON_PATH =
+const CARRET_ICON_PATH =
    'M12.005.503a11.5 11.5 0 1 0 11.5 11.5 11.513 11.513 0 0 0-11.5-11.5Zm3.707 12.22-4.5 4.488A1 1 0 0 1 9.8 15.795l3.792-3.783L9.798 8.21a1 1 0 1 1 1.416-1.412l4.5 4.511a1 1 0 0 1-.002 1.414Z';
 
 interface StoriesPageProps {
@@ -123,17 +155,17 @@ export default function StoriesPage({ username }: StoriesPageProps) {
       STORIES.findIndex(s => s.username === username),
    );
 
-   const [current, setCurrent] = useState(startIndex);
+   const [currentUserIndex, setCurrentUserIndex] = useState(startIndex);
    const [layout, setLayout] = useState<Layout>({
-      mainW: DESKTOP_SIDE_W,
-      mainH: DESKTOP_SIDE_H,
-      sideW: DESKTOP_SIDE_W,
-      sideH: DESKTOP_SIDE_H,
+      mainWidth: DESKTOP_SIDE_W,
+      mainHeight: DESKTOP_SIDE_H,
+      sideWidth: DESKTOP_SIDE_W,
+      sideHeight: DESKTOP_SIDE_H,
       gap: DESKTOP_GAP,
-      tx: 0,
-      mobile: false,
+      xOffset: 0,
+      isMobile: false,
    });
-   const [spinning, setSpinning] = useState(false);
+   const [isSpinning, setIsSpinning] = useState(false);
 
    const currentRef = useRef(startIndex);
    const spinTimer = useRef<ReturnType<typeof setTimeout>>(null);
@@ -150,12 +182,12 @@ export default function StoriesPage({ username }: StoriesPageProps) {
    const goTo = (raw: number) => {
       const idx = ((raw % STORIES.length) + STORIES.length) % STORIES.length;
       currentRef.current = idx;
-      setCurrent(idx);
+      setCurrentUserIndex(idx);
       setLayout(computeLayout(idx));
       window.history.replaceState(null, '', `/stories/${STORIES[idx].username}`);
-      setSpinning(true);
+      setIsSpinning(true);
       if (spinTimer.current) clearTimeout(spinTimer.current);
-      spinTimer.current = setTimeout(() => setSpinning(false), 380);
+      spinTimer.current = setTimeout(() => setIsSpinning(false), 380);
    };
 
    const onTouchStart = (e: React.TouchEvent) => {
@@ -171,6 +203,27 @@ export default function StoriesPage({ username }: StoriesPageProps) {
       }
    };
 
+   const formatTimestamp = (timestamp: string): string => {
+      const date = new Date(timestamp);
+      if (isNaN(date.getTime())) return '';
+
+      const diff = Date.now() - date.getTime();
+      const MINUTE = 60_000;
+      const units: [number, string][] = [
+         [365 * 24 * 60 * MINUTE, 'y'],
+         [30 * 24 * 60 * MINUTE, 'mo'],
+         [7 * 24 * 60 * MINUTE, 'w'],
+         [24 * 60 * MINUTE, 'd'],
+         [60 * MINUTE, 'h'],
+         [MINUTE, 'm'],
+      ];
+
+      for (const [ms, label] of units) {
+         if (diff >= ms) return `${Math.floor(diff / ms)}${label}`;
+      }
+      return 'just now';
+   };
+
    return (
       <div {...stylex.props(styles.root)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
          <Link href="/">
@@ -178,9 +231,9 @@ export default function StoriesPage({ username }: StoriesPageProps) {
          </Link>
 
          <button
-            onClick={() => goTo(current - 1)}
-            {...stylex.props(styles.navBtn, spinning && styles.navBtnHidden)}
-            style={{ left: `calc(50% - ${layout.mainW / 2 + 40}px)` }}
+            onClick={() => goTo(currentUserIndex - 1)}
+            {...stylex.props(styles.navBtn, isSpinning && styles.navBtnHidden)}
+            style={{ left: `calc(50% - ${layout.mainWidth / 2 + 40}px)` }}
          >
             <svg
                xmlns="http://www.w3.org/2000/svg"
@@ -189,14 +242,14 @@ export default function StoriesPage({ username }: StoriesPageProps) {
                viewBox="0 0 24 24"
                {...stylex.props(styles.navIcon, styles.navIconLeft)}
             >
-               <path d={ICON_PATH} />
+               <path d={CARRET_ICON_PATH} />
             </svg>
          </button>
 
          <button
-            onClick={() => goTo(current + 1)}
-            {...stylex.props(styles.navBtn, spinning && styles.navBtnHidden)}
-            style={{ left: `calc(50% + ${layout.mainW / 2 + 16}px)` }}
+            onClick={() => goTo(currentUserIndex + 1)}
+            {...stylex.props(styles.navBtn, isSpinning && styles.navBtnHidden)}
+            style={{ left: `calc(50% + ${layout.mainWidth / 2 + 16}px)` }}
          >
             <svg
                xmlns="http://www.w3.org/2000/svg"
@@ -205,26 +258,40 @@ export default function StoriesPage({ username }: StoriesPageProps) {
                viewBox="0 0 24 24"
                {...stylex.props(styles.navIcon)}
             >
-               <path d={ICON_PATH} />
+               <path d={CARRET_ICON_PATH} />
             </svg>
          </button>
 
          <div
             {...stylex.props(styles.strip)}
-            style={{ gap: `${layout.gap}px`, transform: `translateX(${layout.tx}px)` }}
+            style={{ gap: `${layout.gap}px`, transform: `translateX(${layout.xOffset}px)` }}
          >
             {STORIES.map((story, i) => {
-               const isCurrent = i === current;
+               const isCurrent = i === currentUserIndex;
                return (
                   <div
                      key={story.username}
-                     {...stylex.props(styles.story, !layout.mobile && styles.storyRounded)}
+                     {...stylex.props(styles.story, !layout.isMobile && styles.storyRounded)}
                      style={{
-                        width: `${isCurrent ? layout.mainW : layout.sideW}px`,
-                        height: `${isCurrent ? layout.mainH : layout.sideH}px`,
+                        width: `${isCurrent ? layout.mainWidth : layout.sideWidth}px`,
+                        height: `${isCurrent ? layout.mainHeight : layout.sideHeight}px`,
                      }}
                      onClick={() => goTo(i)}
                   >
+                     {!isCurrent && (
+                        <div {...stylex.props(styles.sideStoryOverlay)}>
+                           <Image
+                              src={story.avatarUrl}
+                              alt={story.username}
+                              width={64}
+                              height={64}
+                              loading="eager"
+                              style={{ borderRadius: '50%' }}
+                           />
+                           <span {...stylex.props(styles.sideStoryUsername)}>{story.username}</span>
+                           <span {...stylex.props(styles.sideStoryTimestamp)}>{formatTimestamp(story.timestamp)}</span>
+                        </div>
+                     )}
                      <Image
                         src={story.stories[0].storyImageUrl}
                         alt={story.username}
