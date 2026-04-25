@@ -3,7 +3,7 @@
    "version": "0.1.0",
    "private": true,
    "scripts": {
-      "dev": "next dev",
+      "dev": "next dev --webpack",
       "build": "next build",
       "start": "next start",
       "lint": "eslint",
@@ -43,6 +43,7 @@
    },
    "devDependencies": {
       "@stylexjs/babel-plugin": "^0.18.3",
+      "@stylexjs/nextjs-plugin": "^0.11.1",
       "@stylexjs/postcss-plugin": "^0.18.3",
       "@types/node": "^20.19.39",
       "@types/react": "^19.2.14",

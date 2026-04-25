@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
    rightSidebar: {
-      width: '351px',
+      width: '350px',
       height: '100%',
    },
 });

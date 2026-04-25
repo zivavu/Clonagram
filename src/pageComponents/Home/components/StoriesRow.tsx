@@ -3,38 +3,10 @@
 import * as stylex from '@stylexjs/stylex';
 import { CircleChevronLeft, CircleChevronRight } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { colors, radius, spacing } from '../../../styles/tokens.stylex';
-
-interface Story {
-   id: number;
-   username: string;
-   color: string;
-   avatarUrl: string;
-}
-
-const STORIES: Story[] = [
-   { id: 1, username: 'aurora.mp4', color: '#e056fd', avatarUrl: 'https://picsum.photos/seed/clona1/630/630' },
-   { id: 2, username: 'darkwave99', color: '#ff6b6b', avatarUrl: 'https://picsum.photos/seed/clona2/630/630' },
-   { id: 3, username: 'jpeg.ghost', color: '#48dbfb', avatarUrl: 'https://picsum.photos/seed/clona3/630/630' },
-   { id: 4, username: 'velvet.avi', color: '#ff9f43', avatarUrl: 'https://picsum.photos/seed/clona4/630/630' },
-   { id: 5, username: 'solarflux', color: '#1dd1a1', avatarUrl: 'https://picsum.photos/seed/clona5/630/630' },
-   { id: 6, username: 'nxght.mode', color: '#a29bfe', avatarUrl: 'https://picsum.photos/seed/clona6/630/630' },
-   { id: 7, username: 'glitch.muse', color: '#fd79a8', avatarUrl: 'https://picsum.photos/seed/clona7/630/630' },
-   { id: 8, username: 'fog.machine', color: '#fdcb6e', avatarUrl: 'https://picsum.photos/seed/clona8/630/630' },
-   { id: 9, username: 'pixl.witch', color: '#6c5ce7', avatarUrl: 'https://picsum.photos/seed/clona9/630/630' },
-   { id: 10, username: 'static.eden', color: '#00b894', avatarUrl: 'https://picsum.photos/seed/clona10/630/630' },
-   { id: 11, username: 'lo.fi.wolf', color: '#e17055', avatarUrl: 'https://picsum.photos/seed/clona11/630/630' },
-   { id: 12, username: 'neon.relic', color: '#74b9ff', avatarUrl: 'https://picsum.photos/seed/clona12/630/630' },
-   { id: 13, username: 'void.jpeg', color: '#d63031', avatarUrl: 'https://picsum.photos/seed/clona13/630/630' },
-   { id: 14, username: 'synth.driftr', color: '#00cec9', avatarUrl: 'https://picsum.photos/seed/clona14/630/630' },
-   { id: 15, username: 'cassette.era', color: '#fab1a0', avatarUrl: 'https://picsum.photos/seed/clona15/630/630' },
-   { id: 16, username: 'analog.flow', color: '#45aaf2', avatarUrl: 'https://picsum.photos/seed/clona16/630/630' },
-   { id: 17, username: 'digital.pulse', color: '#9980fa', avatarUrl: 'https://picsum.photos/seed/clona17/630/630' },
-   { id: 18, username: 'noise.wave', color: '#ffbe76', avatarUrl: 'https://picsum.photos/seed/clona18/630/630' },
-   { id: 19, username: 'pixel.dreams', color: '#4cd137', avatarUrl: 'https://picsum.photos/seed/clona19/630/630' },
-   { id: 20, username: 'code.syntax', color: '#e84393', avatarUrl: 'https://picsum.photos/seed/clona20/630/630' },
-] as const;
+import { STORIES } from './data';
 
 const styles = stylex.create({
    root: {
@@ -50,6 +22,7 @@ const styles = stylex.create({
       paddingTop: '8px',
       paddingLeft: '12px',
       position: 'relative',
+      scrollbarWidth: 'none',
    },
    storiesRowButton: {
       display: 'flex',
@@ -71,6 +44,9 @@ const styles = stylex.create({
    },
    storiesRowButtonRight: {
       right: '0',
+   },
+   storyLink: {
+      display: 'contents',
    },
    storyItem: {
       display: 'flex',
@@ -171,20 +147,22 @@ export default function StoriesRow() {
                if (!avatarUrl) return null;
 
                return (
-                  <div {...stylex.props(styles.storyItem)} key={username}>
-                     <div {...stylex.props(styles.storyRing)}>
-                        <div {...stylex.props(styles.storyRingInner)}>
-                           <Image
-                              {...stylex.props(styles.storyAvatar)}
-                              src={avatarUrl}
-                              alt={username}
-                              width={74}
-                              height={74}
-                           />
+                  <Link href={`/stories/${username}`} key={username} {...stylex.props(styles.storyLink)}>
+                     <div {...stylex.props(styles.storyItem)}>
+                        <div {...stylex.props(styles.storyRing)}>
+                           <div {...stylex.props(styles.storyRingInner)}>
+                              <Image
+                                 {...stylex.props(styles.storyAvatar)}
+                                 src={avatarUrl}
+                                 alt={username}
+                                 width={74}
+                                 height={74}
+                              />
+                           </div>
                         </div>
+                        <span {...stylex.props(styles.storyUsername)}>{username}</span>
                      </div>
-                     <span {...stylex.props(styles.storyUsername)}>{username}</span>
-                  </div>
+                  </Link>
                );
             })}
          </div>

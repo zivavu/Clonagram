@@ -1,3 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap');
+
+@font-face {
+   font-family: 'Chivo';
+   src: url('/Chivo/Chivo-VariableFont_wght.ttf') format('truetype');
+   font-weight: 100 900;
+   font-style: normal;
+   font-display: swap;
+}
+
+:root {
+   --font-chivo: 'Chivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+   --font-grand-hotel: 'Grand Hotel', cursive;
+}
+
 @layer resets {
    *,
    *::before,
