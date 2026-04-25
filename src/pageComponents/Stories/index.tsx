@@ -1,11 +1,8 @@
-'use client';
-
 import { STORIES, Story } from '@/src/pageComponents/Home/components/data';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useState } from 'react';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -85,18 +82,24 @@ const styles = stylex.create({
    },
 });
 
-export default function StoriesPage({ username }: { username: string }) {
-   const initialStoryIndex = STORIES.findIndex(story => story.username === username);
-   const [currentStoryIndex, setCurrentStoryIndex] = useState<number>(initialStoryIndex);
+interface StoriesPageProps {
+   username: string;
+   storyId: string | null;
+}
 
-   const currentStory = STORIES[currentStoryIndex];
-   const storiesArr = STORIES.filter(story => story.username !== username);
-   const storiesArrLeft = storiesArr.slice(0, currentStoryIndex - 1);
-   const storiesArrRight = storiesArr.slice(currentStoryIndex + 1, storiesArr.length);
+export default function StoriesPage({ username, storyId }: StoriesPageProps) {
+   const currentIndex = STORIES.findIndex(story => story.username === username);
 
-   if (!currentStory) {
+   if (currentIndex === -1) {
       return notFound();
    }
+
+   const currentStory = STORIES[currentIndex];
+   const previousStory = STORIES[currentIndex - 1] ?? STORIES[STORIES.length - 1];
+   const nextStory = STORIES[currentIndex + 1] ?? STORIES[0];
+
+   const storiesLeft = STORIES.slice(0, Math.max(0, currentIndex));
+   const storiesRight = STORIES.slice(currentIndex + 1);
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -105,14 +108,14 @@ export default function StoriesPage({ username }: { username: string }) {
          </Link>
          <div {...stylex.props(styles.storiesContainer)}>
             <div {...stylex.props(styles.sideStoriesContainer, styles.sideStoriesLeft)}>
-               {storiesArrLeft.map(story => (
+               {storiesLeft.map(story => (
                   <SideStory key={story.username} story={story} />
                ))}
             </div>
-            <StoryNavigationButton isLeft={true} onClick={() => setCurrentStoryIndex(currentStoryIndex - 1)} />
+            <StoryNavigationButton isLeft={true} username={previousStory.username} />
             <div {...stylex.props(styles.storyMedia)}>
                <Image
-                  src={currentStory.storyImageUrl}
+                  src={currentStory.stories[0].storyImageUrl}
                   alt={currentStory.username}
                   fill
                   loading="eager"
@@ -120,9 +123,9 @@ export default function StoriesPage({ username }: { username: string }) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                />
             </div>
-            <StoryNavigationButton isLeft={false} onClick={() => setCurrentStoryIndex(currentStoryIndex + 1)} />
+            <StoryNavigationButton isLeft={false} username={nextStory.username} />
             <div {...stylex.props(styles.sideStoriesContainer, styles.sideStoriesRight)}>
-               {storiesArrRight.map(story => (
+               {storiesRight.map(story => (
                   <SideStory key={story.username} story={story} />
                ))}
             </div>
@@ -133,22 +136,22 @@ export default function StoriesPage({ username }: { username: string }) {
 
 function SideStory({ story }: { story: Story }) {
    return (
-      <div {...stylex.props(styles.sideStory)}>
+      <Link href={`/stories/${story.username}`} replace {...stylex.props(styles.sideStory)}>
          <Image
-            src={story.storyImageUrl}
+            src={story.stories[0].storyImageUrl}
             alt={story.username}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             loading="eager"
             preload
          />
-      </div>
+      </Link>
    );
 }
 
-function StoryNavigationButton({ isLeft, onClick }: { isLeft: boolean; onClick: () => void }) {
+function StoryNavigationButton({ isLeft, username }: { isLeft: boolean; username: string }) {
    return (
-      <button {...stylex.props(styles.storyNavigationButton)} onClick={onClick}>
+      <Link href={`/stories/${username}`} replace {...stylex.props(styles.storyNavigationButton)}>
          <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -158,6 +161,6 @@ function StoryNavigationButton({ isLeft, onClick }: { isLeft: boolean; onClick: 
          >
             <path d="M12.005.503a11.5 11.5 0 1 0 11.5 11.5 11.513 11.513 0 0 0-11.5-11.5Zm3.707 12.22-4.5 4.488A1 1 0 0 1 9.8 15.795l3.792-3.783L9.798 8.21a1 1 0 1 1 1.416-1.412l4.5 4.511a1 1 0 0 1-.002 1.414Z" />
          </svg>
-      </button>
+      </Link>
    );
 }
