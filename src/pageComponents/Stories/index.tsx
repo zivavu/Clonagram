@@ -7,15 +7,43 @@ import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { colors, radius } from '../../styles/tokens.stylex';
 
-const SIDE_W = 205;
-const SIDE_H = Math.round((SIDE_W * 16) / 9); // 365px
-const GAP = 24;
+const DESKTOP_SIDE_W = 205;
+const DESKTOP_SIDE_H = Math.round((DESKTOP_SIDE_W * 16) / 9);
+const DESKTOP_GAP = 24;
+const MOBILE_BP = 640;
+const SWIPE_THRESHOLD = 40;
 
-function computeLayout(index: number) {
-   const mainH = Math.round(window.innerHeight * 0.94);
+interface Layout {
+   mainW: number;
+   mainH: number;
+   sideW: number;
+   sideH: number;
+   gap: number;
+   tx: number;
+   mobile: boolean;
+}
+
+function computeLayout(index: number): Layout {
+   const vw = window.innerWidth;
+   const vh = window.innerHeight;
+
+   if (vw < MOBILE_BP) {
+      const mainW = vw;
+      const mainH = Math.round((mainW * 16) / 9);
+      return { mainW, mainH, sideW: mainW, sideH: mainH, gap: 0, tx: -index * mainW, mobile: true };
+   }
+
+   const mainH = Math.round(vh * 0.94);
    const mainW = Math.round((mainH * 9) / 16);
-   const tx = window.innerWidth / 2 - index * (SIDE_W + GAP) - mainW / 2;
-   return { mainW, mainH, tx };
+   return {
+      mainW,
+      mainH,
+      sideW: DESKTOP_SIDE_W,
+      sideH: DESKTOP_SIDE_H,
+      gap: DESKTOP_GAP,
+      tx: vw / 2 - index * (DESKTOP_SIDE_W + DESKTOP_GAP) - mainW / 2,
+      mobile: false,
+   };
 }
 
 const styles = stylex.create({
@@ -37,7 +65,6 @@ const styles = stylex.create({
    strip: {
       display: 'flex',
       alignItems: 'center',
-      gap: `${GAP}px`,
       flexShrink: 0,
       willChange: 'transform',
       transition: 'transform 380ms cubic-bezier(0.4, 0, 0.2, 1)',
@@ -47,8 +74,10 @@ const styles = stylex.create({
       flexShrink: 0,
       overflow: 'hidden',
       cursor: 'pointer',
-      borderRadius: radius.md,
       transition: 'width 380ms cubic-bezier(0.4, 0, 0.2, 1), height 380ms cubic-bezier(0.4, 0, 0.2, 1)',
+   },
+   storyRounded: {
+      borderRadius: radius.md,
    },
    navBtn: {
       position: 'absolute',
@@ -58,6 +87,9 @@ const styles = stylex.create({
       display: 'flex',
       padding: '0',
       transition: 'left 380ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease',
+      '@media (hover: none)': {
+         display: 'none',
+      },
    },
    navBtnHidden: {
       opacity: 0,
@@ -92,74 +124,104 @@ export default function StoriesPage({ username }: StoriesPageProps) {
    );
 
    const [current, setCurrent] = useState(startIndex);
-   const [tx, setTx] = useState(0);
-   const [mainW, setMainW] = useState(SIDE_W);
-   const [mainH, setMainH] = useState(SIDE_H);
-   const [isMoving, setIsMoving] = useState(false);
-   const moveTimer = useRef<ReturnType<typeof setTimeout>>(null);
+   const [layout, setLayout] = useState<Layout>({
+      mainW: DESKTOP_SIDE_W,
+      mainH: DESKTOP_SIDE_H,
+      sideW: DESKTOP_SIDE_W,
+      sideH: DESKTOP_SIDE_H,
+      gap: DESKTOP_GAP,
+      tx: 0,
+      mobile: false,
+   });
+   const [spinning, setSpinning] = useState(false);
+
+   const currentRef = useRef(startIndex);
+   const spinTimer = useRef<ReturnType<typeof setTimeout>>(null);
+   const touchStartX = useRef(0);
+   const touchStartY = useRef(0);
 
    useLayoutEffect(() => {
-      const layout = computeLayout(startIndex);
-      setMainW(layout.mainW);
-      setMainH(layout.mainH);
-      setTx(layout.tx);
+      const apply = () => setLayout(computeLayout(currentRef.current));
+      apply();
+      window.addEventListener('resize', apply);
+      return () => window.removeEventListener('resize', apply);
    }, []);
 
    const goTo = (raw: number) => {
       const idx = ((raw % STORIES.length) + STORIES.length) % STORIES.length;
-      const layout = computeLayout(idx);
-      setMainW(layout.mainW);
-      setMainH(layout.mainH);
-      setTx(layout.tx);
+      currentRef.current = idx;
       setCurrent(idx);
+      setLayout(computeLayout(idx));
       window.history.replaceState(null, '', `/stories/${STORIES[idx].username}`);
-
-      setIsMoving(true);
-      if (moveTimer.current) clearTimeout(moveTimer.current);
-      moveTimer.current = setTimeout(() => setIsMoving(false), 380);
+      setSpinning(true);
+      if (spinTimer.current) clearTimeout(spinTimer.current);
+      spinTimer.current = setTimeout(() => setSpinning(false), 380);
    };
 
-   function GoToButton({ direction }: { direction: 'left' | 'right' }) {
-      return (
+   const onTouchStart = (e: React.TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+   };
+
+   const onTouchEnd = (e: React.TouchEvent) => {
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      const dy = e.changedTouches[0].clientY - touchStartY.current;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
+         goTo(currentRef.current + (dx < 0 ? 1 : -1));
+      }
+   };
+
+   return (
+      <div {...stylex.props(styles.root)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+         <Link href="/">
+            <h1 {...stylex.props(styles.title)}>Clonagram</h1>
+         </Link>
+
          <button
-            onClick={() => goTo(current + (direction === 'left' ? -1 : 1))}
-            {...stylex.props(styles.navBtn, isMoving && styles.navBtnHidden)}
-            style={{
-               left: direction === 'left' ? `calc(50% - ${mainW / 2 + 40}px)` : `calc(50% + ${mainW / 2 + 16}px)`,
-            }}
+            onClick={() => goTo(current - 1)}
+            {...stylex.props(styles.navBtn, spinning && styles.navBtnHidden)}
+            style={{ left: `calc(50% - ${layout.mainW / 2 + 40}px)` }}
          >
             <svg
                xmlns="http://www.w3.org/2000/svg"
                width="24"
                height="24"
                viewBox="0 0 24 24"
-               {...stylex.props(styles.navIcon, direction === 'left' && styles.navIconLeft)}
+               {...stylex.props(styles.navIcon, styles.navIconLeft)}
             >
                <path d={ICON_PATH} />
             </svg>
          </button>
-      );
-   }
 
-   return (
-      <div {...stylex.props(styles.root)}>
-         <Link href="/">
-            <h1 {...stylex.props(styles.title)}>Clonagram</h1>
-         </Link>
+         <button
+            onClick={() => goTo(current + 1)}
+            {...stylex.props(styles.navBtn, spinning && styles.navBtnHidden)}
+            style={{ left: `calc(50% + ${layout.mainW / 2 + 16}px)` }}
+         >
+            <svg
+               xmlns="http://www.w3.org/2000/svg"
+               width="24"
+               height="24"
+               viewBox="0 0 24 24"
+               {...stylex.props(styles.navIcon)}
+            >
+               <path d={ICON_PATH} />
+            </svg>
+         </button>
 
-         <GoToButton direction="left" />
-         <GoToButton direction="right" />
-
-         <div {...stylex.props(styles.strip)} style={{ transform: `translateX(${tx}px)` }}>
+         <div
+            {...stylex.props(styles.strip)}
+            style={{ gap: `${layout.gap}px`, transform: `translateX(${layout.tx}px)` }}
+         >
             {STORIES.map((story, i) => {
                const isCurrent = i === current;
                return (
                   <div
                      key={story.username}
-                     {...stylex.props(styles.story)}
+                     {...stylex.props(styles.story, !layout.mobile && styles.storyRounded)}
                      style={{
-                        width: `${isCurrent ? mainW : SIDE_W}px`,
-                        height: `${isCurrent ? mainH : SIDE_H}px`,
+                        width: `${isCurrent ? layout.mainW : layout.sideW}px`,
+                        height: `${isCurrent ? layout.mainH : layout.sideH}px`,
                      }}
                      onClick={() => goTo(i)}
                   >
@@ -168,7 +230,7 @@ export default function StoriesPage({ username }: StoriesPageProps) {
                         alt={story.username}
                         fill
                         loading="eager"
-                        sizes="(max-width: 768px) 100vw, 33vw"
+                        sizes="(max-width: 640px) 100vw, 33vw"
                      />
                   </div>
                );
