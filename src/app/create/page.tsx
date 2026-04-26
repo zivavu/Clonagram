@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { PlusSquare } from 'lucide-react';
+import AddBoxRounded from '@mui/icons-material/AddBoxRounded';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function CreatePage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <PlusSquare size={48} strokeWidth={1.5} />
+         <AddBoxRounded style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Create</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>

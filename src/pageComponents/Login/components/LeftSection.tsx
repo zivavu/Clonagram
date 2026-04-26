@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { HeartIcon } from 'lucide-react';
+import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
 import Image from 'next/image';
 import { useSyncExternalStore } from 'react';
 import loginCardPeople, { LoginCardPerson } from '../loginCardPeople';
@@ -153,7 +153,7 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
          </div>
          <div {...stylex.props(imageCardStyles.reactionBoxContainer)}>
             <div {...stylex.props(imageCardStyles.commentBorder)}></div>
-            <HeartIcon size={48} />
+            <FavoriteRounded style={{ fontSize: 48 }} />
          </div>
          <Image src={`/loginPageCardsPeople/${image.src}`} alt={image.alt} width={260} height={460} />
       </div>

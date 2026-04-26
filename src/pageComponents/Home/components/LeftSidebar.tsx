@@ -1,29 +1,33 @@
 import * as stylex from '@stylexjs/stylex';
-import {
-   BarChart2,
-   Heart,
-   Home as HomeIcon,
-   LayoutGrid,
-   Menu,
-   MonitorPlay,
-   Navigation,
-   PlusSquare,
-   Search,
-   User,
-} from 'lucide-react';
+import AddBoxOutlined from '@mui/icons-material/AddBoxOutlined';
+import AddBoxRounded from '@mui/icons-material/AddBoxRounded';
+import BarChartRounded from '@mui/icons-material/BarChartRounded';
+import ExploreOutlined from '@mui/icons-material/ExploreOutlined';
+import ExploreRounded from '@mui/icons-material/ExploreRounded';
+import FavoriteBorderRounded from '@mui/icons-material/FavoriteBorderRounded';
+import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
+import GridViewRounded from '@mui/icons-material/GridViewRounded';
+import HomeOutlined from '@mui/icons-material/HomeOutlined';
+import HomeRounded from '@mui/icons-material/HomeRounded';
+import MenuRounded from '@mui/icons-material/MenuRounded';
+import PersonOutlined from '@mui/icons-material/PersonOutlined';
+import PersonRounded from '@mui/icons-material/PersonRounded';
+import SearchRounded from '@mui/icons-material/SearchRounded';
+import SmartDisplayOutlined from '@mui/icons-material/SmartDisplayOutlined';
+import SmartDisplayRounded from '@mui/icons-material/SmartDisplayRounded';
 import Image from 'next/image';
 import Link from 'next/link';
 import { colors, radius } from '../../../styles/tokens.stylex';
 
 const navItems = [
-   { href: '/', icon: HomeIcon, label: 'Home' },
-   { href: '/reels', icon: MonitorPlay, label: 'Reels' },
-   { href: '/explore', icon: Navigation, label: 'Explore' },
-   { href: '/search', icon: Search, label: 'Search' },
-   { href: '/notifications', icon: Heart, label: 'Notifications' },
-   { href: '/create', icon: PlusSquare, label: 'Create' },
-   { href: '/dashboard', icon: BarChart2, label: 'Dashboard' },
-   { href: '/profile', icon: User, label: 'Profile' },
+   { href: '/', icon: HomeOutlined, activeIcon: HomeRounded, label: 'Home' },
+   { href: '/reels', icon: SmartDisplayOutlined, activeIcon: SmartDisplayRounded, label: 'Reels' },
+   { href: '/explore', icon: ExploreOutlined, activeIcon: ExploreRounded, label: 'Explore' },
+   { href: '/search', icon: SearchRounded, activeIcon: SearchRounded, label: 'Search' },
+   { href: '/notifications', icon: FavoriteBorderRounded, activeIcon: FavoriteRounded, label: 'Notifications' },
+   { href: '/create', icon: AddBoxOutlined, activeIcon: AddBoxRounded, label: 'Create' },
+   { href: '/dashboard', icon: BarChartRounded, activeIcon: BarChartRounded, label: 'Dashboard' },
+   { href: '/profile', icon: PersonOutlined, activeIcon: PersonRounded, label: 'Profile' },
 ];
 
 const styles = stylex.create({
@@ -90,8 +94,9 @@ export default function LeftSidebar({ url }: { url: string | null }) {
                />
             </Link>
             <nav {...stylex.props(styles.nav)}>
-               {navItems.map(({ href, icon: Icon, label }) => {
+               {navItems.map(({ href, icon, activeIcon, label }) => {
                   const isActive = pathname === href;
+                  const Icon = isActive ? activeIcon : icon;
                   return (
                      <Link
                         key={href}
@@ -99,7 +104,7 @@ export default function LeftSidebar({ url }: { url: string | null }) {
                         aria-label={label}
                         {...stylex.props(styles.navItem, isActive && styles.navItemActive)}
                      >
-                        <Icon size={26} strokeWidth={isActive ? 2.25 : 1.75} />
+                        <Icon style={{ fontSize: 26 }} />
                         <span {...stylex.props(styles.navItemLabel)} style={{ fontWeight: isActive ? 600 : 300 }}>
                            {label}
                         </span>
@@ -109,11 +114,11 @@ export default function LeftSidebar({ url }: { url: string | null }) {
             </nav>
             <div {...stylex.props(styles.nav)}>
                <button aria-label="More" {...stylex.props(styles.navItem)}>
-                  <Menu size={26} strokeWidth={1.75} />
+                  <MenuRounded style={{ fontSize: 26 }} />
                   <span {...stylex.props(styles.navItemLabel)}>More</span>
                </button>
                <button aria-label="Other apps from Zeta" {...stylex.props(styles.navItem)}>
-                  <LayoutGrid size={26} strokeWidth={1.75} />
+                  <GridViewRounded style={{ fontSize: 26 }} />
                   <span {...stylex.props(styles.navItemLabel)}>Also from Zeta</span>
                </button>
             </div>

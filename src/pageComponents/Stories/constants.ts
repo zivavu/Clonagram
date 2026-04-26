@@ -1,0 +1,8 @@
+export const DESKTOP_SIDE_W = 205;
+export const DESKTOP_SIDE_H = Math.round((DESKTOP_SIDE_W * 16) / 9);
+export const DESKTOP_GAP = 58;
+export const MOBILE_BP = 640;
+export const SWIPE_THRESHOLD = 40;
+
+export const CARRET_ICON_PATH =
+   'M12.005.503a11.5 11.5 0 1 0 11.5 11.5 11.513 11.513 0 0 0-11.5-11.5Zm3.707 12.22-4.5 4.488A1 1 0 0 1 9.8 15.795l3.792-3.783L9.798 8.21a1 1 0 1 1 1.416-1.412l4.5 4.511a1 1 0 0 1-.002 1.414Z';

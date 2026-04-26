@@ -1,7 +1,8 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { CircleChevronLeft, CircleChevronRight } from 'lucide-react';
+import ArrowCircleLeftRounded from '@mui/icons-material/ArrowCircleLeftRounded';
+import ArrowCircleRightRounded from '@mui/icons-material/ArrowCircleRightRounded';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
@@ -132,14 +133,14 @@ export default function StoriesRow() {
             onClick={handlePrevious}
             disabled={isScrolling}
          >
-            <CircleChevronLeft size={24} strokeWidth={3} color={colors.textPrimary} />
+            <ArrowCircleLeftRounded style={{ fontSize: 24, color: colors.textPrimary }} />
          </button>
          <button
             {...stylex.props(styles.storiesRowButton, styles.storiesRowButtonRight)}
             onClick={handleNext}
             disabled={isScrolling}
          >
-            <CircleChevronRight size={24} strokeWidth={3} />
+            <ArrowCircleRightRounded style={{ fontSize: 24 }} />
          </button>
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef}>
             {STORIES.map(story => {

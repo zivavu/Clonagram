@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { ApertureIcon } from 'lucide-react';
+import FilterTiltShiftRounded from '@mui/icons-material/FilterTiltShiftRounded';
 import { colors } from '../../styles/tokens.stylex';
 
 export interface ZetaLogoProps {
@@ -24,7 +24,7 @@ export default function ZetaLogo({ rootProps, useText = true, iconSize = 20 }: Z
 
    return (
       <div {...stylex.props(styles.root)} {...rootProps}>
-         <ApertureIcon size={iconSize} color={colors.textPrimary} />
+         <FilterTiltShiftRounded style={{ fontSize: iconSize, color: colors.textPrimary }} />
          {useText && <span {...stylex.props(styles.zetaText)}>Zeta</span>}
       </div>
    );

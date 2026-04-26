@@ -7,7 +7,7 @@ import LoginPageButton from '@/src/components/LoginPageButton';
 import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
-import { ChevronLeft } from 'lucide-react';
+import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import Link from 'next/link';
 import { Controller, useForm } from 'react-hook-form';
 import z from 'zod';
@@ -114,7 +114,7 @@ export default function EmailSignUpPage() {
       <>
          <div {...stylex.props(styles.root)}>
             <Link href="/login" {...stylex.props(styles.backButton)}>
-               <ChevronLeft strokeWidth={1.75} size={28} />
+               <ChevronLeftRounded style={{ fontSize: 28 }} />
             </Link>
             <div {...stylex.props(styles.contentContainer)}>
                <ZetaLogo />

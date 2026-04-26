@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { Heart } from 'lucide-react';
+import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function NotificationsPage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <Heart size={48} strokeWidth={1.5} />
+         <FavoriteRounded style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Notifications</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>

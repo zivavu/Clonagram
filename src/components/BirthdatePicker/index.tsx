@@ -7,7 +7,7 @@ import {
    DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
 import * as stylex from '@stylexjs/stylex';
-import { ChevronDown } from 'lucide-react';
+import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -150,7 +150,7 @@ export default function BirthdatePicker({ topLabel = 'Birthdate', value, onChang
                      {part.value !== null && (
                         <span>{part.label === 'Month' ? monthNames[part.value - 1] : part.value}</span>
                      )}
-                     <ChevronDown size={16} color="var(--colors-textSecondary)" />
+                     <KeyboardArrowDownRounded style={{ fontSize: 16, color: 'var(--colors-textSecondary)' }} />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent {...stylex.props(styles.content)}>
                      {part.options.map(option => (

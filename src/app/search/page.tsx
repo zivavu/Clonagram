@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { Search } from 'lucide-react';
+import SearchRounded from '@mui/icons-material/SearchRounded';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function SearchPage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <Search size={48} strokeWidth={1.5} />
+         <SearchRounded style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Search</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>

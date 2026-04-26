@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { ChevronDown } from 'lucide-react';
+import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
 import Link from 'next/link';
 import { colors } from '../../styles/tokens.stylex';
 
@@ -85,7 +85,7 @@ export default function AuthPagesFooter({ ...props }: React.ComponentProps<'foot
          <div {...stylex.props(styles.footerMetaRow)}>
             <button type="button" {...stylex.props(styles.languageButton)}>
                English
-               <ChevronDown size={14} />
+               <KeyboardArrowDownRounded style={{ fontSize: 14 }} />
             </button>
             <span>© {new Date().getFullYear()} Clonagram from Zeta</span>
          </div>

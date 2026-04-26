@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { User } from 'lucide-react';
+import PersonRounded from '@mui/icons-material/PersonRounded';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function ProfilePage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <User size={48} strokeWidth={1.5} />
+         <PersonRounded style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Profile</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>
