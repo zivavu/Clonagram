@@ -1,10 +1,9 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import ActiveStoryOverlay from './ActiveStoryOverlay';
-import SideStoryOverlay from './SideStoryOverlay';
 import { styles } from '../styles';
 import { Layout, StoryEntry } from '../types';
-import { useState } from 'react';
+import ActiveStoryOverlay from './ActiveStoryOverlay';
+import SideStoryOverlay from './SideStoryOverlay';
 
 interface StoryCardProps {
    story: StoryEntry;

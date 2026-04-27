@@ -97,9 +97,29 @@ export const styles = stylex.create({
    },
    activeStoryTopBar: {
       backgroundImage: 'linear-gradient(rgba(38, 38, 38, 0.8), rgba(38, 38, 38, 0))',
+      paddingBottom: '20px',
    },
    activeStoryBottomBar: {
       backgroundImage: 'linear-gradient(rgba(38, 38, 38, 0), rgba(38, 38, 38, 0.8))',
+      padding: '16px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '16px',
+   },
+   activeStoryReplyToInput: {
+      width: '100%',
+      height: '44px',
+      padding: '0 16px',
+      borderRadius: radius.full,
+      borderColor: 'white',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      backgroundColor: 'transparent',
+
+      '::placeholder': {
+         color: colors.textPrimary,
+      },
    },
    storyMediaBarsContainer: {
       padding: '20px 16px',

@@ -1,13 +1,14 @@
 'use client';
 
-import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
-import { styles } from '../styles';
-import { StoryEntry } from '../types';
+import { FavoriteBorder, SendOutlined } from '@mui/icons-material';
 import MoreHorizRounded from '@mui/icons-material/MoreHorizRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
-import { useEffect, useState } from 'react';
+import * as stylex from '@stylexjs/stylex';
+import Image from 'next/image';
+import { useState } from 'react';
+import { styles } from '../styles';
+import { StoryEntry } from '../types';
 
 interface ActiveStoryOverlayProps {
    story: StoryEntry;
@@ -74,7 +75,19 @@ export default function ActiveStoryOverlay({ story, currentStoryIndex, formatTim
                </div>
             </div>
          </div>
-         <div {...stylex.props(styles.activeStoryBottomBar)}></div>
+         <div {...stylex.props(styles.activeStoryBottomBar)}>
+            <input
+               type="text"
+               placeholder={`Reply to ${story.username}...`}
+               {...stylex.props(styles.activeStoryReplyToInput)}
+            />
+            <button>
+               <FavoriteBorder style={{ fontSize: 26 }} />
+            </button>
+            <button>
+               <SendOutlined style={{ fontSize: 26, rotate: '-45deg' }} />
+            </button>
+         </div>
       </div>
    );
 }
