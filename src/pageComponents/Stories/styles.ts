@@ -91,22 +91,33 @@ export const styles = stylex.create({
       width: '100%',
       height: '100%',
       zIndex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
    },
-   substoriesBarsContainer: {
+   activeStoryTopBar: {
+      backgroundImage: 'linear-gradient(rgba(38, 38, 38, 0.8), rgba(38, 38, 38, 0))',
+   },
+   activeStoryBottomBar: {
+      backgroundImage: 'linear-gradient(rgba(38, 38, 38, 0), rgba(38, 38, 38, 0.8))',
+   },
+   storyMediaBarsContainer: {
       padding: '20px 16px',
       paddingBottom: '12px',
       width: '100%',
       display: 'flex',
       gap: '4px',
-      backgroundImage: 'linear-gradient(rgba(38, 38, 38, 0.8), rgba(38, 38, 38, 0))',
    },
-   substoriesBarItem: {
+   storyMediaBarItem: {
       width: '100%',
       height: '2px',
       backgroundColor: colors.textMuted,
       borderRadius: radius.md,
    },
-   substoriesBarItemActive: {
+   storyMediaActiveStoryBarContainer: {
+      display: 'flex',
+   },
+   storyMediaBarItemActive: {
       backgroundColor: colors.textPrimary,
    },
    activeStoryTopNavigation: {
@@ -126,10 +137,9 @@ export const styles = stylex.create({
       fontWeight: 400,
       color: colors.textPrimary,
    },
-   activeStoryTimestamp: {
+   activeStoryUploadTimestamp: {
       fontSize: '0.85rem',
       fontWeight: 300,
-      color: colors.textSecondary,
    },
    activeStoryTopNavigationRight: {
       display: 'flex',

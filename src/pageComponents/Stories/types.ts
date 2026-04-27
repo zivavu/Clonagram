@@ -9,10 +9,13 @@ export interface Layout {
 }
 
 export interface StoryMedia {
+   id: string;
    storyImageUrl: string;
+   storyLength: number;
 }
 
 export interface StoryEntry {
+   id: number;
    username: string;
    avatarUrl: string;
    timestamp: string;

@@ -1,6 +1,6 @@
 'use client';
 
-import { STORIES } from '@/src/pageComponents/Home/components/data';
+import { STORIES } from '@/src/pageComponents/Stories/data';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';

@@ -1,4 +1,4 @@
-import { STORIES } from '@/src/pageComponents/Home/components/data';
+import { STORIES } from '@/src/pageComponents/Stories/data';
 import StoriesPage from '@/src/pageComponents/Stories';
 import { notFound } from 'next/navigation';
 

@@ -4,6 +4,7 @@ import ActiveStoryOverlay from './ActiveStoryOverlay';
 import SideStoryOverlay from './SideStoryOverlay';
 import { styles } from '../styles';
 import { Layout, StoryEntry } from '../types';
+import { useState } from 'react';
 
 interface StoryCardProps {
    story: StoryEntry;
@@ -33,14 +34,16 @@ export default function StoryCard({
       >
          {!isCurrent && <SideStoryOverlay story={story} formatTimestamp={formatTimestamp} />}
          {isCurrent && (
-            <ActiveStoryOverlay
-               story={story}
-               currentStoryIndex={currentStoryIndex}
-               formatTimestamp={formatTimestamp}
-            />
+            <ActiveStoryOverlay story={story} currentStoryIndex={currentStoryIndex} formatTimestamp={formatTimestamp} />
          )}
 
-         <Image src={story.stories[0].storyImageUrl} alt={story.username} fill loading="eager" sizes="(max-width: 640px) 100vw, 33vw" />
+         <Image
+            src={story.stories[0].storyImageUrl}
+            alt={story.username}
+            fill
+            loading="eager"
+            sizes="(max-width: 640px) 100vw, 33vw"
+         />
       </div>
    );
 }

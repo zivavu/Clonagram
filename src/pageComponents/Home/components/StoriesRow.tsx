@@ -7,7 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { colors, radius, spacing } from '../../../styles/tokens.stylex';
-import { STORIES } from './data';
+import { STORIES } from '../../Stories/data';
 
 const styles = stylex.create({
    root: {
