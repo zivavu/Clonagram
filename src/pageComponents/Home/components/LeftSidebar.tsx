@@ -1,4 +1,3 @@
-import * as stylex from '@stylexjs/stylex';
 import AddBoxOutlined from '@mui/icons-material/AddBoxOutlined';
 import AddBoxRounded from '@mui/icons-material/AddBoxRounded';
 import BarChartRounded from '@mui/icons-material/BarChartRounded';
@@ -15,6 +14,7 @@ import PersonRounded from '@mui/icons-material/PersonRounded';
 import SearchRounded from '@mui/icons-material/SearchRounded';
 import SmartDisplayOutlined from '@mui/icons-material/SmartDisplayOutlined';
 import SmartDisplayRounded from '@mui/icons-material/SmartDisplayRounded';
+import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
 import { colors, radius } from '../../../styles/tokens.stylex';
@@ -80,6 +80,7 @@ const styles = stylex.create({
 
 export default function LeftSidebar({ url }: { url: string | null }) {
    const pathname = url ? new URL(url).pathname : '/';
+   console.log(pathname, url);
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.leftSidebarContent)}>
@@ -93,6 +94,7 @@ export default function LeftSidebar({ url }: { url: string | null }) {
                   loading="eager"
                />
             </Link>
+
             <nav {...stylex.props(styles.nav)}>
                {navItems.map(({ href, icon, activeIcon, label }) => {
                   const isActive = pathname === href;
@@ -112,6 +114,7 @@ export default function LeftSidebar({ url }: { url: string | null }) {
                   );
                })}
             </nav>
+
             <div {...stylex.props(styles.nav)}>
                <button aria-label="More" {...stylex.props(styles.navItem)}>
                   <MenuRounded style={{ fontSize: 26 }} />
