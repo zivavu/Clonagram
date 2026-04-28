@@ -80,7 +80,6 @@ const styles = stylex.create({
 
 export default function LeftSidebar({ url }: { url: string | null }) {
    const pathname = url ? new URL(url).pathname : '/';
-   console.log(pathname, url);
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.leftSidebarContent)}>
