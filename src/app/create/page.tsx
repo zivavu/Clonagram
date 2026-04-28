@@ -1,5 +1,7 @@
-import * as stylex from '@stylexjs/stylex';
+import { muxClient } from '@/src/lib/mux';
 import AddBoxRounded from '@mui/icons-material/AddBoxRounded';
+import MuxUploader from '@mux/mux-uploader-react';
+import * as stylex from '@stylexjs/stylex';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -23,12 +25,20 @@ const styles = stylex.create({
    },
 });
 
-export default function CreatePage() {
+export default async function CreatePage() {
+   console.log(process.env.MUX_TOKEN_ID, process.env.MUX_TOKEN_SECRET);
+   const directUpload = await muxClient.video.uploads.create({
+      cors_origin: '*',
+      new_asset_settings: {
+         playback_policy: ['public'],
+      },
+   });
+
    return (
       <div {...stylex.props(styles.container)}>
          <AddBoxRounded style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Create</h1>
-         <p {...stylex.props(styles.subtitle)}>Coming soon</p>
+         <MuxUploader endpoint={directUpload.url} />
       </div>
    );
 }
