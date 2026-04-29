@@ -3,7 +3,7 @@
 import type MuxPlayerElement from '@mux/mux-player';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePlayerStore } from '../../../store/usePlayerStore';
 import { styles } from '../styles';
 import { Layout, StoryEntry } from '../types';
@@ -17,12 +17,10 @@ interface StoryCardProps {
    story: StoryEntry;
    isCurrent: boolean;
    layout: Layout;
-   currentUserIndex: number;
    onClick: () => void;
-   formatTimestamp: (timestamp: string) => string;
    currentStoryMediaIndex: number;
-   setPlayTime: Dispatch<SetStateAction<number>>;
    playTime: number;
+   setPlayTime: (time: number) => void;
    goToNextStoryMedia: () => void;
 }
 
@@ -31,19 +29,23 @@ export default function StoryCard({
    isCurrent,
    layout,
    onClick,
-   formatTimestamp,
    currentStoryMediaIndex,
    playTime,
    setPlayTime,
    goToNextStoryMedia,
 }: StoryCardProps) {
    const [isPlaying, setIsPlaying] = useState(true);
+
    const mediaIndex = isCurrent ? currentStoryMediaIndex : 0;
-   const currentMedia = { ...story.stories[mediaIndex] };
+   const currentMedia = story.stories[mediaIndex];
+   const isVideo = !!currentMedia.videoLength;
+
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
-   const picturePlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+   const [videoDuration, setVideoDuration] = useState<number>(PICTURE_DURATION);
 
    const { volume, setVolume } = usePlayerStore();
+
    useEffect(() => {
       const mediaEl = muxPlayerRef.current?.media;
       if (!mediaEl) return;
@@ -51,57 +53,37 @@ export default function StoryCard({
       mediaEl.muted = volume === 0;
    }, [volume]);
 
-   const isVideo = !!currentMedia.videoLength;
-   const videoDuration = isVideo ? (muxPlayerRef.current?.media?.duration ?? 0) * 1000 : PICTURE_DURATION;
-
-   function onTimeUpdate(currentTime: number) {
-      setPlayTime(currentTime * 1000);
-   }
-
    useEffect(() => {
-      if (!isCurrent) return;
-      if (picturePlayIntervalRef.current) {
-         clearInterval(picturePlayIntervalRef.current);
-         picturePlayIntervalRef.current = null;
-      }
-      if (!isVideo) {
-         setPlayTime(0);
-         let elapsed = 0;
-         picturePlayIntervalRef.current = setInterval(() => {
-            elapsed += 100;
-            if (elapsed >= PICTURE_DURATION) {
-               clearInterval(picturePlayIntervalRef.current!);
-               picturePlayIntervalRef.current = null;
-               goToNextStoryMedia();
-            } else {
-               setPlayTime(elapsed);
-            }
-         }, 100);
-      }
-      return () => {
-         if (picturePlayIntervalRef.current) {
-            clearInterval(picturePlayIntervalRef.current);
-            picturePlayIntervalRef.current = null;
+      setVideoDuration(isVideo ? (currentMedia.videoLength ?? 0) * 1000 : PICTURE_DURATION);
+
+      if (!isCurrent || isVideo) return;
+
+      setPlayTime(0);
+      let elapsed = 0;
+      const timer = setInterval(() => {
+         elapsed += 100;
+         if (elapsed >= PICTURE_DURATION) {
+            clearInterval(timer);
+            goToNextStoryMedia();
+         } else {
+            setPlayTime(elapsed);
          }
-      };
-   }, [mediaIndex]);
+      }, 100);
+
+      return () => clearInterval(timer);
+   }, [mediaIndex, isCurrent]);
 
    function togglePlay(e: React.MouseEvent) {
       e.stopPropagation();
-      setIsPlaying(!isPlaying);
+      const nextPlaying = !isPlaying;
+      setIsPlaying(nextPlaying);
       const mediaEl = muxPlayerRef.current?.media;
-
       if (!mediaEl) return;
-      if (isPlaying) {
-         mediaEl.pause();
-      } else {
+      if (nextPlaying) {
          mediaEl.play();
+      } else {
+         mediaEl.pause();
       }
-   }
-
-   function onVideoEnded() {
-      goToNextStoryMedia();
-      setPlayTime(0);
    }
 
    return (
@@ -113,13 +95,12 @@ export default function StoryCard({
          }}
          onClick={onClick}
       >
-         {!isCurrent && <SideStoryOverlay story={story} formatTimestamp={formatTimestamp} />}
+         {!isCurrent && <SideStoryOverlay story={story} />}
          {isCurrent && (
             <ActiveStoryOverlay
                story={story}
                videoDuration={videoDuration}
                playTime={playTime}
-               formatUploadTimestamp={formatTimestamp}
                isPlaying={isPlaying}
                onTogglePlay={togglePlay}
                volume={volume}
@@ -128,34 +109,36 @@ export default function StoryCard({
             />
          )}
 
-         {!!currentMedia?.videoLength ? (
+         {isVideo ? (
             <MuxPlayer
                key={currentMedia.id}
                ref={muxPlayerRef}
                style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
                playbackId="HPbmwHABcTDuydWDsooCnkFRSGbCcr7OK00KJI5crh9g"
                autoPlay="always"
-               onTimeUpdate={() =>
-                  muxPlayerRef.current?.media?.currentTime &&
-                  onTimeUpdate(muxPlayerRef.current?.media?.currentTime ?? 0)
-               }
-               onEnded={onVideoEnded}
+               onTimeUpdate={() => {
+                  const time = muxPlayerRef.current?.media?.currentTime;
+                  if (time) setPlayTime(time * 1000);
+               }}
+               onDurationChange={() => {
+                  const duration = muxPlayerRef.current?.media?.duration;
+                  if (duration && duration > 0) setVideoDuration(duration * 1000);
+               }}
+               onEnded={goToNextStoryMedia}
                onPause={() => setIsPlaying(false)}
                onPlay={() => setIsPlaying(true)}
                paused={!isPlaying}
             />
          ) : (
-            <>
-               {!!currentMedia?.mediaUrl && (
-                  <Image
-                     src={currentMedia?.mediaUrl}
-                     alt={story.username}
-                     fill
-                     loading="eager"
-                     sizes="(max-width: 640px) 100vw, 33vw"
-                  />
-               )}
-            </>
+            currentMedia.mediaUrl && (
+               <Image
+                  src={currentMedia.mediaUrl}
+                  alt={story.username}
+                  fill
+                  loading="eager"
+                  sizes="(max-width: 640px) 100vw, 33vw"
+               />
+            )
          )}
       </div>
    );

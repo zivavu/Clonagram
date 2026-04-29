@@ -9,9 +9,9 @@ import StoryNavigationButton from './components/StoryNavigationButton';
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, SWIPE_THRESHOLD } from './constants';
 import { styles } from './styles';
 import { Layout, StoriesPageProps } from './types';
-import { computeLayout, formatTimestamp } from './utils';
+import { computeLayout } from './utils';
 
-export default function StoriesPage({ username, storyId }: StoriesPageProps) {
+export default function StoriesPage({ username }: StoriesPageProps) {
    const startIndex = Math.max(
       0,
       STORIES.findIndex(s => s.username === username),
@@ -32,13 +32,15 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
    });
    const [isMoving, setIsMoving] = useState(false);
 
-   const currentRef = useRef(startIndex);
-   const spinTimer = useRef<ReturnType<typeof setTimeout>>(null);
+   // Ref mirrors state so resize/touch handlers always read the latest index
+   // without creating stale closures via the event listener.
+   const currentUserIndexRef = useRef(startIndex);
+   const spinTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
    const touchStartX = useRef(0);
    const touchStartY = useRef(0);
 
    useLayoutEffect(() => {
-      const apply = () => setLayout(computeLayout(currentRef.current));
+      const apply = () => setLayout(computeLayout(currentUserIndexRef.current));
       apply();
       window.addEventListener('resize', apply);
       return () => window.removeEventListener('resize', apply);
@@ -46,14 +48,15 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
 
    const goToStoryUserCard = (newUserIndex: number) => {
       const idx = ((newUserIndex % STORIES.length) + STORIES.length) % STORIES.length;
-      currentRef.current = idx;
+      currentUserIndexRef.current = idx;
       setCurrentUserIndex(idx);
       setCurrentStoryMediaIndex(0);
+      setPlayTime(0);
       setLayout(computeLayout(idx));
       window.history.replaceState(null, '', `/stories/${STORIES[idx].username}`);
       setIsMoving(true);
-      if (spinTimer.current) clearTimeout(spinTimer.current);
-      spinTimer.current = setTimeout(() => setIsMoving(false), 380);
+      if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
+      spinTimerRef.current = setTimeout(() => setIsMoving(false), 380);
    };
 
    const goToNextStoryMedia = () => {
@@ -64,6 +67,7 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
          goToStoryUserCard(currentUserIndex + 1);
       }
    };
+
    const goToPreviousStoryMedia = () => {
       setPlayTime(0);
       if (currentStoryMediaIndex > 0) {
@@ -82,7 +86,7 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
       const dx = e.changedTouches[0].clientX - touchStartX.current;
       const dy = e.changedTouches[0].clientY - touchStartY.current;
       if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
-         goToStoryUserCard(currentRef.current + (dx < 0 ? 1 : -1));
+         goToStoryUserCard(currentUserIndexRef.current + (dx < 0 ? 1 : -1));
       }
    };
 
@@ -108,24 +112,19 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
             {...stylex.props(styles.strip)}
             style={{ gap: `${layout.gap}px`, transform: `translateX(${layout.xOffset}px)` }}
          >
-            {STORIES.map((story, i) => {
-               const isCurrent = i === currentUserIndex;
-               return (
-                  <StoryCard
-                     key={story.username}
-                     story={story}
-                     isCurrent={isCurrent}
-                     layout={layout}
-                     currentUserIndex={currentUserIndex}
-                     onClick={() => goToStoryUserCard(i)}
-                     formatTimestamp={formatTimestamp}
-                     currentStoryMediaIndex={currentStoryMediaIndex}
-                     playTime={playTime}
-                     setPlayTime={setPlayTime}
-                     goToNextStoryMedia={goToNextStoryMedia}
-                  />
-               );
-            })}
+            {STORIES.map((story, i) => (
+               <StoryCard
+                  key={story.username}
+                  story={story}
+                  isCurrent={i === currentUserIndex}
+                  layout={layout}
+                  onClick={() => goToStoryUserCard(i)}
+                  currentStoryMediaIndex={currentStoryMediaIndex}
+                  playTime={playTime}
+                  setPlayTime={setPlayTime}
+                  goToNextStoryMedia={goToNextStoryMedia}
+               />
+            ))}
          </div>
       </div>
    );

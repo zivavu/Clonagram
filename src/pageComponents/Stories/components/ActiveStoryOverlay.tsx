@@ -12,12 +12,12 @@ import type React from 'react';
 import { useRef, useState } from 'react';
 import { styles } from '../styles';
 import { StoryEntry } from '../types';
+import { formatTimestamp } from '../utils';
 
 interface ActiveStoryOverlayProps {
    story: StoryEntry;
    videoDuration: number;
    playTime: number;
-   formatUploadTimestamp: (timestamp: string) => string;
    isPlaying: boolean;
    onTogglePlay: (e: React.MouseEvent) => void;
    setVolume: (newVolume: number) => void;
@@ -29,42 +29,43 @@ export default function ActiveStoryOverlay({
    story,
    videoDuration = 6000,
    playTime,
-   formatUploadTimestamp,
    isPlaying,
    onTogglePlay,
    setVolume,
    volume,
    currentStoryMediaIndex,
 }: ActiveStoryOverlayProps) {
-   const [volumePopprOpen, setVolumePopperOpen] = useState(false);
-
+   const [volumePopperOpen, setVolumePopperOpen] = useState(false);
    const volumeAnchorEl = useRef<HTMLButtonElement>(null);
 
-   const currentBarPlayedWidth = videoDuration > 0 ? (playTime / videoDuration) * 100 : 0;
-   const currentBarRemainingWidth = 100 - currentBarPlayedWidth;
+   const playedPct = videoDuration > 0 ? (playTime / videoDuration) * 100 : 0;
+   const remainingPct = 100 - playedPct;
 
    return (
       <div {...stylex.props(styles.activeStoryOverlay)}>
          <div {...stylex.props(styles.activeStoryTopBar)}>
             <div {...stylex.props(styles.storyMediaBarsContainer)}>
                {story.stories.map((storyMedia, i) => {
-                  return i === currentStoryMediaIndex ? (
-                     <div key={storyMedia.id} {...stylex.props(styles.storyMediaActiveStoryBarContainer)}>
-                        <div
-                           {...stylex.props(styles.storyMediaBarItem, styles.storyMediaBarItemActive)}
-                           style={{ width: `${currentBarPlayedWidth.toFixed(2)}%` }}
-                        />
-                        <div
-                           {...stylex.props(styles.storyMediaBarItem)}
-                           style={{ width: `${currentBarRemainingWidth.toFixed(2)}%` }}
-                        />
-                     </div>
-                  ) : (
+                  if (i === currentStoryMediaIndex) {
+                     return (
+                        <div key={storyMedia.id} {...stylex.props(styles.storyMediaActiveStoryBarContainer)}>
+                           <div
+                              {...stylex.props(styles.storyMediaBarItem, styles.storyMediaBarItemActive)}
+                              style={{ width: `${playedPct.toFixed(2)}%` }}
+                           />
+                           <div
+                              {...stylex.props(styles.storyMediaBarItem)}
+                              style={{ width: `${remainingPct.toFixed(2)}%` }}
+                           />
+                        </div>
+                     );
+                  }
+                  return (
                      <div
                         key={storyMedia.id}
                         {...stylex.props(
                            styles.storyMediaBarItem,
-                           i === currentStoryMediaIndex && styles.storyMediaBarItemActive,
+                           i < currentStoryMediaIndex && styles.storyMediaBarItemActive,
                         )}
                      />
                   );
@@ -83,7 +84,7 @@ export default function ActiveStoryOverlay({
                   />
                   <span {...stylex.props(styles.activeStoryUsername)}>{story.username}</span>
                   <span {...stylex.props(styles.activeStoryUploadTimestamp)}>
-                     {formatUploadTimestamp(story.timestamp)}
+                     {formatTimestamp(story.timestamp)}
                   </span>
                </div>
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>
@@ -91,7 +92,8 @@ export default function ActiveStoryOverlay({
                      <span style={{ display: 'contents' }}>
                         <button
                            ref={volumeAnchorEl}
-                           onClick={() => setVolumePopperOpen(!volumePopprOpen)}
+                           type="button"
+                           onClick={() => setVolumePopperOpen(!volumePopperOpen)}
                            {...stylex.props(styles.activeStoryTopNavigationRightButton)}
                         >
                            {volume === 0 ? (
@@ -103,7 +105,7 @@ export default function ActiveStoryOverlay({
                            )}
                         </button>
                         <Popper
-                           open={volumePopprOpen}
+                           open={volumePopperOpen}
                            anchorEl={volumeAnchorEl.current}
                            modifiers={[{ name: 'offset', options: { offset: [0, 4] } }]}
                         >
@@ -121,14 +123,18 @@ export default function ActiveStoryOverlay({
                         </Popper>
                      </span>
                   </ClickAwayListener>
-                  <button {...stylex.props(styles.activeStoryTopNavigationRightButton)} onClick={onTogglePlay}>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.activeStoryTopNavigationRightButton)}
+                     onClick={onTogglePlay}
+                  >
                      {isPlaying ? (
                         <PauseRounded style={{ fontSize: 20 }} />
                      ) : (
                         <PlayArrowRounded style={{ fontSize: 20 }} />
                      )}
                   </button>
-                  <button {...stylex.props(styles.activeStoryTopNavigationRightButton)}>
+                  <button type="button" {...stylex.props(styles.activeStoryTopNavigationRightButton)}>
                      <MoreHorizRounded style={{ fontSize: 20 }} />
                   </button>
                </div>
@@ -140,10 +146,10 @@ export default function ActiveStoryOverlay({
                placeholder={`Reply to ${story.username}...`}
                {...stylex.props(styles.activeStoryReplyToInput)}
             />
-            <button>
+            <button type="button">
                <FavoriteBorder style={{ fontSize: 26 }} />
             </button>
-            <button>
+            <button type="button">
                <SendOutlined style={{ fontSize: 26, rotate: '-45deg' }} />
             </button>
          </div>

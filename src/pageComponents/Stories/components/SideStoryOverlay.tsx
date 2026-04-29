@@ -2,13 +2,13 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { styles } from '../styles';
 import { StoryEntry } from '../types';
+import { formatTimestamp } from '../utils';
 
 interface SideStoryOverlayProps {
    story: StoryEntry;
-   formatTimestamp: (timestamp: string) => string;
 }
 
-export default function SideStoryOverlay({ story, formatTimestamp }: SideStoryOverlayProps) {
+export default function SideStoryOverlay({ story }: SideStoryOverlayProps) {
    return (
       <div {...stylex.props(styles.sideStoryOverlay)}>
          <Image
