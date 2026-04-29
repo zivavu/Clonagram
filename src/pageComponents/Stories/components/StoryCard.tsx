@@ -3,7 +3,8 @@
 import type MuxPlayerElement from '@mux/mux-player';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { usePlayerStore } from '../../../store/usePlayerStore';
 import { styles } from '../styles';
 import { Layout, StoryEntry } from '../types';
 import ActiveStoryOverlay from './ActiveStoryOverlay';
@@ -29,7 +30,16 @@ export default function StoryCard({
 }: StoryCardProps) {
    const media = story.stories[0];
    const [playTime, setPlayTime] = useState(0);
+   const [isPlaying, setIsPlaying] = useState(true);
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
+
+   const { volume, setVolume } = usePlayerStore();
+   useEffect(() => {
+      const mediaEl = muxPlayerRef.current?.media;
+      if (!mediaEl) return;
+      mediaEl.volume = volume;
+      mediaEl.muted = volume === 0;
+   }, [volume]);
 
    const videoDuration = (muxPlayerRef.current?.media?.duration ?? 0) * 1000;
    type MuxTimeUpdateEvent = CustomEvent<{ composed: true; detail: any }>;
@@ -38,6 +48,24 @@ export default function StoryCard({
       const currentTime = muxPlayerRef.current?.media?.currentTime ?? 0;
       setPlayTime(currentTime * 1000);
    }
+
+   function togglePlay(e: React.MouseEvent) {
+      e.stopPropagation();
+      const mediaEl = muxPlayerRef.current?.media;
+      if (!mediaEl) return;
+      if (isPlaying) {
+         mediaEl.pause();
+      } else {
+         mediaEl.play();
+      }
+      setIsPlaying(!isPlaying);
+   }
+
+   function muteVolumeSwitch(e: React.MouseEvent) {
+      e.stopPropagation();
+      setVolume(volume === 0 ? 1 : 0);
+   }
+
    return (
       <div
          {...stylex.props(styles.story, !layout.isMobile && styles.storyRounded)}
@@ -55,6 +83,11 @@ export default function StoryCard({
                playTime={playTime}
                currentStoryIndex={currentStoryIndex}
                formatUploadTimestamp={formatTimestamp}
+               isPlaying={isPlaying}
+               onTogglePlay={togglePlay}
+               volume={volume}
+               setVolume={setVolume}
+               muteVolumeSwitch={muteVolumeSwitch}
             />
          )}
 
@@ -63,8 +96,9 @@ export default function StoryCard({
                ref={muxPlayerRef}
                style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
                playbackId="HPbmwHABcTDuydWDsooCnkFRSGbCcr7OK00KJI5crh9g"
-               autoPlay="muted"
+               autoPlay
                onTimeUpdate={onTimeUpdate}
+               paused={!isPlaying}
             />
          ) : (
             <Image
