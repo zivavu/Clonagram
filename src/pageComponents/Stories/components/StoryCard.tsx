@@ -77,12 +77,10 @@ export default function StoryCard({
             height: `${isCurrent ? layout.mainHeight : layout.sideHeight}px`,
          }}
       >
-         <button
-            type="button"
-            onClick={() => (isCurrent ? onClick() : setIsPlaying(prev => !prev))}
-            {...stylex.props(styles.sideStoryClickTarget)}
-         ></button>
          {!isCurrent && <SideStoryOverlay story={story} />}
+         {!isCurrent && (
+            <button type="button" onClick={() => onClick()} {...stylex.props(styles.sideStoryClickTarget)}></button>
+         )}
          {isCurrent && (
             <ActiveStoryOverlay
                story={story}
