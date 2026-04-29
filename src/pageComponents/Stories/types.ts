@@ -11,7 +11,7 @@ export interface Layout {
 export interface StoryMedia {
    id: string;
    mediaUrl: string;
-   videoLength?: number;
+   type: 'video' | 'image';
 }
 
 export interface StoryEntry {
