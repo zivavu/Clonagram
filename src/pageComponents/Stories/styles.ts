@@ -135,6 +135,7 @@ export const styles = stylex.create({
    },
    storyMediaActiveStoryBarContainer: {
       display: 'flex',
+      width: '100%',
    },
    storyMediaBarItemActive: {
       backgroundColor: colors.textPrimary,

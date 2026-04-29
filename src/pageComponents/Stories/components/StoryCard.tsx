@@ -1,5 +1,9 @@
+'use client';
+
+import type MuxPlayerElement from '@mux/mux-player';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
+import { useRef, useState } from 'react';
 import { styles } from '../styles';
 import { Layout, StoryEntry } from '../types';
 import ActiveStoryOverlay from './ActiveStoryOverlay';
@@ -24,6 +28,16 @@ export default function StoryCard({
    formatTimestamp,
 }: StoryCardProps) {
    const media = story.stories[0];
+   const [playTime, setPlayTime] = useState(0);
+   const muxPlayerRef = useRef<MuxPlayerElement>(null);
+
+   const videoDuration = (muxPlayerRef.current?.media?.duration ?? 0) * 1000;
+   type MuxTimeUpdateEvent = CustomEvent<{ composed: true; detail: any }>;
+
+   function onTimeUpdate(_event: MuxTimeUpdateEvent) {
+      const currentTime = muxPlayerRef.current?.media?.currentTime ?? 0;
+      setPlayTime(currentTime * 1000);
+   }
    return (
       <div
          {...stylex.props(styles.story, !layout.isMobile && styles.storyRounded)}
@@ -35,13 +49,22 @@ export default function StoryCard({
       >
          {!isCurrent && <SideStoryOverlay story={story} formatTimestamp={formatTimestamp} />}
          {isCurrent && (
-            <ActiveStoryOverlay story={story} currentStoryIndex={currentStoryIndex} formatTimestamp={formatTimestamp} />
+            <ActiveStoryOverlay
+               story={story}
+               videoDuration={videoDuration}
+               playTime={playTime}
+               currentStoryIndex={currentStoryIndex}
+               formatUploadTimestamp={formatTimestamp}
+            />
          )}
 
          {isCurrent ? (
             <MuxPlayer
-               style={{ width: '100%', height: '100%' }}
+               ref={muxPlayerRef}
+               style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
                playbackId="HPbmwHABcTDuydWDsooCnkFRSGbCcr7OK00KJI5crh9g"
+               autoPlay="muted"
+               onTimeUpdate={onTimeUpdate}
             />
          ) : (
             <Image

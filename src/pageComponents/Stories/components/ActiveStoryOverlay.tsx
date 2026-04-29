@@ -12,14 +12,26 @@ import { StoryEntry } from '../types';
 
 interface ActiveStoryOverlayProps {
    story: StoryEntry;
+   videoDuration: number;
+   playTime: number;
    currentStoryIndex: number;
-   formatTimestamp: (timestamp: string) => string;
+   formatUploadTimestamp: (timestamp: string) => string;
 }
 
-export default function ActiveStoryOverlay({ story, currentStoryIndex, formatTimestamp }: ActiveStoryOverlayProps) {
+export default function ActiveStoryOverlay({
+   story,
+   videoDuration,
+   playTime,
+   currentStoryIndex,
+   formatUploadTimestamp,
+}: ActiveStoryOverlayProps) {
    const [isPlaying, setIsPlaying] = useState(true);
-   const [playTime, setPlayTime] = useState(0);
    const [currentStoryMediaIndex, setCurrentStoryMediaIndex] = useState(0);
+
+   const currentMedia = story.stories[currentStoryMediaIndex];
+
+   const currentBarPlayedWidth = videoDuration > 0 ? (playTime / videoDuration) * 100 : 0;
+   const currentBarRemainingWidth = 100 - currentBarPlayedWidth;
 
    return (
       <div {...stylex.props(styles.activeStoryOverlay)}>
@@ -30,11 +42,11 @@ export default function ActiveStoryOverlay({ story, currentStoryIndex, formatTim
                      <div key={storyMedia.id} {...stylex.props(styles.storyMediaActiveStoryBarContainer)}>
                         <div
                            {...stylex.props(styles.storyMediaBarItem, styles.storyMediaBarItemActive)}
-                           style={{ width: `${storyMedia.videoLength}%` }}
+                           style={{ width: `${currentBarPlayedWidth.toFixed(2)}%` }}
                         />
                         <div
                            {...stylex.props(styles.storyMediaBarItem)}
-                           style={{ width: `${100 - (storyMedia.videoLength ?? 0)}%` }}
+                           style={{ width: `${currentBarRemainingWidth.toFixed(2)}%` }}
                         />
                      </div>
                   ) : (
@@ -60,7 +72,9 @@ export default function ActiveStoryOverlay({ story, currentStoryIndex, formatTim
                      style={{ borderRadius: '50%' }}
                   />
                   <span {...stylex.props(styles.activeStoryUsername)}>{story.username}</span>
-                  <span {...stylex.props(styles.activeStoryUploadTimestamp)}>{formatTimestamp(story.timestamp)}</span>
+                  <span {...stylex.props(styles.activeStoryUploadTimestamp)}>
+                     {formatUploadTimestamp(story.timestamp)}
+                  </span>
                </div>
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>
                   <button {...stylex.props(styles.activeStoryTopNavigationRightButton)}>
