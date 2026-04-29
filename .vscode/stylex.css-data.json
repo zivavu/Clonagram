@@ -1,0 +1,9 @@
+{
+   "version": 1.1,
+   "atDirectives": [
+      {
+         "name": "@stylex",
+         "description": "StyleX entry directive; processed by the StyleX compiler at build time."
+      }
+   ]
+}

@@ -1,5 +1,6 @@
 'use client';
 
+import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
 import {
    DropdownMenu,
    DropdownMenuContent,
@@ -7,7 +8,6 @@ import {
    DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
 import * as stylex from '@stylexjs/stylex';
-import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -139,7 +139,7 @@ export default function BirthdatePicker({ topLabel = 'Birthdate', value, onChang
 
    return (
       <div {...stylex.props(styles.wrapper)}>
-         <label {...stylex.props(styles.topLabel)}>{topLabel}</label>
+         <span {...stylex.props(styles.topLabel)}>{topLabel}</span>
          <div {...stylex.props(styles.container)}>
             {BirthdateParts.map(part => (
                <DropdownMenu key={part.label}>

@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 interface LoginPageButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

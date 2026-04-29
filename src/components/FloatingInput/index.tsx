@@ -1,6 +1,6 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
-import { InputHTMLAttributes, useState } from 'react';
+import { type InputHTMLAttributes, useState } from 'react';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 export interface FloatingInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
@@ -63,6 +63,7 @@ export default function FloatingInput({ label, onChange, ...props }: FloatingInp
          <input
             {...stylex.props(styles.input, isFocused && styles.inputFocused)}
             {...props}
+            id={props.id}
             onFocus={e => {
                setIsFocused(true);
                props.onFocus?.(e);
@@ -76,7 +77,10 @@ export default function FloatingInput({ label, onChange, ...props }: FloatingInp
                onChange?.(e);
             }}
          />
-         <label {...stylex.props(styles.label, floated && styles.labelFloated, isFocused && styles.labelFocused)}>
+         <label
+            htmlFor={props.id}
+            {...stylex.props(styles.label, floated && styles.labelFloated, isFocused && styles.labelFocused)}
+         >
             {label}
          </label>
       </div>

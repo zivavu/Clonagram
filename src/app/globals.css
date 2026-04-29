@@ -66,4 +66,5 @@
    }
 }
 
+/* biome-ignore lint/suspicious/noUnknownAtRules: <It's a stylex main import. It has to be.> */
 @stylex;
