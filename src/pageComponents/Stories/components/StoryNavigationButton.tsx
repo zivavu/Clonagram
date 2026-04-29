@@ -13,6 +13,7 @@ export default function StoryNavigationButton({ onClick, left, isMoving, isLeft 
    return (
       <button onClick={onClick} {...stylex.props(styles.navBtn, isMoving && styles.navBtnHidden)} style={{ left }}>
          <svg
+            aria-label="Story navigation button"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"

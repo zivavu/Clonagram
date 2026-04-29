@@ -1,3 +1,5 @@
+import type { Media } from '@/src/types/global';
+
 export interface Layout {
    mainWidth: number;
    mainHeight: number;
@@ -8,18 +10,12 @@ export interface Layout {
    isMobile: boolean;
 }
 
-export interface StoryMedia {
-   id: string;
-   mediaUrl: string;
-   type: 'video' | 'image';
-}
-
 export interface StoryEntry {
    id: number;
    username: string;
    avatarUrl: string;
    timestamp: string;
-   stories: StoryMedia[];
+   stories: Media[];
 }
 
 export interface StoriesPageProps {

@@ -118,9 +118,9 @@ export default function StoryCard({
                paused={!isPlaying}
             />
          ) : (
-            currentMedia.mediaUrl && (
+            currentMedia.url && (
                <Image
-                  src={currentMedia.mediaUrl}
+                  src={currentMedia.url}
                   alt={story.username}
                   fill
                   loading="eager"
