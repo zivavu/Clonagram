@@ -35,7 +35,6 @@ export default function StoryCard({
    goToNextStoryMedia,
 }: StoryCardProps) {
    const [isPlaying, setIsPlaying] = useState(true);
-   console.log('isPlaying', isPlaying);
 
    const mediaIndex = isCurrent ? currentStoryMediaIndex : 0;
    const currentMedia = story.stories[mediaIndex];
@@ -53,27 +52,6 @@ export default function StoryCard({
       mediaEl.volume = volume;
       mediaEl.muted = volume === 0;
    }, [volume]);
-
-   // biome-ignore lint/correctness/useExhaustiveDependencies: <The dep array is just right :3>
-   useEffect(() => {
-      let elapsed = 0;
-      if (!isCurrent || isVideo) return;
-
-      const timer = setInterval(() => {
-         elapsed += 50;
-         if (elapsed >= PICTURE_DURATION) {
-            clearInterval(timer);
-            goToNextStoryMedia();
-         } else {
-            setPlayTime(elapsed);
-         }
-      }, 50);
-
-      if (!isPlaying) {
-         clearInterval(timer);
-      }
-      return () => clearInterval(timer);
-   }, [mediaIndex, isCurrent, isPlaying]);
 
    function togglePlay(e: React.MouseEvent) {
       e.stopPropagation();
@@ -110,6 +88,9 @@ export default function StoryCard({
                story={story}
                videoDuration={videoDuration}
                playTime={playTime}
+               isVideo={isVideo}
+               pictureDurationMs={PICTURE_DURATION}
+               onPictureSegmentComplete={goToNextStoryMedia}
                isPlaying={isPlaying}
                onTogglePlay={togglePlay}
                volume={volume}

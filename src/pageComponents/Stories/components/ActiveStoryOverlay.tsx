@@ -9,7 +9,7 @@ import { ClickAwayListener, Popper } from '@mui/material';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import type React from 'react';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { styles } from '../styles';
 import type { StoryEntry } from '../types';
 import { formatTimestamp } from '../utils';
@@ -18,6 +18,9 @@ interface ActiveStoryOverlayProps {
    story: StoryEntry;
    videoDuration: number;
    playTime: number;
+   isVideo: boolean;
+   pictureDurationMs: number;
+   onPictureSegmentComplete: () => void;
    isPlaying: boolean;
    onTogglePlay: (e: React.MouseEvent) => void;
    setVolume: (newVolume: number) => void;
@@ -29,6 +32,9 @@ export default function ActiveStoryOverlay({
    story,
    videoDuration = 6000,
    playTime,
+   isVideo,
+   pictureDurationMs,
+   onPictureSegmentComplete,
    isPlaying,
    onTogglePlay,
    setVolume,
@@ -37,6 +43,14 @@ export default function ActiveStoryOverlay({
 }: ActiveStoryOverlayProps) {
    const [volumePopperOpen, setVolumePopperOpen] = useState(false);
    const volumeAnchorEl = useRef<HTMLButtonElement>(null);
+
+   const onPictureAnimationEnd = useCallback(
+      (e: React.AnimationEvent<HTMLDivElement>) => {
+         if (e.target !== e.currentTarget) return;
+         onPictureSegmentComplete();
+      },
+      [onPictureSegmentComplete],
+   );
 
    const playedPct = videoDuration > 0 ? (playTime / videoDuration) * 100 : 0;
    const remainingPct = 100 - playedPct;
@@ -47,6 +61,22 @@ export default function ActiveStoryOverlay({
             <div {...stylex.props(styles.storyMediaBarsContainer)}>
                {story.stories.map((storyMedia, i) => {
                   if (i === currentStoryMediaIndex) {
+                     if (!isVideo) {
+                        return (
+                           <div key={storyMedia.id} {...stylex.props(styles.storyMediaActiveStoryBarContainer)}>
+                              <div {...stylex.props(styles.storyPictureBarTrack)}>
+                                 <div
+                                    {...stylex.props(styles.storyPictureBarFill)}
+                                    style={{
+                                       animationDuration: `${pictureDurationMs}ms`,
+                                       animationPlayState: isPlaying ? 'running' : 'paused',
+                                    }}
+                                    onAnimationEnd={onPictureAnimationEnd}
+                                 />
+                              </div>
+                           </div>
+                        );
+                     }
                      return (
                         <div key={storyMedia.id} {...stylex.props(styles.storyMediaActiveStoryBarContainer)}>
                            <div
