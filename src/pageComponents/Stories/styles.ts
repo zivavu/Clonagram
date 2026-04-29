@@ -26,6 +26,7 @@ export const styles = stylex.create({
    },
    story: {
       position: 'relative',
+      height: '100%',
       flexShrink: 0,
       overflow: 'hidden',
       cursor: 'pointer',
@@ -33,6 +34,12 @@ export const styles = stylex.create({
    },
    storyRounded: {
       borderRadius: radius.md,
+   },
+   sideStoryClickTarget: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      zIndex: 2,
    },
    sideStoryOverlay: {
       position: 'absolute',

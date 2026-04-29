@@ -7,7 +7,7 @@
       "build": "next build",
       "start": "next start",
       "lint": "biome lint --write .",
-      "format": "biome format --write .",
+      "format": "biome format --write . --reporter=summary",
       "check": "biome check --write .",
       "db:types": "npx supabase gen types typescript --project-id pggvzapkivjgsybyzjok > src/types/database.ts"
    },
@@ -60,6 +60,7 @@
       "@types/react": "^19.2.14",
       "@types/react-dom": "^19.2.3",
       "autoprefixer": "^10.5.0",
+      "babel-plugin-react-compiler": "^1.0.0",
       "supabase": "^2.93.0",
       "typescript": "^5.9.3"
    },

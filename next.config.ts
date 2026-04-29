@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
    images: {
       remotePatterns: [{ hostname: 'picsum.photos' }],
    },
+   reactCompiler: true,
    reactStrictMode: false,
 };
 
