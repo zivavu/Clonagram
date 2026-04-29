@@ -1,6 +1,15 @@
 import * as stylex from '@stylexjs/stylex';
 import { colors, radius } from '../../styles/tokens.stylex';
 
+const storyPictureBarFillKeyframes = stylex.keyframes({
+   from: {
+      transform: 'scaleX(0)',
+   },
+   to: {
+      transform: 'scaleX(1)',
+   },
+});
+
 export const styles = stylex.create({
    root: {
       position: 'relative',
@@ -146,6 +155,24 @@ export const styles = stylex.create({
    },
    storyMediaBarItemActive: {
       backgroundColor: colors.textPrimary,
+   },
+   storyPictureBarTrack: {
+      flex: 1,
+      height: '2px',
+      backgroundColor: colors.textMuted,
+      borderRadius: radius.md,
+      overflow: 'hidden',
+   },
+   storyPictureBarFill: {
+      display: 'block',
+      height: '100%',
+      width: '100%',
+      backgroundColor: colors.textPrimary,
+      borderRadius: radius.md,
+      transformOrigin: 'left center',
+      animationName: storyPictureBarFillKeyframes,
+      animationTimingFunction: 'linear',
+      animationFillMode: 'forwards',
    },
    activeStoryTopNavigation: {
       padding: '0 16px',
