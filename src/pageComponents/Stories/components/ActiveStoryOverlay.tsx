@@ -11,7 +11,7 @@ import Image from 'next/image';
 import type React from 'react';
 import { useRef, useState } from 'react';
 import { styles } from '../styles';
-import { StoryEntry } from '../types';
+import type { StoryEntry } from '../types';
 import { formatTimestamp } from '../utils';
 
 interface ActiveStoryOverlayProps {
@@ -83,9 +83,7 @@ export default function ActiveStoryOverlay({
                      style={{ borderRadius: '50%' }}
                   />
                   <span {...stylex.props(styles.activeStoryUsername)}>{story.username}</span>
-                  <span {...stylex.props(styles.activeStoryUploadTimestamp)}>
-                     {formatTimestamp(story.timestamp)}
-                  </span>
+                  <span {...stylex.props(styles.activeStoryUploadTimestamp)}>{formatTimestamp(story.timestamp)}</span>
                </div>
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>
                   <ClickAwayListener onClickAway={() => setVolumePopperOpen(false)}>

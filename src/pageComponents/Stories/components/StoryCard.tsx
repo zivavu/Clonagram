@@ -7,13 +7,9 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { usePlayerStore } from '../../../store/usePlayerStore';
 import { styles } from '../styles';
-import { Layout, StoryEntry } from '../types';
+import type { Layout, StoryEntry } from '../types';
 import ActiveStoryOverlay from './ActiveStoryOverlay';
 import SideStoryOverlay from './SideStoryOverlay';
-
-
-
-
 
 const PICTURE_DURATION = 6000;
 
@@ -39,6 +35,7 @@ export default function StoryCard({
    goToNextStoryMedia,
 }: StoryCardProps) {
    const [isPlaying, setIsPlaying] = useState(true);
+   console.log('isPlaying', isPlaying);
 
    const mediaIndex = isCurrent ? currentStoryMediaIndex : 0;
    const currentMedia = story.stories[mediaIndex];
@@ -57,12 +54,10 @@ export default function StoryCard({
       mediaEl.muted = volume === 0;
    }, [volume]);
 
-   //Handling the picture playbar
-useEffect(() => {
+   // biome-ignore lint/correctness/useExhaustiveDependencies: <The dep array is just right :3>
+   useEffect(() => {
       let elapsed = 0;
       if (!isCurrent || isVideo) return;
-
-
 
       const timer = setInterval(() => {
          elapsed += 50;
@@ -79,7 +74,6 @@ useEffect(() => {
       }
       return () => clearInterval(timer);
    }, [mediaIndex, isCurrent, isPlaying]);
-   console.log(playTime)
 
    function togglePlay(e: React.MouseEvent) {
       e.stopPropagation();
@@ -104,8 +98,12 @@ useEffect(() => {
             width: `${isCurrent ? layout.mainWidth : layout.sideWidth}px`,
             height: `${isCurrent ? layout.mainHeight : layout.sideHeight}px`,
          }}
-         onClick={onClick}
       >
+         <button
+            type="button"
+            onClick={() => (isCurrent ? onClick() : setIsPlaying(prev => !prev))}
+            {...stylex.props(styles.sideStoryClickTarget)}
+         ></button>
          {!isCurrent && <SideStoryOverlay story={story} />}
          {isCurrent && (
             <ActiveStoryOverlay

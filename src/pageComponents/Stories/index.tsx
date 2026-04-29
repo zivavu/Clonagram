@@ -1,14 +1,14 @@
 'use client';
 
-import { STORIES } from '@/src/pageComponents/Stories/data';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
+import { STORIES } from '@/src/pageComponents/Stories/data';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, SWIPE_THRESHOLD } from './constants';
 import { styles } from './styles';
-import { Layout, StoriesPageProps } from './types';
+import type { Layout, StoriesPageProps } from './types';
 import { computeLayout } from './utils';
 
 export default function StoriesPage({ username }: StoriesPageProps) {
