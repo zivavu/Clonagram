@@ -9,7 +9,6 @@ export interface Layout {
 }
 
 export interface StoryMedia {
-   type?: 'image' | 'video';
    id: string;
    mediaUrl: string;
    videoLength?: number;

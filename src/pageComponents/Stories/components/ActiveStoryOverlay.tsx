@@ -17,33 +17,28 @@ interface ActiveStoryOverlayProps {
    story: StoryEntry;
    videoDuration: number;
    playTime: number;
-   currentStoryIndex: number;
    formatUploadTimestamp: (timestamp: string) => string;
    isPlaying: boolean;
    onTogglePlay: (e: React.MouseEvent) => void;
    setVolume: (newVolume: number) => void;
    volume: number;
-   muteVolumeSwitch: (e: React.MouseEvent) => void;
+   currentStoryMediaIndex: number;
 }
 
 export default function ActiveStoryOverlay({
    story,
-   videoDuration,
+   videoDuration = 6000,
    playTime,
-   currentStoryIndex,
    formatUploadTimestamp,
    isPlaying,
    onTogglePlay,
    setVolume,
    volume,
-   muteVolumeSwitch,
+   currentStoryMediaIndex,
 }: ActiveStoryOverlayProps) {
-   const [currentStoryMediaIndex, setCurrentStoryMediaIndex] = useState(0);
    const [volumePopprOpen, setVolumePopperOpen] = useState(false);
 
    const volumeAnchorEl = useRef<HTMLButtonElement>(null);
-
-   const currentMedia = story.stories[currentStoryMediaIndex];
 
    const currentBarPlayedWidth = videoDuration > 0 ? (playTime / videoDuration) * 100 : 0;
    const currentBarRemainingWidth = 100 - currentBarPlayedWidth;
@@ -69,7 +64,7 @@ export default function ActiveStoryOverlay({
                         key={storyMedia.id}
                         {...stylex.props(
                            styles.storyMediaBarItem,
-                           i === currentStoryIndex && styles.storyMediaBarItemActive,
+                           i === currentStoryMediaIndex && styles.storyMediaBarItemActive,
                         )}
                      />
                   );
@@ -97,7 +92,6 @@ export default function ActiveStoryOverlay({
                         <button
                            ref={volumeAnchorEl}
                            onClick={() => setVolumePopperOpen(!volumePopprOpen)}
-                           onDoubleClick={muteVolumeSwitch}
                            {...stylex.props(styles.activeStoryTopNavigationRightButton)}
                         >
                            {volume === 0 ? (

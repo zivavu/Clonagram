@@ -17,12 +17,10 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
       STORIES.findIndex(s => s.username === username),
    );
 
-   const [currentStoryIndex] = useState(() => {
-      if (!storyId) return 0;
-      const storyIndex = STORIES[startIndex]?.stories.findIndex(el => el.id === storyId) ?? -1;
-      return storyIndex >= 0 ? storyIndex : 0;
-   });
    const [currentUserIndex, setCurrentUserIndex] = useState(startIndex);
+   const [currentStoryMediaIndex, setCurrentStoryMediaIndex] = useState(0);
+   const [playTime, setPlayTime] = useState(0);
+
    const [layout, setLayout] = useState<Layout>({
       mainWidth: DESKTOP_SIDE_W,
       mainHeight: DESKTOP_SIDE_H,
@@ -46,15 +44,33 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
       return () => window.removeEventListener('resize', apply);
    }, []);
 
-   const goTo = (raw: number) => {
-      const idx = ((raw % STORIES.length) + STORIES.length) % STORIES.length;
+   const goToStoryUserCard = (newUserIndex: number) => {
+      const idx = ((newUserIndex % STORIES.length) + STORIES.length) % STORIES.length;
       currentRef.current = idx;
       setCurrentUserIndex(idx);
+      setCurrentStoryMediaIndex(0);
       setLayout(computeLayout(idx));
       window.history.replaceState(null, '', `/stories/${STORIES[idx].username}`);
       setIsMoving(true);
       if (spinTimer.current) clearTimeout(spinTimer.current);
       spinTimer.current = setTimeout(() => setIsMoving(false), 380);
+   };
+
+   const goToNextStoryMedia = () => {
+      setPlayTime(0);
+      if (currentStoryMediaIndex < STORIES[currentUserIndex].stories.length - 1) {
+         setCurrentStoryMediaIndex(prev => prev + 1);
+      } else {
+         goToStoryUserCard(currentUserIndex + 1);
+      }
+   };
+   const goToPreviousStoryMedia = () => {
+      setPlayTime(0);
+      if (currentStoryMediaIndex > 0) {
+         setCurrentStoryMediaIndex(prev => prev - 1);
+      } else {
+         goToStoryUserCard(currentUserIndex - 1);
+      }
    };
 
    const onTouchStart = (e: React.TouchEvent) => {
@@ -66,7 +82,7 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
       const dx = e.changedTouches[0].clientX - touchStartX.current;
       const dy = e.changedTouches[0].clientY - touchStartY.current;
       if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
-         goTo(currentRef.current + (dx < 0 ? 1 : -1));
+         goToStoryUserCard(currentRef.current + (dx < 0 ? 1 : -1));
       }
    };
 
@@ -77,13 +93,13 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
          </Link>
 
          <StoryNavigationButton
-            onClick={() => goTo(currentUserIndex - 1)}
+            onClick={goToPreviousStoryMedia}
             left={`calc(50% - ${layout.mainWidth / 2 + 40}px)`}
             isMoving={isMoving}
             isLeft
          />
          <StoryNavigationButton
-            onClick={() => goTo(currentUserIndex + 1)}
+            onClick={goToNextStoryMedia}
             left={`calc(50% + ${layout.mainWidth / 2 + 16}px)`}
             isMoving={isMoving}
          />
@@ -100,9 +116,13 @@ export default function StoriesPage({ username, storyId }: StoriesPageProps) {
                      story={story}
                      isCurrent={isCurrent}
                      layout={layout}
-                     currentStoryIndex={currentStoryIndex}
-                     onClick={() => goTo(i)}
+                     currentUserIndex={currentUserIndex}
+                     onClick={() => goToStoryUserCard(i)}
                      formatTimestamp={formatTimestamp}
+                     currentStoryMediaIndex={currentStoryMediaIndex}
+                     playTime={playTime}
+                     setPlayTime={setPlayTime}
+                     goToNextStoryMedia={goToNextStoryMedia}
                   />
                );
             })}
