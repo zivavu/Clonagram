@@ -83,7 +83,7 @@ export default function LeftSidebar({ url }: { url: string | null }) {
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.leftSidebarContent)}>
-            <Link href="/" {...stylex.props(styles.navItem)}>
+            <Link href="/" {...stylex.props(styles.navItem)} style={{ width: 'fit-content' }}>
                <Image
                   src="/clonagram.png"
                   alt="Clonagram"

@@ -9,9 +9,10 @@ export interface Layout {
 }
 
 export interface StoryMedia {
+   type?: 'image' | 'video';
    id: string;
-   storyImageUrl: string;
-   storyLength: number;
+   mediaUrl: string;
+   videoLength?: number;
 }
 
 export interface StoryEntry {

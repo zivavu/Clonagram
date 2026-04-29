@@ -7,12 +7,12 @@ export const STORIES: StoryEntry[] = [
       avatarUrl: 'https://picsum.photos/seed/clona1/200/200',
       timestamp: '2026-04-25T15:42:00Z',
       stories: [
-         { id: '3882485930879235534', storyImageUrl: 'https://picsum.photos/seed/clona1a/720/1280', storyLength: 8000 },
-         { id: '3882485930879235535', storyImageUrl: 'https://picsum.photos/seed/clona1b/720/1280', storyLength: 5000 },
+         { id: '3882485930879235534', mediaUrl: 'https://picsum.photos/seed/clona1a/720/1280', videoLength: 8000 },
+         { id: '3882485930879235535', mediaUrl: 'https://picsum.photos/seed/clona1b/720/1280', videoLength: 5000 },
          {
             id: '3882485930879235536',
-            storyImageUrl: 'https://picsum.photos/seed/clona1c/720/1280',
-            storyLength: 11000,
+            mediaUrl: 'https://picsum.photos/seed/clona1c/720/1280',
+            videoLength: 11000,
          },
       ],
    },
@@ -22,8 +22,8 @@ export const STORIES: StoryEntry[] = [
       avatarUrl: 'https://picsum.photos/seed/clona2/630/630',
       timestamp: '2026-04-25T15:10:00Z',
       stories: [
-         { id: '4910237461823056701', storyImageUrl: 'https://picsum.photos/seed/clona2a/720/1280', storyLength: 7000 },
-         { id: '4910237461823056702', storyImageUrl: 'https://picsum.photos/seed/clona2b/720/1280', storyLength: 9000 },
+         { id: '4910237461823056701', mediaUrl: 'https://picsum.photos/seed/clona2a/720/1280', videoLength: 7000 },
+         { id: '4910237461823056702', mediaUrl: 'https://picsum.photos/seed/clona2b/720/1280', videoLength: 9000 },
       ],
    },
    {
@@ -32,14 +32,14 @@ export const STORIES: StoryEntry[] = [
       avatarUrl: 'https://picsum.photos/seed/clona3/630/630',
       timestamp: '2026-04-25T14:55:00Z',
       stories: [
-         { id: '7261094830156342810', storyImageUrl: 'https://picsum.photos/seed/clona3a/720/1280', storyLength: 6000 },
+         { id: '7261094830156342810', mediaUrl: 'https://picsum.photos/seed/clona3a/720/1280', videoLength: 6000 },
          {
             id: '7261094830156342811',
-            storyImageUrl: 'https://picsum.photos/seed/clona3b/720/1280',
-            storyLength: 12000,
+            mediaUrl: 'https://picsum.photos/seed/clona3b/720/1280',
+            videoLength: 12000,
          },
-         { id: '7261094830156342812', storyImageUrl: 'https://picsum.photos/seed/clona3c/720/1280', storyLength: 5000 },
-         { id: '7261094830156342813', storyImageUrl: 'https://picsum.photos/seed/clona3d/720/1280', storyLength: 8000 },
+         { id: '7261094830156342812', mediaUrl: 'https://picsum.photos/seed/clona3c/720/1280', videoLength: 5000 },
+         { id: '7261094830156342813', mediaUrl: 'https://picsum.photos/seed/clona3d/720/1280', videoLength: 8000 },
       ],
    },
    {
@@ -50,8 +50,8 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '5503817264920481337',
-            storyImageUrl: 'https://picsum.photos/seed/clona4a/720/1280',
-            storyLength: 10000,
+            mediaUrl: 'https://picsum.photos/seed/clona4a/720/1280',
+            videoLength: 10000,
          },
       ],
    },
@@ -61,15 +61,15 @@ export const STORIES: StoryEntry[] = [
       avatarUrl: 'https://picsum.photos/seed/clona5/630/630',
       timestamp: '2026-04-25T14:05:00Z',
       stories: [
-         { id: '6174930285741623948', storyImageUrl: 'https://picsum.photos/seed/clona5a/720/1280', storyLength: 7000 },
-         { id: '6174930285741623949', storyImageUrl: 'https://picsum.photos/seed/clona5b/720/1280', storyLength: 5000 },
+         { id: '6174930285741623948', mediaUrl: 'https://picsum.photos/seed/clona5a/720/1280', videoLength: 7000 },
+         { id: '6174930285741623949', mediaUrl: 'https://picsum.photos/seed/clona5b/720/1280', videoLength: 5000 },
          {
             id: '6174930285741623950',
-            storyImageUrl: 'https://picsum.photos/seed/clona5c/720/1280',
-            storyLength: 13000,
+            mediaUrl: 'https://picsum.photos/seed/clona5c/720/1280',
+            videoLength: 13000,
          },
-         { id: '6174930285741623951', storyImageUrl: 'https://picsum.photos/seed/clona5d/720/1280', storyLength: 6000 },
-         { id: '6174930285741623952', storyImageUrl: 'https://picsum.photos/seed/clona5e/720/1280', storyLength: 9000 },
+         { id: '6174930285741623951', mediaUrl: 'https://picsum.photos/seed/clona5d/720/1280', videoLength: 6000 },
+         { id: '6174930285741623952', mediaUrl: 'https://picsum.photos/seed/clona5e/720/1280', videoLength: 9000 },
       ],
    },
    {
@@ -80,10 +80,10 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '8834562019304758123',
-            storyImageUrl: 'https://picsum.photos/seed/clona6a/720/1280',
-            storyLength: 11000,
+            mediaUrl: 'https://picsum.photos/seed/clona6a/720/1280',
+            videoLength: 11000,
          },
-         { id: '8834562019304758124', storyImageUrl: 'https://picsum.photos/seed/clona6b/720/1280', storyLength: 7000 },
+         { id: '8834562019304758124', mediaUrl: 'https://picsum.photos/seed/clona6b/720/1280', videoLength: 7000 },
       ],
    },
    {
@@ -92,13 +92,13 @@ export const STORIES: StoryEntry[] = [
       avatarUrl: 'https://picsum.photos/seed/clona7/630/630',
       timestamp: '2026-04-25T13:20:00Z',
       stories: [
-         { id: '2097341856230947561', storyImageUrl: 'https://picsum.photos/seed/clona7a/720/1280', storyLength: 5000 },
+         { id: '2097341856230947561', mediaUrl: 'https://picsum.photos/seed/clona7a/720/1280', videoLength: 5000 },
          {
             id: '2097341856230947562',
-            storyImageUrl: 'https://picsum.photos/seed/clona7b/720/1280',
-            storyLength: 14000,
+            mediaUrl: 'https://picsum.photos/seed/clona7b/720/1280',
+            videoLength: 14000,
          },
-         { id: '2097341856230947563', storyImageUrl: 'https://picsum.photos/seed/clona7c/720/1280', storyLength: 8000 },
+         { id: '2097341856230947563', mediaUrl: 'https://picsum.photos/seed/clona7c/720/1280', videoLength: 8000 },
       ],
    },
    {
@@ -107,14 +107,14 @@ export const STORIES: StoryEntry[] = [
       avatarUrl: 'https://picsum.photos/seed/clona8/630/630',
       timestamp: '2026-04-25T12:50:00Z',
       stories: [
-         { id: '9345621087432156890', storyImageUrl: 'https://picsum.photos/seed/clona8a/720/1280', storyLength: 6000 },
+         { id: '9345621087432156890', mediaUrl: 'https://picsum.photos/seed/clona8a/720/1280', videoLength: 6000 },
          {
             id: '9345621087432156891',
-            storyImageUrl: 'https://picsum.photos/seed/clona8b/720/1280',
-            storyLength: 10000,
+            mediaUrl: 'https://picsum.photos/seed/clona8b/720/1280',
+            videoLength: 10000,
          },
-         { id: '9345621087432156892', storyImageUrl: 'https://picsum.photos/seed/clona8c/720/1280', storyLength: 7000 },
-         { id: '9345621087432156893', storyImageUrl: 'https://picsum.photos/seed/clona8d/720/1280', storyLength: 5000 },
+         { id: '9345621087432156892', mediaUrl: 'https://picsum.photos/seed/clona8c/720/1280', videoLength: 7000 },
+         { id: '9345621087432156893', mediaUrl: 'https://picsum.photos/seed/clona8d/720/1280', videoLength: 5000 },
       ],
    },
    {
@@ -123,7 +123,7 @@ export const STORIES: StoryEntry[] = [
       avatarUrl: 'https://picsum.photos/seed/clona9/630/630',
       timestamp: '2026-04-25T12:17:00Z',
       stories: [
-         { id: '1238904756123894501', storyImageUrl: 'https://picsum.photos/seed/clona9a/720/1280', storyLength: 9000 },
+         { id: '1238904756123894501', mediaUrl: 'https://picsum.photos/seed/clona9a/720/1280', videoLength: 9000 },
       ],
    },
    {
@@ -134,28 +134,28 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '3670128945632017834',
-            storyImageUrl: 'https://picsum.photos/seed/clona10a/720/1280',
-            storyLength: 12000,
+            mediaUrl: 'https://picsum.photos/seed/clona10a/720/1280',
+            videoLength: 12000,
          },
          {
             id: '3670128945632017835',
-            storyImageUrl: 'https://picsum.photos/seed/clona10b/720/1280',
-            storyLength: 6000,
+            mediaUrl: 'https://picsum.photos/seed/clona10b/720/1280',
+            videoLength: 6000,
          },
          {
             id: '3670128945632017836',
-            storyImageUrl: 'https://picsum.photos/seed/clona10c/720/1280',
-            storyLength: 8000,
+            mediaUrl: 'https://picsum.photos/seed/clona10c/720/1280',
+            videoLength: 8000,
          },
          {
             id: '3670128945632017837',
-            storyImageUrl: 'https://picsum.photos/seed/clona10d/720/1280',
-            storyLength: 5000,
+            mediaUrl: 'https://picsum.photos/seed/clona10d/720/1280',
+            videoLength: 5000,
          },
          {
             id: '3670128945632017838',
-            storyImageUrl: 'https://picsum.photos/seed/clona10e/720/1280',
-            storyLength: 11000,
+            mediaUrl: 'https://picsum.photos/seed/clona10e/720/1280',
+            videoLength: 11000,
          },
       ],
    },
@@ -167,13 +167,13 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '5512890346712038456',
-            storyImageUrl: 'https://picsum.photos/seed/clona11a/720/1280',
-            storyLength: 7000,
+            mediaUrl: 'https://picsum.photos/seed/clona11a/720/1280',
+            videoLength: 7000,
          },
          {
             id: '5512890346712038457',
-            storyImageUrl: 'https://picsum.photos/seed/clona11b/720/1280',
-            storyLength: 9000,
+            mediaUrl: 'https://picsum.photos/seed/clona11b/720/1280',
+            videoLength: 9000,
          },
       ],
    },
@@ -185,18 +185,18 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '7789034512678901234',
-            storyImageUrl: 'https://picsum.photos/seed/clona12a/720/1280',
-            storyLength: 5000,
+            mediaUrl: 'https://picsum.photos/seed/clona12a/720/1280',
+            videoLength: 5000,
          },
          {
             id: '7789034512678901235',
-            storyImageUrl: 'https://picsum.photos/seed/clona12b/720/1280',
-            storyLength: 13000,
+            mediaUrl: 'https://picsum.photos/seed/clona12b/720/1280',
+            videoLength: 13000,
          },
          {
             id: '7789034512678901236',
-            storyImageUrl: 'https://picsum.photos/seed/clona12c/720/1280',
-            storyLength: 7000,
+            mediaUrl: 'https://picsum.photos/seed/clona12c/720/1280',
+            videoLength: 7000,
          },
       ],
    },
@@ -208,23 +208,23 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '4423017896345210987',
-            storyImageUrl: 'https://picsum.photos/seed/clona13a/720/1280',
-            storyLength: 6000,
+            mediaUrl: 'https://picsum.photos/seed/clona13a/720/1280',
+            videoLength: 6000,
          },
          {
             id: '4423017896345210988',
-            storyImageUrl: 'https://picsum.photos/seed/clona13b/720/1280',
-            storyLength: 10000,
+            mediaUrl: 'https://picsum.photos/seed/clona13b/720/1280',
+            videoLength: 10000,
          },
          {
             id: '4423017896345210989',
-            storyImageUrl: 'https://picsum.photos/seed/clona13c/720/1280',
-            storyLength: 5000,
+            mediaUrl: 'https://picsum.photos/seed/clona13c/720/1280',
+            videoLength: 5000,
          },
          {
             id: '4423017896345210990',
-            storyImageUrl: 'https://picsum.photos/seed/clona13d/720/1280',
-            storyLength: 8000,
+            mediaUrl: 'https://picsum.photos/seed/clona13d/720/1280',
+            videoLength: 8000,
          },
       ],
    },
@@ -236,8 +236,8 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '6601234589023456781',
-            storyImageUrl: 'https://picsum.photos/seed/clona14a/720/1280',
-            storyLength: 15000,
+            mediaUrl: 'https://picsum.photos/seed/clona14a/720/1280',
+            videoLength: 15000,
          },
       ],
    },
@@ -249,28 +249,28 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '8890123456789012345',
-            storyImageUrl: 'https://picsum.photos/seed/clona15a/720/1280',
-            storyLength: 9000,
+            mediaUrl: 'https://picsum.photos/seed/clona15a/720/1280',
+            videoLength: 9000,
          },
          {
             id: '8890123456789012346',
-            storyImageUrl: 'https://picsum.photos/seed/clona15b/720/1280',
-            storyLength: 6000,
+            mediaUrl: 'https://picsum.photos/seed/clona15b/720/1280',
+            videoLength: 6000,
          },
          {
             id: '8890123456789012347',
-            storyImageUrl: 'https://picsum.photos/seed/clona15c/720/1280',
-            storyLength: 11000,
+            mediaUrl: 'https://picsum.photos/seed/clona15c/720/1280',
+            videoLength: 11000,
          },
          {
             id: '8890123456789012348',
-            storyImageUrl: 'https://picsum.photos/seed/clona15d/720/1280',
-            storyLength: 5000,
+            mediaUrl: 'https://picsum.photos/seed/clona15d/720/1280',
+            videoLength: 5000,
          },
          {
             id: '8890123456789012349',
-            storyImageUrl: 'https://picsum.photos/seed/clona15e/720/1280',
-            storyLength: 7000,
+            mediaUrl: 'https://picsum.photos/seed/clona15e/720/1280',
+            videoLength: 7000,
          },
       ],
    },
@@ -282,13 +282,13 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '1123456789012345678',
-            storyImageUrl: 'https://picsum.photos/seed/clona16a/720/1280',
-            storyLength: 8000,
+            mediaUrl: 'https://picsum.photos/seed/clona16a/720/1280',
+            videoLength: 8000,
          },
          {
             id: '1123456789012345679',
-            storyImageUrl: 'https://picsum.photos/seed/clona16b/720/1280',
-            storyLength: 12000,
+            mediaUrl: 'https://picsum.photos/seed/clona16b/720/1280',
+            videoLength: 12000,
          },
       ],
    },
@@ -300,18 +300,18 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '3345678901234567890',
-            storyImageUrl: 'https://picsum.photos/seed/clona17a/720/1280',
-            storyLength: 5000,
+            mediaUrl: 'https://picsum.photos/seed/clona17a/720/1280',
+            videoLength: 5000,
          },
          {
             id: '3345678901234567891',
-            storyImageUrl: 'https://picsum.photos/seed/clona17b/720/1280',
-            storyLength: 10000,
+            mediaUrl: 'https://picsum.photos/seed/clona17b/720/1280',
+            videoLength: 10000,
          },
          {
             id: '3345678901234567892',
-            storyImageUrl: 'https://picsum.photos/seed/clona17c/720/1280',
-            storyLength: 6000,
+            mediaUrl: 'https://picsum.photos/seed/clona17c/720/1280',
+            videoLength: 6000,
          },
       ],
    },
@@ -323,23 +323,23 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '5567890123456789012',
-            storyImageUrl: 'https://picsum.photos/seed/clona18a/720/1280',
-            storyLength: 7000,
+            mediaUrl: 'https://picsum.photos/seed/clona18a/720/1280',
+            videoLength: 7000,
          },
          {
             id: '5567890123456789013',
-            storyImageUrl: 'https://picsum.photos/seed/clona18b/720/1280',
-            storyLength: 9000,
+            mediaUrl: 'https://picsum.photos/seed/clona18b/720/1280',
+            videoLength: 9000,
          },
          {
             id: '5567890123456789014',
-            storyImageUrl: 'https://picsum.photos/seed/clona18c/720/1280',
-            storyLength: 5000,
+            mediaUrl: 'https://picsum.photos/seed/clona18c/720/1280',
+            videoLength: 5000,
          },
          {
             id: '5567890123456789015',
-            storyImageUrl: 'https://picsum.photos/seed/clona18d/720/1280',
-            storyLength: 13000,
+            mediaUrl: 'https://picsum.photos/seed/clona18d/720/1280',
+            videoLength: 13000,
          },
       ],
    },
@@ -351,8 +351,8 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '7789012345678901234',
-            storyImageUrl: 'https://picsum.photos/seed/clona19a/720/1280',
-            storyLength: 6000,
+            mediaUrl: 'https://picsum.photos/seed/clona19a/720/1280',
+            videoLength: 6000,
          },
       ],
    },
@@ -364,28 +364,28 @@ export const STORIES: StoryEntry[] = [
       stories: [
          {
             id: '9901234567890123456',
-            storyImageUrl: 'https://picsum.photos/seed/clona20a/720/1280',
-            storyLength: 8000,
+            mediaUrl: 'https://picsum.photos/seed/clona20a/720/1280',
+            videoLength: 8000,
          },
          {
             id: '9901234567890123457',
-            storyImageUrl: 'https://picsum.photos/seed/clona20b/720/1280',
-            storyLength: 5000,
+            mediaUrl: 'https://picsum.photos/seed/clona20b/720/1280',
+            videoLength: 5000,
          },
          {
             id: '9901234567890123458',
-            storyImageUrl: 'https://picsum.photos/seed/clona20c/720/1280',
-            storyLength: 11000,
+            mediaUrl: 'https://picsum.photos/seed/clona20c/720/1280',
+            videoLength: 11000,
          },
          {
             id: '9901234567890123459',
-            storyImageUrl: 'https://picsum.photos/seed/clona20d/720/1280',
-            storyLength: 7000,
+            mediaUrl: 'https://picsum.photos/seed/clona20d/720/1280',
+            videoLength: 7000,
          },
          {
             id: '9901234567890123460',
-            storyImageUrl: 'https://picsum.photos/seed/clona20e/720/1280',
-            storyLength: 9000,
+            mediaUrl: 'https://picsum.photos/seed/clona20e/720/1280',
+            videoLength: 9000,
          },
       ],
    },

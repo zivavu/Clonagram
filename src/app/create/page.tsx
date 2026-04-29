@@ -26,7 +26,6 @@ const styles = stylex.create({
 });
 
 export default async function CreatePage() {
-   console.log(process.env.MUX_TOKEN_ID, process.env.MUX_TOKEN_SECRET);
    const directUpload = await muxClient.video.uploads.create({
       cors_origin: '*',
       new_asset_settings: {

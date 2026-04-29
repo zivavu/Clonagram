@@ -36,8 +36,6 @@ export const styles = stylex.create({
    },
    sideStoryOverlay: {
       position: 'absolute',
-      top: 0,
-      left: 0,
       width: '100%',
       height: '100%',
       display: 'flex',
@@ -87,10 +85,9 @@ export const styles = stylex.create({
    },
    navIconLeft: { transform: 'rotate(180deg)' },
    activeStoryOverlay: {
-      position: 'relative',
+      position: 'absolute',
       width: '100%',
       height: '100%',
-      zIndex: 1,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -98,6 +95,7 @@ export const styles = stylex.create({
    activeStoryTopBar: {
       backgroundImage: 'linear-gradient(rgba(38, 38, 38, 0.8), rgba(38, 38, 38, 0))',
       paddingBottom: '20px',
+      zIndex: 1,
    },
    activeStoryBottomBar: {
       backgroundImage: 'linear-gradient(rgba(38, 38, 38, 0), rgba(38, 38, 38, 0.8))',
@@ -106,6 +104,7 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       gap: '16px',
+      zIndex: 1,
    },
    activeStoryReplyToInput: {
       width: '100%',

@@ -30,11 +30,11 @@ export default function ActiveStoryOverlay({ story, currentStoryIndex, formatTim
                      <div key={storyMedia.id} {...stylex.props(styles.storyMediaActiveStoryBarContainer)}>
                         <div
                            {...stylex.props(styles.storyMediaBarItem, styles.storyMediaBarItemActive)}
-                           style={{ width: `${storyMedia.storyLength}%` }}
+                           style={{ width: `${storyMedia.videoLength}%` }}
                         />
                         <div
                            {...stylex.props(styles.storyMediaBarItem)}
-                           style={{ width: `${100 - storyMedia.storyLength}%` }}
+                           style={{ width: `${100 - (storyMedia.videoLength ?? 0)}%` }}
                         />
                      </div>
                   ) : (

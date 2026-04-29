@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { styles } from '../styles';
 import { Layout, StoryEntry } from '../types';
 import ActiveStoryOverlay from './ActiveStoryOverlay';
+import MuxPlayer from './MuxPlayer';
 import SideStoryOverlay from './SideStoryOverlay';
 
 interface StoryCardProps {
@@ -22,6 +23,7 @@ export default function StoryCard({
    onClick,
    formatTimestamp,
 }: StoryCardProps) {
+   const media = story.stories[0];
    return (
       <div
          {...stylex.props(styles.story, !layout.isMobile && styles.storyRounded)}
@@ -36,13 +38,20 @@ export default function StoryCard({
             <ActiveStoryOverlay story={story} currentStoryIndex={currentStoryIndex} formatTimestamp={formatTimestamp} />
          )}
 
-         <Image
-            src={story.stories[0].storyImageUrl}
-            alt={story.username}
-            fill
-            loading="eager"
-            sizes="(max-width: 640px) 100vw, 33vw"
-         />
+         {isCurrent ? (
+            <MuxPlayer
+               style={{ width: '100%', height: '100%' }}
+               playbackId="HPbmwHABcTDuydWDsooCnkFRSGbCcr7OK00KJI5crh9g"
+            />
+         ) : (
+            <Image
+               src={media.mediaUrl}
+               alt={story.username}
+               fill
+               loading="eager"
+               sizes="(max-width: 640px) 100vw, 33vw"
+            />
+         )}
       </div>
    );
 }
