@@ -1,5 +1,5 @@
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, MOBILE_BP } from './constants';
-import { Layout } from './types';
+import type { Layout } from './types';
 
 export function computeLayout(index: number): Layout {
    const vw = window.innerWidth;
@@ -34,7 +34,7 @@ export function computeLayout(index: number): Layout {
 
 export function formatTimestamp(timestamp: string): string {
    const date = new Date(timestamp);
-   if (isNaN(date.getTime())) return '';
+   if (Number.isNaN(date.getTime())) return '';
 
    const diff = Date.now() - date.getTime();
    const MINUTE = 60_000;

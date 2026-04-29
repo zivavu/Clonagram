@@ -14,14 +14,18 @@ const styles = stylex.create({
       gap: '12px',
    },
    username: {
-      fontSize: '14px',
-      fontWeight: 'bold',
+      fontSize: '0.8rem',
+   },
+   createdAt: {
+      fontSize: '0.8rem',
+      color: 'var(--color-text-secondary)',
    },
 });
 
 interface HomepagePostProps {
    post: Post;
 }
+
 export default function HomepagePost({ post }: HomepagePostProps) {
    return (
       <div {...stylex.props(styles.root)}>
@@ -33,7 +37,9 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                height={32}
                style={{ borderRadius: '50%' }}
             />
-            <span {...stylex.props(styles.username)}>{post.user}</span>
+            <span {...stylex.props(styles.username)}>{post.user.username}</span>
+            <span>•</span>
+            <span {...stylex.props(styles.createdAt)}>{formatDistanceToNow(new Date(post.createdAt))}</span>
          </div>
       </div>
    );

@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
 import Image from 'next/image';
 import { useSyncExternalStore } from 'react';
-import loginCardPeople, { LoginCardPerson } from '../loginCardPeople';
+import loginCardPeople, { type LoginCardPerson } from '../loginCardPeople';
 import { colors, radius } from '../../../styles/tokens.stylex';
 
 function getRandomDistinctPeople(people: readonly LoginCardPerson[], count: number) {

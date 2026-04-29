@@ -1,25 +1,34 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse, type NextRequest } from 'next/server';
+import { type CookieMethodsServer, type CookieOptions, createServerClient } from '@supabase/ssr';
+import { type NextRequest, NextResponse } from 'next/server';
 
 export async function updateSession(request: NextRequest) {
+   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+   if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY');
+   }
+
    let supabaseResponse = NextResponse.next({ request });
 
-   const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-         cookies: {
-            getAll() {
-               return request.cookies.getAll();
-            },
-            setAll(cookiesToSet) {
-               cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-               supabaseResponse = NextResponse.next({ request });
-               cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options));
-            },
-         },
+   const cookieMethods: CookieMethodsServer = {
+      getAll() {
+         return request.cookies.getAll();
       },
-   );
+      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[], headers: Record<string, string>) {
+         cookiesToSet.forEach(({ name, value }) => {
+            request.cookies.set(name, value);
+         });
+         supabaseResponse = NextResponse.next({ request });
+         cookiesToSet.forEach(({ name, value, options }) => {
+            supabaseResponse.cookies.set(name, value, options);
+         });
+         Object.entries(headers).forEach(([key, value]) => {
+            supabaseResponse.headers.set(key, value);
+         });
+      },
+   };
+
+   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, { cookies: cookieMethods });
 
    // Refresh the session — do not add logic between createServerClient and
    // getUser(), as it may cause hard-to-debug session issues.

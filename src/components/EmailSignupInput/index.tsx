@@ -1,7 +1,7 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
 import { colors } from '../../styles/tokens.stylex';
-import FloatingInput, { FloatingInputProps } from '../FloatingInput';
+import FloatingInput, { type FloatingInputProps } from '../FloatingInput';
 
 interface EmailSignupInputProps extends FloatingInputProps {
    topLabel: string;
@@ -24,8 +24,10 @@ const styles = stylex.create({
 export default function EmailSignupInput({ label, topLabel, onChange, ...props }: EmailSignupInputProps) {
    return (
       <div {...stylex.props(styles.wrapper)}>
-         <label {...stylex.props(styles.topLabel)}>{topLabel}</label>
-         <FloatingInput label={label} {...props} onChange={onChange} />
+         <label htmlFor={topLabel} {...stylex.props(styles.topLabel)}>
+            {topLabel}
+         </label>
+         <FloatingInput id={topLabel} aria-label={label} label={label} {...props} onChange={onChange} />
       </div>
    );
 }

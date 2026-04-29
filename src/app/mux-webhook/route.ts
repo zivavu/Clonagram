@@ -1,4 +1,4 @@
-function saveAssetToDatabase(data: any) {
+function saveAssetToDatabase(data: unknown) {
    console.log(data);
 }
 
