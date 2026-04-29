@@ -1,11 +1,11 @@
 'use client';
 
-import { FavoriteBorder, SendOutlined } from '@mui/icons-material';
+import { FavoriteBorder, SendOutlined, VolumeDownRounded, VolumeOffRounded } from '@mui/icons-material';
 import MoreHorizRounded from '@mui/icons-material/MoreHorizRounded';
 import PauseRounded from '@mui/icons-material/PauseRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
-import { Popper } from '@mui/material';
+import { ClickAwayListener, Popper } from '@mui/material';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import type React from 'react';
@@ -92,26 +92,41 @@ export default function ActiveStoryOverlay({
                   </span>
                </div>
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>
-                  <button
-                     ref={volumeAnchorEl}
-                     onClick={() => setVolumePopperOpen(!volumePopprOpen)}
-                     onDoubleClick={muteVolumeSwitch}
-                     {...stylex.props(styles.activeStoryTopNavigationRightButton)}
-                  >
-                     <VolumeUpRounded style={{ fontSize: 20 }} />
-                  </button>
-                  <Popper open={volumePopprOpen} anchorEl={volumeAnchorEl.current}>
-                     <div>
-                        <input
-                           type="range"
-                           min="0"
-                           max="1"
-                           step="0.01"
-                           value={volume}
-                           onChange={e => setVolume(Number(e.target.value))}
-                        />
-                     </div>
-                  </Popper>
+                  <ClickAwayListener onClickAway={() => setVolumePopperOpen(false)}>
+                     <span style={{ display: 'contents' }}>
+                        <button
+                           ref={volumeAnchorEl}
+                           onClick={() => setVolumePopperOpen(!volumePopprOpen)}
+                           onDoubleClick={muteVolumeSwitch}
+                           {...stylex.props(styles.activeStoryTopNavigationRightButton)}
+                        >
+                           {volume === 0 ? (
+                              <VolumeOffRounded style={{ fontSize: 20 }} />
+                           ) : volume < 0.5 ? (
+                              <VolumeDownRounded style={{ fontSize: 20 }} />
+                           ) : (
+                              <VolumeUpRounded style={{ fontSize: 20 }} />
+                           )}
+                        </button>
+                        <Popper
+                           open={volumePopprOpen}
+                           anchorEl={volumeAnchorEl.current}
+                           modifiers={[{ name: 'offset', options: { offset: [0, 4] } }]}
+                        >
+                           <div {...stylex.props(styles.volumePopperPaper)}>
+                              <input
+                                 type="range"
+                                 min="0"
+                                 max="1"
+                                 step="0.01"
+                                 value={volume}
+                                 onChange={e => setVolume(Number(e.target.value))}
+                                 {...stylex.props(styles.volumeSlider)}
+                              />
+                           </div>
+                        </Popper>
+                     </span>
+                  </ClickAwayListener>
                   <button {...stylex.props(styles.activeStoryTopNavigationRightButton)} onClick={onTogglePlay}>
                      {isPlaying ? (
                         <PauseRounded style={{ fontSize: 20 }} />
