@@ -1,6 +1,7 @@
 'use client';
 
 import type MuxPlayerElement from '@mux/mux-player';
+import MuxPlayer from '@mux/mux-player-react';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
@@ -8,8 +9,11 @@ import { usePlayerStore } from '../../../store/usePlayerStore';
 import { styles } from '../styles';
 import { Layout, StoryEntry } from '../types';
 import ActiveStoryOverlay from './ActiveStoryOverlay';
-import MuxPlayer from './MuxPlayer';
 import SideStoryOverlay from './SideStoryOverlay';
+
+
+
+
 
 const PICTURE_DURATION = 6000;
 
@@ -38,7 +42,7 @@ export default function StoryCard({
 
    const mediaIndex = isCurrent ? currentStoryMediaIndex : 0;
    const currentMedia = story.stories[mediaIndex];
-   const isVideo = !!currentMedia.videoLength;
+   const isVideo = currentMedia.type === 'video';
 
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
 
@@ -53,36 +57,43 @@ export default function StoryCard({
       mediaEl.muted = volume === 0;
    }, [volume]);
 
-   useEffect(() => {
-      setVideoDuration(isVideo ? (currentMedia.videoLength ?? 0) * 1000 : PICTURE_DURATION);
-
+   //Handling the picture playbar
+useEffect(() => {
+      let elapsed = 0;
       if (!isCurrent || isVideo) return;
 
-      setPlayTime(0);
-      let elapsed = 0;
+
+
       const timer = setInterval(() => {
-         elapsed += 100;
+         elapsed += 50;
          if (elapsed >= PICTURE_DURATION) {
             clearInterval(timer);
             goToNextStoryMedia();
          } else {
             setPlayTime(elapsed);
          }
-      }, 100);
+      }, 50);
 
+      if (!isPlaying) {
+         clearInterval(timer);
+      }
       return () => clearInterval(timer);
-   }, [mediaIndex, isCurrent]);
+   }, [mediaIndex, isCurrent, isPlaying]);
+   console.log(playTime)
 
    function togglePlay(e: React.MouseEvent) {
       e.stopPropagation();
-      const nextPlaying = !isPlaying;
-      setIsPlaying(nextPlaying);
-      const mediaEl = muxPlayerRef.current?.media;
-      if (!mediaEl) return;
-      if (nextPlaying) {
-         mediaEl.play();
-      } else {
-         mediaEl.pause();
+      if (!isVideo) setIsPlaying(!isPlaying);
+      else {
+         const nextPlaying = !isPlaying;
+         setIsPlaying(nextPlaying);
+         const mediaEl = muxPlayerRef.current?.media;
+         if (!mediaEl) return;
+         if (nextPlaying) {
+            mediaEl.play();
+         } else {
+            mediaEl.pause();
+         }
       }
    }
 
