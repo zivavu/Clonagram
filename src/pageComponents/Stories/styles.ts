@@ -18,13 +18,21 @@ export const styles = stylex.create({
       display: 'flex',
       alignItems: 'center',
    },
-   title: {
+   titleLink: {
       position: 'absolute',
       top: '8px',
       left: '16px',
       zIndex: 10,
+   },
+   titleLinkText: {
       fontFamily: 'var(--font-grand-hotel)',
       fontWeight: '200',
+   },
+   closeLink: {
+      position: 'absolute',
+      top: '16px',
+      right: '16px',
+      zIndex: 10,
    },
    strip: {
       display: 'flex',

@@ -180,7 +180,7 @@ export default function ActiveStoryOverlay({
                <FavoriteBorder style={{ fontSize: 26 }} />
             </button>
             <button type="button">
-               <SendOutlined style={{ fontSize: 26, rotate: '-45deg' }} />
+               <SendOutlined style={{ fontSize: 26, transform: 'translateY(-15%) rotate(-45deg)' }} />
             </button>
          </div>
       </div>

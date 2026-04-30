@@ -1,16 +1,16 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
+import * as stylex from '@stylexjs/stylex';
+import Link from 'next/link';
+import { Controller, useForm } from 'react-hook-form';
+import z from 'zod';
 import AuthPagesFooter from '@/src/components/AuthPagesFooter';
 import BirthdatePicker from '@/src/components/BirthdatePicker';
 import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as stylex from '@stylexjs/stylex';
-import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
-import Link from 'next/link';
-import { Controller, useForm } from 'react-hook-form';
-import z from 'zod';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({

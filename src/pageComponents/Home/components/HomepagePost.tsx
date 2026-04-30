@@ -1,6 +1,13 @@
+import {
+   BookmarkBorderRounded,
+   ChatBubbleOutlineRounded,
+   FavoriteBorderRounded,
+   SendOutlined,
+   ShareRounded,
+} from '@mui/icons-material';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { colors } from '@/src/styles/tokens.stylex';
+import { colors, radius } from '@/src/styles/tokens.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
 import type { Post } from './Main';
 
@@ -8,7 +15,6 @@ const styles = stylex.create({
    root: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '16px',
       margin: '0 auto',
       width: '468px',
    },
@@ -17,15 +23,48 @@ const styles = stylex.create({
       alignItems: 'center',
       gap: '2px',
       paddingLeft: '16px',
+      marginBottom: '16px',
    },
-   username: {
+   topUsername: {
       fontSize: '0.9rem',
-      fontWeight: 500,
-      marginLeft: '8px',
+      fontWeight: 600,
+      marginLeft: '16px',
+   },
+   separator: {
+      fontSize: '0.9rem',
+      color: colors.textSecondary,
    },
    createdAt: {
       fontSize: '0.9rem',
       color: colors.textSecondary,
+   },
+   iconsBar: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '16px',
+      width: '100%',
+      marginTop: '16px',
+   },
+   iconBarItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px',
+      fontWeight: 500,
+   },
+   descriptionContainer: {
+      display: 'flex',
+      gap: '4px',
+      marginLeft: '8px',
+      marginTop: '8px',
+   },
+   bottomUsername: {
+      fontSize: '0.9rem',
+      fontWeight: 600,
+      marginLeft: '8px',
+   },
+   description: {
+      fontSize: '0.9rem',
+      color: colors.textPrimary,
    },
 });
 
@@ -47,11 +86,47 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                priority={index <= 2}
                loading={index <= 2 ? 'eager' : 'lazy'}
             />
-            <span {...stylex.props(styles.username)}>{post.user.username}</span>
-            <span>•</span>
+            <span {...stylex.props(styles.topUsername)}>{post.user.username}</span>
+            <span {...stylex.props(styles.separator)}>•</span>
             <span {...stylex.props(styles.createdAt)}>{formatRelativeTimeShortUnit(post.createdAt)}</span>
          </div>
-         <Image src={post.media[0].url} alt={post.media[0].type} width={468} height={468} />
+         <Image
+            src={post.media[0].url}
+            alt={post.media[0].type}
+            width={468}
+            height={468}
+            style={{ borderRadius: radius.xs }}
+         />
+         <div {...stylex.props(styles.iconsBar)}>
+            <div {...stylex.props(styles.iconBarItem)}>
+               <button type="button">
+                  <FavoriteBorderRounded />
+               </button>
+               {post.likesCount > 0 && <span>{post.likesCount}</span>}
+            </div>
+            <div {...stylex.props(styles.iconBarItem)}>
+               <button type="button">
+                  <ChatBubbleOutlineRounded />
+               </button>
+               {post.commentsCount > 0 && <span>{post.commentsCount}</span>}
+            </div>
+            <div {...stylex.props(styles.iconBarItem)}>
+               <button type="button">
+                  <ShareRounded />
+               </button>
+               {post.repostsCount > 0 && <span>{post.repostsCount}</span>}
+            </div>
+            <button type="button">
+               <SendOutlined style={{ transform: 'translateY(-15%) rotate(-45deg)' }} />
+            </button>
+            <button type="button" style={{ marginLeft: 'auto' }}>
+               <BookmarkBorderRounded />
+            </button>
+         </div>
+         <div {...stylex.props(styles.descriptionContainer)}>
+            <span {...stylex.props(styles.bottomUsername)}>{post.user.username}</span>
+            <span {...stylex.props(styles.description)}>{post.description}</span>
+         </div>
       </div>
    );
 }

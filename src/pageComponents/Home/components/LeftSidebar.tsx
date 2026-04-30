@@ -75,7 +75,7 @@ const styles = stylex.create({
    },
    navItemLabel: {
       fontSize: '1rem',
-      fontWeight: 300,
+      fontWeight: 400,
       color: colors.textPrimary,
       display: 'var(--label-display)',
    },
@@ -109,7 +109,7 @@ export default function LeftSidebar({ url }: { url: string | null }) {
                         {...stylex.props(styles.navItem, isActive && styles.navItemActive)}
                      >
                         <Icon style={{ fontSize: 26 }} />
-                        <span {...stylex.props(styles.navItemLabel)} style={{ fontWeight: isActive ? 600 : 300 }}>
+                        <span {...stylex.props(styles.navItemLabel)} style={{ fontWeight: isActive ? 600 : 400 }}>
                            {label}
                         </span>
                      </Link>
