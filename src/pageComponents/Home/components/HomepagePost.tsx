@@ -31,9 +31,10 @@ const styles = stylex.create({
 
 interface HomepagePostProps {
    post: Post;
+   index: number;
 }
 
-export default function HomepagePost({ post }: HomepagePostProps) {
+export default function HomepagePost({ post, index }: HomepagePostProps) {
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
@@ -43,6 +44,8 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                width={32}
                height={32}
                style={{ borderRadius: '50%' }}
+               priority={index <= 2}
+               loading={index <= 2 ? 'eager' : 'lazy'}
             />
             <span {...stylex.props(styles.username)}>{post.user.username}</span>
             <span>•</span>

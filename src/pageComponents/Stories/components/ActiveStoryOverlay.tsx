@@ -7,7 +7,6 @@ import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
 import { ClickAwayListener, Popper } from '@mui/material';
 import * as stylex from '@stylexjs/stylex';
-import { formatRelativeWithOptions } from 'date-fns/fp';
 import Image from 'next/image';
 import type React from 'react';
 import { useCallback, useRef, useState } from 'react';
