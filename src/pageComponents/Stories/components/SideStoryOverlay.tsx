@@ -1,8 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
+import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
 import { styles } from '../styles';
 import type { StoryEntry } from '../types';
-import { formatTimestamp } from '../utils';
 
 interface SideStoryOverlayProps {
    story: StoryEntry;
@@ -20,7 +20,7 @@ export default function SideStoryOverlay({ story }: SideStoryOverlayProps) {
             style={{ borderRadius: '50%' }}
          />
          <span {...stylex.props(styles.sideStoryUsername)}>{story.username}</span>
-         <span {...stylex.props(styles.sideStoryTimestamp)}>{formatTimestamp(story.timestamp)}</span>
+         <span {...stylex.props(styles.sideStoryTimestamp)}>{formatRelativeTimeShortUnit(story.timestamp)}</span>
       </div>
    );
 }

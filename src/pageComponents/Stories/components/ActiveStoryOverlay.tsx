@@ -7,12 +7,13 @@ import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
 import { ClickAwayListener, Popper } from '@mui/material';
 import * as stylex from '@stylexjs/stylex';
+import { formatRelativeWithOptions } from 'date-fns/fp';
 import Image from 'next/image';
 import type React from 'react';
 import { useCallback, useRef, useState } from 'react';
+import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
 import { styles } from '../styles';
 import type { StoryEntry } from '../types';
-import { formatTimestamp } from '../utils';
 
 interface ActiveStoryOverlayProps {
    story: StoryEntry;
@@ -113,7 +114,9 @@ export default function ActiveStoryOverlay({
                      style={{ borderRadius: '50%' }}
                   />
                   <span {...stylex.props(styles.activeStoryUsername)}>{story.username}</span>
-                  <span {...stylex.props(styles.activeStoryUploadTimestamp)}>{formatTimestamp(story.timestamp)}</span>
+                  <span {...stylex.props(styles.activeStoryUploadTimestamp)}>
+                     {formatRelativeTimeShortUnit(story.timestamp)}
+                  </span>
                </div>
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>
                   <ClickAwayListener onClickAway={() => setVolumePopperOpen(false)}>

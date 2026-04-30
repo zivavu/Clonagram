@@ -1,24 +1,31 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
+import { colors } from '@/src/styles/tokens.stylex';
+import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
 import type { Post } from './Main';
 
 const styles = stylex.create({
    root: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '12px',
+      gap: '16px',
+      margin: '0 auto',
+      width: '468px',
    },
    header: {
       display: 'flex',
       alignItems: 'center',
-      gap: '12px',
+      gap: '2px',
+      paddingLeft: '16px',
    },
    username: {
-      fontSize: '0.8rem',
+      fontSize: '0.9rem',
+      fontWeight: 500,
+      marginLeft: '8px',
    },
    createdAt: {
-      fontSize: '0.8rem',
-      color: 'var(--color-text-secondary)',
+      fontSize: '0.9rem',
+      color: colors.textSecondary,
    },
 });
 
@@ -39,8 +46,9 @@ export default function HomepagePost({ post }: HomepagePostProps) {
             />
             <span {...stylex.props(styles.username)}>{post.user.username}</span>
             <span>•</span>
-            <span {...stylex.props(styles.createdAt)}>{formatDistanceToNow(new Date(post.createdAt))}</span>
+            <span {...stylex.props(styles.createdAt)}>{formatRelativeTimeShortUnit(post.createdAt)}</span>
          </div>
+         <Image src={post.media[0].url} alt={post.media[0].type} width={468} height={468} />
       </div>
    );
 }
