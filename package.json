@@ -19,7 +19,7 @@
       "@mui/material": "^9.0.0",
       "@mui/material-nextjs": "^9.0.0",
       "@mux/mux-node": "^14.0.1",
-      "@mux/mux-player-react": "^3.11.8",
+      "@mux/mux-player-react": "^3.13.0",
       "@mux/mux-uploader-react": "^1.5.0",
       "@radix-ui/react-avatar": "^1.1.11",
       "@radix-ui/react-dialog": "^1.1.15",
@@ -33,9 +33,9 @@
       "@radix-ui/react-toast": "^1.2.15",
       "@stylexjs/stylex": "^0.18.3",
       "@supabase/ssr": "^0.10.2",
-      "@supabase/supabase-js": "^2.104.0",
-      "@tanstack/react-query": "^5.99.2",
-      "@tanstack/react-query-devtools": "^5.99.2",
+      "@supabase/supabase-js": "^2.105.1",
+      "@tanstack/react-query": "^5.100.6",
+      "@tanstack/react-query-devtools": "^5.100.6",
       "@upstash/ratelimit": "^2.0.8",
       "@upstash/redis": "^1.37.0",
       "clsx": "^2.1.1",
@@ -45,9 +45,9 @@
       "react": "19.2.4",
       "react-dom": "19.2.4",
       "react-dropzone": "^15.0.0",
-      "react-hook-form": "^7.73.1",
+      "react-hook-form": "^7.74.0",
       "react-intersection-observer": "^10.0.3",
-      "zod": "^4.3.6",
+      "zod": "^4.4.1",
       "zustand": "^5.0.12"
    },
    "devDependencies": {
@@ -61,7 +61,7 @@
       "@types/react-dom": "^19.2.3",
       "autoprefixer": "^10.5.0",
       "babel-plugin-react-compiler": "^1.0.0",
-      "supabase": "^2.93.0",
+      "supabase": "^2.96.0",
       "typescript": "^5.9.3"
    },
    "ignoreScripts": [
