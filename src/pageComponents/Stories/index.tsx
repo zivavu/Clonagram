@@ -1,5 +1,6 @@
 'use client';
 
+import { Close, CloseRounded, X } from '@mui/icons-material';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
@@ -95,7 +96,9 @@ export default function StoriesPage({ username }: StoriesPageProps) {
          <Link href="/">
             <h1 {...stylex.props(styles.title)}>Clonagram</h1>
          </Link>
-
+         <Link href="/" style={{ position: 'absolute', top: 16, right: 16 }}>
+            <CloseRounded style={{ fontSize: 38 }} />
+         </Link>
          <StoryNavigationButton
             onClick={goToPreviousStoryMedia}
             left={`calc(50% - ${layout.mainWidth / 2 + 40}px)`}

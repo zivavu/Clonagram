@@ -77,7 +77,7 @@ const styles = stylex.create({
    root: {
       width: '630px',
       flexDirection: 'column',
-      gap: '12px',
+      gap: '38px',
       display: 'flex',
       position: 'relative',
    },

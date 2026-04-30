@@ -1,8 +1,7 @@
 'use client';
 
+import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import * as stylex from '@stylexjs/stylex';
-import ArrowCircleLeftRounded from '@mui/icons-material/ArrowCircleLeftRounded';
-import ArrowCircleRightRounded from '@mui/icons-material/ArrowCircleRightRounded';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
@@ -126,21 +125,28 @@ export default function StoriesRow() {
    const handlePrevious = () => scrollBy(-STORY_ITEM_WIDTH * SCROLL_PAGES);
    const handleNext = () => scrollBy(STORY_ITEM_WIDTH * SCROLL_PAGES);
 
+   const storiesEl = storiesRowRef.current;
+   const isFirst = storiesEl?.scrollLeft === 0 || storiesEl?.scrollLeft === undefined;
+   const maxScroll = storiesEl ? storiesEl.scrollWidth - storiesEl.clientWidth : 1000;
+   const isLast = maxScroll <= 0 || (storiesEl?.scrollLeft ?? 0) >= maxScroll;
+
    return (
       <div {...stylex.props(styles.root)}>
          <button
             {...stylex.props(styles.storiesRowButton, styles.storiesRowButtonLeft)}
             onClick={handlePrevious}
             disabled={isScrolling}
+            style={{ display: isFirst ? 'none' : 'flex' }}
          >
-            <ArrowCircleLeftRounded style={{ fontSize: 24, color: colors.textPrimary }} />
+            <ExpandCircleDownIcon style={{ fontSize: 24, color: colors.textPrimary, transform: 'rotate(90deg)' }} />
          </button>
          <button
             {...stylex.props(styles.storiesRowButton, styles.storiesRowButtonRight)}
             onClick={handleNext}
             disabled={isScrolling}
+            style={{ display: isLast ? 'none' : 'flex' }}
          >
-            <ArrowCircleRightRounded style={{ fontSize: 24 }} />
+            <ExpandCircleDownIcon style={{ fontSize: 24, transform: 'rotate(-90deg)' }} />
          </button>
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef}>
             {STORIES.map(story => {
