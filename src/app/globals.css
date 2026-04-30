@@ -9,7 +9,8 @@
 }
 
 :root {
-   --font-chivo: "Chivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+   --font-body: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+   --font-auth: "Chivo", var(--font-body);
    --font-grand-hotel: "Grand Hotel", cursive;
 }
 
@@ -26,11 +27,11 @@
       color-scheme: light dark;
    }
    span {
-      font-family: var(--font-chivo);
+      font-family: var(--font-body);
    }
 
    body {
-      font-family: var(--font-chivo), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--font-body);
       font-size: 14px;
       -webkit-font-smoothing: antialiased;
    }
@@ -42,7 +43,7 @@
    }
 
    button {
-      font-family: var(--font-chivo), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--font-body);
       cursor: pointer;
       border: none;
       background: none;
@@ -59,6 +60,20 @@
       color: inherit;
       text-decoration: none;
    }
+
+   [data-auth-font],
+   [data-auth-font] span,
+   [data-auth-font] button,
+   [data-auth-font] input,
+   [data-auth-font] textarea,
+   [data-auth-font] select {
+      font-family: var(--font-auth);
+   }
+}
+
+.MuiSvgIcon-root {
+   /* biome-ignore lint/complexity/noImportantStyles: <Well, it's MUI icon. There is no other way to globally fix it> */
+   display: flex !important;
 }
 
 /* biome-ignore lint/suspicious/noUnknownAtRules: <It's a stylex main import. It has to be.> */

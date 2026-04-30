@@ -93,10 +93,10 @@ export default function StoriesPage({ username }: StoriesPageProps) {
 
    return (
       <div {...stylex.props(styles.root)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-         <Link href="/">
-            <h1 {...stylex.props(styles.title)}>Clonagram</h1>
+         <Link href="/" {...stylex.props(styles.titleLink)}>
+            <h1 {...stylex.props(styles.titleLinkText)}>Clonagram</h1>
          </Link>
-         <Link href="/" style={{ position: 'absolute', top: 16, right: 16 }}>
+         <Link href="/" {...stylex.props(styles.closeLink)}>
             <CloseRounded style={{ fontSize: 38 }} />
          </Link>
          <StoryNavigationButton

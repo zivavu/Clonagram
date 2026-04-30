@@ -7,9 +7,10 @@ export interface Post {
    id: number;
    user: PartialUser;
    media: Media[];
-   caption: string;
-   likes: number;
-   comments: number;
+   description: string;
+   likesCount: number;
+   repostsCount: number;
+   commentsCount: number;
    createdAt: string;
 }
 
@@ -28,9 +29,10 @@ const POSTS: Post[] = [
             url: 'https://picsum.photos/seed/clona1/630/630',
          },
       ],
-      likes: 1842,
-      caption: 'lost somewhere between analog and digital 📼',
-      comments: 34,
+      likesCount: 1842,
+      description: 'lost somewhere between analog and digital 📼',
+      commentsCount: 34,
+      repostsCount: 12,
       createdAt: '2026-04-25T15:42:00Z',
    },
    {
@@ -47,9 +49,10 @@ const POSTS: Post[] = [
             url: 'https://picsum.photos/seed/clona2/630/630',
          },
       ],
-      likes: 572,
-      caption: 'the city never sleeps and neither do i ✦',
-      comments: 11,
+      likesCount: 572,
+      description: 'the city never sleeps and neither do i ✦',
+      commentsCount: 11,
+      repostsCount: 19,
       createdAt: '2026-04-25T15:10:00Z',
    },
    {
@@ -66,9 +69,10 @@ const POSTS: Post[] = [
             url: 'https://picsum.photos/seed/clona3/630/420',
          },
       ],
-      likes: 3201,
-      caption: "golden hour hits different when you're not looking for it 🌅",
-      comments: 89,
+      likesCount: 3201,
+      repostsCount: 333,
+      description: "golden hour hits different when you're not looking for it 🌅",
+      commentsCount: 89,
       createdAt: '2026-04-25T14:55:00Z',
    },
 ] as const;
@@ -84,7 +88,7 @@ const styles = stylex.create({
    postsContainer: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '12px',
+      gap: '36px',
    },
 });
 

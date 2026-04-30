@@ -1,6 +1,19 @@
-import * as stylex from '@stylexjs/stylex';
 import FilterTiltShiftRounded from '@mui/icons-material/FilterTiltShiftRounded';
+import * as stylex from '@stylexjs/stylex';
 import { colors } from '../../styles/tokens.stylex';
+
+const styles = stylex.create({
+   root: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px',
+   },
+   zetaText: {
+      fontSize: '1rem',
+      fontWeight: '400',
+      color: colors.textPrimary,
+   },
+});
 
 export interface ZetaLogoProps {
    rootProps?: React.ComponentProps<'div'>;
@@ -9,19 +22,6 @@ export interface ZetaLogoProps {
 }
 
 export default function ZetaLogo({ rootProps, useText = true, iconSize = 20 }: ZetaLogoProps) {
-   const styles = stylex.create({
-      root: {
-         display: 'flex',
-         alignItems: 'center',
-         gap: '4px',
-      },
-      zetaText: {
-         fontSize: '1rem',
-         fontWeight: '400',
-         color: colors.textPrimary,
-      },
-   });
-
    return (
       <div {...stylex.props(styles.root)} {...rootProps}>
          <FilterTiltShiftRounded style={{ fontSize: iconSize, color: colors.textPrimary }} />
