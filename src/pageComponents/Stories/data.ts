@@ -4,7 +4,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 0,
       username: 'code.syntax',
-      avatarUrl: 'https://picsum.photos/seed/clona20/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona20/64/64',
       timestamp: '2026-04-25T00:15:00Z',
       stories: [
          {
@@ -37,7 +37,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 1,
       username: 'aurora.mp4',
-      avatarUrl: 'https://picsum.photos/seed/clona1/200/200',
+      avatarUrl: 'https://picsum.photos/seed/clona1/64/64',
       timestamp: '2026-04-25T15:42:00Z',
       stories: [
          { id: '3882485930879235534', url: 'https://picsum.photos/seed/clona1a/720/1280', type: 'image' },
@@ -52,7 +52,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 2,
       username: 'darkwave99',
-      avatarUrl: 'https://picsum.photos/seed/clona2/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona2/64/64',
       timestamp: '2026-04-25T15:10:00Z',
       stories: [
          { id: '4910237461823056701', url: 'https://picsum.photos/seed/clona2a/720/1280', type: 'image' },
@@ -62,7 +62,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 3,
       username: 'jpeg.ghost',
-      avatarUrl: 'https://picsum.photos/seed/clona3/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona3/64/64',
       timestamp: '2026-04-25T14:55:00Z',
       stories: [
          { id: '7261094830156342810', url: 'https://picsum.photos/seed/clona3a/720/1280', type: 'image' },
@@ -78,7 +78,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 4,
       username: 'velvet.avi',
-      avatarUrl: 'https://picsum.photos/seed/clona4/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona4/64/64',
       timestamp: '2026-04-25T14:30:00Z',
       stories: [
          {
@@ -91,7 +91,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 5,
       username: 'solarflux',
-      avatarUrl: 'https://picsum.photos/seed/clona5/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona5/64/64',
       timestamp: '2026-04-25T14:05:00Z',
       stories: [
          { id: '6174930285741623948', url: 'https://picsum.photos/seed/clona5a/720/1280', type: 'image' },
@@ -108,7 +108,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 6,
       username: 'nxght.mode',
-      avatarUrl: 'https://picsum.photos/seed/clona6/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona6/64/64',
       timestamp: '2026-04-25T13:48:00Z',
       stories: [
          {
@@ -122,7 +122,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 7,
       username: 'glitch.muse',
-      avatarUrl: 'https://picsum.photos/seed/clona7/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona7/64/64',
       timestamp: '2026-04-25T13:20:00Z',
       stories: [
          { id: '2097341856230947561', url: 'https://picsum.photos/seed/clona7a/720/1280', type: 'image' },
@@ -137,7 +137,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 8,
       username: 'fog.machine',
-      avatarUrl: 'https://picsum.photos/seed/clona8/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona8/64/64',
       timestamp: '2026-04-25T12:50:00Z',
       stories: [
          { id: '9345621087432156890', url: 'https://picsum.photos/seed/clona8a/720/1280', type: 'image' },
@@ -153,14 +153,14 @@ export const STORIES: StoryEntry[] = [
    {
       id: 9,
       username: 'pixl.witch',
-      avatarUrl: 'https://picsum.photos/seed/clona9/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona9/64/64',
       timestamp: '2026-04-25T12:17:00Z',
       stories: [{ id: '1238904756123894501', url: 'https://picsum.photos/seed/clona9a/720/1280', type: 'image' }],
    },
    {
       id: 10,
       username: 'static.eden',
-      avatarUrl: 'https://picsum.photos/seed/clona10/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona10/64/64',
       timestamp: '2026-04-25T11:40:00Z',
       stories: [
          {
@@ -193,7 +193,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 11,
       username: 'lo.fi.wolf',
-      avatarUrl: 'https://picsum.photos/seed/clona11/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona11/64/64',
       timestamp: '2026-04-25T11:05:00Z',
       stories: [
          {
@@ -211,7 +211,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 12,
       username: 'neon.relic',
-      avatarUrl: 'https://picsum.photos/seed/clona12/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona12/64/64',
       timestamp: '2026-04-25T10:30:00Z',
       stories: [
          {
@@ -234,7 +234,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 13,
       username: 'void.jpeg',
-      avatarUrl: 'https://picsum.photos/seed/clona13/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona13/64/64',
       timestamp: '2026-04-25T09:55:00Z',
       stories: [
          {
@@ -262,7 +262,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 14,
       username: 'synth.driftr',
-      avatarUrl: 'https://picsum.photos/seed/clona14/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona14/64/64',
       timestamp: '2026-04-25T08:22:00Z',
       stories: [
          {
@@ -275,7 +275,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 15,
       username: 'cassette.era',
-      avatarUrl: 'https://picsum.photos/seed/clona15/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona15/64/64',
       timestamp: '2026-04-25T07:48:00Z',
       stories: [
          {
@@ -308,7 +308,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 16,
       username: 'analog.flow',
-      avatarUrl: 'https://picsum.photos/seed/clona16/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona16/64/64',
       timestamp: '2026-04-25T06:33:00Z',
       stories: [
          {
@@ -326,7 +326,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 17,
       username: 'digital.pulse',
-      avatarUrl: 'https://picsum.photos/seed/clona17/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona17/64/64',
       timestamp: '2026-04-25T05:10:00Z',
       stories: [
          {
@@ -349,7 +349,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 18,
       username: 'noise.wave',
-      avatarUrl: 'https://picsum.photos/seed/clona18/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona18/64/64',
       timestamp: '2026-04-25T03:45:00Z',
       stories: [
          {
@@ -377,7 +377,7 @@ export const STORIES: StoryEntry[] = [
    {
       id: 19,
       username: 'pixel.dreams',
-      avatarUrl: 'https://picsum.photos/seed/clona19/630/630',
+      avatarUrl: 'https://picsum.photos/seed/clona19/64/64',
       timestamp: '2026-04-25T02:00:00Z',
       stories: [
          {
