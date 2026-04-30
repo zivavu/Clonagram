@@ -12,6 +12,7 @@ const styles = stylex.create({
       backgroundColor: colors.bg,
       display: 'flex',
       flexDirection: 'row',
+      position: 'relative',
    },
    forYouFollowingContainer: {
       display: 'flex',
@@ -53,6 +54,7 @@ const styles = stylex.create({
 
 export default function HomePage({ url }: { url: string | null }) {
    const isFollowingSelected = new URL(url || '').searchParams.get('variant') === 'following';
+
    return (
       <div {...stylex.props(styles.root)}>
          <LeftSidebar url={url} />

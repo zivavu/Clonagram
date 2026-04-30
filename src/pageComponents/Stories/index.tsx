@@ -1,6 +1,6 @@
 'use client';
 
-import { Close, CloseRounded, X } from '@mui/icons-material';
+import { CloseRounded } from '@mui/icons-material';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';

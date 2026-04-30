@@ -34,6 +34,9 @@ const styles = stylex.create({
    root: {
       width: '280px',
       padding: '16px',
+      height: '100svh',
+      position: 'sticky',
+      top: 0,
    },
    leftSidebarContent: {
       display: 'flex',

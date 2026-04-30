@@ -93,8 +93,8 @@ export default function Main() {
       <main {...stylex.props(styles.root)}>
          <StoriesRow />
          <div {...stylex.props(styles.postsContainer)}>
-            {POSTS.map(post => (
-               <HomepagePost key={post.id} post={post} />
+            {POSTS.map((post, index) => (
+               <HomepagePost key={post.id} post={post} index={index} />
             ))}
          </div>
       </main>
