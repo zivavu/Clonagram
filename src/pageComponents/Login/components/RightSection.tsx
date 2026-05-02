@@ -1,8 +1,5 @@
 'use client';
 
-import LoginPageButton from '@/src/components/LoginPageButton';
-import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
-import { createClient } from '@/src/lib/supabase/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
@@ -10,6 +7,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
+import LoginPageButton from '@/src/components/LoginPageButton';
+import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
+import { createClient } from '@/src/lib/supabase/client';
 import FloatingInput from '../../../components/FloatingInput';
 import { colors } from '../../../styles/tokens.stylex';
 

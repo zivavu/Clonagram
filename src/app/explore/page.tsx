@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import ExploreRounded from '@mui/icons-material/ExploreRounded';
+import { MdExplore } from 'react-icons/md';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function ExplorePage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <ExploreRounded style={{ fontSize: 48 }} />
+         <MdExplore style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Explore</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>

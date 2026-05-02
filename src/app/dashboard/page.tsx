@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import BarChartRounded from '@mui/icons-material/BarChartRounded';
+import { MdBarChart } from 'react-icons/md';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function DashboardPage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <BarChartRounded style={{ fontSize: 48 }} />
+         <MdBarChart style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Dashboard</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>

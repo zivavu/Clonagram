@@ -1,9 +1,9 @@
 'use client';
 
-import { CloseRounded } from '@mui/icons-material';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
+import { MdClose } from 'react-icons/md';
 import { STORIES } from '@/src/pageComponents/Stories/data';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
@@ -97,7 +97,7 @@ export default function StoriesPage({ username }: StoriesPageProps) {
             <h1 {...stylex.props(styles.titleLinkText)}>Clonagram</h1>
          </Link>
          <Link href="/" {...stylex.props(styles.closeLink)}>
-            <CloseRounded style={{ fontSize: 38 }} />
+            <MdClose size={38} />
          </Link>
          <StoryNavigationButton
             onClick={goToPreviousStoryMedia}

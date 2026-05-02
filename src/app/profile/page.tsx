@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import PersonRounded from '@mui/icons-material/PersonRounded';
+import { MdPerson } from 'react-icons/md';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function ProfilePage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <PersonRounded style={{ fontSize: 48 }} />
+         <MdPerson style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Profile</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>

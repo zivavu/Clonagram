@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import SmartDisplayRounded from '@mui/icons-material/SmartDisplayRounded';
+import { MdSmartDisplay } from 'react-icons/md';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function ReelsPage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <SmartDisplayRounded style={{ fontSize: 48 }} />
+         <MdSmartDisplay style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Reels</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>

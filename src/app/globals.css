@@ -15,6 +15,7 @@
 }
 
 @layer resets {
+
    *,
    *::before,
    *::after {
@@ -26,6 +27,7 @@
    html {
       color-scheme: light dark;
    }
+
    span {
       font-family: var(--font-body);
    }
@@ -74,6 +76,10 @@
 .MuiSvgIcon-root {
    /* biome-ignore lint/complexity/noImportantStyles: <Well, it's MUI icon. There is no other way to globally fix it> */
    display: flex !important;
+}
+
+.react-icons {
+   vertical-align: middle;
 }
 
 /* biome-ignore lint/suspicious/noUnknownAtRules: <It's a stylex main import. It has to be.> */
