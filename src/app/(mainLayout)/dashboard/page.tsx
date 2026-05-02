@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
-import { MdSmartDisplay } from 'react-icons/md';
-import { colors } from '../../styles/tokens.stylex';
+import { MdBarChart } from 'react-icons/md';
+import { colors } from '../../../styles/tokens.stylex';
 
 const styles = stylex.create({
    container: {
@@ -23,11 +23,11 @@ const styles = stylex.create({
    },
 });
 
-export default function ReelsPage() {
+export default function DashboardPage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <MdSmartDisplay style={{ fontSize: 48 }} />
-         <h1 {...stylex.props(styles.title)}>Reels</h1>
+         <MdBarChart style={{ fontSize: 48 }} />
+         <h1 {...stylex.props(styles.title)}>Dashboard</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>
    );

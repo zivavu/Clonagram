@@ -1,8 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
-import { colors } from '@/src/styles/tokens.stylex';
 import type { PartialUser } from '@/src/types/global';
+import { colors } from '../../../styles/tokens.stylex';
 
 const CURRENT_USER: PartialUser = {
    id: 'me',
@@ -60,7 +60,7 @@ const FOOTER_LINKS = [
 const styles = stylex.create({
    root: {
       width: '350px',
-      top: '44px',
+      marginLeft: '32px',
       display: 'flex',
       flexDirection: 'column',
       gap: '12px',
@@ -112,7 +112,6 @@ const styles = stylex.create({
    suggestionsLabel: {
       fontSize: '0.875rem',
       fontWeight: 600,
-      color: colors.textSecondary,
    },
    seeAllLink: {
       fontSize: '0.8rem',
@@ -126,7 +125,7 @@ const styles = stylex.create({
    suggestionsList: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '8px',
+      gap: '4px',
    },
    suggestionItem: {
       display: 'flex',
@@ -159,24 +158,19 @@ const styles = stylex.create({
       fontSize: '0.8rem',
       fontWeight: 600,
       color: colors.accent,
-      background: 'none',
-      border: 'none',
-      cursor: 'pointer',
-      padding: 0,
-      flexShrink: 0,
       ':hover': {
          color: colors.accentHover,
       },
    },
-   footerLinks: {
+   footerLinksContainer: {
       display: 'flex',
       flexWrap: 'wrap',
       gap: '0 6px',
-      marginTop: '8px',
+      marginTop: '18px',
    },
    footerLink: {
       fontSize: '0.75rem',
-      color: colors.textMuted,
+      color: colors.textSecondary,
       textDecoration: 'none',
       ':hover': {
          textDecoration: 'underline',
@@ -184,8 +178,9 @@ const styles = stylex.create({
    },
    copyright: {
       fontSize: '0.75rem',
-      color: colors.textMuted,
+      color: colors.textSecondary,
       marginTop: '6px',
+      textTransform: 'uppercase',
    },
 });
 
@@ -241,7 +236,7 @@ export default function RightSidebar() {
             ))}
          </div>
 
-         <div {...stylex.props(styles.footerLinks)}>
+         <div {...stylex.props(styles.footerLinksContainer)}>
             {FOOTER_LINKS.map((link, i) => (
                <span key={link}>
                   <Link href="/" {...stylex.props(styles.footerLink)}>

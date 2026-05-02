@@ -4,8 +4,8 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbRepeat } from 'react-icons/tb';
-import { colors, radius } from '@/src/styles/tokens.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
+import { colors, radius } from '../../../styles/tokens.stylex';
 import type { Post } from './Main';
 
 const styles = stylex.create({
