@@ -1,13 +1,12 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { FaRetweet } from 'react-icons/fa6';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
+import { TbRepeat } from 'react-icons/tb';
 import { colors, radius } from '@/src/styles/tokens.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
 import type { Post } from './Main';
-
 
 const styles = stylex.create({
    root: {
@@ -110,7 +109,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button">
-                  <FaRetweet size={24} />
+                  <TbRepeat size={24} />
                </button>
                {post.repostsCount > 0 && <span>{post.repostsCount}</span>}
             </div>
