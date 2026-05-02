@@ -2,7 +2,6 @@ import { Separator } from '@radix-ui/react-dropdown-menu';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { colors } from '../../styles/tokens.stylex';
-import LeftSidebar from './components/LeftSidebar';
 import Main from './components/Main';
 import RightSidebar from './components/RightSidebar';
 
@@ -57,7 +56,6 @@ export default function HomePage({ url }: { url: string | null }) {
 
    return (
       <div {...stylex.props(styles.root)}>
-         <LeftSidebar url={url} />
          <div {...stylex.props(styles.forYouFollowingContainer)}>
             <div {...stylex.props(styles.forYouFollowingSwitch)}>
                <Link href="?variant=home" aria-label="For You" {...stylex.props(styles.forYouFollowingLink)}>

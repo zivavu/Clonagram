@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import { MdFavorite } from 'react-icons/md';
-import { colors } from '../../styles/tokens.stylex';
+import { colors } from '../../../styles/tokens.stylex';
 
 const styles = stylex.create({
    container: {

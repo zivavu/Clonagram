@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
+import { BsSend, BsSendFill } from 'react-icons/bs';
 import {
    MdAddBox,
    MdBarChart,
@@ -19,13 +20,14 @@ import {
    MdSearch,
    MdSmartDisplay,
 } from 'react-icons/md';
-import { colors, radius } from '../../../styles/tokens.stylex';
+import { colors, radius } from '../../styles/tokens.stylex';
 
 const navItems = [
    { href: '/', icon: MdOutlineHome, activeIcon: MdHome, label: 'Home' },
    { href: '/reels', icon: MdOutlineSmartDisplay, activeIcon: MdSmartDisplay, label: 'Reels' },
-   { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
+   { href: '/direct', icon: BsSend, activeIcon: BsSendFill, label: 'Messages' },
    { href: '/search', icon: MdSearch, activeIcon: MdSearch, label: 'Search' },
+   { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
    { href: '/notifications', icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications' },
    { href: '/create', icon: MdOutlineAddBox, activeIcon: MdAddBox, label: 'Create' },
    { href: '/dashboard', icon: MdBarChart, activeIcon: MdBarChart, label: 'Dashboard' },
@@ -38,12 +40,12 @@ const styles = stylex.create({
       padding: '16px',
       height: '100svh',
       position: 'sticky',
-      top: 0,
+      zIndex: 1,
    },
    leftSidebarContent: {
       display: 'flex',
       flexDirection: 'column',
-      height: '100svh',
+      height: '100%',
       width: 'min-content',
       justifyContent: 'space-between',
       paddingBottom: '36px',
@@ -83,7 +85,7 @@ const styles = stylex.create({
    },
 });
 
-export default function LeftSidebar({ url }: { url: string | null }) {
+export default function MainSidebar({ url }: { url: string | null }) {
    const pathname = url ? new URL(url).pathname : '/';
    return (
       <div {...stylex.props(styles.root)}>

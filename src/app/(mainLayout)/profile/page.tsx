@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
-import { MdSearch } from 'react-icons/md';
-import { colors } from '../../styles/tokens.stylex';
+import { MdPerson } from 'react-icons/md';
+import { colors } from '../../../styles/tokens.stylex';
 
 const styles = stylex.create({
    container: {
@@ -23,11 +23,11 @@ const styles = stylex.create({
    },
 });
 
-export default function SearchPage() {
+export default function ProfilePage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <MdSearch style={{ fontSize: 48 }} />
-         <h1 {...stylex.props(styles.title)}>Search</h1>
+         <MdPerson style={{ fontSize: 48 }} />
+         <h1 {...stylex.props(styles.title)}>Profile</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>
    );

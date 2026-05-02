@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
-import { MdExplore } from 'react-icons/md';
-import { colors } from '../../styles/tokens.stylex';
+import { MdSearch } from 'react-icons/md';
+import { colors } from '../../../styles/tokens.stylex';
 
 const styles = stylex.create({
    container: {
@@ -23,11 +23,11 @@ const styles = stylex.create({
    },
 });
 
-export default function ExplorePage() {
+export default function SearchPage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <MdExplore style={{ fontSize: 48 }} />
-         <h1 {...stylex.props(styles.title)}>Explore</h1>
+         <MdSearch style={{ fontSize: 48 }} />
+         <h1 {...stylex.props(styles.title)}>Search</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>
    );
