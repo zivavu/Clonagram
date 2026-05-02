@@ -1,33 +1,35 @@
-import AddBoxOutlined from '@mui/icons-material/AddBoxOutlined';
-import AddBoxRounded from '@mui/icons-material/AddBoxRounded';
-import BarChartRounded from '@mui/icons-material/BarChartRounded';
-import ExploreOutlined from '@mui/icons-material/ExploreOutlined';
-import ExploreRounded from '@mui/icons-material/ExploreRounded';
-import FavoriteBorderRounded from '@mui/icons-material/FavoriteBorderRounded';
-import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
-import GridViewRounded from '@mui/icons-material/GridViewRounded';
-import HomeOutlined from '@mui/icons-material/HomeOutlined';
-import HomeRounded from '@mui/icons-material/HomeRounded';
-import MenuRounded from '@mui/icons-material/MenuRounded';
-import PersonOutlined from '@mui/icons-material/PersonOutlined';
-import PersonRounded from '@mui/icons-material/PersonRounded';
-import SearchRounded from '@mui/icons-material/SearchRounded';
-import SmartDisplayOutlined from '@mui/icons-material/SmartDisplayOutlined';
-import SmartDisplayRounded from '@mui/icons-material/SmartDisplayRounded';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
+import {
+   MdAddBox,
+   MdBarChart,
+   MdExplore,
+   MdFavorite,
+   MdFavoriteBorder,
+   MdGridView,
+   MdHome,
+   MdMenu,
+   MdOutlineAddBox,
+   MdOutlineExplore,
+   MdOutlineHome,
+   MdOutlinePerson,
+   MdOutlineSmartDisplay,
+   MdPerson,
+   MdSearch,
+   MdSmartDisplay,
+} from 'react-icons/md';
 import { colors, radius } from '../../../styles/tokens.stylex';
 
 const navItems = [
-   { href: '/', icon: HomeOutlined, activeIcon: HomeRounded, label: 'Home' },
-   { href: '/reels', icon: SmartDisplayOutlined, activeIcon: SmartDisplayRounded, label: 'Reels' },
-   { href: '/explore', icon: ExploreOutlined, activeIcon: ExploreRounded, label: 'Explore' },
-   { href: '/search', icon: SearchRounded, activeIcon: SearchRounded, label: 'Search' },
-   { href: '/notifications', icon: FavoriteBorderRounded, activeIcon: FavoriteRounded, label: 'Notifications' },
-   { href: '/create', icon: AddBoxOutlined, activeIcon: AddBoxRounded, label: 'Create' },
-   { href: '/dashboard', icon: BarChartRounded, activeIcon: BarChartRounded, label: 'Dashboard' },
-   { href: '/profile', icon: PersonOutlined, activeIcon: PersonRounded, label: 'Profile' },
+   { href: '/', icon: MdOutlineHome, activeIcon: MdHome, label: 'Home' },
+   { href: '/reels', icon: MdOutlineSmartDisplay, activeIcon: MdSmartDisplay, label: 'Reels' },
+   { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
+   { href: '/search', icon: MdSearch, activeIcon: MdSearch, label: 'Search' },
+   { href: '/notifications', icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications' },
+   { href: '/create', icon: MdOutlineAddBox, activeIcon: MdAddBox, label: 'Create' },
+   { href: '/dashboard', icon: MdBarChart, activeIcon: MdBarChart, label: 'Dashboard' },
+   { href: '/profile', icon: MdOutlinePerson, activeIcon: MdPerson, label: 'Profile' },
 ];
 
 const styles = stylex.create({
@@ -119,11 +121,11 @@ export default function LeftSidebar({ url }: { url: string | null }) {
 
             <div {...stylex.props(styles.nav)}>
                <button aria-label="More" {...stylex.props(styles.navItem)}>
-                  <MenuRounded style={{ fontSize: 26 }} />
+                  <MdMenu style={{ fontSize: 26 }} />
                   <span {...stylex.props(styles.navItemLabel)}>More</span>
                </button>
                <button aria-label="Other apps from Zeta" {...stylex.props(styles.navItem)}>
-                  <GridViewRounded style={{ fontSize: 26 }} />
+                  <MdGridView style={{ fontSize: 26 }} />
                   <span {...stylex.props(styles.navItemLabel)}>Also from Zeta</span>
                </button>
             </div>

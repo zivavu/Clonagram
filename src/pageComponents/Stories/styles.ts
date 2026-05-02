@@ -223,6 +223,9 @@ export const styles = stylex.create({
       borderRadius: radius.full,
       backgroundColor: colors.bgElevated,
       boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
+      border: 'none',
+      outline: 'none',
+      zIndex: 100,
    },
    volumeSlider: {
       appearance: 'none',

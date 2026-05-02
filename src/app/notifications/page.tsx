@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
+import { MdFavorite } from 'react-icons/md';
 import { colors } from '../../styles/tokens.stylex';
 
 const styles = stylex.create({
@@ -26,7 +26,7 @@ const styles = stylex.create({
 export default function NotificationsPage() {
    return (
       <div {...stylex.props(styles.container)}>
-         <FavoriteRounded style={{ fontSize: 48 }} />
+         <MdFavorite style={{ fontSize: 48 }} />
          <h1 {...stylex.props(styles.title)}>Notifications</h1>
          <p {...stylex.props(styles.subtitle)}>Coming soon</p>
       </div>

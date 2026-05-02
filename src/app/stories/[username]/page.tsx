@@ -1,6 +1,6 @@
+import { notFound } from 'next/navigation';
 import StoriesPage from '@/src/pageComponents/Stories';
 import { STORIES } from '@/src/pageComponents/Stories/data';
-import { notFound } from 'next/navigation';
 
 export default async function Stories({ params }: { params: { username: string } }) {
    const { username } = await params;

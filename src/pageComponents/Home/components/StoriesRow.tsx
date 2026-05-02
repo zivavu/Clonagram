@@ -1,10 +1,10 @@
 'use client';
 
-import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { MdExpandCircleDown } from 'react-icons/md';
 import { colors, radius, spacing } from '../../../styles/tokens.stylex';
 import { STORIES } from '../../Stories/data';
 
@@ -153,14 +153,14 @@ export default function StoriesRow() {
             onClick={() => scrollBy(-STORY_ITEM_WIDTH * SCROLL_PAGES)}
             disabled={isScrolling}
          >
-            <ExpandCircleDownIcon style={{ fontSize: 24, color: colors.textPrimary, transform: 'rotate(90deg)' }} />
+            <MdExpandCircleDown style={{ fontSize: 24, color: colors.textPrimary, transform: 'rotate(90deg)' }} />
          </button>
          <button
             {...stylex.props(styles.storiesRowButton, styles.storiesRowButtonRight, isLast && styles.hidden)}
             onClick={() => scrollBy(STORY_ITEM_WIDTH * SCROLL_PAGES)}
             disabled={isScrolling}
          >
-            <ExpandCircleDownIcon style={{ fontSize: 24, transform: 'rotate(-90deg)' }} />
+            <MdExpandCircleDown style={{ fontSize: 24, transform: 'rotate(-90deg)' }} />
          </button>
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef} onScroll={handleScroll}>
             {STORIES.map(story => {

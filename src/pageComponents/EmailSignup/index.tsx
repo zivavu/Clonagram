@@ -1,10 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { Controller, useForm } from 'react-hook-form';
+import { MdChevronLeft } from 'react-icons/md';
 import z from 'zod';
 import AuthPagesFooter from '@/src/components/AuthPagesFooter';
 import BirthdatePicker from '@/src/components/BirthdatePicker';
@@ -114,7 +114,7 @@ export default function EmailSignUpPage() {
       <>
          <div {...stylex.props(styles.root)}>
             <Link href="/login" {...stylex.props(styles.backButton)}>
-               <ChevronLeftRounded style={{ fontSize: 28 }} />
+               <MdChevronLeft style={{ fontSize: 28 }} />
             </Link>
             <div {...stylex.props(styles.contentContainer)}>
                <ZetaLogo />

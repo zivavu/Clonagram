@@ -1,9 +1,9 @@
 import * as stylex from '@stylexjs/stylex';
-import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
 import Image from 'next/image';
 import { useSyncExternalStore } from 'react';
-import loginCardPeople, { type LoginCardPerson } from '../loginCardPeople';
+import { MdFavorite } from 'react-icons/md';
 import { colors, radius } from '../../../styles/tokens.stylex';
+import loginCardPeople, { type LoginCardPerson } from '../loginCardPeople';
 
 function getRandomDistinctPeople(people: readonly LoginCardPerson[], count: number) {
    return [...people].sort(() => Math.random() - 0.5).slice(0, count);
@@ -81,15 +81,6 @@ export default function LeftSection() {
    );
 }
 
-interface ImageCardProps {
-   image: LoginCardPerson;
-   rotation: number;
-   scale: number;
-   translateX: number;
-   translateY: number;
-   zIndex: number;
-}
-
 const imageCardStyles = stylex.create({
    imageCard: {
       borderRadius: radius.xxl,
@@ -138,6 +129,15 @@ const imageCardStyles = stylex.create({
    },
 });
 
+interface ImageCardProps {
+   image: LoginCardPerson;
+   rotation: number;
+   scale: number;
+   translateX: number;
+   translateY: number;
+   zIndex: number;
+}
+
 function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: ImageCardProps) {
    return (
       <div
@@ -153,7 +153,7 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
          </div>
          <div {...stylex.props(imageCardStyles.reactionBoxContainer)}>
             <div {...stylex.props(imageCardStyles.commentBorder)}></div>
-            <FavoriteRounded style={{ fontSize: 48 }} />
+            <MdFavorite style={{ fontSize: 38 }} />
          </div>
          <Image src={`/loginPageCardsPeople/${image.src}`} alt={image.alt} width={260} height={460} />
       </div>

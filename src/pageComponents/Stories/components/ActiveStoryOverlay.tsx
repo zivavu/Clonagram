@@ -1,15 +1,20 @@
 'use client';
 
-import { FavoriteBorder, SendOutlined, VolumeDownRounded, VolumeOffRounded } from '@mui/icons-material';
-import MoreHorizRounded from '@mui/icons-material/MoreHorizRounded';
-import PauseRounded from '@mui/icons-material/PauseRounded';
-import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
-import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
-import { ClickAwayListener, Popper } from '@mui/material';
+import * as Popover from '@radix-ui/react-popover';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import type React from 'react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { LuSend } from 'react-icons/lu';
+import {
+   MdFavoriteBorder,
+   MdMoreHoriz,
+   MdPause,
+   MdPlayArrow,
+   MdVolumeDown,
+   MdVolumeOff,
+   MdVolumeUp,
+} from 'react-icons/md';
 import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
 import { styles } from '../styles';
 import type { StoryEntry } from '../types';
@@ -42,7 +47,6 @@ export default function ActiveStoryOverlay({
    currentStoryMediaIndex,
 }: ActiveStoryOverlayProps) {
    const [volumePopperOpen, setVolumePopperOpen] = useState(false);
-   const volumeAnchorEl = useRef<HTMLButtonElement>(null);
 
    const onPictureAnimationEnd = useCallback(
       (e: React.AnimationEvent<HTMLDivElement>) => {
@@ -118,54 +122,46 @@ export default function ActiveStoryOverlay({
                   </span>
                </div>
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>
-                  <ClickAwayListener onClickAway={() => setVolumePopperOpen(false)}>
-                     <span style={{ display: 'contents' }}>
-                        <button
-                           ref={volumeAnchorEl}
-                           type="button"
-                           onClick={() => setVolumePopperOpen(!volumePopperOpen)}
-                           {...stylex.props(styles.activeStoryTopNavigationRightButton)}
-                        >
+                  <Popover.Root open={volumePopperOpen} onOpenChange={setVolumePopperOpen}>
+                     <Popover.Trigger asChild>
+                        <button type="button" {...stylex.props(styles.activeStoryTopNavigationRightButton)}>
                            {volume === 0 ? (
-                              <VolumeOffRounded style={{ fontSize: 20 }} />
+                              <MdVolumeOff size={20} />
                            ) : volume < 0.5 ? (
-                              <VolumeDownRounded style={{ fontSize: 20 }} />
+                              <MdVolumeDown size={20} />
                            ) : (
-                              <VolumeUpRounded style={{ fontSize: 20 }} />
+                              <MdVolumeUp size={20} />
                            )}
                         </button>
-                        <Popper
-                           open={volumePopperOpen}
-                           anchorEl={volumeAnchorEl.current}
-                           modifiers={[{ name: 'offset', options: { offset: [0, 4] } }]}
+                     </Popover.Trigger>
+                     <Popover.Portal>
+                        <Popover.Content
+                           side="bottom"
+                           align="end"
+                           sideOffset={4}
+                           {...stylex.props(styles.volumePopperPaper)}
                         >
-                           <div {...stylex.props(styles.volumePopperPaper)}>
-                              <input
-                                 type="range"
-                                 min="0"
-                                 max="1"
-                                 step="0.01"
-                                 value={volume}
-                                 onChange={e => setVolume(Number(e.target.value))}
-                                 {...stylex.props(styles.volumeSlider)}
-                              />
-                           </div>
-                        </Popper>
-                     </span>
-                  </ClickAwayListener>
+                           <input
+                              type="range"
+                              min="0"
+                              max="1"
+                              step="0.01"
+                              value={volume}
+                              onChange={e => setVolume(Number(e.target.value))}
+                              {...stylex.props(styles.volumeSlider)}
+                           />
+                        </Popover.Content>
+                     </Popover.Portal>
+                  </Popover.Root>
                   <button
                      type="button"
                      {...stylex.props(styles.activeStoryTopNavigationRightButton)}
                      onClick={onTogglePlay}
                   >
-                     {isPlaying ? (
-                        <PauseRounded style={{ fontSize: 20 }} />
-                     ) : (
-                        <PlayArrowRounded style={{ fontSize: 20 }} />
-                     )}
+                     {isPlaying ? <MdPause size={20} /> : <MdPlayArrow size={20} />}
                   </button>
                   <button type="button" {...stylex.props(styles.activeStoryTopNavigationRightButton)}>
-                     <MoreHorizRounded style={{ fontSize: 20 }} />
+                     <MdMoreHoriz size={20} />
                   </button>
                </div>
             </div>
@@ -177,10 +173,10 @@ export default function ActiveStoryOverlay({
                {...stylex.props(styles.activeStoryReplyToInput)}
             />
             <button type="button">
-               <FavoriteBorder style={{ fontSize: 26 }} />
+               <MdFavoriteBorder size={26} />
             </button>
             <button type="button">
-               <SendOutlined style={{ fontSize: 26, transform: 'translateY(-15%) rotate(-45deg)' }} />
+               <LuSend size={24} />
             </button>
          </div>
       </div>

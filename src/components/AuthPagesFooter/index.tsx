@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
-import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
 import Link from 'next/link';
+import { MdKeyboardArrowDown } from 'react-icons/md';
 import { colors } from '../../styles/tokens.stylex';
 
 const footerLinks = [
@@ -85,7 +85,7 @@ export default function AuthPagesFooter({ ...props }: React.ComponentProps<'foot
          <div {...stylex.props(styles.footerMetaRow)}>
             <button type="button" {...stylex.props(styles.languageButton)}>
                English
-               <KeyboardArrowDownRounded style={{ fontSize: 14 }} />
+               <MdKeyboardArrowDown style={{ fontSize: 14 }} />
             </button>
             <span>© {new Date().getFullYear()} Clonagram from Zeta</span>
          </div>
