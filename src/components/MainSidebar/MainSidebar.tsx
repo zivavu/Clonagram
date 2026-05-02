@@ -1,38 +1,10 @@
 import * as stylex from '@stylexjs/stylex';
+import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BsSend, BsSendFill } from 'react-icons/bs';
-import {
-   MdAddBox,
-   MdBarChart,
-   MdExplore,
-   MdFavorite,
-   MdFavoriteBorder,
-   MdGridView,
-   MdHome,
-   MdMenu,
-   MdOutlineAddBox,
-   MdOutlineExplore,
-   MdOutlineHome,
-   MdOutlinePerson,
-   MdOutlineSmartDisplay,
-   MdPerson,
-   MdSearch,
-   MdSmartDisplay,
-} from 'react-icons/md';
+import { MdGridView, MdMenu } from 'react-icons/md';
 import { colors, radius } from '../../styles/tokens.stylex';
-
-const navItems = [
-   { href: '/', icon: MdOutlineHome, activeIcon: MdHome, label: 'Home' },
-   { href: '/reels', icon: MdOutlineSmartDisplay, activeIcon: MdSmartDisplay, label: 'Reels' },
-   { href: '/direct', icon: BsSend, activeIcon: BsSendFill, label: 'Messages' },
-   { href: '/search', icon: MdSearch, activeIcon: MdSearch, label: 'Search' },
-   { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
-   { href: '/notifications', icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications' },
-   { href: '/create', icon: MdOutlineAddBox, activeIcon: MdAddBox, label: 'Create' },
-   { href: '/dashboard', icon: MdBarChart, activeIcon: MdBarChart, label: 'Dashboard' },
-   { href: '/profile', icon: MdOutlinePerson, activeIcon: MdPerson, label: 'Profile' },
-];
+import { NavItems } from './NavItems';
 
 const styles = stylex.create({
    root: {
@@ -73,10 +45,6 @@ const styles = stylex.create({
          backgroundColor: colors.buttonHover,
       },
    },
-   navItemActive: {
-      fontWeight: 600,
-      color: colors.textPrimary,
-   },
    navItemLabel: {
       fontSize: '1rem',
       fontWeight: 400,
@@ -85,8 +53,17 @@ const styles = stylex.create({
    },
 });
 
-export default function MainSidebar({ url }: { url: string | null }) {
+const passthroughPrefixes = ['/stories'];
+
+export default async function MainSidebar() {
+   const headersList = await headers();
+   const url = headersList.get('x-url');
    const pathname = url ? new URL(url).pathname : '/';
+
+   if (passthroughPrefixes.some(p => pathname.startsWith(p))) {
+      return null;
+   }
+
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.leftSidebarContent)}>
@@ -102,23 +79,7 @@ export default function MainSidebar({ url }: { url: string | null }) {
             </Link>
 
             <nav {...stylex.props(styles.nav)}>
-               {navItems.map(({ href, icon, activeIcon, label }) => {
-                  const isActive = pathname === href;
-                  const Icon = isActive ? activeIcon : icon;
-                  return (
-                     <Link
-                        key={href}
-                        href={href}
-                        aria-label={label}
-                        {...stylex.props(styles.navItem, isActive && styles.navItemActive)}
-                     >
-                        <Icon style={{ fontSize: 26 }} />
-                        <span {...stylex.props(styles.navItemLabel)} style={{ fontWeight: isActive ? 600 : 400 }}>
-                           {label}
-                        </span>
-                     </Link>
-                  );
-               })}
+               <NavItems initialPathname={pathname} />
             </nav>
 
             <div {...stylex.props(styles.nav)}>
