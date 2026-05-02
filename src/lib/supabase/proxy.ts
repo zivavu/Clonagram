@@ -1,14 +1,14 @@
 import { type CookieMethodsServer, type CookieOptions, createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export async function updateSession(request: NextRequest) {
+export async function updateSession(request: NextRequest, requestHeaders: Headers) {
    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
    if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY');
    }
 
-   let supabaseResponse = NextResponse.next({ request });
+   let supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } });
 
    const cookieMethods: CookieMethodsServer = {
       getAll() {
@@ -18,7 +18,7 @@ export async function updateSession(request: NextRequest) {
          cookiesToSet.forEach(({ name, value }) => {
             request.cookies.set(name, value);
          });
-         supabaseResponse = NextResponse.next({ request });
+         supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } });
          cookiesToSet.forEach(({ name, value, options }) => {
             supabaseResponse.cookies.set(name, value, options);
          });

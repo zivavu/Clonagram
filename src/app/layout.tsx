@@ -7,7 +7,7 @@ export const metadata: Metadata = {
    description: 'Instagram clone',
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
    return (
       <html lang="en">
          <body>
