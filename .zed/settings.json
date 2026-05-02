@@ -1,0 +1,20 @@
+{
+   "inlay_hints": {
+      "show_value_hints": true,
+      "show_type_hints": false,
+      "show_background": false,
+      "show_parameter_hints": false,
+      "enabled": true
+   },
+   "lsp": {
+      "vscode-css-language-server": {
+         "settings": {
+            "css": {
+               "lint": {
+                  "unknownAtRules": "ignore"
+               }
+            }
+         }
+      }
+   }
+}

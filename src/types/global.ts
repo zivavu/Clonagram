@@ -14,7 +14,7 @@ export type User = {
    updatedAt: string;
 };
 
-export type PartialUser = Pick<User, 'id' | 'username' | 'avatarUrl'>;
+export type PartialUser = Pick<User, 'id' | 'username' | 'avatarUrl'> & Partial<Pick<User, 'name'>>;
 
 export type Media = {
    id: string;
