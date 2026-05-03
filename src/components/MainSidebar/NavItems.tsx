@@ -52,7 +52,7 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
    return (
       <>
          {navItems.map(({ href, icon: Icon, activeIcon: ActiveIcon, label }) => {
-            const isActive = pathname === href;
+            const isActive = pathname.startsWith(href);
             const IconComponent = isActive ? ActiveIcon : Icon;
             return (
                <Link
