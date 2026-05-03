@@ -25,6 +25,7 @@ export const styles = stylex.create({
          width: 'auto',
          '--label-display': 'block',
       },
+      zIndex: '10',
    },
    nav: {
       display: 'flex',

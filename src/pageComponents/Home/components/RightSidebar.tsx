@@ -1,48 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { PartialUser } from '@/src/types/global';
 import { colors } from '../../../styles/tokens.stylex';
-
-const CURRENT_USER: PartialUser = {
-   id: 'me',
-   username: 'zivavu',
-   name: 'Ziv Avram',
-   avatarUrl: 'https://picsum.photos/seed/ziva/200/200',
-};
-
-const SUGGESTED_USERS: PartialUser[] = [
-   {
-      id: 's1',
-      username: 'lunar.drift',
-      name: 'Luna Marchetti',
-      avatarUrl: 'https://picsum.photos/seed/luna/200/200',
-   },
-   {
-      id: 's2',
-      username: 'static.signal',
-      name: 'Elias Voss',
-      avatarUrl: 'https://picsum.photos/seed/elias/200/200',
-   },
-   {
-      id: 's3',
-      username: 'palette.stains',
-      name: 'Maya Okonkwo',
-      avatarUrl: 'https://picsum.photos/seed/maya/200/200',
-   },
-   {
-      id: 's4',
-      username: 'nocturne.moth',
-      name: 'Clara Bisset',
-      avatarUrl: 'https://picsum.photos/seed/clara/200/200',
-   },
-   {
-      id: 's5',
-      username: 'crumbling.concrete',
-      name: 'Dariel Kim',
-      avatarUrl: 'https://picsum.photos/seed/dariel/200/200',
-   },
-];
+import { CURRENT_USER, SUGGESTED_USERS } from '../data';
 
 const FOOTER_LINKS = [
    'About',

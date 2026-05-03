@@ -1,8 +1,10 @@
 import * as stylex from '@stylexjs/stylex';
+import Image from 'next/image';
 import Link from 'next/link';
 import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import { colors, radius } from '../../styles/tokens.stylex';
+import { CURRENT_USER } from '../Home/data';
 
 const styles = stylex.create({
    recipientsSidebar: {
@@ -71,11 +73,56 @@ const styles = stylex.create({
       padding: '10px 12px',
       paddingLeft: '48px',
       borderRadius: radius.full,
+      backgroundColor: colors.bgSecondary,
       fontSize: '1rem',
       borderWidth: 0,
    },
    recipientsContainer: {
       padding: '10px 16px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '64px',
+   },
+   userAvatar: {
+      borderRadius: '50%',
+   },
+   recipientsList: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '16px',
+      padding: '0px 12px',
+   },
+   yourNoteSpan: {
+      fontSize: '0.75rem',
+      color: colors.textSecondary,
+      textAlign: 'center',
+   },
+   messageBubble: {
+      display: 'flex',
+      position: 'absolute',
+      top: '-34px',
+      left: '-12px',
+      width: '96px',
+      height: '42px',
+      backgroundColor: colors.bgBubble,
+      color: colors.textSecondary,
+      borderRadius: '14px',
+      textAlign: 'center',
+      alignItems: 'center',
+      fontSize: '0.7rem',
+      lineHeight: '0.8rem',
+
+      '::before': {
+         content: '""',
+         position: 'absolute',
+         bottom: '-4px',
+         left: '12px',
+         width: '10px',
+         height: '10px',
+         borderRadius: '50%',
+         zIndex: 5,
+         backgroundColor: colors.bgBubble,
+      },
    },
 });
 
@@ -123,6 +170,21 @@ export default function RecipientsSidebar({ pathname }: RecipientsSidebarProps) 
             <div {...stylex.props(styles.searchContainer)}>
                <BsSearch {...stylex.props(styles.searchIcon)} />
                <input {...stylex.props(styles.searchInput)} type="text" placeholder="Search" />
+            </div>
+
+            <div {...stylex.props(styles.recipientsList)}>
+               <div style={{ display: 'flex', flexDirection: 'column', width: 'fit-content', position: 'relative' }}>
+                  <Image
+                     src={CURRENT_USER.avatarUrl}
+                     alt={CURRENT_USER.username}
+                     width={74}
+                     height={74}
+                     {...stylex.props(styles.userAvatar)}
+                  />
+                  <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
+
+                  <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>
+               </div>
             </div>
          </div>
       </div>
