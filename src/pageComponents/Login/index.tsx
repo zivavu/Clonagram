@@ -9,8 +9,8 @@ import RightSection from './components/RightSection';
 const styles = stylex.create({
    root: {
       width: '100%',
-      minHeight: '100svh',
-      height: '100svh',
+      minHeight: '100dvh',
+      height: '100dvh',
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: colors.bg,

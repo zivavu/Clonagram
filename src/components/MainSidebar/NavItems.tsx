@@ -5,23 +5,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { IconType } from 'react-icons';
 import { BsSend, BsSendFill } from 'react-icons/bs';
+import { FaRegSquarePlus, FaSquarePlus } from 'react-icons/fa6';
+import { GoHome, GoHomeFill } from 'react-icons/go';
 import {
-   MdAddBox,
-   MdBarChart,
    MdExplore,
    MdFavorite,
    MdFavoriteBorder,
-   MdHome,
-   MdOutlineAddBox,
    MdOutlineExplore,
-   MdOutlineHome,
    MdOutlinePerson,
    MdOutlineSmartDisplay,
    MdPerson,
    MdSearch,
    MdSmartDisplay,
 } from 'react-icons/md';
-import { colors, radius } from '../../styles/tokens.stylex';
+import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
+import type { MainSidebarStyles } from './MainSidebar';
 
 interface NavItem {
    href: string;
@@ -31,49 +29,24 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-   { href: '/', icon: MdOutlineHome, activeIcon: MdHome, label: 'Home' },
+   { href: '/', icon: GoHome, activeIcon: GoHomeFill, label: 'Home' },
    { href: '/reels', icon: MdOutlineSmartDisplay, activeIcon: MdSmartDisplay, label: 'Reels' },
    { href: '/direct', icon: BsSend, activeIcon: BsSendFill, label: 'Messages' },
    { href: '/search', icon: MdSearch, activeIcon: MdSearch, label: 'Search' },
    { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
    { href: '/notifications', icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications' },
-   { href: '/create', icon: MdOutlineAddBox, activeIcon: MdAddBox, label: 'Create' },
-   { href: '/dashboard', icon: MdBarChart, activeIcon: MdBarChart, label: 'Dashboard' },
+   { href: '/create', icon: FaRegSquarePlus, activeIcon: FaSquarePlus, label: 'Create' },
+   { href: '/dashboard', icon: RiBarChartBoxLine, activeIcon: RiBarChartBoxFill, label: 'Dashboard' },
    { href: '/profile', icon: MdOutlinePerson, activeIcon: MdPerson, label: 'Profile' },
 ];
 
-const styles = stylex.create({
-   navItem: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      padding: '12px 8px',
-      borderRadius: radius.md,
-      color: colors.textPrimary,
-      transition: 'background-color 0.15s ease',
-      ':hover': {
-         backgroundColor: colors.buttonHover,
-      },
-   },
-   navItemActive: {
-      fontWeight: 600,
-   },
-   navItemLabel: {
-      fontSize: '1rem',
-      fontWeight: 400,
-      color: colors.textPrimary,
-      display: 'var(--label-display)',
-   },
-});
-
 interface NavItemsProps {
-   /** The pathname from the initial server render, so there's no flash of wrong icons. */
    initialPathname: string;
+   mainSidebarStyles: MainSidebarStyles;
 }
 
-export function NavItems({ initialPathname }: NavItemsProps) {
+export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) {
    const clientPathname = usePathname();
-   // Fall back to initialPathname during hydration so icons match the SSR output
    const pathname = clientPathname || initialPathname;
 
    return (
@@ -86,10 +59,10 @@ export function NavItems({ initialPathname }: NavItemsProps) {
                   key={href}
                   href={href}
                   aria-label={label}
-                  {...stylex.props(styles.navItem, isActive && styles.navItemActive)}
+                  {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
                >
-                  <IconComponent style={{ fontSize: 26 }} />
-                  <span {...stylex.props(styles.navItemLabel)} style={{ fontWeight: isActive ? 600 : 400 }}>
+                  <IconComponent style={{ fontSize: 28 }} />
+                  <span {...stylex.props(mainSidebarStyles.navItemLabel)} style={{ fontWeight: isActive ? 600 : 400 }}>
                      {label}
                   </span>
                </Link>
