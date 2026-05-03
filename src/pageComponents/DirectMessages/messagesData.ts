@@ -13,7 +13,7 @@ export interface MessageThread {
    id: string;
    participants: PartialUser[];
    messages: Message[];
-   lastMessageAt: string; // ISO 8601
+   lastMessageAt: string;
 }
 
 function h(date: Date): string {
@@ -26,7 +26,7 @@ const day = 86_400_000;
 export const MESSAGE_THREADS: MessageThread[] = [
    {
       id: 't1',
-      participants: [SUGGESTED_USERS[0]], // lunar.drift
+      participants: [SUGGESTED_USERS[0]],
       messages: [
          {
             id: 'm1',
@@ -61,7 +61,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't2',
-      participants: [SUGGESTED_USERS[1]], // static.signal
+      participants: [SUGGESTED_USERS[1]],
       messages: [
          {
             id: 'm5',
@@ -89,7 +89,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't3',
-      participants: [SUGGESTED_USERS[2]], // palette.stains
+      participants: [SUGGESTED_USERS[2]],
       messages: [
          {
             id: 'm8',
@@ -131,7 +131,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't4',
-      participants: [SUGGESTED_USERS[3]], // nocturne.moth
+      participants: [SUGGESTED_USERS[3]],
       messages: [
          {
             id: 'm13',
@@ -159,7 +159,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't5',
-      participants: [SUGGESTED_USERS[4]], // crumbling.concrete
+      participants: [SUGGESTED_USERS[4]],
       messages: [
          {
             id: 'm16',
@@ -180,7 +180,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't6',
-      participants: [SUGGESTED_USERS[5]], // cyan.rabbit
+      participants: [SUGGESTED_USERS[5]],
       messages: [
          {
             id: 'm18',
@@ -201,7 +201,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't7',
-      participants: [SUGGESTED_USERS[6]], // echo.park
+      participants: [SUGGESTED_USERS[6]],
       messages: [
          {
             id: 'm20',
@@ -278,7 +278,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't10',
-      participants: [SUGGESTED_USERS[9], SUGGESTED_USERS[10]], // group: hollow.shell & ivy.clad
+      participants: [SUGGESTED_USERS[9], SUGGESTED_USERS[10]],
       messages: [
          {
             id: 'm28',
@@ -313,18 +313,14 @@ export function formatTimestamp(isoString: string): string {
    const days = Math.floor(diff / day);
 
    if (days === 0) {
-      // Show time like "10:30 AM"
-      return date
-         .toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-         })
-         .toLowerCase();
+      const diffMinutes = Math.floor(diff / 60_000);
+      if (diffMinutes < 1) return 'now';
+      if (diffMinutes < 60) return `${diffMinutes}m`;
+      const diffHours = Math.floor(diffMinutes / 60);
+      return `${diffHours}h`;
    }
    if (days === 1) return 'Yesterday';
    if (days < 7) return date.toLocaleDateString('en-US', { weekday: 'short' });
-   // Otherwise show date like "Jan 15"
    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
@@ -339,7 +335,7 @@ export function getLastMessagePreview(thread: MessageThread): string {
    const lastMsg = thread.messages[thread.messages.length - 1];
    const isFromMe = lastMsg.senderId === CURRENT_USER.id;
    const prefix = isFromMe ? 'You: ' : '';
-   const text = lastMsg.text.length > 50 ? lastMsg.text.slice(0, 50) + '...' : lastMsg.text;
+   const text = lastMsg.text.length > 50 ? `${lastMsg.text.slice(0, 50)}...` : lastMsg.text;
    return prefix + text;
 }
 
