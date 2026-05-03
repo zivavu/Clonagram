@@ -176,24 +176,16 @@ const styles = stylex.create({
       height: '8px',
       borderRadius: '50%',
       backgroundColor: colors.accent,
-      flexShrink: 0,
    },
    threadContent: {
-      flex: 1,
-      minWidth: 0,
       display: 'flex',
       flexDirection: 'column',
-      gap: 2,
-   },
-   threadTopRow: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      gap: '4px',
    },
    threadPreviewRow: {
       display: 'flex',
       alignItems: 'center',
-      gap: 8,
+      gap: 4,
    },
    threadName: {
       fontSize: '0.85rem',
@@ -209,7 +201,6 @@ const styles = stylex.create({
    threadTimestamp: {
       fontSize: '0.75rem',
       color: colors.textSecondary,
-      flexShrink: 0,
    },
    threadPreview: {
       fontSize: '0.75rem',
@@ -307,17 +298,16 @@ export default function RecipientsSidebar({ pathname }: RecipientsSidebarProps) 
                            />
                         </div>
                         <div {...stylex.props(styles.threadContent)}>
-                           <div {...stylex.props(styles.threadTopRow)}>
-                              <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>
-                                 {isGroup
-                                    ? thread.participants.map(p => p.name || p.username).join(', ')
-                                    : participant.name || participant.username}
-                              </span>
-                           </div>
+                           <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>
+                              {isGroup
+                                 ? thread.participants.map(p => p.name || p.username).join(', ')
+                                 : participant.name || participant.username}
+                           </span>
                            <div {...stylex.props(styles.threadPreviewRow)}>
                               <span {...stylex.props(styles.threadPreview, unread && styles.threadPreviewUnread)}>
                                  {getLastMessagePreview(thread)}
                               </span>
+                              <span style={{ color: colors.textSecondary }}>·</span>
                               <span {...stylex.props(styles.threadTimestamp)}>
                                  {formatTimestamp(thread.lastMessageAt)}
                               </span>
