@@ -52,7 +52,7 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
    return (
       <>
          {navItems.map(({ href, icon: Icon, activeIcon: ActiveIcon, label }) => {
-            const isActive = pathname.startsWith(href);
+            const isActive = pathname.split('/')[1] === href.split('/')[1];
             const IconComponent = isActive ? ActiveIcon : Icon;
             return (
                <Link
@@ -62,7 +62,7 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
                   {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
                >
                   <IconComponent style={{ fontSize: 28 }} />
-                  <span {...stylex.props(mainSidebarStyles.navItemLabel)} style={{ fontWeight: isActive ? 600 : 400 }}>
+                  <span {...stylex.props(mainSidebarStyles.navItemLabel)} style={{ fontWeight: isActive ? 700 : 400 }}>
                      {label}
                   </span>
                </Link>
