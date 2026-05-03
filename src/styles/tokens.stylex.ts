@@ -12,6 +12,7 @@ export const colors = stylex.defineVars({
    textSecondary: 'light-dark(rgb(115, 115, 115), rgb(168, 168, 168))',
    textMuted: 'light-dark(rgb(199, 199, 199), rgb(85, 85, 85))',
    buttonHover: 'light-dark(rgb(242, 244, 246), rgb(53, 53, 56))',
+   threadHover: 'light-dark(rgb(245, 245, 245), rgb(37, 41, 46))',
    accent: 'rgb(0, 100, 224)',
    accentHover: 'rgb(24, 119, 242)',
    accentText: 'rgb(75, 169, 254)',

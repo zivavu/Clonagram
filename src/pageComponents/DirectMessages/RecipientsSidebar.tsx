@@ -5,6 +5,13 @@ import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import { colors, radius } from '../../styles/tokens.stylex';
 import { CURRENT_USER } from '../Home/data';
+import {
+   formatTimestamp,
+   getLastMessagePreview,
+   getThreadDisplayName,
+   hasUnreadMessages,
+   MESSAGE_THREADS,
+} from './messagesData';
 
 const styles = stylex.create({
    recipientsSidebar: {
@@ -13,6 +20,8 @@ const styles = stylex.create({
       borderRightColor: colors.separator,
       borderRightStyle: 'solid',
       borderRightWidth: '1px',
+      display: 'flex',
+      flexDirection: 'column',
    },
    changeAccountButton: {
       display: 'flex',
@@ -40,6 +49,7 @@ const styles = stylex.create({
       fontWeight: 600,
       color: colors.textSecondary,
       textAlign: 'center',
+      textDecoration: 'none',
    },
    messageFolderActive: {
       color: colors.textPrimary,
@@ -76,21 +86,29 @@ const styles = stylex.create({
       backgroundColor: colors.bgSecondary,
       fontSize: '1rem',
       borderWidth: 0,
+      outline: 'none',
+      '::placeholder': {
+         color: colors.textSecondary,
+      },
    },
-   recipientsContainer: {
+   bodyContainer: {
+      flex: 1,
+      overflowY: 'auto',
       padding: '10px 16px',
       display: 'flex',
       flexDirection: 'column',
-      gap: '64px',
    },
    userAvatar: {
       borderRadius: '50%',
    },
-   recipientsList: {
+   yourNoteSection: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '16px',
-      padding: '0px 12px',
+      width: 'fit-content',
+      position: 'relative',
+      alignItems: 'center',
+      marginTop: '64px',
+      marginLeft: '12px',
    },
    yourNoteSpan: {
       fontSize: '0.75rem',
@@ -109,20 +127,100 @@ const styles = stylex.create({
       borderRadius: '14px',
       textAlign: 'center',
       alignItems: 'center',
+      justifyContent: 'center',
       fontSize: '0.7rem',
       lineHeight: '0.8rem',
+   },
+   messageBubbleArrow: {
+      position: 'absolute',
+      bottom: '-4px',
+      left: '12px',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: colors.bgBubble,
+   },
+   messagesList: {
+      display: 'flex',
+      flexDirection: 'column',
+   },
+   threadItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      padding: '8px',
+      borderRadius: '12px',
+      position: 'relative',
 
-      '::before': {
-         content: '""',
-         position: 'absolute',
-         bottom: '-4px',
-         left: '12px',
-         width: '10px',
-         height: '10px',
-         borderRadius: '50%',
-         zIndex: 5,
-         backgroundColor: colors.bgBubble,
+      ':hover': {
+         backgroundColor: colors.threadHover,
       },
+   },
+   threadItemHover: {
+      backgroundColor: colors.threadHover,
+   },
+   threadAvatarContainer: {
+      position: 'relative',
+      flexShrink: 0,
+   },
+   threadAvatar: {
+      borderRadius: '50%',
+      objectFit: 'cover',
+   },
+   unreadDot: {
+      position: 'absolute',
+      top: '50%',
+      right: '8px',
+      transform: 'translateY(-50%)',
+      width: '8px',
+      height: '8px',
+      borderRadius: '50%',
+      backgroundColor: colors.accent,
+      flexShrink: 0,
+   },
+   threadContent: {
+      flex: 1,
+      minWidth: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 2,
+   },
+   threadTopRow: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+   },
+   threadPreviewRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+   },
+   threadName: {
+      fontSize: '0.85rem',
+      fontWeight: 300,
+      color: colors.textPrimary,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+   },
+   threadNameUnread: {
+      fontWeight: 600,
+   },
+   threadTimestamp: {
+      fontSize: '0.75rem',
+      color: colors.textSecondary,
+      flexShrink: 0,
+   },
+   threadPreview: {
+      fontSize: '0.75rem',
+      color: colors.textSecondary,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+   },
+   threadPreviewUnread: {
+      color: colors.textPrimary,
+      fontWeight: 600,
    },
 });
 
@@ -131,6 +229,10 @@ const messageFolders = [
    { label: 'General', href: '/direct/general' },
    { label: 'Requests', href: '/direct/requests' },
 ] as const;
+
+const sortedThreads = [...MESSAGE_THREADS].sort(
+   (a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime(),
+);
 
 interface RecipientsSidebarProps {
    pathname: string;
@@ -161,30 +263,70 @@ export default function RecipientsSidebar({ pathname }: RecipientsSidebarProps) 
                            styles.messageFolderBottomBar,
                            isActive && styles.messageFolderBottomBarActive,
                         )}
-                     ></div>
+                     />
                   </Link>
                );
             })}
          </div>
-         <div {...stylex.props(styles.recipientsContainer)}>
+         <div {...stylex.props(styles.bodyContainer)}>
             <div {...stylex.props(styles.searchContainer)}>
                <BsSearch {...stylex.props(styles.searchIcon)} />
                <input {...stylex.props(styles.searchInput)} type="text" placeholder="Search" />
             </div>
 
-            <div {...stylex.props(styles.recipientsList)}>
-               <div style={{ display: 'flex', flexDirection: 'column', width: 'fit-content', position: 'relative' }}>
-                  <Image
-                     src={CURRENT_USER.avatarUrl}
-                     alt={CURRENT_USER.username}
-                     width={74}
-                     height={74}
-                     {...stylex.props(styles.userAvatar)}
-                  />
-                  <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
-
-                  <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>
+            <div {...stylex.props(styles.yourNoteSection)}>
+               <Image
+                  src={CURRENT_USER.avatarUrl}
+                  alt={CURRENT_USER.username}
+                  width={74}
+                  height={74}
+                  {...stylex.props(styles.userAvatar)}
+               />
+               <div {...stylex.props(styles.messageBubble)}>
+                  Ask friends anything...
+                  <div {...stylex.props(styles.messageBubbleArrow)} />
                </div>
+               <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>
+            </div>
+
+            <div {...stylex.props(styles.messagesList)}>
+               {sortedThreads.map(thread => {
+                  const participant = thread.participants[0];
+                  const unread = hasUnreadMessages(thread);
+                  const isGroup = thread.participants.length > 1;
+
+                  return (
+                     <Link key={thread.id} href={`/direct/t/${thread.id}`} {...stylex.props(styles.threadItem)}>
+                        <div {...stylex.props(styles.threadAvatarContainer)}>
+                           <Image
+                              src={participant.avatarUrl}
+                              alt={getThreadDisplayName(thread)}
+                              width={56}
+                              height={56}
+                              {...stylex.props(styles.threadAvatar)}
+                           />
+                        </div>
+                        <div {...stylex.props(styles.threadContent)}>
+                           <div {...stylex.props(styles.threadTopRow)}>
+                              <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>
+                                 {isGroup
+                                    ? thread.participants.map(p => p.name || p.username).join(', ')
+                                    : participant.name || participant.username}
+                              </span>
+                           </div>
+                           <div {...stylex.props(styles.threadPreviewRow)}>
+                              <span {...stylex.props(styles.threadPreview, unread && styles.threadPreviewUnread)}>
+                                 {getLastMessagePreview(thread)}
+                              </span>
+                              <span {...stylex.props(styles.threadTimestamp)}>
+                                 {formatTimestamp(thread.lastMessageAt)}
+                              </span>
+                           </div>
+                        </div>
+                        {unread && <div {...stylex.props(styles.unreadDot)} />}
+                     </Link>
+                  );
+               })}
             </div>
          </div>
       </div>
