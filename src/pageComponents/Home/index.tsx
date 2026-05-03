@@ -12,6 +12,7 @@ const styles = stylex.create({
       display: 'flex',
       flexDirection: 'row',
       position: 'relative',
+      margin: '0 auto',
    },
    forYouFollowingContainer: {
       display: 'flex',

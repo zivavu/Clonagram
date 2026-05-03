@@ -8,8 +8,6 @@ import { NavItems } from './NavItems';
 
 const styles = stylex.create({
    root: {
-      width: '280px',
-      padding: '16px',
       height: '100svh',
       position: 'sticky',
       zIndex: 1,
@@ -17,9 +15,13 @@ const styles = stylex.create({
    leftSidebarContent: {
       display: 'flex',
       flexDirection: 'column',
+      position: 'absolute',
       height: '100%',
-      width: 'min-content',
+      padding: '16px',
+      minWidth: 'max-content',
       justifyContent: 'space-between',
+      backgroundColor: colors.bg,
+
       paddingBottom: '36px',
       gap: '12px',
       '--label-display': 'none',
@@ -48,6 +50,8 @@ const styles = stylex.create({
    navItemLabel: {
       fontSize: '1rem',
       fontWeight: 400,
+      width: '180px',
+      textAlign: 'left',
       color: colors.textPrimary,
       display: 'var(--label-display)',
    },
