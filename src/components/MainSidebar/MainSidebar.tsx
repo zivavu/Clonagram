@@ -70,8 +70,8 @@ export default async function MainSidebar() {
             <Image
                src="/clonagram.png"
                alt="Clonagram"
-               width={26}
-               height={26}
+               width={22}
+               height={22}
                style={{ filter: 'brightness(0) invert(1)' }}
                loading="eager"
             />
