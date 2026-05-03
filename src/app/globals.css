@@ -12,6 +12,7 @@
    --font-body: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
    --font-auth: "Chivo", var(--font-body);
    --font-grand-hotel: "Grand Hotel", cursive;
+   --main-sidebar-width: "72px";
 }
 
 @layer resets {

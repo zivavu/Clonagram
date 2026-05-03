@@ -29,8 +29,8 @@
       "@stylexjs/stylex": "^0.18.3",
       "@supabase/ssr": "^0.10.2",
       "@supabase/supabase-js": "^2.105.1",
-      "@tanstack/react-query": "^5.100.6",
-      "@tanstack/react-query-devtools": "^5.100.6",
+      "@tanstack/react-query": "^5.100.8",
+      "@tanstack/react-query-devtools": "^5.100.8",
       "@upstash/ratelimit": "^2.0.8",
       "@upstash/redis": "^1.37.0",
       "clsx": "^2.1.1",
@@ -40,14 +40,14 @@
       "react": "19.2.4",
       "react-dom": "19.2.4",
       "react-dropzone": "^15.0.0",
-      "react-hook-form": "^7.74.0",
-      "react-icons": "^5.5.0",
+      "react-hook-form": "^7.75.0",
+      "react-icons": "^5.6.0",
       "react-intersection-observer": "^10.0.3",
-      "zod": "^4.4.1",
+      "zod": "^4.4.2",
       "zustand": "^5.0.12"
    },
    "devDependencies": {
-      "@biomejs/biome": "^2.4.13",
+      "@biomejs/biome": "^2.4.14",
       "@next/bundle-analyzer": "^16.2.4",
       "@stylexjs/babel-plugin": "^0.18.3",
       "@stylexjs/nextjs-plugin": "^0.11.1",
@@ -57,7 +57,7 @@
       "@types/react-dom": "^19.2.3",
       "autoprefixer": "^10.5.0",
       "babel-plugin-react-compiler": "^1.0.0",
-      "supabase": "^2.96.0",
+      "supabase": "^2.98.0",
       "typescript": "^5.9.3"
    },
    "ignoreScripts": [

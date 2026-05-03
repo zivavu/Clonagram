@@ -13,7 +13,7 @@ const storyPictureBarFillKeyframes = stylex.keyframes({
 export const styles = stylex.create({
    root: {
       position: 'relative',
-      height: '100svh',
+      height: '100dvh',
       overflow: 'hidden',
       display: 'flex',
       alignItems: 'center',
