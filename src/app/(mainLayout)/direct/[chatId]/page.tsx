@@ -1,5 +1,10 @@
 import DirectMessagesPage from '@/src/pageComponents/DirectMessages';
 
-export default function DirectGeneral() {
-   return <DirectMessagesPage />;
+export interface DirectPageProps {
+   params: Promise<{ chatId: string | undefined }>;
+}
+
+export default async function DirectGeneral({ params }: DirectPageProps) {
+   const { chatId } = await params;
+   return <DirectMessagesPage chatId={chatId} />;
 }

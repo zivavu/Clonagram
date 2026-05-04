@@ -48,7 +48,7 @@ export const styles = stylex.create({
    navItemLabel: {
       fontSize: '1rem',
       fontWeight: 400,
-      width: '150px',
+      width: '170px',
       textAlign: 'left',
       color: colors.textPrimary,
       display: 'var(--label-display)',

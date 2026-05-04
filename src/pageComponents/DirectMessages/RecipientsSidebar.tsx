@@ -12,7 +12,9 @@ const styles = stylex.create({
    root: {
       minWidth: '480px',
       height: '100dvh',
-      borderRight: `1px solid ${colors.separator}`,
+      borderRightWidth: 1,
+      borderRightStyle: 'solid',
+      borderRightColor: colors.separator,
       display: 'flex',
       flexDirection: 'column',
    },
@@ -134,6 +136,7 @@ const styles = stylex.create({
    threadItem: {
       display: 'flex',
       alignItems: 'center',
+      position: 'relative',
       gap: 12,
       padding: '8px 24px',
       borderRadius: radius.md,
