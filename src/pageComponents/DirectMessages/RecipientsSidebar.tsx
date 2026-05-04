@@ -6,21 +6,13 @@ import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import { colors, radius } from '../../styles/tokens.stylex';
 import { CURRENT_USER } from '../Home/data';
-import {
-   formatTimestamp,
-   getLastMessagePreview,
-   getThreadDisplayName,
-   hasUnreadMessages,
-   MESSAGE_THREADS,
-} from './messagesData';
+import { formatTimestamp, getLastMessagePreview, hasUnreadMessages, MESSAGE_THREADS } from './messagesData';
 
 const styles = stylex.create({
-   recipientsSidebar: {
+   root: {
       minWidth: '480px',
       height: '100dvh',
-      borderRightColor: colors.separator,
-      borderRightStyle: 'solid',
-      borderRightWidth: '1px',
+      borderRight: `1px solid ${colors.separator}`,
       display: 'flex',
       flexDirection: 'column',
    },
@@ -32,8 +24,7 @@ const styles = stylex.create({
       fontWeight: '700',
    },
    topBar: {
-      padding: '8px 26px',
-      paddingTop: '38px',
+      padding: '38px 26px 8px',
       display: 'flex',
       alignItems: 'center',
    },
@@ -45,7 +36,7 @@ const styles = stylex.create({
       position: 'relative',
       width: '100%',
       padding: '14px 12px',
-      borderRadius: '12px',
+      borderRadius: radius.md,
       fontSize: '0.9rem',
       fontWeight: 600,
       color: colors.textSecondary,
@@ -57,10 +48,10 @@ const styles = stylex.create({
    },
    messageFolderBottomBar: {
       position: 'absolute',
-      bottom: '3px',
+      bottom: 3,
       left: 0,
       width: '100%',
-      height: '1px',
+      height: 1,
       backgroundColor: colors.separator,
    },
    messageFolderBottomBarActive: {
@@ -88,8 +79,7 @@ const styles = stylex.create({
    },
    searchInput: {
       width: '100%',
-      padding: '10px 12px',
-      paddingLeft: '48px',
+      padding: '10px 12px 10px 48px',
       borderRadius: radius.full,
       backgroundColor: colors.bgSecondary,
       fontSize: '1rem',
@@ -99,46 +89,43 @@ const styles = stylex.create({
          color: colors.textSecondary,
       },
    },
-   userAvatar: {
-      borderRadius: '50%',
-   },
+
    yourNoteSection: {
       display: 'flex',
       flexDirection: 'column',
-      width: 'fit-content',
-      position: 'relative',
       alignItems: 'center',
-      marginTop: '64px',
-      marginLeft: '28px',
+      position: 'relative',
+      width: 'fit-content',
+      margin: '64px 0 0 28px',
+   },
+   userAvatar: {
+      borderRadius: '50%',
    },
    yourNoteSpan: {
       fontSize: '0.75rem',
       color: colors.textSecondary,
-      textAlign: 'center',
    },
    messageBubble: {
-      display: 'flex',
       position: 'absolute',
-      top: '-34px',
-      left: '-6px',
+      top: -34,
+      left: -6,
       padding: '8px 12px',
       backgroundColor: colors.bgBubble,
       color: colors.textSecondary,
-      borderRadius: '14px',
-      textAlign: 'center',
-      alignItems: 'center',
-      justifyContent: 'center',
+      borderRadius: 14,
       fontSize: '0.7rem',
       lineHeight: '0.8rem',
-   },
-   messageBubbleArrow: {
-      position: 'absolute',
-      bottom: '-4px',
-      left: '14px',
-      width: '10px',
-      height: '10px',
-      borderRadius: '50%',
-      backgroundColor: colors.bgBubble,
+      textAlign: 'center',
+      '::after': {
+         content: '',
+         position: 'absolute',
+         bottom: -4,
+         left: 14,
+         width: 10,
+         height: 10,
+         borderRadius: '50%',
+         backgroundColor: colors.bgBubble,
+      },
    },
    messagesList: {
       display: 'flex',
@@ -149,19 +136,10 @@ const styles = stylex.create({
       alignItems: 'center',
       gap: 12,
       padding: '8px 24px',
-      borderRadius: '12px',
-      position: 'relative',
-
+      borderRadius: radius.md,
       ':hover': {
          backgroundColor: colors.threadHover,
       },
-   },
-   threadItemHover: {
-      backgroundColor: colors.threadHover,
-   },
-   threadAvatarContainer: {
-      position: 'relative',
-      flexShrink: 0,
    },
    threadAvatar: {
       borderRadius: '50%',
@@ -170,17 +148,18 @@ const styles = stylex.create({
    unreadDot: {
       position: 'absolute',
       top: '50%',
-      right: '24px',
+      right: 24,
       transform: 'translateY(-50%)',
-      width: '8px',
-      height: '8px',
+      width: 8,
+      height: 8,
       borderRadius: '50%',
       backgroundColor: colors.accent,
    },
    threadContent: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '4px',
+      gap: 4,
+      minWidth: 0,
    },
    threadPreviewRow: {
       display: 'flex',
@@ -198,10 +177,6 @@ const styles = stylex.create({
    threadNameUnread: {
       fontWeight: 600,
    },
-   threadTimestamp: {
-      fontSize: '0.75rem',
-      color: colors.textSecondary,
-   },
    threadPreview: {
       fontSize: '0.75rem',
       color: colors.textSecondary,
@@ -212,6 +187,10 @@ const styles = stylex.create({
    threadPreviewUnread: {
       color: colors.textPrimary,
       fontWeight: 600,
+   },
+   threadTimestamp: {
+      fontSize: '0.75rem',
+      color: colors.textSecondary,
    },
 });
 
@@ -227,16 +206,17 @@ const sortedThreads = [...MESSAGE_THREADS].sort(
 
 export default async function RecipientsSidebar() {
    const headersList = await headers();
-   const url = headersList.get('x-url');
-   const pathname = new URL(url || '/').pathname;
+   const pathname = new URL(headersList.get('x-url') || '/').pathname;
 
    const currentFolder =
-      [...messageFolders]
-         .sort((a, b) => b.href.length - a.href.length)
-         .find(folder => pathname === folder.href || pathname.startsWith(`${folder.href}/`))?.href ?? '/direct';
+      pathname.startsWith('/direct/general/') || pathname === '/direct/general'
+         ? '/direct/general'
+         : pathname.startsWith('/direct/requests/') || pathname === '/direct/requests'
+           ? '/direct/requests'
+           : '/direct';
 
    return (
-      <div {...stylex.props(styles.recipientsSidebar)}>
+      <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.topBar)}>
             <button {...stylex.props(styles.changeAccountButton)}>
                zivavu
@@ -244,6 +224,7 @@ export default async function RecipientsSidebar() {
             </button>
             <TbEdit style={{ fontSize: '24px', marginLeft: 'auto' }} />
          </div>
+
          <div {...stylex.props(styles.messageFoldersContainer)}>
             {messageFolders.map(folder => {
                const isActive = folder.href === currentFolder;
@@ -264,6 +245,7 @@ export default async function RecipientsSidebar() {
                );
             })}
          </div>
+
          <div {...stylex.props(styles.bodyContainer)}>
             <div {...stylex.props(styles.searchContainer)}>
                <BsSearch {...stylex.props(styles.searchIcon)} />
@@ -278,42 +260,35 @@ export default async function RecipientsSidebar() {
                   height={74}
                   {...stylex.props(styles.userAvatar)}
                />
-               <div {...stylex.props(styles.messageBubble)}>
-                  Ask friends anything...
-                  <div {...stylex.props(styles.messageBubbleArrow)} />
-               </div>
+               <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
                <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>
             </div>
 
             <div {...stylex.props(styles.messagesList)}>
                {sortedThreads.map(thread => {
                   const participant = thread.participants[0];
+                  const displayName = participant.name || participant.username;
                   const unread = hasUnreadMessages(thread);
-                  const isGroup = thread.participants.length > 1;
 
                   return (
                      <Link key={thread.id} href={`${currentFolder}/${thread.id}`} {...stylex.props(styles.threadItem)}>
-                        <div {...stylex.props(styles.threadAvatarContainer)}>
-                           <Image
-                              src={participant.avatarUrl}
-                              alt={getThreadDisplayName(thread)}
-                              width={56}
-                              height={56}
-                              {...stylex.props(styles.threadAvatar)}
-                           />
-                        </div>
+                        <Image
+                           src={participant.avatarUrl}
+                           alt={displayName}
+                           width={56}
+                           height={56}
+                           {...stylex.props(styles.threadAvatar)}
+                        />
                         <div {...stylex.props(styles.threadContent)}>
                            <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>
-                              {isGroup
-                                 ? thread.participants.map(p => p.name || p.username).join(', ')
-                                 : participant.name || participant.username}
+                              {displayName}
                            </span>
                            <div {...stylex.props(styles.threadPreviewRow)}>
                               <span {...stylex.props(styles.threadPreview, unread && styles.threadPreviewUnread)}>
                                  {getLastMessagePreview(thread)}
                               </span>
-                              <span style={{ color: colors.textSecondary }}>·</span>
                               <span {...stylex.props(styles.threadTimestamp)}>
+                                 {' · '}
                                  {formatTimestamp(thread.lastMessageAt)}
                               </span>
                            </div>
