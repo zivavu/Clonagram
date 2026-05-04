@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BsChevronDown, BsSearch } from 'react-icons/bs';
@@ -15,7 +16,7 @@ import {
 
 const styles = stylex.create({
    recipientsSidebar: {
-      width: '480px',
+      minWidth: '480px',
       height: '100dvh',
       borderRightColor: colors.separator,
       borderRightStyle: 'solid',
@@ -65,9 +66,16 @@ const styles = stylex.create({
    messageFolderBottomBarActive: {
       backgroundColor: colors.textPrimary,
    },
+   bodyContainer: {
+      flex: 1,
+      overflowY: 'auto',
+      padding: '10px 0',
+      display: 'flex',
+      flexDirection: 'column',
+   },
    searchContainer: {
       position: 'relative',
-      width: '100%',
+      margin: '0 16px',
    },
    searchIcon: {
       position: 'absolute',
@@ -91,13 +99,6 @@ const styles = stylex.create({
          color: colors.textSecondary,
       },
    },
-   bodyContainer: {
-      flex: 1,
-      overflowY: 'auto',
-      padding: '10px 16px',
-      display: 'flex',
-      flexDirection: 'column',
-   },
    userAvatar: {
       borderRadius: '50%',
    },
@@ -108,7 +109,7 @@ const styles = stylex.create({
       position: 'relative',
       alignItems: 'center',
       marginTop: '64px',
-      marginLeft: '12px',
+      marginLeft: '28px',
    },
    yourNoteSpan: {
       fontSize: '0.75rem',
@@ -119,9 +120,8 @@ const styles = stylex.create({
       display: 'flex',
       position: 'absolute',
       top: '-34px',
-      left: '-12px',
-      width: '96px',
-      height: '42px',
+      left: '-6px',
+      padding: '8px 12px',
       backgroundColor: colors.bgBubble,
       color: colors.textSecondary,
       borderRadius: '14px',
@@ -134,7 +134,7 @@ const styles = stylex.create({
    messageBubbleArrow: {
       position: 'absolute',
       bottom: '-4px',
-      left: '12px',
+      left: '14px',
       width: '10px',
       height: '10px',
       borderRadius: '50%',
@@ -148,7 +148,7 @@ const styles = stylex.create({
       display: 'flex',
       alignItems: 'center',
       gap: 12,
-      padding: '8px',
+      padding: '8px 24px',
       borderRadius: '12px',
       position: 'relative',
 
@@ -170,7 +170,7 @@ const styles = stylex.create({
    unreadDot: {
       position: 'absolute',
       top: '50%',
-      right: '8px',
+      right: '24px',
       transform: 'translateY(-50%)',
       width: '8px',
       height: '8px',
@@ -225,11 +225,16 @@ const sortedThreads = [...MESSAGE_THREADS].sort(
    (a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime(),
 );
 
-interface RecipientsSidebarProps {
-   pathname: string;
-}
+export default async function RecipientsSidebar() {
+   const headersList = await headers();
+   const url = headersList.get('x-url');
+   const pathname = new URL(url || '/').pathname;
 
-export default function RecipientsSidebar({ pathname }: RecipientsSidebarProps) {
+   const currentFolder =
+      [...messageFolders]
+         .sort((a, b) => b.href.length - a.href.length)
+         .find(folder => pathname === folder.href || pathname.startsWith(`${folder.href}/`))?.href ?? '/direct';
+
    return (
       <div {...stylex.props(styles.recipientsSidebar)}>
          <div {...stylex.props(styles.topBar)}>
@@ -241,7 +246,7 @@ export default function RecipientsSidebar({ pathname }: RecipientsSidebarProps) 
          </div>
          <div {...stylex.props(styles.messageFoldersContainer)}>
             {messageFolders.map(folder => {
-               const isActive = folder.href === pathname;
+               const isActive = folder.href === currentFolder;
                return (
                   <Link
                      key={folder.label}
@@ -287,7 +292,7 @@ export default function RecipientsSidebar({ pathname }: RecipientsSidebarProps) 
                   const isGroup = thread.participants.length > 1;
 
                   return (
-                     <Link key={thread.id} href={`/direct/t/${thread.id}`} {...stylex.props(styles.threadItem)}>
+                     <Link key={thread.id} href={`${currentFolder}/${thread.id}`} {...stylex.props(styles.threadItem)}>
                         <div {...stylex.props(styles.threadAvatarContainer)}>
                            <Image
                               src={participant.avatarUrl}

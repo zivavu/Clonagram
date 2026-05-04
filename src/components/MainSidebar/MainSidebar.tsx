@@ -11,8 +11,8 @@ export const styles = stylex.create({
    root: {
       display: 'flex',
       flexDirection: 'column',
-      position: 'absolute',
-      height: '100%',
+      position: 'fixed',
+      height: '100dvh',
       width: 'var(--main-sidebar-width)',
       padding: '16px',
       justifyContent: 'space-between',
@@ -67,7 +67,7 @@ export default async function MainSidebar() {
 
    return (
       <div {...stylex.props(styles.root)}>
-         <Link href="/" {...stylex.props(styles.navItem)} style={{ width: 'fit-content' }}>
+         <Link href="/" {...stylex.props(styles.navItem)} style={{ width: 'fit-content', padding: '8px' }}>
             <Image
                src="/clonagram.png"
                alt="Clonagram"

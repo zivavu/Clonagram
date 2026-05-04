@@ -278,19 +278,12 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't10',
-      participants: [SUGGESTED_USERS[9], SUGGESTED_USERS[10]],
+      participants: [SUGGESTED_USERS[9]],
       messages: [
          {
             id: 'm28',
             senderId: SUGGESTED_USERS[9].id,
             text: 'Coffee this Sunday? ☕',
-            timestamp: h(new Date(now.getTime() - day * 3)),
-            seen: true,
-         },
-         {
-            id: 'm29',
-            senderId: SUGGESTED_USERS[10].id,
-            text: "I'm free in the afternoon!",
             timestamp: h(new Date(now.getTime() - day * 3)),
             seen: true,
          },
