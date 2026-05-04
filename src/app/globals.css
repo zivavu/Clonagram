@@ -44,6 +44,12 @@
       max-width: 100%;
    }
 
+   input,
+   textarea,
+   select {
+      font-family: var(--font-body);
+   }
+
    button {
       font-family: var(--font-body);
       cursor: pointer;

@@ -172,7 +172,7 @@ export default function RightSidebar() {
          </div>
 
          <div {...stylex.props(styles.suggestionsList)}>
-            {SUGGESTED_USERS.map(user => (
+            {SUGGESTED_USERS.slice(0, 5).map(user => (
                <div key={user.id} {...stylex.props(styles.suggestionItem)}>
                   <Image
                      src={user.avatarUrl}
