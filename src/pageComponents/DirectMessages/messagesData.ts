@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import type { PartialUser } from '@/src/types/global';
 import { CURRENT_USER, SUGGESTED_USERS } from '../Home/data';
 
@@ -650,6 +651,13 @@ export const MESSAGE_THREADS: MessageThread[] = [
 
 export function getRequestThreads(): MessageThread[] {
    return MESSAGE_THREADS.filter(t => t.folder === 'requests');
+}
+
+export async function isRequestsFolder(): Promise<boolean> {
+   'use server';
+   const headersList = await headers();
+   const pathname = new URL(headersList.get('x-url') || '/').pathname;
+   return pathname === '/direct/requests' || pathname.startsWith('/direct/requests/');
 }
 
 export function isOlderThan24h(isoString: string): boolean {

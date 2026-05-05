@@ -4,12 +4,13 @@ import { AiOutlineSmile } from 'react-icons/ai';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline, IoMicOutline } from 'react-icons/io5';
 import { LuSticker } from 'react-icons/lu';
+import { RiUserReceived2Line } from 'react-icons/ri';
 import { TbPhoto } from 'react-icons/tb';
 import { VscSend } from 'react-icons/vsc';
 import { colors, radius } from '../../styles/tokens.stylex';
 import { CURRENT_USER } from '../Home/data';
-import { formatGroupSeparator, MESSAGE_THREADS } from './messagesData';
-import RecipientsSidebar from './RecipientsSidebar';
+import { formatGroupSeparator, isRequestsFolder, MESSAGE_THREADS } from './messagesData';
+import RecipientsSidebar from './RecipientsSidebar/index';
 
 const styles = stylex.create({
    root: {
@@ -32,6 +33,7 @@ const styles = stylex.create({
       gap: '8px',
       alignItems: 'center',
       justifyContent: 'center',
+      textAlign: 'center',
    },
    messageIconContainer: {
       display: 'flex',
@@ -53,6 +55,7 @@ const styles = stylex.create({
    chatNotSelectedSubtitle: {
       fontSize: '0.875rem',
       color: colors.textSecondary,
+      maxWidth: '480px',
    },
    sendMessageButton: {
       fontSize: '0.875rem',
@@ -226,6 +229,8 @@ interface DirectMessagesPageProps {
 }
 
 export default async function DirectMessagesPage({ chatId }: DirectMessagesPageProps) {
+   const isRequestsPage = await isRequestsFolder();
+
    const chat = MESSAGE_THREADS.find(u => u.id === chatId);
    const user = (chat?.participants.length && chat.participants[0]) || undefined;
 
@@ -235,7 +240,7 @@ export default async function DirectMessagesPage({ chatId }: DirectMessagesPageP
       <div {...stylex.props(styles.root)}>
          <RecipientsSidebar />
          <div {...stylex.props(styles.chatContainer)}>
-            {!isChatSelected && (
+            {!isChatSelected && !isRequestsPage && (
                <div {...stylex.props(styles.chatNotSelectedContainer)}>
                   <div {...stylex.props(styles.messageIconContainer)}>
                      <VscSend
@@ -248,6 +253,23 @@ export default async function DirectMessagesPage({ chatId }: DirectMessagesPageP
                   <div {...stylex.props(styles.chatNotSelectedTitle)}>Your messages</div>
                   <div {...stylex.props(styles.chatNotSelectedSubtitle)}>Send a message to start a chat.</div>
                   <button {...stylex.props(styles.sendMessageButton)}>Send message</button>
+               </div>
+            )}
+            {!isChatSelected && isRequestsPage && (
+               <div {...stylex.props(styles.chatNotSelectedContainer)}>
+                  <div {...stylex.props(styles.messageIconContainer)}>
+                     <RiUserReceived2Line
+                        style={{
+                           fontSize: '50px',
+                           transform: 'scaleX(-1)',
+                        }}
+                     />
+                  </div>
+                  <div {...stylex.props(styles.chatNotSelectedTitle)}>Message requests</div>
+                  <div {...stylex.props(styles.chatNotSelectedSubtitle)}>
+                     These messages are from people you&apos;ve restricted or don&apos;t follow. They won&apos;t know
+                     you viewed their request until you allow them to message you.
+                  </div>
                </div>
             )}
             {isChatSelected && user && chat && (
