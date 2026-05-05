@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatTimestamp, getLastMessagePreview, type MessageThread } from '../messagesData';
-import { styles } from './styles';
+import { styles } from './RecipientsSidebar.stylex';
 
 export function ThreadItem({ thread, href, unread }: { thread: MessageThread; href: string; unread?: boolean }) {
    const participant = thread.participants[0];

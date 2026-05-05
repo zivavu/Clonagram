@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import type { Media, PartialUser } from '@/src/types/global';
 import HomepagePost from './HomepagePost';
+import { styles } from './Main.stylex';
 import StoriesRow from './StoriesRow';
 
 export interface Post {
@@ -76,21 +77,6 @@ const POSTS: Post[] = [
       createdAt: '2026-04-25T14:55:00Z',
    },
 ] as const;
-
-const styles = stylex.create({
-   root: {
-      width: '630px',
-      flexDirection: 'column',
-      gap: '38px',
-      display: 'flex',
-      position: 'relative',
-   },
-   postsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '36px',
-   },
-});
 
 export default function Main() {
    return (

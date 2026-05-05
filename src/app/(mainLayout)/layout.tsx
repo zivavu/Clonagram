@@ -1,13 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import MainSidebar from '@/src/components/MainSidebar/MainSidebar';
-import { colors } from '../../styles/tokens.stylex';
-
-const styles = stylex.create({
-   root: {
-      display: 'flex',
-      backgroundColor: colors.bg,
-   },
-});
+import { styles } from './layout.stylex';
 
 export default async function RootTemplate({ children }: Readonly<{ children: React.ReactNode }>) {
    return (
