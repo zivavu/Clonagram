@@ -26,6 +26,13 @@ function h(date: Date): string {
 const now = new Date();
 const day = 86_400_000;
 
+export const REQUEST_USER: PartialUser = {
+   id: 'r1',
+   username: 'd1anth00s._',
+   name: 'Dianthos',
+   avatarUrl: 'https://picsum.photos/seed/dianthos/200/200',
+};
+
 export const MESSAGE_THREADS: MessageThread[] = [
    {
       id: 't1',
@@ -640,6 +647,10 @@ export const MESSAGE_THREADS: MessageThread[] = [
       lastMessageAt: h(new Date(now.getTime() - day * 2)),
    },
 ];
+
+export function getRequestThreads(): MessageThread[] {
+   return MESSAGE_THREADS.filter(t => t.folder === 'requests');
+}
 
 export function isOlderThan24h(isoString: string): boolean {
    const date = new Date(isoString);

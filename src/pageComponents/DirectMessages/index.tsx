@@ -222,7 +222,7 @@ const styles = stylex.create({
 });
 
 interface DirectMessagesPageProps {
-   chatId: string | undefined;
+   chatId?: string | undefined;
 }
 
 export default async function DirectMessagesPage({ chatId }: DirectMessagesPageProps) {
