@@ -19,7 +19,7 @@ import {
    MdSmartDisplay,
 } from 'react-icons/md';
 import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
-import type { MainSidebarStyles } from './MainSidebar';
+import type { MainSidebarStyles } from './MainSidebar.stylex';
 
 interface NavItem {
    href: string;

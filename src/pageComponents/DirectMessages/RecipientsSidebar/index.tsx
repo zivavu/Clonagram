@@ -6,8 +6,8 @@ import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import { CURRENT_USER } from '../../Home/data';
 import { hasUnreadMessages, isRequestsFolder } from '../messagesData';
+import { messageFolders, sortedThreads, styles } from './RecipientsSidebar.stylex';
 import { RequestsContent } from './RequestsContent';
-import { messageFolders, sortedThreads, styles } from './styles';
 import { ThreadItem } from './ThreadItem';
 
 export default async function RecipientsSidebar() {

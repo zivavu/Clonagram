@@ -2,25 +2,9 @@
 
 import * as stylex from '@stylexjs/stylex';
 import AuthPagesFooter from '../../components/AuthPagesFooter';
-import { colors } from '../../styles/tokens.stylex';
 import LeftSection from './components/LeftSection';
 import RightSection from './components/RightSection';
-
-const styles = stylex.create({
-   root: {
-      width: '100%',
-      minHeight: '100dvh',
-      height: '100dvh',
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: colors.bg,
-   },
-   content: {
-      flex: 1,
-      display: 'flex',
-      width: '100%',
-   },
-});
+import { styles } from './index.stylex';
 
 export default function LoginPage() {
    return (
