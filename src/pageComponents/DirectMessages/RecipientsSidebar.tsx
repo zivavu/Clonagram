@@ -198,9 +198,9 @@ const styles = stylex.create({
 });
 
 const messageFolders = [
-   { label: 'Primary', href: '/direct' },
-   { label: 'General', href: '/direct/general' },
-   { label: 'Requests', href: '/direct/requests' },
+   { key: 'primary', label: 'Primary', href: '/direct' },
+   { key: 'general', label: 'General', href: '/direct/general' },
+   { key: 'requests', label: 'Requests', href: '/direct/requests' },
 ] as const;
 
 const sortedThreads = [...MESSAGE_THREADS].sort(
@@ -211,12 +211,9 @@ export default async function RecipientsSidebar() {
    const headersList = await headers();
    const pathname = new URL(headersList.get('x-url') || '/').pathname;
 
-   const currentFolder =
-      pathname.startsWith('/direct/general/') || pathname === '/direct/general'
-         ? '/direct/general'
-         : pathname.startsWith('/direct/requests/') || pathname === '/direct/requests'
-           ? '/direct/requests'
-           : '/direct';
+   const currentFolderHref =
+      messageFolders.findLast(({ href }) => pathname === href || pathname.startsWith(`${href}/`))?.href ?? '/direct';
+   const currentFolderKey = messageFolders.find(folder => folder.href === currentFolderHref)?.key;
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -230,10 +227,10 @@ export default async function RecipientsSidebar() {
 
          <div {...stylex.props(styles.messageFoldersContainer)}>
             {messageFolders.map(folder => {
-               const isActive = folder.href === currentFolder;
+               const isActive = folder.href === currentFolderHref;
                return (
                   <Link
-                     key={folder.label}
+                     key={folder.key}
                      href={folder.href}
                      {...stylex.props(styles.messageFolderLink, isActive && styles.messageFolderActive)}
                   >
@@ -268,38 +265,44 @@ export default async function RecipientsSidebar() {
             </div>
 
             <div {...stylex.props(styles.messagesList)}>
-               {sortedThreads.map(thread => {
-                  const participant = thread.participants[0];
-                  const displayName = participant.name || participant.username;
-                  const unread = hasUnreadMessages(thread);
+               {sortedThreads
+                  .filter(e => e.folder === currentFolderKey)
+                  .map(thread => {
+                     const participant = thread.participants[0];
+                     const displayName = participant.name || participant.username;
+                     const unread = hasUnreadMessages(thread);
 
-                  return (
-                     <Link key={thread.id} href={`${currentFolder}/${thread.id}`} {...stylex.props(styles.threadItem)}>
-                        <Image
-                           src={participant.avatarUrl}
-                           alt={displayName}
-                           width={56}
-                           height={56}
-                           {...stylex.props(styles.threadAvatar)}
-                        />
-                        <div {...stylex.props(styles.threadContent)}>
-                           <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>
-                              {displayName}
-                           </span>
-                           <div {...stylex.props(styles.threadPreviewRow)}>
-                              <span {...stylex.props(styles.threadPreview, unread && styles.threadPreviewUnread)}>
-                                 {getLastMessagePreview(thread)}
+                     return (
+                        <Link
+                           key={thread.id}
+                           href={`${currentFolderHref}/${thread.id}`}
+                           {...stylex.props(styles.threadItem)}
+                        >
+                           <Image
+                              src={participant.avatarUrl}
+                              alt={displayName}
+                              width={56}
+                              height={56}
+                              {...stylex.props(styles.threadAvatar)}
+                           />
+                           <div {...stylex.props(styles.threadContent)}>
+                              <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>
+                                 {displayName}
                               </span>
-                              <span {...stylex.props(styles.threadTimestamp)}>
-                                 {' · '}
-                                 {formatTimestamp(thread.lastMessageAt)}
-                              </span>
+                              <div {...stylex.props(styles.threadPreviewRow)}>
+                                 <span {...stylex.props(styles.threadPreview, unread && styles.threadPreviewUnread)}>
+                                    {getLastMessagePreview(thread)}
+                                 </span>
+                                 <span {...stylex.props(styles.threadTimestamp)}>
+                                    {' · '}
+                                    {formatTimestamp(thread.lastMessageAt)}
+                                 </span>
+                              </div>
                            </div>
-                        </div>
-                        {unread && <div {...stylex.props(styles.unreadDot)} />}
-                     </Link>
-                  );
-               })}
+                           {unread && <div {...stylex.props(styles.unreadDot)} />}
+                        </Link>
+                     );
+                  })}
             </div>
          </div>
       </div>

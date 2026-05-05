@@ -9,8 +9,11 @@ export interface Message {
    seen: boolean;
 }
 
+export type MessageThreadFolder = 'primary' | 'general' | 'requests';
+
 export interface MessageThread {
    id: string;
+   folder: MessageThreadFolder;
    participants: PartialUser[];
    messages: Message[];
    lastMessageAt: string;
@@ -26,6 +29,7 @@ const day = 86_400_000;
 export const MESSAGE_THREADS: MessageThread[] = [
    {
       id: 't1',
+      folder: 'primary',
       participants: [SUGGESTED_USERS[0]],
       messages: [
          {
@@ -159,6 +163,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't2',
+      folder: 'general',
       participants: [SUGGESTED_USERS[1]],
       messages: [
          {
@@ -208,12 +213,13 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't3',
+      folder: 'requests',
       participants: [SUGGESTED_USERS[2]],
       messages: [
          {
             id: 't3-1',
             senderId: SUGGESTED_USERS[2].id,
-            text: "Been working on a new color palette for the next series and I think I finally nailed it.",
+            text: 'Been working on a new color palette for the next series and I think I finally nailed it.',
             timestamp: h(new Date(now.getTime() - day * 5)),
             seen: true,
          },
@@ -234,7 +240,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
          {
             id: 't3-4',
             senderId: CURRENT_USER.id,
-            text: "That sounds stunning. I love when you go in that earthy direction, it suits your style so well.",
+            text: 'That sounds stunning. I love when you go in that earthy direction, it suits your style so well.',
             timestamp: h(new Date(now.getTime() - day * 5 + 3600_000)),
             seen: true,
          },
@@ -278,6 +284,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't4',
+      folder: 'primary',
       participants: [SUGGESTED_USERS[3]],
       messages: [
          {
@@ -341,6 +348,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't5',
+      folder: 'primary',
       participants: [SUGGESTED_USERS[4]],
       messages: [
          {
@@ -360,7 +368,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
          {
             id: 't5-3',
             senderId: CURRENT_USER.id,
-            text: "Completely agree. I was in the zone from the first shot.",
+            text: 'Completely agree. I was in the zone from the first shot.',
             timestamp: h(new Date(now.getTime() - day * 10 + 3600_000)),
             seen: true,
          },
@@ -390,6 +398,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't6',
+      folder: 'primary',
       participants: [SUGGESTED_USERS[5]],
       messages: [
          {
@@ -446,6 +455,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't7',
+      folder: 'general',
       participants: [SUGGESTED_USERS[6]],
       messages: [
          {
@@ -481,6 +491,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't8',
+      folder: 'general',
       participants: [SUGGESTED_USERS[7]],
       messages: [
          {
@@ -500,14 +511,14 @@ export const MESSAGE_THREADS: MessageThread[] = [
          {
             id: 't8-3',
             senderId: CURRENT_USER.id,
-            text: "On it! I will take a look this afternoon and leave comments in the doc.",
+            text: 'On it! I will take a look this afternoon and leave comments in the doc.',
             timestamp: h(new Date(now.getTime() - day * 4 + 3600_000)),
             seen: true,
          },
          {
             id: 't8-4',
             senderId: SUGGESTED_USERS[7].id,
-            text: "No rush at all, just wanted to let you know it is up.",
+            text: 'No rush at all, just wanted to let you know it is up.',
             timestamp: h(new Date(now.getTime() - day * 4 + 3600_000 + 60_000)),
             seen: true,
          },
@@ -537,6 +548,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't9',
+      folder: 'general',
       participants: [SUGGESTED_USERS[8]],
       messages: [
          {
@@ -586,6 +598,7 @@ export const MESSAGE_THREADS: MessageThread[] = [
    },
    {
       id: 't10',
+      folder: 'primary',
       participants: [SUGGESTED_USERS[9]],
       messages: [
          {
