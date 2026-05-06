@@ -10,6 +10,8 @@ import { VscSend } from 'react-icons/vsc';
 import { CURRENT_USER } from '../Home/data';
 import { styles } from './index.stylex';
 import { formatGroupSeparator, isRequestsFolder, MESSAGE_THREADS } from './messagesData';
+import NewMessageModal from './NewMessageModal';
+import NewMessageTrigger from './NewMessageModal/NewMessageTrigger';
 import RecipientsSidebar from './RecipientsSidebar/index';
 
 interface DirectMessagesPageProps {
@@ -40,7 +42,9 @@ export default async function DirectMessagesPage({ chatId }: DirectMessagesPageP
                   </div>
                   <div {...stylex.props(styles.chatNotSelectedTitle)}>Your messages</div>
                   <div {...stylex.props(styles.chatNotSelectedSubtitle)}>Send a message to start a chat.</div>
-                  <button {...stylex.props(styles.sendMessageButton)}>Send message</button>
+                  <NewMessageTrigger styleProps={stylex.props(styles.sendMessageButton)}>
+                     Send message
+                  </NewMessageTrigger>
                </div>
             )}
             {!isChatSelected && isRequestsPage && (
@@ -160,7 +164,8 @@ export default async function DirectMessagesPage({ chatId }: DirectMessagesPageP
                   </div>
                </>
             )}
-         </div>
-      </div>
-   );
+          </div>
+          <NewMessageModal />
+       </div>
+    );
 }
