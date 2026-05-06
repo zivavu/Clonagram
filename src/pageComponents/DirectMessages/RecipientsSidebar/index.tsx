@@ -6,7 +6,8 @@ import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import { CURRENT_USER } from '../../Home/data';
 import { hasUnreadMessages, isRequestsFolder } from '../messagesData';
-import { messageFolders, sortedThreads, styles } from './RecipientsSidebar.stylex';
+import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
+import { messageFolders, sortedThreads, styles } from './index.stylex';
 import { RequestsContent } from './RequestsContent';
 import { ThreadItem } from './ThreadItem';
 
@@ -28,7 +29,9 @@ export default async function RecipientsSidebar() {
                      zivavu
                      <BsChevronDown style={{ fontSize: '12px', strokeWidth: '0.4' }} />
                   </button>
-                  <TbEdit style={{ fontSize: '24px', marginLeft: 'auto' }} />
+                  <NewMessageTrigger>
+                     <TbEdit style={{ fontSize: '24px' }} />
+                  </NewMessageTrigger>
                </div>
 
                <div {...stylex.props(styles.messageFoldersContainer)}>
