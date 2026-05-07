@@ -14,8 +14,6 @@ import FloatingInput from '../../../components/FloatingInput';
 import { colors } from '../../../styles/tokens.stylex';
 import { styles } from './RightSection.stylex';
 
-const GoogleIcon = <Image src="/icons/google.svg" alt="" aria-hidden width={20} height={20} />;
-
 const schema = z.object({
    email: z.email(),
    password: z.string().min(8),
@@ -48,6 +46,8 @@ export default function RightSection() {
          router.push('/');
       }
    }
+
+   const googleIcon = <Image src="/icons/google.svg" alt="" aria-hidden width={20} height={20} />;
 
    async function signInWithGoogle() {
       const origin = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin;
@@ -85,7 +85,7 @@ export default function RightSection() {
          <LoginPageButton
             variant="outlined"
             text="Log in with Google"
-            icon={GoogleIcon}
+             icon={googleIcon}
             onClick={signInWithGoogle}
             style={{ marginTop: '42px' }}
          />
