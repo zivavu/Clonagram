@@ -23,7 +23,7 @@ export default function SearchPortal() {
          u.username.toLowerCase().includes(query.toLowerCase()),
    );
 
-   const skeletonCount = Math.max(0, 7 - filteredUsers.length);
+   const skeletonCount = filteredUsers.length ? 0 : 7;
 
    return (
       <Dialog.Root open={isOpen} onOpenChange={close}>

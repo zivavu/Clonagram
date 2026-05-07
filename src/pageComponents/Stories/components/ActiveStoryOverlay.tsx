@@ -114,7 +114,7 @@ export default function ActiveStoryOverlay({
                      width={32}
                      height={32}
                      loading="eager"
-                      {...stylex.props(styles.avatarImage)}
+                     {...stylex.props(styles.avatarImage)}
                   />
                   <span {...stylex.props(styles.activeStoryUsername)}>{story.username}</span>
                   <span {...stylex.props(styles.activeStoryUploadTimestamp)}>

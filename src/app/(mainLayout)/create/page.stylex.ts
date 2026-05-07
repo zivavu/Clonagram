@@ -16,11 +16,11 @@ export const styles = stylex.create({
       fontWeight: 600,
       color: colors.textPrimary,
    },
-    subtitle: {
-       fontSize: '0.95rem',
-       color: colors.textSecondary,
-    },
-    icon: {
-       fontSize: 48,
-    },
+   subtitle: {
+      fontSize: '0.95rem',
+      color: colors.textSecondary,
+   },
+   icon: {
+      fontSize: 48,
+   },
 });

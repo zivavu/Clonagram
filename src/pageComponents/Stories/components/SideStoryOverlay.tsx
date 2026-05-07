@@ -17,7 +17,7 @@ export default function SideStoryOverlay({ story }: SideStoryOverlayProps) {
             width={64}
             height={64}
             loading="eager"
-             {...stylex.props(styles.avatarImage)}
+            {...stylex.props(styles.avatarImage)}
          />
          <span {...stylex.props(styles.sideStoryUsername)}>{story.username}</span>
          <span {...stylex.props(styles.sideStoryTimestamp)}>{formatRelativeTimeShortUnit(story.timestamp)}</span>
