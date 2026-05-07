@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { styles } from './index.stylex';
 
-const footerLinks = [
+export const footerLinks = [
    'Meta',
    'About',
    'Blog',
