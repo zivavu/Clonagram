@@ -128,4 +128,4 @@ export const SUGGESTED_USERS: PartialUser[] = [
       name: 'Hugo Silva',
       avatarUrl: 'https://picsum.photos/seed/hugo/200/200',
    },
-] as const;
+];

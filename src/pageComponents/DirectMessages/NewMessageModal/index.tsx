@@ -126,8 +126,7 @@ export default function NewMessageModal() {
                            </button>
                         );
                      })}
-                     {Array.from({ length: skeletonCount }).map((_, i) => (
-                        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
+                     {Array.from({ length: skeletonCount }, (_, i) => (
                         <div key={`sk-${i}`} {...stylex.props(styles.skeletonRow)} aria-hidden="true">
                            <div {...stylex.props(styles.skeletonAvatar)} />
                            <div {...stylex.props(styles.skeletonLines)}>
