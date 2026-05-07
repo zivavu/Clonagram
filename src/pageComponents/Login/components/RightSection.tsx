@@ -65,9 +65,9 @@ export default function RightSection() {
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.titleContainer)}>Log into Clonagram</div>
-          <form onSubmit={handleSubmit(signInUser)} style={{ display: 'contents' }}>
-             <FloatingInput label="Mobile number, username or email" {...register('email')} autoComplete="off" />
-             <FloatingInput label="Password" type="password" {...register('password')} autoComplete="current-password" />
+         <form onSubmit={handleSubmit(signInUser)} style={{ display: 'contents' }}>
+            <FloatingInput label="Mobile number, username or email" {...register('email')} autoComplete="off" />
+            <FloatingInput label="Password" type="password" {...register('password')} autoComplete="current-password" />
             <LoginPageButton
                variant="primary"
                text="Log in"
@@ -76,16 +76,19 @@ export default function RightSection() {
                type="submit"
             />
             {errors.root?.message && (
-               <span role="alert" style={{ color: 'rgb(237, 73, 86)', fontSize: 13, marginTop: 8, textAlign: 'center' }}>
+               <span
+                  role="alert"
+                  style={{ color: 'rgb(237, 73, 86)', fontSize: 13, marginTop: 8, textAlign: 'center' }}
+               >
                   {errors.root.message}
                </span>
             )}
-           </form>
-          <LoginPageButton variant="transparent" text="Forgot password?" />
+         </form>
+         <LoginPageButton variant="transparent" text="Forgot password?" />
          <LoginPageButton
             variant="outlined"
             text="Log in with Google"
-             icon={googleIcon}
+            icon={googleIcon}
             onClick={signInWithGoogle}
             style={{ marginTop: '42px' }}
          />

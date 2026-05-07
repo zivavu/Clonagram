@@ -127,6 +127,7 @@ export default function NewMessageModal() {
                         );
                      })}
                      {Array.from({ length: skeletonCount }, (_, i) => (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders have no stable id
                         <div key={`sk-${i}`} {...stylex.props(styles.skeletonRow)} aria-hidden="true">
                            <div {...stylex.props(styles.skeletonAvatar)} />
                            <div {...stylex.props(styles.skeletonLines)}>

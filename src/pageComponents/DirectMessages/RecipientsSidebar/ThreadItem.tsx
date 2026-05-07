@@ -1,7 +1,9 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatTimestamp, getLastMessagePreview, type MessageThread } from '../messagesData';
+import type { MessageThread } from '@/src/mocks/messageThreads';
+import { formatTimestamp } from '@/src/utils/formatters';
+import { getLastMessagePreview } from '@/src/utils/messages';
 import { styles } from './index.stylex';
 
 export function ThreadItem({ thread, href, unread }: { thread: MessageThread; href: string; unread?: boolean }) {

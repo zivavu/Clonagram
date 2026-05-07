@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
+import { MESSAGE_THREADS } from '@/src/mocks/messageThreads';
 import { colors, radius } from '../../../styles/tokens.stylex';
-import { MESSAGE_THREADS } from '../messagesData';
 
 export const styles = stylex.create({
    root: {

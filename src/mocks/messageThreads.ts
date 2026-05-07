@@ -1,12 +1,11 @@
-import { headers } from 'next/headers';
+import { CURRENT_USER, SUGGESTED_USERS } from '@/src/pageComponents/Home/data';
 import type { PartialUser } from '@/src/types/global';
-import { CURRENT_USER, SUGGESTED_USERS } from '../Home/data';
 
 export interface Message {
    id: string;
    senderId: string;
    text: string;
-   timestamp: string; // ISO 8601
+   timestamp: string;
    seen: boolean;
 }
 
@@ -651,91 +650,4 @@ export const MESSAGE_THREADS: MessageThread[] = [
 
 export function getRequestThreads(): MessageThread[] {
    return MESSAGE_THREADS.filter(t => t.folder === 'requests');
-}
-
-export async function isRequestsFolder(): Promise<boolean> {
-   'use server';
-   const headersList = await headers();
-   const pathname = new URL(headersList.get('x-url') || '/').pathname;
-   return pathname === '/direct/requests' || pathname.startsWith('/direct/requests/');
-}
-
-export function isOlderThan24h(isoString: string): boolean {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   return diff >= day;
-}
-
-export function formatMessageTimestamp(isoString: string): string {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   const days = Math.floor(diff / day);
-
-   if (days === 1) return 'Yesterday';
-   if (days < 7) return date.toLocaleDateString('en-US', { weekday: 'short' });
-   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-export function formatDateSeparator(isoString: string): string {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   const days = Math.floor(diff / day);
-
-   if (days === 0) return 'Today';
-   if (days === 1) return 'Yesterday';
-   if (days < 365) return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-   return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
-
-export function formatGroupSeparator(isoString: string): string {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   const days = Math.floor(diff / day);
-   const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-
-   if (days === 0) return timeStr;
-   if (days < 7) return `${date.toLocaleDateString('en-US', { weekday: 'short' })} ${timeStr}`;
-   if (days < 365) return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${timeStr}`;
-   return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} ${timeStr}`;
-}
-
-export function formatTimestamp(isoString: string): string {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   const days = Math.floor(diff / day);
-
-   if (days === 0) {
-      const diffMinutes = Math.floor(diff / 60_000);
-      if (diffMinutes < 1) return 'now';
-      if (diffMinutes < 60) return `${diffMinutes}m`;
-      const diffHours = Math.floor(diffMinutes / 60);
-      return `${diffHours}h`;
-   }
-   if (days === 1) return 'Yesterday';
-   if (days < 7) return date.toLocaleDateString('en-US', { weekday: 'short' });
-   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-export function getThreadDisplayName(thread: MessageThread): string {
-   if (thread.participants.length === 1) {
-      return thread.participants[0].name || thread.participants[0].username;
-   }
-   return thread.participants.map(p => p.name || p.username).join(', ');
-}
-
-export function getLastMessagePreview(thread: MessageThread): string {
-   const lastMsg = thread.messages[thread.messages.length - 1];
-   const isFromMe = lastMsg.senderId === CURRENT_USER.id;
-   const prefix = isFromMe ? 'You: ' : '';
-   const text = lastMsg.text.length > 50 ? `${lastMsg.text.slice(0, 50)}...` : lastMsg.text;
-   return prefix + text;
-}
-
-export function hasUnreadMessages(thread: MessageThread): boolean {
-   return thread.messages.some(m => m.senderId !== CURRENT_USER.id && !m.seen);
 }

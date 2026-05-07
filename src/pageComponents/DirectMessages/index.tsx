@@ -7,9 +7,11 @@ import { LuSticker } from 'react-icons/lu';
 import { RiUserReceived2Line } from 'react-icons/ri';
 import { TbPhoto } from 'react-icons/tb';
 import { VscSend } from 'react-icons/vsc';
+import { MESSAGE_THREADS } from '@/src/mocks/messageThreads';
+import { formatGroupSeparator } from '@/src/utils/formatters';
+import { isRequestsFolder } from '@/src/utils/server';
 import { CURRENT_USER } from '../Home/data';
 import { styles } from './index.stylex';
-import { formatGroupSeparator, isRequestsFolder, MESSAGE_THREADS } from './messagesData';
 import NewMessageModal from './NewMessageModal';
 import NewMessageTrigger from './NewMessageModal/NewMessageTrigger';
 import RecipientsSidebar from './RecipientsSidebar/index';
@@ -164,8 +166,8 @@ export default async function DirectMessagesPage({ chatId }: DirectMessagesPageP
                   </div>
                </>
             )}
-          </div>
-          <NewMessageModal />
-       </div>
-    );
+         </div>
+         <NewMessageModal />
+      </div>
+   );
 }
