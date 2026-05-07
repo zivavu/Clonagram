@@ -1,6 +1,6 @@
 'use client';
 
-export default function MainLayoutError({ error, reset }: { error: Error; reset: () => void }) {
+export default function MainLayoutError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
    return (
       <div
          style={{
@@ -19,7 +19,7 @@ export default function MainLayoutError({ error, reset }: { error: Error; reset:
          </p>
          <button
             type="button"
-            onClick={reset}
+            onClick={() => reset()}
             style={{
                background: 'rgb(0, 100, 224)',
                color: 'white',
