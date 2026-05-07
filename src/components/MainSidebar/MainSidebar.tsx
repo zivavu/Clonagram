@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MdGridView } from 'react-icons/md';
 import { RiMenuFill } from 'react-icons/ri';
+import SearchPortal from '@/src/components/SearchPortal';
 import { styles } from './MainSidebar.stylex';
 import { NavItems } from './NavItems';
 
@@ -39,6 +40,8 @@ export default async function MainSidebar() {
                <span {...stylex.props(styles.navItemLabel)}>Also from Zeta</span>
             </button>
          </div>
+
+         <SearchPortal />
       </div>
    );
 }

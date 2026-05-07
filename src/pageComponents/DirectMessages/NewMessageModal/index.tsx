@@ -2,9 +2,9 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
 import { useState } from 'react';
 import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
+import { UserListItem, UserListSkeleton } from '@/src/components/shared/UserListItem';
 import { SUGGESTED_USERS } from '@/src/mocks/users';
 import { useNewMessageModalStore } from '../../../store/useNewMessageModalStore';
 import { styles } from './index.stylex';
@@ -99,43 +99,24 @@ export default function NewMessageModal() {
                      {filteredUsers.map(user => {
                         const isSelected = selectedIds.has(user.id);
                         return (
-                           <button
+                           <UserListItem
                               key={user.id}
-                              type="button"
-                              {...stylex.props(styles.userRow)}
-                              role="option"
-                              aria-selected={isSelected}
-                              onClick={() => toggleUser(user.id)}
-                           >
-                              <div {...stylex.props(styles.userInfo)}>
-                                 <Image
-                                    src={user.avatarUrl}
-                                    alt={user.name || user.username}
-                                    width={44}
-                                    height={44}
-                                    {...stylex.props(styles.userAvatar)}
-                                 />
-                                 <div {...stylex.props(styles.userNames)}>
-                                    <div {...stylex.props(styles.userDisplayName)}>{user.name || user.username}</div>
-                                    <div {...stylex.props(styles.userUsername)}>{user.username}</div>
+                              avatarUrl={user.avatarUrl}
+                              avatarAlt={user.name || user.username}
+                              name={user.name || user.username}
+                              subtitle={user.username}
+                              rightElement={
+                                 <div {...stylex.props(styles.radioCircle, isSelected && styles.radioCircleSelected)}>
+                                    {isSelected && <IoCheckmark style={{ fontSize: '14px' }} />}
                                  </div>
-                              </div>
-                              <div {...stylex.props(styles.radioCircle, isSelected && styles.radioCircleSelected)}>
-                                 {isSelected && <IoCheckmark style={{ fontSize: '14px' }} />}
-                              </div>
-                           </button>
+                              }
+                              onClick={() => toggleUser(user.id)}
+                              role="option"
+                              ariaSelected={isSelected}
+                           />
                         );
                      })}
-                     {Array.from({ length: skeletonCount }, (_, i) => (
-                        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders have no stable id
-                        <div key={`sk-${i}`} {...stylex.props(styles.skeletonRow)} aria-hidden="true">
-                           <div {...stylex.props(styles.skeletonAvatar)} />
-                           <div {...stylex.props(styles.skeletonLines)}>
-                              <div {...stylex.props(styles.skeletonName)} />
-                              <div {...stylex.props(styles.skeletonUsername)} />
-                           </div>
-                        </div>
-                     ))}
+                     <UserListSkeleton count={skeletonCount} />
                   </div>
                </div>
 

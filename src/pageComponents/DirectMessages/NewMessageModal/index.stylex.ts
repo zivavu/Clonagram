@@ -137,52 +137,7 @@ export const styles = stylex.create({
       overflowY: 'auto',
       paddingTop: '16px',
    },
-   userRow: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      width: '100%',
-      padding: '8px 16px',
-      cursor: 'pointer',
-      background: 'none',
-      border: 'none',
-      color: 'inherit',
-      textAlign: 'left',
-      ':hover': {
-         backgroundColor: colors.threadHover,
-      },
-   },
-   userInfo: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      flex: 1,
-      minWidth: 0,
-   },
-   userAvatar: {
-      borderRadius: '50%',
-      flexShrink: 0,
-   },
-   userNames: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '2px',
-      minWidth: 0,
-   },
-   userDisplayName: {
-      fontSize: '14px',
-      fontWeight: 400,
-      color: colors.textPrimary,
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-   },
-   userUsername: {
-      fontSize: '12px',
-      lineHeight: '16px',
-      color: colors.textSecondary,
-   },
-   radioCircle: {
+    radioCircle: {
       width: '24px',
       height: '24px',
       borderRadius: '50%',
@@ -226,37 +181,5 @@ export const styles = stylex.create({
       ':hover': {
          backgroundColor: 'rgb(24, 32, 139)',
       },
-   },
-   skeletonRow: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: '8px 16px',
-      width: '100%',
-   },
-   skeletonAvatar: {
-      width: 44,
-      height: 44,
-      borderRadius: '50%',
-      backgroundColor: colors.bgSecondary,
-      flexShrink: 0,
-      marginRight: 12,
-   },
-   skeletonLines: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 6,
-      flex: 1,
-   },
-   skeletonName: {
-      width: 380,
-      height: 12,
-      borderRadius: radius.xs,
-      backgroundColor: colors.bgSecondary,
-   },
-   skeletonUsername: {
-      width: 290,
-      height: 12,
-      borderRadius: radius.xs,
-      backgroundColor: colors.bgSecondary,
    },
 });

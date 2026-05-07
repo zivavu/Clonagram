@@ -34,6 +34,9 @@ export const styles = stylex.create({
       borderRadius: radius.md,
       color: colors.textPrimary,
       transition: 'background-color 0.15s ease',
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      cursor: 'pointer',
       ':hover': {
          backgroundColor: colors.buttonHover,
       },
