@@ -23,6 +23,8 @@ export const styles = stylex.create({
       padding: '38px 26px 8px',
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
    },
    messageFoldersContainer: {
       display: 'flex',

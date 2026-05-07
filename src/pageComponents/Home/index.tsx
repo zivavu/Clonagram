@@ -1,4 +1,4 @@
-import { Separator } from '@radix-ui/react-dropdown-menu';
+import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import Main from './components/Main';
