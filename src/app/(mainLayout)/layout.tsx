@@ -1,16 +1,17 @@
 import * as stylex from '@stylexjs/stylex';
-import { headers } from 'next/headers';
 import MainSidebar from '@/src/components/MainSidebar/MainSidebar';
+import { createClient } from '@/src/lib/supabase/server';
 import { styles } from './layout.stylex';
 
 export default async function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-   const headersList = await headers();
-   const url = headersList.get('x-url');
-   const pathname = url ? new URL(url, 'http://localhost').pathname : '/';
+   const supabase = await createClient();
+   const {
+      data: { user },
+   } = await supabase.auth.getUser();
 
    return (
       <div {...stylex.props(styles.root)}>
-         <MainSidebar pathname={pathname} />
+         <MainSidebar />
          {children}
       </div>
    );

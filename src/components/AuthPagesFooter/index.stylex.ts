@@ -30,8 +30,8 @@ export const styles = stylex.create({
    },
    footerLink: {
       fontSize: '0.75rem',
-      lineHeight: '1.2',
-      color: '#a8adb7',
+      color: colors.textSecondary,
+      fontWeight: 500,
       ':hover': {
          textDecoration: 'underline',
       },

@@ -2,27 +2,36 @@ import * as stylex from '@stylexjs/stylex';
 import { colors } from '@/src/styles/tokens.stylex';
 
 export const styles = stylex.create({
-   container: {
+   page: {
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100dvh',
+      width: '100%',
+      backgroundColor: colors.bg,
+   },
+   main: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: '100dvh',
-      gap: 16,
-      padding: 24,
+      flex: 1,
    },
    heading: {
       fontSize: 24,
       fontWeight: 600,
-      color: colors.textPrimary,
+      textAlign: 'center',
+      marginBottom: 36,
    },
    message: {
-      color: colors.textSecondary,
+      fontSize: 16,
+      lineHeight: '20px',
       textAlign: 'center',
    },
    link: {
       color: colors.accentText,
-      fontWeight: 600,
       textDecoration: 'none',
+      ':hover': {
+         textDecoration: 'underline',
+      },
    },
 });
