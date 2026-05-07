@@ -19,20 +19,22 @@ import {
    MdSmartDisplay,
 } from 'react-icons/md';
 import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
+import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
 import type { MainSidebarStyles } from './MainSidebar.stylex';
 
-interface NavItem {
-   href: string;
+interface NavItemConfig {
    icon: IconType;
    activeIcon: IconType;
    label: string;
+   href?: string;
+   action?: 'search';
 }
 
-const navItems: NavItem[] = [
+const navItemsConfig: NavItemConfig[] = [
    { href: '/', icon: GoHome, activeIcon: GoHomeFill, label: 'Home' },
    { href: '/reels', icon: MdOutlineSmartDisplay, activeIcon: MdSmartDisplay, label: 'Reels' },
    { href: '/direct', icon: BsSend, activeIcon: BsSendFill, label: 'Messages' },
-   { href: '/search', icon: MdSearch, activeIcon: MdSearch, label: 'Search' },
+   { icon: MdSearch, activeIcon: MdSearch, label: 'Search', action: 'search' },
    { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
    { href: '/notifications', icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications' },
    { href: '/create', icon: FaRegSquarePlus, activeIcon: FaSquarePlus, label: 'Create' },
@@ -48,23 +50,46 @@ interface NavItemsProps {
 export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) {
    const clientPathname = usePathname();
    const pathname = clientPathname || initialPathname;
+   const openSearch = useSearchPortalStore(state => state.open);
+   const isSearchOpen = useSearchPortalStore(state => state.isOpen);
 
    return (
       <>
-         {navItems.map(({ href, icon: Icon, activeIcon: ActiveIcon, label }) => {
-            const isActive = pathname.split('/')[1] === href.split('/')[1];
+         {navItemsConfig.map(({ href, icon: Icon, activeIcon: ActiveIcon, label, action }) => {
+            const isActive = action === 'search' ? isSearchOpen : pathname.split('/')[1] === href!.split('/')[1];
             const IconComponent = isActive ? ActiveIcon : Icon;
-            return (
-               <Link
-                  key={href}
-                  href={href}
-                  aria-label={label}
-                  {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
-               >
+
+            const content = (
+               <>
                   <IconComponent style={{ fontSize: 28 }} />
                   <span {...stylex.props(mainSidebarStyles.navItemLabel)} style={{ fontWeight: isActive ? 700 : 400 }}>
                      {label}
                   </span>
+               </>
+            );
+
+            if (action === 'search') {
+               return (
+                  <button
+                     key={label}
+                     type="button"
+                     onClick={openSearch}
+                     aria-label={label}
+                     {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
+                  >
+                     {content}
+                  </button>
+               );
+            }
+
+            return (
+               <Link
+                  key={href}
+                  href={href!}
+                  aria-label={label}
+                  {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
+               >
+                  {content}
                </Link>
             );
          })}

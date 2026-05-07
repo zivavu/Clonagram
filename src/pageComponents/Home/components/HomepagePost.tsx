@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
-import { TbRepeat } from 'react-icons/tb';
+import { TbDots, TbRepeat } from 'react-icons/tb';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from './HomepagePost.stylex';
 import type { Post } from './Main';
@@ -29,6 +29,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
             <span {...stylex.props(styles.topUsername)}>{post.user.username}</span>
             <span {...stylex.props(styles.separator)}>•</span>
             <span {...stylex.props(styles.createdAt)}>{formatRelativeTimeShortUnit(post.createdAt)}</span>
+            <TbDots {...stylex.props(styles.actionsIcon)} />
          </div>
          <Image
             src={post.media[0].url}

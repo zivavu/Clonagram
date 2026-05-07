@@ -8,6 +8,7 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'center',
       height: '100vh',
+      flex: 1,
       gap: '16px',
       color: colors.textSecondary,
    },

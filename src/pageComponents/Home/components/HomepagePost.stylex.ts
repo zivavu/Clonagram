@@ -11,14 +11,18 @@ export const styles = stylex.create({
    header: {
       display: 'flex',
       alignItems: 'center',
-      gap: '2px',
-      paddingLeft: '16px',
+      gap: '4px',
+      padding: '0 8px 0 16px',
       marginBottom: '16px',
+   },
+   actionsIcon: {
+      marginLeft: 'auto',
+      fontSize: '1.2rem',
    },
    topUsername: {
       fontSize: '0.9rem',
       fontWeight: 600,
-      marginLeft: '16px',
+      marginLeft: '8px',
    },
    separator: {
       fontSize: '0.9rem',
@@ -33,7 +37,8 @@ export const styles = stylex.create({
       alignItems: 'center',
       gap: '16px',
       width: '100%',
-      marginTop: '16px',
+      marginTop: '12px',
+      padding: '0 16px',
    },
    iconBarItem: {
       display: 'flex',
