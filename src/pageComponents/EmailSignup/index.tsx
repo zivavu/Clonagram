@@ -126,13 +126,13 @@ export default function EmailSignUpPage() {
                         example, we use this information to provide, personalize and improve our products, including
                         ads.
                      </span>
-                   </div>
-                   {errors.root?.message && (
-                      <span role="alert" style={{ color: 'rgb(237, 73, 86)', fontSize: 13, textAlign: 'center' }}>
-                         {errors.root.message}
-                      </span>
-                   )}
-                   <LoginPageButton variant="primary" text="Submit" type="submit" />
+                  </div>
+                  {errors.root?.message && (
+                     <span role="alert" style={{ color: 'rgb(237, 73, 86)', fontSize: 13, textAlign: 'center' }}>
+                        {errors.root.message}
+                     </span>
+                  )}
+                  <LoginPageButton variant="primary" text="Submit" type="submit" />
 
                   <LoginPageButton
                      variant="outlined"

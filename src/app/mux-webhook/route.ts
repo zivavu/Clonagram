@@ -23,6 +23,7 @@ export async function POST(request: Request) {
    const { type, data } = JSON.parse(rawBody);
 
    if (type === 'video.asset.ready') {
+      void data;
       // TODO: save asset to database
    }
 
