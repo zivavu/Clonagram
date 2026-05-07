@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
+import { STORIES } from '@/src/mocks/stories';
 import StoriesPage from '@/src/pageComponents/Stories';
-import { STORIES } from '@/src/pageComponents/Stories/data';
 
 export default async function Stories({ params }: { params: { username: string; id: string } }) {
    const { username, id } = await params;

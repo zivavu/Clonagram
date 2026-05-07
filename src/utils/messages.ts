@@ -1,5 +1,5 @@
 import type { MessageThread } from '@/src/mocks/messageThreads';
-import { CURRENT_USER } from '@/src/pageComponents/Home/data';
+import { CURRENT_USER } from '@/src/mocks/users';
 
 export function getThreadDisplayName(thread: MessageThread): string {
    if (thread.participants.length === 1) {

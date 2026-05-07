@@ -34,6 +34,17 @@
             "noUnusedImports": {
                "fix": "safe",
                "level": "error"
+            },
+            "useExhaustiveDependencies": {
+               "level": "error"
+            }
+         },
+         "suspicious": {
+            "noConsole": {
+               "level": "warn"
+            },
+            "noExplicitAny": {
+               "level": "error"
             }
          }
       }

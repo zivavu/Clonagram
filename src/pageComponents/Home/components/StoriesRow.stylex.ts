@@ -43,6 +43,15 @@ export const styles = stylex.create({
       visibility: 'hidden',
       pointerEvents: 'none',
    },
+   navIcon: {
+      fontSize: 24,
+   },
+   navIconLeft: {
+      transform: 'rotate(90deg)',
+   },
+   navIconRight: {
+      transform: 'rotate(-90deg)',
+   },
    storyLink: {
       display: 'contents',
    },

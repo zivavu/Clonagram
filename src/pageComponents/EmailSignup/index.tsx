@@ -128,7 +128,7 @@ export default function EmailSignUpPage() {
                      </span>
                   </div>
                   {errors.root?.message && (
-                     <span role="alert" style={{ color: 'rgb(237, 73, 86)', fontSize: 13, textAlign: 'center' }}>
+                     <span role="alert" {...stylex.props(styles.errorAlert)}>
                         {errors.root.message}
                      </span>
                   )}

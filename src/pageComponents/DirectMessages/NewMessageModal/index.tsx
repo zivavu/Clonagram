@@ -5,8 +5,8 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useState } from 'react';
 import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
+import { SUGGESTED_USERS } from '@/src/mocks/users';
 import { useNewMessageModalStore } from '../../../store/useNewMessageModalStore';
-import { SUGGESTED_USERS } from '../../Home/data';
 import { styles } from './index.stylex';
 
 export default function NewMessageModal() {

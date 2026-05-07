@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
    return (
-      <html lang="en">
-         <body>
+      <html lang="en" suppressHydrationWarning>
+         <body style={{ colorScheme: 'light dark' }}>
             <Providers>{children}</Providers>
          </body>
       </html>

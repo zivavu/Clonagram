@@ -1,4 +1,4 @@
-import type { StoryEntry } from './types';
+import type { StoryEntry } from '@/src/pageComponents/Stories/types';
 
 export const STORIES: StoryEntry[] = [
    {

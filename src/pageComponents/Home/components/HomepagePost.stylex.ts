@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors } from '../../../styles/tokens.stylex';
+import { colors, radius } from '../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
@@ -55,5 +55,11 @@ export const styles = stylex.create({
    description: {
       fontSize: '0.9rem',
       color: colors.textPrimary,
+   },
+   avatarImage: {
+      borderRadius: '50%',
+   },
+   postImage: {
+      borderRadius: radius.xs,
    },
 });

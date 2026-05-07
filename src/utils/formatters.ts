@@ -1,17 +1,19 @@
-const day = 86_400_000;
+const DAY_MS = 86_400_000;
 
-export function isOlderThan24h(isoString: string): boolean {
+export function getDateDiff(isoString: string): { date: Date; now: Date; diff: number; days: number } {
    const date = new Date(isoString);
    const now = new Date();
    const diff = now.getTime() - date.getTime();
-   return diff >= day;
+   return { date, now, diff, days: Math.floor(diff / DAY_MS) };
+}
+
+export function isOlderThan24h(isoString: string): boolean {
+   const { diff } = getDateDiff(isoString);
+   return diff >= DAY_MS;
 }
 
 export function formatMessageTimestamp(isoString: string): string {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   const days = Math.floor(diff / day);
+   const { date, days } = getDateDiff(isoString);
 
    if (days === 1) return 'Yesterday';
    if (days < 7) return date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -19,10 +21,7 @@ export function formatMessageTimestamp(isoString: string): string {
 }
 
 export function formatDateSeparator(isoString: string): string {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   const days = Math.floor(diff / day);
+   const { date, days } = getDateDiff(isoString);
 
    if (days === 0) return 'Today';
    if (days === 1) return 'Yesterday';
@@ -31,10 +30,7 @@ export function formatDateSeparator(isoString: string): string {
 }
 
 export function formatGroupSeparator(isoString: string): string {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   const days = Math.floor(diff / day);
+   const { date, days } = getDateDiff(isoString);
    const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
    if (days === 0) return timeStr;
@@ -44,10 +40,7 @@ export function formatGroupSeparator(isoString: string): string {
 }
 
 export function formatTimestamp(isoString: string): string {
-   const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   const days = Math.floor(diff / day);
+   const { date, diff, days } = getDateDiff(isoString);
 
    if (days === 0) {
       const diffMinutes = Math.floor(diff / 60_000);

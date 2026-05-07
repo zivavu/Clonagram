@@ -1,25 +1,25 @@
 import * as stylex from '@stylexjs/stylex';
-import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
+import { CURRENT_USER } from '@/src/mocks/users';
 import { hasUnreadMessages } from '@/src/utils/messages';
-import { isRequestsFolder } from '@/src/utils/server';
-import { CURRENT_USER } from '../../Home/data';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
 import { messageFolders, sortedThreads, styles } from './index.stylex';
 import { RequestsContent } from './RequestsContent';
 import { ThreadItem } from './ThreadItem';
 
-export default async function RecipientsSidebar() {
-   const headersList = await headers();
-   const pathname = new URL(headersList.get('x-url') || '/').pathname;
+interface RecipientsSidebarProps {
+   currentFolderHref?: string;
+   isRequestsPage?: boolean;
+}
 
-   const currentFolderHref =
-      messageFolders.findLast(({ href }) => pathname === href || pathname.startsWith(`${href}/`))?.href ?? '/direct';
+export default async function RecipientsSidebar({
+   currentFolderHref = '/direct',
+   isRequestsPage = false,
+}: RecipientsSidebarProps) {
    const currentFolderKey = messageFolders.find(folder => folder.href === currentFolderHref)?.key;
-   const isRequestsPage = await isRequestsFolder();
 
    return (
       <div {...stylex.props(styles.root)}>

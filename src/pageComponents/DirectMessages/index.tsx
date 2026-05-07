@@ -8,9 +8,8 @@ import { RiUserReceived2Line } from 'react-icons/ri';
 import { TbPhoto } from 'react-icons/tb';
 import { VscSend } from 'react-icons/vsc';
 import { MESSAGE_THREADS } from '@/src/mocks/messageThreads';
+import { CURRENT_USER } from '@/src/mocks/users';
 import { formatGroupSeparator } from '@/src/utils/formatters';
-import { isRequestsFolder } from '@/src/utils/server';
-import { CURRENT_USER } from '../Home/data';
 import { styles } from './index.stylex';
 import NewMessageModal from './NewMessageModal';
 import NewMessageTrigger from './NewMessageModal/NewMessageTrigger';
@@ -18,29 +17,28 @@ import RecipientsSidebar from './RecipientsSidebar/index';
 
 interface DirectMessagesPageProps {
    chatId?: string | undefined;
+   isRequestsPage?: boolean;
+   currentFolderHref?: string;
 }
 
-export default async function DirectMessagesPage({ chatId }: DirectMessagesPageProps) {
-   const isRequestsPage = await isRequestsFolder();
-
+export default async function DirectMessagesPage({
+   chatId,
+   isRequestsPage = false,
+   currentFolderHref = '/direct',
+}: DirectMessagesPageProps) {
    const chat = MESSAGE_THREADS.find(u => u.id === chatId);
-   const user = (chat?.participants.length && chat.participants[0]) || undefined;
+   const user = chat?.participants[0];
 
    const isChatSelected = !!chatId;
 
    return (
       <div {...stylex.props(styles.root)}>
-         <RecipientsSidebar />
+         <RecipientsSidebar currentFolderHref={currentFolderHref} isRequestsPage={isRequestsPage} />
          <div {...stylex.props(styles.chatContainer)}>
             {!isChatSelected && !isRequestsPage && (
                <div {...stylex.props(styles.chatNotSelectedContainer)}>
                   <div {...stylex.props(styles.messageIconContainer)}>
-                     <VscSend
-                        style={{
-                           fontSize: '50px',
-                           transform: 'translateY(-3px) translateX(3px) rotate(-35deg)',
-                        }}
-                     />
+                     <VscSend {...stylex.props(styles.messageIcon)} />
                   </div>
                   <div {...stylex.props(styles.chatNotSelectedTitle)}>Your messages</div>
                   <div {...stylex.props(styles.chatNotSelectedSubtitle)}>Send a message to start a chat.</div>
@@ -52,12 +50,7 @@ export default async function DirectMessagesPage({ chatId }: DirectMessagesPageP
             {!isChatSelected && isRequestsPage && (
                <div {...stylex.props(styles.chatNotSelectedContainer)}>
                   <div {...stylex.props(styles.messageIconContainer)}>
-                     <RiUserReceived2Line
-                        style={{
-                           fontSize: '50px',
-                           transform: 'scaleX(-1)',
-                        }}
-                     />
+                     <RiUserReceived2Line {...stylex.props(styles.requestsIcon)} />
                   </div>
                   <div {...stylex.props(styles.chatNotSelectedTitle)}>Message requests</div>
                   <div {...stylex.props(styles.chatNotSelectedSubtitle)}>
@@ -108,10 +101,11 @@ export default async function DirectMessagesPage({ chatId }: DirectMessagesPageP
                         const prevMsg = idx > 0 ? chat.messages[idx - 1] : null;
                         const nextMsg = idx < chat.messages.length - 1 ? chat.messages[idx + 1] : null;
                         const isLastInGroup = !nextMsg || nextMsg.senderId !== msg.senderId;
+                        const MS_PER_DAY = 86_400_000;
                         const gapToPrev = prevMsg
                            ? new Date(msg.timestamp).getTime() - new Date(prevMsg.timestamp).getTime()
                            : Infinity;
-                        const showSeparator = gapToPrev > 24 * 60 * 60 * 1000;
+                        const showSeparator = gapToPrev > MS_PER_DAY;
 
                         return (
                            <div key={msg.id} style={{ display: 'contents' }}>

@@ -3,9 +3,9 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 export async function updateSession(request: NextRequest, requestHeaders: Headers) {
    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-   if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY');
+   const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+   if (!supabaseUrl || !supabasePublishableKey) {
+      throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
    }
 
    let supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } });
@@ -28,7 +28,7 @@ export async function updateSession(request: NextRequest, requestHeaders: Header
       },
    };
 
-   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, { cookies: cookieMethods });
+   const supabase = createServerClient(supabaseUrl, supabasePublishableKey, { cookies: cookieMethods });
 
    // Refresh the session — do not add logic between createServerClient and
    // getUser(), as it may cause hard-to-debug session issues.

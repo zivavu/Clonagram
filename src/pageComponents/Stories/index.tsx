@@ -4,7 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { MdClose } from 'react-icons/md';
-import { STORIES } from '@/src/pageComponents/Stories/data';
+import { STORIES } from '@/src/mocks/stories';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, SWIPE_THRESHOLD } from './constants';
@@ -36,7 +36,7 @@ export default function StoriesPage({ username }: StoriesPageProps) {
    // Ref mirrors state so resize/touch handlers always read the latest index
    // without creating stale closures via the event listener.
    const currentUserIndexRef = useRef(startIndex);
-   const spinTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
+   const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
    const touchStartX = useRef(0);
    const touchStartY = useRef(0);
 
