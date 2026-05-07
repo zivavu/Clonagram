@@ -19,8 +19,9 @@ export default function LoginPageButton({
    ...props
 }: LoginPageButtonProps) {
    if (linkProps) {
+      const sx = stylex.props(styles.root, styles[variant]);
       return (
-         <Link {...linkProps} {...stylex.props(styles.root, styles[variant])}>
+         <Link {...linkProps} {...sx} style={{ ...linkProps.style, ...sx.style }}>
             {icon}
             {text}
          </Link>

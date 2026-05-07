@@ -50,7 +50,7 @@ export default function RightSection() {
    const googleIcon = <Image src="/icons/google.svg" alt="" aria-hidden width={20} height={20} />;
 
    async function signInWithGoogle() {
-      const origin = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin;
+      const origin = process.env.NEXT_PUBLIC_APP_URL ?? (typeof window !== 'undefined' ? window.location.origin : '');
       const { error } = await supabase.auth.signInWithOAuth({
          provider: 'google',
          options: {
@@ -76,10 +76,7 @@ export default function RightSection() {
                type="submit"
             />
             {errors.root?.message && (
-               <span
-                  role="alert"
-                  style={{ color: 'rgb(237, 73, 86)', fontSize: 13, marginTop: 8, textAlign: 'center' }}
-               >
+               <span role="alert" {...stylex.props(styles.errorAlert)}>
                   {errors.root.message}
                </span>
             )}

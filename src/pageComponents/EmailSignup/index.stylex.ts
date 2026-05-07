@@ -64,4 +64,13 @@ export const styles = stylex.create({
       fontWeight: '500',
       color: colors.textPrimary,
    },
+   errorAlert: {
+      color: 'rgb(237, 73, 86)',
+      fontSize: 13,
+      textAlign: 'center',
+   },
+   accountButton: {
+      marginTop: '16px',
+      marginBottom: '16px',
+   },
 });

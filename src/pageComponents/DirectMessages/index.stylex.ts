@@ -55,6 +55,14 @@ export const styles = stylex.create({
       padding: '6px 16px',
       marginTop: '8px',
    },
+   messageIcon: {
+      fontSize: '50px',
+      transform: 'translateY(-3px) translateX(3px) rotate(-35deg)',
+   },
+   requestsIcon: {
+      fontSize: '50px',
+      transform: 'scaleX(-1)',
+   },
    chatTopBar: {
       display: 'flex',
       alignItems: 'center',

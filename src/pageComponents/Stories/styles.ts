@@ -199,10 +199,13 @@ export const styles = stylex.create({
       fontWeight: 400,
       color: colors.textPrimary,
    },
-   activeStoryUploadTimestamp: {
-      fontSize: '0.85rem',
-      fontWeight: 300,
-   },
+    activeStoryUploadTimestamp: {
+       fontSize: '0.85rem',
+       fontWeight: 300,
+    },
+    avatarImage: {
+       borderRadius: '50%',
+    },
    activeStoryTopNavigationRight: {
       display: 'flex',
       alignItems: 'center',

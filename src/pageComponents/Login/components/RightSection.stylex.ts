@@ -41,4 +41,10 @@ export const styles = stylex.create({
          textDecoration: 'underline',
       },
    },
+   errorAlert: {
+      color: colors.danger,
+      fontSize: 13,
+      marginTop: 8,
+      textAlign: 'center',
+   },
 });

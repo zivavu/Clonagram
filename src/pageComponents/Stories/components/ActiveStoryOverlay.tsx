@@ -15,7 +15,7 @@ import {
    MdVolumeOff,
    MdVolumeUp,
 } from 'react-icons/md';
-import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
+import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from '../styles';
 import type { StoryEntry } from '../types';
 
@@ -114,7 +114,7 @@ export default function ActiveStoryOverlay({
                      width={32}
                      height={32}
                      loading="eager"
-                     style={{ borderRadius: '50%' }}
+                      {...stylex.props(styles.avatarImage)}
                   />
                   <span {...stylex.props(styles.activeStoryUsername)}>{story.username}</span>
                   <span {...stylex.props(styles.activeStoryUploadTimestamp)}>

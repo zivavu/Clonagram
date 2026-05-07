@@ -4,8 +4,7 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbRepeat } from 'react-icons/tb';
-import { formatRelativeTimeShortUnit } from '@/src/utils/utils';
-import { radius } from '../../../styles/tokens.stylex';
+import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from './HomepagePost.stylex';
 import type { Post } from './Main';
 
@@ -23,7 +22,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                alt={post.user.username}
                width={32}
                height={32}
-               style={{ borderRadius: '50%' }}
+               {...stylex.props(styles.avatarImage)}
                priority={index <= 2}
                loading={index <= 2 ? 'eager' : 'lazy'}
             />
@@ -36,31 +35,31 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
             alt={post.media[0].type}
             width={468}
             height={468}
-            style={{ borderRadius: radius.xs }}
+            {...stylex.props(styles.postImage)}
          />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
-               <button type="button">
+               <button type="button" aria-label="Like">
                   <MdFavoriteBorder size={24} />
                </button>
                {post.likesCount > 0 && <span>{post.likesCount}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
-               <button type="button">
+               <button type="button" aria-label="Comment">
                   <FiMessageCircle size={24} />
                </button>
                {post.commentsCount > 0 && <span>{post.commentsCount}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
-               <button type="button">
+               <button type="button" aria-label="Repost">
                   <TbRepeat size={24} />
                </button>
                {post.repostsCount > 0 && <span>{post.repostsCount}</span>}
             </div>
-            <button type="button">
+            <button type="button" aria-label="Share">
                <LuSend size={20} />
             </button>
-            <button type="button" style={{ marginLeft: 'auto' }}>
+            <button type="button" aria-label="Bookmark" style={{ marginLeft: 'auto' }}>
                <MdBookmarkBorder size={24} />
             </button>
          </div>

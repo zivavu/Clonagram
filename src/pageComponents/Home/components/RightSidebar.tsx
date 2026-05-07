@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CURRENT_USER, SUGGESTED_USERS } from '../data';
+import { CURRENT_USER, SUGGESTED_USERS } from '@/src/mocks/users';
 import { styles } from './RightSidebar.stylex';
 
 const FOOTER_LINKS = [
@@ -26,9 +26,9 @@ export default function RightSidebar() {
                alt={CURRENT_USER.username}
                width={44}
                height={44}
-               style={{ borderRadius: '50%' }}
-            />
-            <div {...stylex.props(styles.profileInfo)}>
+                {...stylex.props(styles.avatarImage)}
+             />
+             <div {...stylex.props(styles.profileInfo)}>
                <span {...stylex.props(styles.profileUsername)}>{CURRENT_USER.username}</span>
                <span {...stylex.props(styles.profileName)}>{CURRENT_USER.name}</span>
             </div>
@@ -52,9 +52,9 @@ export default function RightSidebar() {
                      alt={user.username}
                      width={44}
                      height={44}
-                     style={{ borderRadius: '50%' }}
-                  />
-                  <div {...stylex.props(styles.suggestionInfo)}>
+                      {...stylex.props(styles.avatarImage)}
+                   />
+                   <div {...stylex.props(styles.suggestionInfo)}>
                      <span {...stylex.props(styles.suggestionUsername)}>{user.username}</span>
                      {user.name && (
                         <span {...stylex.props(styles.suggestionSubtext)}>

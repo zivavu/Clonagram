@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { MdExpandCircleDown } from 'react-icons/md';
+import { STORIES } from '@/src/mocks/stories';
 import { colors } from '../../../styles/tokens.stylex';
-import { STORIES } from '../../Stories/data';
 import { styles } from './StoriesRow.stylex';
 
 // avatar width (74px) + ring padding (3px * 2) + ring inner padding (3px * 2) = 86, plus gap
@@ -77,14 +77,17 @@ export default function StoriesRow() {
             onClick={() => scrollBy(-STORY_ITEM_WIDTH * SCROLL_PAGES)}
             disabled={isScrolling}
          >
-            <MdExpandCircleDown style={{ fontSize: 24, color: colors.textPrimary, transform: 'rotate(90deg)' }} />
+            <MdExpandCircleDown
+               {...stylex.props(styles.navIcon, styles.navIconLeft)}
+               style={{ color: colors.textPrimary }}
+            />
          </button>
          <button
             {...stylex.props(styles.storiesRowButton, styles.storiesRowButtonRight, isLast && styles.hidden)}
             onClick={() => scrollBy(STORY_ITEM_WIDTH * SCROLL_PAGES)}
             disabled={isScrolling}
          >
-            <MdExpandCircleDown style={{ fontSize: 24, transform: 'rotate(-90deg)' }} />
+            <MdExpandCircleDown {...stylex.props(styles.navIcon, styles.navIconRight)} />
          </button>
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef} onScroll={handleScroll}>
             {STORIES.map(story => {

@@ -9,7 +9,8 @@
       "lint": "biome lint --write .",
       "format": "biome format --write . --reporter=summary",
       "check": "biome check --write .",
-      "db:types": "npx supabase gen types typescript --project-id pggvzapkivjgsybyzjok > src/types/database.ts"
+      "typecheck": "tsc --noEmit",
+      "db:types": "bunx supabase gen types typescript --project-id pggvzapkivjgsybyzjok > src/types/database.ts"
    },
    "dependencies": {
       "@hookform/resolvers": "^5.2.2",

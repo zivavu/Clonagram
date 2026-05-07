@@ -5,8 +5,8 @@ import Main from './components/Main';
 import RightSidebar from './components/RightSidebar';
 import { styles } from './index.stylex';
 
-export default function HomePage({ url }: { url: string | null }) {
-   const isFollowingSelected = new URL(url || '').searchParams.get('variant') === 'following';
+export default function HomePage({ variant }: { variant: string | null }) {
+   const isFollowingSelected = variant === 'following';
 
    return (
       <div {...stylex.props(styles.root)}>

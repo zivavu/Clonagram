@@ -91,13 +91,16 @@ export const styles = stylex.create({
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
    },
-   suggestionSubtext: {
-      fontSize: '0.8rem',
-      color: colors.textSecondary,
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-   },
+    suggestionSubtext: {
+       fontSize: '0.8rem',
+       color: colors.textSecondary,
+       overflow: 'hidden',
+       textOverflow: 'ellipsis',
+       whiteSpace: 'nowrap',
+    },
+    avatarImage: {
+       borderRadius: '50%',
+    },
    followButton: {
       fontSize: '0.8rem',
       fontWeight: 600,
