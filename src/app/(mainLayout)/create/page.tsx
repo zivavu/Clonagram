@@ -6,7 +6,7 @@ import { styles } from './page.stylex';
 
 export default async function CreatePage() {
    const directUpload = await muxClient.video.uploads.create({
-      cors_origin: '*',
+      cors_origin: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
       new_asset_settings: {
          playback_policy: ['public'],
       },

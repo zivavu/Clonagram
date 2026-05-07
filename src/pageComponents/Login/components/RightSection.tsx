@@ -27,45 +27,47 @@ export default function RightSection() {
    const {
       register,
       handleSubmit,
-      formState: { isSubmitting, isValid },
+      formState: { errors, isSubmitting, isValid },
+      setError,
    } = useForm({
       resolver: zodResolver(schema),
    });
 
-   async function singInUser(formData: z.infer<typeof schema>) {
+   async function signInUser(formData: z.infer<typeof schema>) {
       const { data, error } = await supabase.auth.signInWithPassword({
          email: formData.email,
          password: formData.password,
       });
       if (error) {
-         console.error(error);
+         setError('root', { message: error.message });
+         return;
       }
-      if (data) {
-         console.log(data);
-         if (data.user?.confirmed_at === null) {
-            console.log('User is not confirmed');
-         } else router.push('/');
+      if (data.user?.confirmed_at === null) {
+         setError('root', { message: 'Please confirm your email before logging in.' });
+      } else {
+         router.push('/');
       }
    }
 
    async function signInWithGoogle() {
+      const origin = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin;
       const { error } = await supabase.auth.signInWithOAuth({
          provider: 'google',
          options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
+            redirectTo: `${origin}/auth/callback`,
          },
       });
       if (error) {
-         console.error(error);
+         setError('root', { message: error.message });
       }
    }
 
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.titleContainer)}>Log into Clonagram</div>
-         <form onSubmit={handleSubmit(singInUser)} style={{ display: 'contents' }}>
-            <FloatingInput label="Mobile number, username or email" {...register('email')} autoComplete="off" />
-            <FloatingInput label="Password" type="password" {...register('password')} autoComplete="new-password" />
+          <form onSubmit={handleSubmit(signInUser)} style={{ display: 'contents' }}>
+             <FloatingInput label="Mobile number, username or email" {...register('email')} autoComplete="off" />
+             <FloatingInput label="Password" type="password" {...register('password')} autoComplete="current-password" />
             <LoginPageButton
                variant="primary"
                text="Log in"
@@ -73,8 +75,13 @@ export default function RightSection() {
                style={{ marginTop: '12px' }}
                type="submit"
             />
-         </form>
-         <LoginPageButton variant="transparent" text="Forgot password?" />
+            {errors.root?.message && (
+               <span role="alert" style={{ color: 'rgb(237, 73, 86)', fontSize: 13, marginTop: 8, textAlign: 'center' }}>
+                  {errors.root.message}
+               </span>
+            )}
+           </form>
+          <LoginPageButton variant="transparent" text="Forgot password?" />
          <LoginPageButton
             variant="outlined"
             text="Log in with Google"

@@ -11,6 +11,7 @@ import BirthdatePicker from '@/src/components/BirthdatePicker';
 import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
+import { createClient } from '@/src/lib/supabase/client';
 import { styles } from './index.stylex';
 
 const birthdateSchema = z
@@ -34,15 +35,34 @@ const schema = z.object({
 export type EmailSignupFormData = z.infer<typeof schema>;
 
 export default function EmailSignUpPage() {
-   const { register, handleSubmit, control } = useForm<EmailSignupFormData>({
+   const {
+      register,
+      handleSubmit,
+      control,
+      setError,
+      formState: { errors },
+   } = useForm<EmailSignupFormData>({
       resolver: zodResolver(schema),
       defaultValues: {
          birthdate: { month: null, day: null, year: null },
       },
    });
 
-   const onSubmit = (data: EmailSignupFormData) => {
-      console.log(data);
+   const onSubmit = async (data: EmailSignupFormData) => {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signUp({
+         email: data.email,
+         password: data.password,
+         options: {
+            data: {
+               full_name: data.fullName,
+               username: data.username,
+            },
+         },
+      });
+      if (error) {
+         setError('root', { message: error.message });
+      }
    };
 
    return (
@@ -106,8 +126,13 @@ export default function EmailSignUpPage() {
                         example, we use this information to provide, personalize and improve our products, including
                         ads.
                      </span>
-                  </div>
-                  <LoginPageButton variant="primary" text="Submit" type="submit" />
+                   </div>
+                   {errors.root?.message && (
+                      <span role="alert" style={{ color: 'rgb(237, 73, 86)', fontSize: 13, textAlign: 'center' }}>
+                         {errors.root.message}
+                      </span>
+                   )}
+                   <LoginPageButton variant="primary" text="Submit" type="submit" />
 
                   <LoginPageButton
                      variant="outlined"

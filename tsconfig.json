@@ -22,14 +22,6 @@
          "@/*": ["./*"]
       }
    },
-   "include": [
-      "next-env.d.ts",
-      ".next/types/**/*.ts",
-      ".next/dev/types/**/*.ts",
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.mts",
-      "src/pageComponents/Login/style.stylex.ts"
-   ],
+   "include": ["next-env.d.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.mts"],
    "exclude": ["node_modules"]
 }
