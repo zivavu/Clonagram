@@ -137,7 +137,7 @@ export const styles = stylex.create({
       overflowY: 'auto',
       paddingTop: '16px',
    },
-    radioCircle: {
+   radioCircle: {
       width: '24px',
       height: '24px',
       borderRadius: '50%',

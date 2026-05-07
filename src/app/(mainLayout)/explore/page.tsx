@@ -1,13 +1,6 @@
-import * as stylex from '@stylexjs/stylex';
-import { MdExplore } from 'react-icons/md';
-import { styles } from './page.stylex';
+import ExplorePage from '@/src/pageComponents/explore';
 
-export default function ExplorePage() {
-   return (
-      <div {...stylex.props(styles.container)}>
-         <MdExplore style={{ fontSize: 48 }} />
-         <h1 {...stylex.props(styles.title)}>Explore</h1>
-         <p {...stylex.props(styles.subtitle)}>Coming soon</p>
-      </div>
-   );
+export default async function Explore({ searchParams }: { searchParams: Promise<{ variant?: string }> }) {
+   const { variant } = await searchParams;
+   return <ExplorePage variant={variant ?? null} />;
 }

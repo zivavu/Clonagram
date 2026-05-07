@@ -14,7 +14,7 @@ export default async function CreatePage() {
 
    return (
       <div {...stylex.props(styles.container)}>
-          <MdAddBox {...stylex.props(styles.icon)} />
+         <MdAddBox {...stylex.props(styles.icon)} />
          <h1 {...stylex.props(styles.title)}>Create</h1>
          <MuxUploader endpoint={directUpload.url} />
       </div>

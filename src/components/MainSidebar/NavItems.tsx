@@ -19,6 +19,7 @@ import {
    MdSmartDisplay,
 } from 'react-icons/md';
 import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
+import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
 import type { MainSidebarStyles } from './MainSidebar.stylex';
 
@@ -27,7 +28,7 @@ interface NavItemConfig {
    activeIcon: IconType;
    label: string;
    href?: string;
-   action?: 'search';
+   action?: 'search' | 'notifications';
 }
 
 const navItemsConfig: NavItemConfig[] = [
@@ -36,7 +37,7 @@ const navItemsConfig: NavItemConfig[] = [
    { href: '/direct', icon: BsSend, activeIcon: BsSendFill, label: 'Messages' },
    { icon: MdSearch, activeIcon: MdSearch, label: 'Search', action: 'search' },
    { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
-   { href: '/notifications', icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications' },
+   { icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications', action: 'notifications' },
    { href: '/create', icon: FaRegSquarePlus, activeIcon: FaSquarePlus, label: 'Create' },
    { href: '/dashboard', icon: RiBarChartBoxLine, activeIcon: RiBarChartBoxFill, label: 'Dashboard' },
    { href: '/profile', icon: MdOutlinePerson, activeIcon: MdPerson, label: 'Profile' },
@@ -52,11 +53,18 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
    const pathname = clientPathname || initialPathname;
    const openSearch = useSearchPortalStore(state => state.open);
    const isSearchOpen = useSearchPortalStore(state => state.isOpen);
+   const openNotifications = useNotificationsPortalStore(state => state.open);
+   const isNotificationsOpen = useNotificationsPortalStore(state => state.isOpen);
 
    return (
       <>
          {navItemsConfig.map(({ href, icon: Icon, activeIcon: ActiveIcon, label, action }) => {
-            const isActive = action === 'search' ? isSearchOpen : pathname.split('/')[1] === href!.split('/')[1];
+            const isActive =
+               action === 'search'
+                  ? isSearchOpen
+                  : action === 'notifications'
+                    ? isNotificationsOpen
+                    : pathname.split('/')[1] === href!.split('/')[1];
             const IconComponent = isActive ? ActiveIcon : Icon;
 
             const content = (
@@ -74,6 +82,20 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
                      key={label}
                      type="button"
                      onClick={openSearch}
+                     aria-label={label}
+                     {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
+                  >
+                     {content}
+                  </button>
+               );
+            }
+
+            if (action === 'notifications') {
+               return (
+                  <button
+                     key={label}
+                     type="button"
+                     onClick={openNotifications}
                      aria-label={label}
                      {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
                   >
