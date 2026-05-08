@@ -30,6 +30,7 @@ export default async function DirectMessagesPage({
    const user = chat?.participants[0];
 
    const isChatSelected = !!chatId;
+   const isRequestChat = currentFolderHref === '/direct/requests' && isChatSelected;
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -149,15 +150,50 @@ export default async function DirectMessagesPage({
                      })}
                   </div>
 
-                  <div {...stylex.props(styles.inputContainer)}>
-                     <div {...stylex.props(styles.inputWrapper)}>
-                        <AiOutlineSmile {...stylex.props(styles.inputIcon)} />
-                        <input {...stylex.props(styles.inputField)} type="text" placeholder="Message..." />
-                        <IoMicOutline {...stylex.props(styles.inputIcon)} />
-                        <TbPhoto {...stylex.props(styles.inputIcon)} />
-                        <LuSticker {...stylex.props(styles.inputIcon)} />
+                  {isRequestChat ? (
+                     <div {...stylex.props(styles.requestActionsContainer)}>
+                        <div {...stylex.props(styles.requestInfoSection)}>
+                           <div {...stylex.props(styles.requestInfoTitle)}>
+                              Accept message request from{' '}
+                              <span {...stylex.props(styles.requestInfoUsername)}>{user.username}</span>{' '}
+                              <span {...stylex.props(styles.requestInfoUsername)}>({user.username})</span>?
+                           </div>
+                           <div {...stylex.props(styles.requestInfoSubtitle)}>
+                              If you accept, they will also be able to call you and see info such as your activity
+                              status and when you&apos;ve read messages.
+                           </div>
+                        </div>
+                        <div {...stylex.props(styles.requestButtonsRow)}>
+                           <div {...stylex.props(styles.requestButtonWrapper)}>
+                              <button {...stylex.props(styles.requestButton)} type="button">
+                                 Block
+                              </button>
+                           </div>
+                           <div {...stylex.props(styles.requestButtonDivider)} />
+                           <div {...stylex.props(styles.requestButtonWrapper)}>
+                              <button {...stylex.props(styles.requestButton, styles.requestButtonDanger)} type="button">
+                                 Delete
+                              </button>
+                           </div>
+                           <div {...stylex.props(styles.requestButtonDivider)} />
+                           <div {...stylex.props(styles.requestButtonWrapper)}>
+                              <button {...stylex.props(styles.requestButton)} type="button">
+                                 Accept
+                              </button>
+                           </div>
+                        </div>
                      </div>
-                  </div>
+                  ) : (
+                     <div {...stylex.props(styles.inputContainer)}>
+                        <div {...stylex.props(styles.inputWrapper)}>
+                           <AiOutlineSmile {...stylex.props(styles.inputIcon)} />
+                           <input {...stylex.props(styles.inputField)} type="text" placeholder="Message..." />
+                           <IoMicOutline {...stylex.props(styles.inputIcon)} />
+                           <TbPhoto {...stylex.props(styles.inputIcon)} />
+                           <LuSticker {...stylex.props(styles.inputIcon)} />
+                        </div>
+                     </div>
+                  )}
                </>
             )}
          </div>
