@@ -8,11 +8,11 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import LoginPageButton from '@/src/components/LoginPageButton';
-import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
+import ZetaLogo from '@/src/components/ZetaLogo';
 import { createClient } from '@/src/lib/supabase/client';
-import FloatingInput from '../../../components/FloatingInput';
-import { colors } from '../../../styles/tokens.stylex';
-import { styles } from './RightSection.stylex';
+import FloatingInput from '../../../../components/FloatingInput';
+import { colors } from '../../../../styles/tokens.stylex';
+import { styles } from './index.stylex';
 
 const schema = z.object({
    email: z.email(),

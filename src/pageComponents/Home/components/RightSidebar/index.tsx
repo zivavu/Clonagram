@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CURRENT_USER, SUGGESTED_USERS } from '@/src/mocks/users';
-import { styles } from './RightSidebar.stylex';
+import { styles } from './index.stylex';
 
 const FOOTER_LINKS = [
    'About',

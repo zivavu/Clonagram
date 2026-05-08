@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import AuthPagesFooter from '@/src/components/AuthPagesFooter';
-import MainSidebar from '../components/MainSidebar/MainSidebar';
+import MainSidebar from '../components/MainSidebar';
 import { createClient } from '../lib/supabase/server';
 import { styles } from './not-found.stylex';
 

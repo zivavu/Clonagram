@@ -10,10 +10,10 @@ import { VscSend } from 'react-icons/vsc';
 import { MESSAGE_THREADS } from '@/src/mocks/messageThreads';
 import { CURRENT_USER } from '@/src/mocks/users';
 import { formatGroupSeparator } from '@/src/utils/formatters';
+import NewMessageModal from './components/NewMessageModal';
+import NewMessageTrigger from './components/NewMessageModal/NewMessageTrigger';
+import RecipientsSidebar from './components/RecipientsSidebar/index';
 import { styles } from './index.stylex';
-import NewMessageModal from './NewMessageModal';
-import NewMessageTrigger from './NewMessageModal/NewMessageTrigger';
-import RecipientsSidebar from './RecipientsSidebar/index';
 
 interface DirectMessagesPageProps {
    chatId?: string | undefined;

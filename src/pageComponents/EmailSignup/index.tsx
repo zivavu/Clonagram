@@ -10,7 +10,7 @@ import AuthPagesFooter from '@/src/components/AuthPagesFooter';
 import BirthdatePicker from '@/src/components/BirthdatePicker';
 import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
-import ZetaLogo from '@/src/components/ZetaLogo/ZetaLogo';
+import ZetaLogo from '@/src/components/ZetaLogo';
 import { createClient } from '@/src/lib/supabase/client';
 import { styles } from './index.stylex';
 
