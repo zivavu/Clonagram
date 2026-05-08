@@ -6,7 +6,7 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { usePlayerStore } from '../../../store/usePlayerStore';
-import { styles } from '../styles';
+import { styles } from '../index.stylex';
 import type { Layout, StoryEntry } from '../types';
 import ActiveStoryOverlay from './ActiveStoryOverlay';
 import SideStoryOverlay from './SideStoryOverlay';

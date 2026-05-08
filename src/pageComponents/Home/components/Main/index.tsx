@@ -2,8 +2,8 @@ import * as stylex from '@stylexjs/stylex';
 import type { Post } from '@/src/mocks/posts';
 import { POSTS } from '@/src/mocks/posts';
 import HomepagePost from '../HomepagePost';
-import { styles } from './index.stylex';
 import StoriesRow from '../StoriesRow';
+import { styles } from './index.stylex';
 
 export type { Post };
 

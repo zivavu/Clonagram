@@ -72,4 +72,34 @@ export const POSTS: Post[] = [
       commentsCount: 89,
       createdAt: '2026-04-25T14:55:00Z',
    },
+   {
+      id: 4,
+      user: {
+         id: '4',
+         username: 'wanderlust',
+         avatarUrl: 'https://picsum.photos/seed/clona4/630/630',
+      },
+      media: [
+         {
+            id: '4a',
+            type: 'image',
+            url: 'https://picsum.photos/seed/clona4a/630/630',
+         },
+         {
+            id: '4b',
+            type: 'image',
+            url: 'https://picsum.photos/seed/clona4b/630/630',
+         },
+         {
+            id: '4c',
+            type: 'image',
+            url: 'https://picsum.photos/seed/clona4c/630/630',
+         },
+      ],
+      likesCount: 892,
+      repostsCount: 45,
+      description: 'weekend dump 🎞️',
+      commentsCount: 23,
+      createdAt: '2026-04-25T12:30:00Z',
+   },
 ];

@@ -32,6 +32,49 @@ export const styles = stylex.create({
       fontSize: '0.9rem',
       color: colors.textSecondary,
    },
+   carouselContainer: {
+      position: 'relative',
+      width: '468px',
+      height: '468px',
+      overflow: 'hidden',
+      borderRadius: radius.xs,
+   },
+   carouselTrack: {
+      display: 'flex',
+      height: '100%',
+      transition: 'transform 350ms cubic-bezier(0.4, 0, 0.2, 1)',
+   },
+   carouselSlide: {
+      position: 'relative',
+      flexShrink: 0,
+      width: '468px',
+      height: '468px',
+   },
+   postImage: {
+      objectFit: 'cover',
+   },
+   dotsContainer: {
+      position: 'absolute',
+      bottom: '12px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      display: 'flex',
+      gap: '4px',
+      zIndex: 2,
+   },
+   dot: {
+      width: '6px',
+      height: '6px',
+      borderRadius: radius.full,
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+      border: 'none',
+      padding: 0,
+      cursor: 'pointer',
+      transition: 'background-color 0.15s ease',
+   },
+   dotActive: {
+      backgroundColor: colors.textPrimary,
+   },
    iconsBar: {
       display: 'flex',
       alignItems: 'center',
@@ -63,8 +106,5 @@ export const styles = stylex.create({
    },
    avatarImage: {
       borderRadius: '50%',
-   },
-   postImage: {
-      borderRadius: radius.xs,
    },
 });

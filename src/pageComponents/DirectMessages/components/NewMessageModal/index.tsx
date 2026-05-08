@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
 import { UserListItem, UserListSkeleton } from '@/src/components/shared/UserListItem';
 import { SUGGESTED_USERS } from '@/src/mocks/users';
-import { useNewMessageModalStore } from '../../../store/useNewMessageModalStore';
+import { useNewMessageModalStore } from '../../../../store/useNewMessageModalStore';
 import { styles } from './index.stylex';
 
 export default function NewMessageModal() {

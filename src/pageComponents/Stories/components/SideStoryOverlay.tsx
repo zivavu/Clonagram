@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { styles } from '../styles';
+import { styles } from '../index.stylex';
 import type { StoryEntry } from '../types';
 
 interface SideStoryOverlayProps {
