@@ -2,8 +2,8 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useSyncExternalStore } from 'react';
 import { MdFavorite } from 'react-icons/md';
-import loginCardPeople, { type LoginCardPerson } from '../loginCardPeople';
-import { imageCardStyles, styles } from './LeftSection.stylex';
+import loginCardPeople, { type LoginCardPerson } from '../../loginCardPeople';
+import { imageCardStyles, styles } from './index.stylex';
 
 function getRandomDistinctPeople(people: readonly LoginCardPerson[], count: number) {
    return [...people].sort(() => Math.random() - 0.5).slice(0, count);

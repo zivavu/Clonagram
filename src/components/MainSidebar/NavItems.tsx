@@ -21,7 +21,7 @@ import {
 import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
-import type { MainSidebarStyles } from './MainSidebar.stylex';
+import type { MainSidebarStyles } from './index.stylex';
 
 interface NavItemConfig {
    icon: IconType;

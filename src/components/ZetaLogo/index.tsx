@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { MdFilterTiltShift } from 'react-icons/md';
 import { colors } from '../../styles/tokens.stylex';
-import { styles } from './ZetaLogo.stylex';
+import { styles } from './index.stylex';
 
 export interface ZetaLogoProps {
    rootProps?: React.ComponentProps<'div'>;

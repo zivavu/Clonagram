@@ -5,8 +5,8 @@ import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { styles } from './HomepagePost.stylex';
-import type { Post } from './Main';
+import { styles } from './index.stylex';
+import type { Post } from '../Main';
 
 interface HomepagePostProps {
    post: Post;

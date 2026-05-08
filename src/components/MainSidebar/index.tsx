@@ -6,7 +6,7 @@ import { MdGridView } from 'react-icons/md';
 import { RiMenuFill } from 'react-icons/ri';
 import NotificationsPortal from '@/src/components/NotificationsPortal';
 import SearchPortal from '@/src/components/SearchPortal';
-import { styles } from './MainSidebar.stylex';
+import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 
 export default async function MainSidebar() {
