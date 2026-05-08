@@ -3,6 +3,8 @@ export interface SelectedFile {
    preview: string;
    aspectRatio: 'original' | '1:1' | '4:5' | '16:9' | '9:16';
    zoom: number;
+   panX: number;
+   panY: number;
 }
 
 export type Step = 'upload' | 'crop';

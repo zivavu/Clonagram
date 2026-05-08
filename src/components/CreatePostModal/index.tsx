@@ -26,6 +26,8 @@ export default function CreatePostModal() {
          preview: URL.createObjectURL(file),
          aspectRatio: 'original',
          zoom: 1,
+         panX: 0,
+         panY: 0,
       }));
       setFiles(prev => [...prev, ...newFiles].slice(0, MAX_FILES));
       setStep('crop');
@@ -85,8 +87,12 @@ export default function CreatePostModal() {
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={handleClose}>
+               <input {...getInputProps()} style={{ display: 'none' }} />
                {step === 'upload' && (
                   <>
+                     <Dialog.Description style={{ display: 'none' }}>
+                        Upload photos and videos to create a new post
+                     </Dialog.Description>
                      <div {...stylex.props(styles.header)}>
                         <div style={{ width: 30 }} />
                         <Dialog.Title {...stylex.props(styles.title)}>Create new post</Dialog.Title>
@@ -97,7 +103,6 @@ export default function CreatePostModal() {
                         </Dialog.Close>
                      </div>
                      <div {...getRootProps()} {...stylex.props(styles.dropZone, isDragActive && styles.dropZoneActive)}>
-                        <input {...getInputProps()} />
                         <IoImagesOutline style={{ fontSize: 96, color: 'rgb(168, 168, 168)' }} />
                         <p {...stylex.props(styles.dropText)}>Drag photos and videos here</p>
                         <button type="button" {...stylex.props(styles.selectButton)} onClick={open}>
@@ -107,15 +112,19 @@ export default function CreatePostModal() {
                   </>
                )}
                {step === 'crop' && (
-                  <CropStep
-                     files={files}
-                     currentIndex={currentIndex}
-                     onBack={handleBackToUpload}
-                     onNext={() => {}}
-                     onSelectIndex={setCurrentIndex}
-                     onRemoveFile={handleRemoveFile}
-                     onUpdateFile={handleUpdateFile}
-                  />
+                  <>
+                     <Dialog.Description style={{ display: 'none' }}>Crop your photo</Dialog.Description>
+                     <CropStep
+                        files={files}
+                        currentIndex={currentIndex}
+                        onBack={handleBackToUpload}
+                        onNext={() => {}}
+                        onSelectIndex={setCurrentIndex}
+                        onRemoveFile={handleRemoveFile}
+                        onUpdateFile={handleUpdateFile}
+                        onAddFiles={open}
+                     />
+                  </>
                )}
             </Dialog.Content>
          </Dialog.Portal>
