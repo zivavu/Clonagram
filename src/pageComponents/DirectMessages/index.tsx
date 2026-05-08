@@ -1,5 +1,5 @@
+import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline, IoMicOutline } from 'react-icons/io5';
@@ -7,6 +7,7 @@ import { LuSticker } from 'react-icons/lu';
 import { RiUserReceived2Line } from 'react-icons/ri';
 import { TbPhoto } from 'react-icons/tb';
 import { VscSend } from 'react-icons/vsc';
+import UserAvatar from '@/src/components/UserAvatar';
 import { MESSAGE_THREADS } from '@/src/mocks/messageThreads';
 import { CURRENT_USER } from '@/src/mocks/users';
 import { formatGroupSeparator } from '@/src/utils/formatters';
@@ -64,15 +65,9 @@ export default async function DirectMessagesPage({
                <>
                   <div {...stylex.props(styles.chatTopBar)}>
                      <div {...stylex.props(styles.chatTopBarRecipient)}>
-                        <Image
-                           src={user?.avatarUrl}
-                           alt={user?.username}
-                           width={44}
-                           height={44}
-                           {...stylex.props(styles.chatTopBarRecipientImage)}
-                        />
+                        <UserAvatar src={user?.avatar_url} alt={user?.username || ''} size={44} />
                         <div>
-                           <div {...stylex.props(styles.chatTopBarRecipientName)}>{user?.name}</div>
+                           <div {...stylex.props(styles.chatTopBarRecipientName)}>{user?.full_name}</div>
                            <div {...stylex.props(styles.chatTopBarRecipientUsername)}>{user?.username}</div>
                         </div>
                      </div>
@@ -85,13 +80,7 @@ export default async function DirectMessagesPage({
 
                   <div {...stylex.props(styles.messagesContainer)}>
                      <div {...stylex.props(styles.chatProfileHeader)}>
-                        <Image
-                           src={user.avatarUrl}
-                           alt={user.username}
-                           width={96}
-                           height={96}
-                           {...stylex.props(styles.chatProfileAvatar)}
-                        />
+                        <UserAvatar src={user.avatar_url} alt={user.username} size={96} />
                         <div {...stylex.props(styles.chatProfileUsername)}>{user.username}</div>
                         <div {...stylex.props(styles.chatProfileSubtitle)}>Instagram</div>
                         <button {...stylex.props(styles.chatProfileButton)}>View profile</button>
@@ -126,13 +115,7 @@ export default async function DirectMessagesPage({
                                  {!isSent && (
                                     <div {...stylex.props(styles.messageAvatarSlot)}>
                                        {isLastInGroup && (
-                                          <Image
-                                             src={user.avatarUrl}
-                                             alt={user.username}
-                                             width={28}
-                                             height={28}
-                                             {...stylex.props(styles.messageAvatar)}
-                                          />
+                                          <UserAvatar src={user.avatar_url} alt={user.username} size={28} />
                                        )}
                                     </div>
                                  )}
@@ -164,23 +147,19 @@ export default async function DirectMessagesPage({
                            </div>
                         </div>
                         <div {...stylex.props(styles.requestButtonsRow)}>
-                           <div {...stylex.props(styles.requestButtonWrapper)}>
-                              <button {...stylex.props(styles.requestButton)} type="button">
-                                 Block
-                              </button>
-                           </div>
-                           <div {...stylex.props(styles.requestButtonDivider)} />
-                           <div {...stylex.props(styles.requestButtonWrapper)}>
-                              <button {...stylex.props(styles.requestButton, styles.requestButtonDanger)} type="button">
-                                 Delete
-                              </button>
-                           </div>
-                           <div {...stylex.props(styles.requestButtonDivider)} />
-                           <div {...stylex.props(styles.requestButtonWrapper)}>
-                              <button {...stylex.props(styles.requestButton)} type="button">
-                                 Accept
-                              </button>
-                           </div>
+                           <button {...stylex.props(styles.requestButton)} type="button">
+                              Block
+                           </button>
+                           <Separator {...stylex.props(styles.requestButtonDivider)} />
+
+                           <button {...stylex.props(styles.requestButton, styles.requestButtonDanger)} type="button">
+                              Delete
+                           </button>
+                           <Separator {...stylex.props(styles.requestButtonDivider)} />
+
+                           <button {...stylex.props(styles.requestButton)} type="button">
+                              Accept
+                           </button>
                         </div>
                      </div>
                   ) : (

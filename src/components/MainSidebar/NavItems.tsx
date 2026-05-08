@@ -19,6 +19,7 @@ import {
    MdSmartDisplay,
 } from 'react-icons/md';
 import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
+import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
 import type { MainSidebarStyles } from './index.stylex';
@@ -28,7 +29,7 @@ interface NavItemConfig {
    activeIcon: IconType;
    label: string;
    href?: string;
-   action?: 'search' | 'notifications';
+   action?: 'search' | 'notifications' | 'create';
 }
 
 const navItemsConfig: NavItemConfig[] = [
@@ -38,7 +39,7 @@ const navItemsConfig: NavItemConfig[] = [
    { icon: MdSearch, activeIcon: MdSearch, label: 'Search', action: 'search' },
    { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
    { icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications', action: 'notifications' },
-   { href: '/create', icon: FaRegSquarePlus, activeIcon: FaSquarePlus, label: 'Create' },
+   { icon: FaRegSquarePlus, activeIcon: FaSquarePlus, label: 'Create', action: 'create' },
    { href: '/dashboard', icon: RiBarChartBoxLine, activeIcon: RiBarChartBoxFill, label: 'Dashboard' },
    { href: '/profile', icon: MdOutlinePerson, activeIcon: MdPerson, label: 'Profile' },
 ];
@@ -55,6 +56,7 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
    const isSearchOpen = useSearchPortalStore(state => state.isOpen);
    const openNotifications = useNotificationsPortalStore(state => state.open);
    const isNotificationsOpen = useNotificationsPortalStore(state => state.isOpen);
+   const openCreate = useCreatePostModalStore(state => state.open);
 
    return (
       <>
@@ -64,7 +66,9 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
                   ? isSearchOpen
                   : action === 'notifications'
                     ? isNotificationsOpen
-                    : pathname.split('/')[1] === href!.split('/')[1];
+                    : action === 'create'
+                      ? false
+                      : pathname.split('/')[1] === href!.split('/')[1];
             const IconComponent = isActive ? ActiveIcon : Icon;
 
             const content = (
@@ -96,6 +100,20 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
                      key={label}
                      type="button"
                      onClick={openNotifications}
+                     aria-label={label}
+                     {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
+                  >
+                     {content}
+                  </button>
+               );
+            }
+
+            if (action === 'create') {
+               return (
+                  <button
+                     key={label}
+                     type="button"
+                     onClick={openCreate}
                      aria-label={label}
                      {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
                   >

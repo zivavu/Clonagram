@@ -8,6 +8,7 @@ import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import CarouselArrow from '@/src/components/CarouselArrow';
+import UserAvatar from '@/src/components/UserAvatar';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import type { Post } from '../Main';
 import { styles } from './index.stylex';
@@ -32,12 +33,10 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
-            <Image
-               src={post.user.avatarUrl}
+            <UserAvatar
+               src={post.user.avatar_url}
                alt={post.user.username}
-               width={32}
-               height={32}
-               {...stylex.props(styles.avatarImage)}
+               size={32}
                priority={index <= 2}
                loading={index <= 2 ? 'eager' : 'lazy'}
             />

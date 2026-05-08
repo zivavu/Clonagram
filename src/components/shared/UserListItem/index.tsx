@@ -1,11 +1,11 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
+import UserAvatar from '@/src/components/UserAvatar';
 import { styles } from './index.stylex';
 
 interface UserListItemProps {
-   avatarUrl: string;
+   avatarUrl: string | null;
    avatarAlt?: string;
    name: React.ReactNode;
    subtitle: React.ReactNode;
@@ -27,7 +27,7 @@ export function UserListItem({
    return (
       <button type="button" {...stylex.props(styles.row)} onClick={onClick} role={role}>
          <div {...stylex.props(styles.info)}>
-            <Image src={avatarUrl} alt={avatarAlt} width={44} height={44} {...stylex.props(styles.avatar)} />
+            <UserAvatar src={avatarUrl} alt={avatarAlt} size={44} />
             <div {...stylex.props(styles.names)}>
                <div {...stylex.props(styles.name)}>{name}</div>
                <div {...stylex.props(styles.subtitle)}>{subtitle}</div>

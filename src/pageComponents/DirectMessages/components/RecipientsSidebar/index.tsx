@@ -1,8 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
 import Link from 'next/link';
 import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
+import UserAvatar from '@/src/components/UserAvatar';
 import { CURRENT_USER } from '@/src/mocks/users';
 import { hasUnreadMessages } from '@/src/utils/messages';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
@@ -67,13 +67,7 @@ export default async function RecipientsSidebar({
                   </div>
 
                   <div {...stylex.props(styles.yourNoteSection)}>
-                     <Image
-                        src={CURRENT_USER.avatarUrl}
-                        alt={CURRENT_USER.username}
-                        width={74}
-                        height={74}
-                        {...stylex.props(styles.userAvatar)}
-                     />
+                     <UserAvatar src={CURRENT_USER.avatar_url} alt={CURRENT_USER.username} size={74} />
                      <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
                      <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>
                   </div>

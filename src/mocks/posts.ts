@@ -17,7 +17,7 @@ export const POSTS: Post[] = [
       user: {
          id: '4',
          username: 'wanderlust',
-         avatarUrl: 'https://picsum.photos/seed/clona4/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona4/630/630',
       },
       media: [
          {
@@ -47,7 +47,7 @@ export const POSTS: Post[] = [
       user: {
          id: '5',
          username: 'neon.nights',
-         avatarUrl: 'https://picsum.photos/seed/clona5/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona5/630/630',
       },
       media: [
          {
@@ -87,7 +87,7 @@ export const POSTS: Post[] = [
       user: {
          id: '6',
          username: 'film.fatale',
-         avatarUrl: 'https://picsum.photos/seed/clona6/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona6/630/630',
       },
       media: [
          {
@@ -137,7 +137,7 @@ export const POSTS: Post[] = [
       user: {
          id: '7',
          username: 'chrome.hearts',
-         avatarUrl: 'https://picsum.photos/seed/clona7/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona7/630/630',
       },
       media: [
          {
@@ -197,7 +197,7 @@ export const POSTS: Post[] = [
       user: {
          id: '8',
          username: 'synth.sunset',
-         avatarUrl: 'https://picsum.photos/seed/clona8/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona8/630/630',
       },
       media: [
          {
@@ -227,7 +227,7 @@ export const POSTS: Post[] = [
       user: {
          id: '9',
          username: 'grain.and.glow',
-         avatarUrl: 'https://picsum.photos/seed/clona9/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona9/630/630',
       },
       media: [
          {
@@ -282,7 +282,7 @@ export const POSTS: Post[] = [
       user: {
          id: '10',
          username: 'analog.dreams',
-         avatarUrl: 'https://picsum.photos/seed/clona10/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona10/630/630',
       },
       media: [
          {
@@ -317,7 +317,7 @@ export const POSTS: Post[] = [
       user: {
          id: '11',
          username: 'midnight.archives',
-         avatarUrl: 'https://picsum.photos/seed/clona11/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona11/630/630',
       },
       media: [
          {
@@ -362,7 +362,7 @@ export const POSTS: Post[] = [
       user: {
          id: '12',
          username: 'coastal.static',
-         avatarUrl: 'https://picsum.photos/seed/clona12/630/630',
+         avatar_url: 'https://picsum.photos/seed/clona12/630/630',
       },
       media: [
          {

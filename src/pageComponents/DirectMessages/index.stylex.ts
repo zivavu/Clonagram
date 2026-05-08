@@ -256,13 +256,6 @@ export const styles = stylex.create({
       alignItems: 'center',
       padding: '16px',
    },
-   requestButtonWrapper: {
-      flex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '4px',
-   },
    requestButton: {
       fontSize: '0.875rem',
       fontWeight: 500,
@@ -272,7 +265,11 @@ export const styles = stylex.create({
       width: '100%',
       backgroundColor: 'transparent',
       border: 'none',
-      padding: 0,
+      padding: '4px',
+
+      ':hover': {
+         textDecoration: 'underline',
+      },
    },
    requestButtonDanger: {
       color: colors.danger,
@@ -280,7 +277,7 @@ export const styles = stylex.create({
    },
    requestButtonDivider: {
       width: '1px',
-      height: '24px',
+      height: '100%',
       backgroundColor: colors.borderMuted,
       flexShrink: 0,
    },

@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
 import Link from 'next/link';
+import UserAvatar from '@/src/components/UserAvatar';
 import { CURRENT_USER, SUGGESTED_USERS } from '@/src/mocks/users';
 import { styles } from './index.stylex';
 
@@ -21,16 +21,10 @@ export default function RightSidebar() {
    return (
       <aside {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.profileCard)}>
-            <Image
-               src={CURRENT_USER.avatarUrl}
-               alt={CURRENT_USER.username}
-               width={44}
-               height={44}
-               {...stylex.props(styles.avatarImage)}
-            />
+            <UserAvatar src={CURRENT_USER.avatar_url} alt={CURRENT_USER.username} size={44} />
             <div {...stylex.props(styles.profileInfo)}>
                <span {...stylex.props(styles.profileUsername)}>{CURRENT_USER.username}</span>
-               <span {...stylex.props(styles.profileName)}>{CURRENT_USER.name}</span>
+               <span {...stylex.props(styles.profileName)}>{CURRENT_USER.full_name}</span>
             </div>
             <Link href="/accounts/switch" {...stylex.props(styles.switchLink)}>
                Switch
@@ -47,18 +41,12 @@ export default function RightSidebar() {
          <div {...stylex.props(styles.suggestionsList)}>
             {SUGGESTED_USERS.slice(0, 5).map(user => (
                <div key={user.id} {...stylex.props(styles.suggestionItem)}>
-                  <Image
-                     src={user.avatarUrl}
-                     alt={user.username}
-                     width={44}
-                     height={44}
-                     {...stylex.props(styles.avatarImage)}
-                  />
+                  <UserAvatar src={user.avatar_url} alt={user.username} size={44} />
                   <div {...stylex.props(styles.suggestionInfo)}>
                      <span {...stylex.props(styles.suggestionUsername)}>{user.username}</span>
-                     {user.name && (
+                     {user.full_name && (
                         <span {...stylex.props(styles.suggestionSubtext)}>
-                           {user.name.length > 22 ? `${user.name.slice(0, 22)}…` : user.name}
+                           {user.full_name.length > 22 ? `${user.full_name.slice(0, 22)}…` : user.full_name}
                         </span>
                      )}
                   </div>

@@ -31,14 +31,14 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's1',
             username: 'lunar.drift',
-            name: 'Luna Marchetti',
-            avatarUrl: 'https://picsum.photos/seed/luna/200/200',
+            full_name: 'Luna Marchetti',
+            avatar_url: 'https://picsum.photos/seed/luna/200/200',
          },
          {
             id: 's2',
             username: 'static.signal',
-            name: 'Elias Voss',
-            avatarUrl: 'https://picsum.photos/seed/elias/200/200',
+            full_name: 'Elias Voss',
+            avatar_url: 'https://picsum.photos/seed/elias/200/200',
          },
       ],
       target: {
@@ -56,14 +56,14 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's3',
             username: 'palette.stains',
-            name: 'Maya Okonkwo',
-            avatarUrl: 'https://picsum.photos/seed/maya/200/200',
+            full_name: 'Maya Okonkwo',
+            avatar_url: 'https://picsum.photos/seed/maya/200/200',
          },
          {
             id: 's4',
             username: 'nocturne.moth',
-            name: 'Clara Bisset',
-            avatarUrl: 'https://picsum.photos/seed/clara/200/200',
+            full_name: 'Clara Bisset',
+            avatar_url: 'https://picsum.photos/seed/clara/200/200',
          },
       ],
       target: {
@@ -81,8 +81,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's5',
             username: 'crumbling.concrete',
-            name: 'Dariel Kim',
-            avatarUrl: 'https://picsum.photos/seed/dariel/200/200',
+            full_name: 'Dariel Kim',
+            avatar_url: 'https://picsum.photos/seed/dariel/200/200',
          },
       ],
       target: {
@@ -101,8 +101,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's6',
             username: 'cyan.rabbit',
-            name: 'Sofia Lindgren',
-            avatarUrl: 'https://picsum.photos/seed/sofia/200/200',
+            full_name: 'Sofia Lindgren',
+            avatar_url: 'https://picsum.photos/seed/sofia/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
@@ -115,20 +115,20 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's7',
             username: 'echo.park',
-            name: 'James Okoro',
-            avatarUrl: 'https://picsum.photos/seed/james/200/200',
+            full_name: 'James Okoro',
+            avatar_url: 'https://picsum.photos/seed/james/200/200',
          },
          {
             id: 's8',
             username: 'fragment.studio',
-            name: 'Aiko Tanaka',
-            avatarUrl: 'https://picsum.photos/seed/aiko/200/200',
+            full_name: 'Aiko Tanaka',
+            avatar_url: 'https://picsum.photos/seed/aiko/200/200',
          },
          {
             id: 's9',
             username: 'gravel.path',
-            name: 'Marcus Webb',
-            avatarUrl: 'https://picsum.photos/seed/marcus/200/200',
+            full_name: 'Marcus Webb',
+            avatar_url: 'https://picsum.photos/seed/marcus/200/200',
          },
       ],
       target: {
@@ -146,8 +146,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's10',
             username: 'hollow.shell',
-            name: 'Priya Desai',
-            avatarUrl: 'https://picsum.photos/seed/priya/200/200',
+            full_name: 'Priya Desai',
+            avatar_url: 'https://picsum.photos/seed/priya/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 14).toISOString(),
@@ -160,8 +160,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's11',
             username: 'ivy.clad',
-            name: 'Tommaso Bianchi',
-            avatarUrl: 'https://picsum.photos/seed/tommaso/200/200',
+            full_name: 'Tommaso Bianchi',
+            avatar_url: 'https://picsum.photos/seed/tommaso/200/200',
          },
       ],
       target: {
@@ -176,12 +176,17 @@ export const NOTIFICATIONS: Notification[] = [
       id: 'n8',
       type: 'like',
       actors: [
-         { id: 's12', username: 'jade.petal', name: 'Yuki Chen', avatarUrl: 'https://picsum.photos/seed/yuki/200/200' },
+         {
+            id: 's12',
+            username: 'jade.petal',
+            full_name: 'Yuki Chen',
+            avatar_url: 'https://picsum.photos/seed/yuki/200/200',
+         },
          {
             id: 's13',
             username: 'kettle.black',
-            name: 'Fatima Al-Rashid',
-            avatarUrl: 'https://picsum.photos/seed/fatima/200/200',
+            full_name: 'Fatima Al-Rashid',
+            avatar_url: 'https://picsum.photos/seed/fatima/200/200',
          },
       ],
       target: {
@@ -199,8 +204,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's14',
             username: 'loose.thread',
-            name: 'Oliver Grant',
-            avatarUrl: 'https://picsum.photos/seed/oliver/200/200',
+            full_name: 'Oliver Grant',
+            avatar_url: 'https://picsum.photos/seed/oliver/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 23).toISOString(),
@@ -215,8 +220,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's15',
             username: 'melted.wax',
-            name: 'Isabela Rojas',
-            avatarUrl: 'https://picsum.photos/seed/isabela/200/200',
+            full_name: 'Isabela Rojas',
+            avatar_url: 'https://picsum.photos/seed/isabela/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
@@ -229,8 +234,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's16',
             username: 'nickel.fern',
-            name: 'Arjun Mehta',
-            avatarUrl: 'https://picsum.photos/seed/arjun/200/200',
+            full_name: 'Arjun Mehta',
+            avatar_url: 'https://picsum.photos/seed/arjun/200/200',
          },
       ],
       target: {
@@ -245,7 +250,12 @@ export const NOTIFICATIONS: Notification[] = [
       id: 'n12',
       type: 'comment',
       actors: [
-         { id: 's17', username: 'oxide.rust', name: 'Lea Müller', avatarUrl: 'https://picsum.photos/seed/lea/200/200' },
+         {
+            id: 's17',
+            username: 'oxide.rust',
+            full_name: 'Lea Müller',
+            avatar_url: 'https://picsum.photos/seed/lea/200/200',
+         },
       ],
       target: {
          id: '2',
@@ -263,14 +273,14 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's18',
             username: 'prism.break',
-            name: 'Kwame Asante',
-            avatarUrl: 'https://picsum.photos/seed/kwame/200/200',
+            full_name: 'Kwame Asante',
+            avatar_url: 'https://picsum.photos/seed/kwame/200/200',
          },
          {
             id: 's19',
             username: 'quartz.dust',
-            name: 'Nora Farsi',
-            avatarUrl: 'https://picsum.photos/seed/nora/200/200',
+            full_name: 'Nora Farsi',
+            avatar_url: 'https://picsum.photos/seed/nora/200/200',
          },
       ],
       target: {
@@ -288,8 +298,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's20',
             username: 'ripple.effect',
-            name: 'Hugo Silva',
-            avatarUrl: 'https://picsum.photos/seed/hugo/200/200',
+            full_name: 'Hugo Silva',
+            avatar_url: 'https://picsum.photos/seed/hugo/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10).toISOString(),
@@ -302,8 +312,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's1',
             username: 'lunar.drift',
-            name: 'Luna Marchetti',
-            avatarUrl: 'https://picsum.photos/seed/luna/200/200',
+            full_name: 'Luna Marchetti',
+            avatar_url: 'https://picsum.photos/seed/luna/200/200',
          },
       ],
       target: {
@@ -321,8 +331,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's2',
             username: 'static.signal',
-            name: 'Elias Voss',
-            avatarUrl: 'https://picsum.photos/seed/elias/200/200',
+            full_name: 'Elias Voss',
+            avatar_url: 'https://picsum.photos/seed/elias/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14).toISOString(),
@@ -335,8 +345,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's3',
             username: 'palette.stains',
-            name: 'Maya Okonkwo',
-            avatarUrl: 'https://picsum.photos/seed/maya/200/200',
+            full_name: 'Maya Okonkwo',
+            avatar_url: 'https://picsum.photos/seed/maya/200/200',
          },
       ],
       target: {
@@ -354,8 +364,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's4',
             username: 'nocturne.moth',
-            name: 'Clara Bisset',
-            avatarUrl: 'https://picsum.photos/seed/clara/200/200',
+            full_name: 'Clara Bisset',
+            avatar_url: 'https://picsum.photos/seed/clara/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 18).toISOString(),
@@ -368,8 +378,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's5',
             username: 'crumbling.concrete',
-            name: 'Dariel Kim',
-            avatarUrl: 'https://picsum.photos/seed/dariel/200/200',
+            full_name: 'Dariel Kim',
+            avatar_url: 'https://picsum.photos/seed/dariel/200/200',
          },
       ],
       target: {
@@ -388,8 +398,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's6',
             username: 'cyan.rabbit',
-            name: 'Sofia Lindgren',
-            avatarUrl: 'https://picsum.photos/seed/sofia/200/200',
+            full_name: 'Sofia Lindgren',
+            avatar_url: 'https://picsum.photos/seed/sofia/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 22).toISOString(),
@@ -402,26 +412,26 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's7',
             username: 'echo.park',
-            name: 'James Okoro',
-            avatarUrl: 'https://picsum.photos/seed/james/200/200',
+            full_name: 'James Okoro',
+            avatar_url: 'https://picsum.photos/seed/james/200/200',
          },
          {
             id: 's8',
             username: 'fragment.studio',
-            name: 'Aiko Tanaka',
-            avatarUrl: 'https://picsum.photos/seed/aiko/200/200',
+            full_name: 'Aiko Tanaka',
+            avatar_url: 'https://picsum.photos/seed/aiko/200/200',
          },
          {
             id: 's9',
             username: 'gravel.path',
-            name: 'Marcus Webb',
-            avatarUrl: 'https://picsum.photos/seed/marcus/200/200',
+            full_name: 'Marcus Webb',
+            avatar_url: 'https://picsum.photos/seed/marcus/200/200',
          },
          {
             id: 's10',
             username: 'hollow.shell',
-            name: 'Priya Desai',
-            avatarUrl: 'https://picsum.photos/seed/priya/200/200',
+            full_name: 'Priya Desai',
+            avatar_url: 'https://picsum.photos/seed/priya/200/200',
          },
       ],
       target: {
@@ -439,8 +449,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's11',
             username: 'ivy.clad',
-            name: 'Tommaso Bianchi',
-            avatarUrl: 'https://picsum.photos/seed/tommaso/200/200',
+            full_name: 'Tommaso Bianchi',
+            avatar_url: 'https://picsum.photos/seed/tommaso/200/200',
          },
       ],
       target: {
@@ -455,7 +465,12 @@ export const NOTIFICATIONS: Notification[] = [
       id: 'n23',
       type: 'follow',
       actors: [
-         { id: 's12', username: 'jade.petal', name: 'Yuki Chen', avatarUrl: 'https://picsum.photos/seed/yuki/200/200' },
+         {
+            id: 's12',
+            username: 'jade.petal',
+            full_name: 'Yuki Chen',
+            avatar_url: 'https://picsum.photos/seed/yuki/200/200',
+         },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 28).toISOString(),
       isRead: true,
@@ -467,8 +482,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's13',
             username: 'kettle.black',
-            name: 'Fatima Al-Rashid',
-            avatarUrl: 'https://picsum.photos/seed/fatima/200/200',
+            full_name: 'Fatima Al-Rashid',
+            avatar_url: 'https://picsum.photos/seed/fatima/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 29).toISOString(),
@@ -483,8 +498,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's14',
             username: 'loose.thread',
-            name: 'Oliver Grant',
-            avatarUrl: 'https://picsum.photos/seed/oliver/200/200',
+            full_name: 'Oliver Grant',
+            avatar_url: 'https://picsum.photos/seed/oliver/200/200',
          },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 35).toISOString(),
@@ -497,8 +512,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's15',
             username: 'melted.wax',
-            name: 'Isabela Rojas',
-            avatarUrl: 'https://picsum.photos/seed/isabela/200/200',
+            full_name: 'Isabela Rojas',
+            avatar_url: 'https://picsum.photos/seed/isabela/200/200',
          },
       ],
       target: {
@@ -516,8 +531,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's16',
             username: 'nickel.fern',
-            name: 'Arjun Mehta',
-            avatarUrl: 'https://picsum.photos/seed/arjun/200/200',
+            full_name: 'Arjun Mehta',
+            avatar_url: 'https://picsum.photos/seed/arjun/200/200',
          },
       ],
       target: {
@@ -533,7 +548,12 @@ export const NOTIFICATIONS: Notification[] = [
       id: 'n28',
       type: 'follow',
       actors: [
-         { id: 's17', username: 'oxide.rust', name: 'Lea Müller', avatarUrl: 'https://picsum.photos/seed/lea/200/200' },
+         {
+            id: 's17',
+            username: 'oxide.rust',
+            full_name: 'Lea Müller',
+            avatar_url: 'https://picsum.photos/seed/lea/200/200',
+         },
       ],
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 50).toISOString(),
       isRead: true,
@@ -545,8 +565,8 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's18',
             username: 'prism.break',
-            name: 'Kwame Asante',
-            avatarUrl: 'https://picsum.photos/seed/kwame/200/200',
+            full_name: 'Kwame Asante',
+            avatar_url: 'https://picsum.photos/seed/kwame/200/200',
          },
       ],
       target: {
@@ -564,14 +584,14 @@ export const NOTIFICATIONS: Notification[] = [
          {
             id: 's19',
             username: 'quartz.dust',
-            name: 'Nora Farsi',
-            avatarUrl: 'https://picsum.photos/seed/nora/200/200',
+            full_name: 'Nora Farsi',
+            avatar_url: 'https://picsum.photos/seed/nora/200/200',
          },
          {
             id: 's20',
             username: 'ripple.effect',
-            name: 'Hugo Silva',
-            avatarUrl: 'https://picsum.photos/seed/hugo/200/200',
+            full_name: 'Hugo Silva',
+            avatar_url: 'https://picsum.photos/seed/hugo/200/200',
          },
       ],
       target: {
