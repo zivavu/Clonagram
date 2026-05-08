@@ -36,7 +36,7 @@ export default function NewMessageModal() {
 
    const filteredUsers = SUGGESTED_USERS.filter(
       u =>
-         (u.name?.toLowerCase() ?? '').includes(query.toLowerCase()) ||
+         (u.full_name?.toLowerCase() ?? '').includes(query.toLowerCase()) ||
          u.username.toLowerCase().includes(query.toLowerCase()),
    );
 
@@ -67,7 +67,7 @@ export default function NewMessageModal() {
                   <div {...stylex.props(styles.toInputArea)}>
                      {selectedUsers.map(user => (
                         <span key={user.id} {...stylex.props(styles.chip)}>
-                           {user.name || user.username}
+                           {user.full_name || user.username}
                            <button
                               type="button"
                               {...stylex.props(styles.chipRemove)}
@@ -75,7 +75,7 @@ export default function NewMessageModal() {
                                  e.stopPropagation();
                                  removeUser(user.id);
                               }}
-                              aria-label={`Remove ${user.name || user.username}`}
+                              aria-label={`Remove ${user.full_name || user.username}`}
                            >
                               <IoClose style={{ fontSize: '14px' }} />
                            </button>
@@ -101,9 +101,9 @@ export default function NewMessageModal() {
                         return (
                            <UserListItem
                               key={user.id}
-                              avatarUrl={user.avatarUrl}
-                              avatarAlt={user.name || user.username}
-                              name={user.name || user.username}
+                              avatarUrl={user.avatar_url}
+                              avatarAlt={user.full_name || user.username}
+                              name={user.full_name || user.username}
                               subtitle={user.username}
                               rightElement={
                                  <div {...stylex.props(styles.radioCircle, isSelected && styles.radioCircleSelected)}>

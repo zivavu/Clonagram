@@ -3,9 +3,9 @@ import { CURRENT_USER } from '@/src/mocks/users';
 
 export function getThreadDisplayName(thread: MessageThread): string {
    if (thread.participants.length === 1) {
-      return thread.participants[0].name || thread.participants[0].username;
+      return thread.participants[0].full_name || thread.participants[0].username;
    }
-   return thread.participants.map(p => p.name || p.username).join(', ');
+   return thread.participants.map(p => p.full_name || p.username).join(', ');
 }
 
 export function getLastMessagePreview(thread: MessageThread): string {

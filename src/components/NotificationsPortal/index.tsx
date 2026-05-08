@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
+import UserAvatar from '@/src/components/UserAvatar';
 import type { Notification, NotificationType } from '@/src/mocks/notifications';
 import { NOTIFICATIONS, VERIFIED_USERS } from '@/src/mocks/notifications';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
@@ -116,22 +117,10 @@ function NotificationItem({ notification }: { notification: Notification }) {
    return (
       <div {...stylex.props(styles.notificationItem)}>
          <div {...stylex.props(styles.notificationAvatarWrapper)}>
-            <Image
-               src={firstActor.avatarUrl}
-               alt={firstActor.username}
-               width={44}
-               height={44}
-               {...stylex.props(styles.notificationAvatar)}
-            />
+            <UserAvatar src={firstActor.avatar_url} alt={firstActor.username} size={44} />
             {notification.actors.length > 1 && (
                <div {...stylex.props(styles.secondaryAvatar)}>
-                  <Image
-                     src={notification.actors[1].avatarUrl}
-                     alt={notification.actors[1].username}
-                     width={20}
-                     height={20}
-                     {...stylex.props(styles.notificationAvatar)}
-                  />
+                  <UserAvatar src={notification.actors[1].avatar_url} alt={notification.actors[1].username} size={20} />
                </div>
             )}
          </div>

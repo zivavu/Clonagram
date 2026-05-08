@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MdGridView } from 'react-icons/md';
 import { RiMenuFill } from 'react-icons/ri';
+import CreatePostModal from '@/src/components/CreatePostModal';
 import NotificationsPortal from '@/src/components/NotificationsPortal';
 import SearchPortal from '@/src/components/SearchPortal';
 import { styles } from './index.stylex';
@@ -44,6 +45,7 @@ export default async function MainSidebar() {
 
          <SearchPortal />
          <NotificationsPortal />
+         <CreatePostModal />
       </div>
    );
 }

@@ -19,7 +19,7 @@ export default function SearchPortal() {
 
    const filteredUsers = SUGGESTED_USERS.filter(
       u =>
-         (u.name?.toLowerCase() ?? '').includes(query.toLowerCase()) ||
+         (u.full_name?.toLowerCase() ?? '').includes(query.toLowerCase()) ||
          u.username.toLowerCase().includes(query.toLowerCase()),
    );
 
@@ -67,7 +67,7 @@ export default function SearchPortal() {
                      return (
                         <UserListItem
                            key={user.id}
-                           avatarUrl={user.avatarUrl}
+                           avatarUrl={user.avatar_url}
                            avatarAlt={user.username}
                            name={
                               <span style={{ display: 'flex', fontWeight: 600, alignItems: 'center', gap: 4 }}>
@@ -77,7 +77,7 @@ export default function SearchPortal() {
                                  )}
                               </span>
                            }
-                           subtitle={user.name ?? ''}
+                           subtitle={user.full_name ?? ''}
                            onClick={() => {
                               // TODO: navigate to user profile
                            }}

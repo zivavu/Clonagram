@@ -29,8 +29,8 @@ const day = 86_400_000;
 export const REQUEST_USER: PartialUser = {
    id: 'r1',
    username: 'd1anth00s._',
-   name: 'Dianthos',
-   avatarUrl: 'https://picsum.photos/seed/dianthos/200/200',
+   full_name: 'Dianthos',
+   avatar_url: 'https://picsum.photos/seed/dianthos/200/200',
 };
 
 export const MESSAGE_THREADS: MessageThread[] = [
@@ -245,20 +245,6 @@ export const MESSAGE_THREADS: MessageThread[] = [
             seen: true,
          },
          {
-            id: 't3-4',
-            senderId: CURRENT_USER.id,
-            text: 'That sounds stunning. I love when you go in that earthy direction, it suits your style so well.',
-            timestamp: h(new Date(now.getTime() - day * 5 + 3600_000)),
-            seen: true,
-         },
-         {
-            id: 't3-5',
-            senderId: CURRENT_USER.id,
-            text: 'Are you doing it as a photo series or more mixed media this time?',
-            timestamp: h(new Date(now.getTime() - day * 5 + 3600_000 + 60_000)),
-            seen: true,
-         },
-         {
             id: 't3-6',
             senderId: SUGGESTED_USERS[2].id,
             text: 'Mostly photo but I want to layer some textile pieces in front of the lens.',
@@ -270,13 +256,6 @@ export const MESSAGE_THREADS: MessageThread[] = [
             senderId: SUGGESTED_USERS[2].id,
             text: 'Kind of like shooting through fabric to get this dreamy diffused look.',
             timestamp: h(new Date(now.getTime() - day * 4 + 45_000)),
-            seen: true,
-         },
-         {
-            id: 't3-8',
-            senderId: CURRENT_USER.id,
-            text: 'You definitely should make it a full series. Let me know if you ever need a model 😄',
-            timestamp: h(new Date(now.getTime() - day * 4 + 3600_000)),
             seen: true,
          },
          {

@@ -317,16 +317,58 @@ export type Database = {
                },
             ];
          };
+         post_media: {
+            Row: {
+               created_at: string | null;
+               id: string;
+               mux_asset_id: string | null;
+               mux_playback_id: string | null;
+               mux_status: string | null;
+               position: number;
+               post_id: string;
+               thumbnail_url: string | null;
+               type: string;
+               url: string;
+            };
+            Insert: {
+               created_at?: string | null;
+               id?: string;
+               mux_asset_id?: string | null;
+               mux_playback_id?: string | null;
+               mux_status?: string | null;
+               position?: number;
+               post_id: string;
+               thumbnail_url?: string | null;
+               type: string;
+               url: string;
+            };
+            Update: {
+               created_at?: string | null;
+               id?: string;
+               mux_asset_id?: string | null;
+               mux_playback_id?: string | null;
+               mux_status?: string | null;
+               position?: number;
+               post_id?: string;
+               thumbnail_url?: string | null;
+               type?: string;
+               url?: string;
+            };
+            Relationships: [
+               {
+                  foreignKeyName: 'post_media_post_id_fkey';
+                  columns: ['post_id'];
+                  isOneToOne: false;
+                  referencedRelation: 'posts';
+                  referencedColumns: ['id'];
+               },
+            ];
+         };
          posts: {
             Row: {
                caption: string | null;
                created_at: string | null;
                id: string;
-               media_url: string | null;
-               mux_asset_id: string | null;
-               mux_playback_id: string | null;
-               mux_status: string | null;
-               thumbnail_url: string | null;
                type: string;
                user_id: string;
             };
@@ -334,11 +376,6 @@ export type Database = {
                caption?: string | null;
                created_at?: string | null;
                id?: string;
-               media_url?: string | null;
-               mux_asset_id?: string | null;
-               mux_playback_id?: string | null;
-               mux_status?: string | null;
-               thumbnail_url?: string | null;
                type: string;
                user_id: string;
             };
@@ -346,11 +383,6 @@ export type Database = {
                caption?: string | null;
                created_at?: string | null;
                id?: string;
-               media_url?: string | null;
-               mux_asset_id?: string | null;
-               mux_playback_id?: string | null;
-               mux_status?: string | null;
-               thumbnail_url?: string | null;
                type?: string;
                user_id?: string;
             };
@@ -371,6 +403,7 @@ export type Database = {
                created_at: string | null;
                full_name: string | null;
                id: string;
+               updated_at: string | null;
                username: string;
                website: string | null;
             };
@@ -380,6 +413,7 @@ export type Database = {
                created_at?: string | null;
                full_name?: string | null;
                id: string;
+               updated_at?: string | null;
                username: string;
                website?: string | null;
             };
@@ -389,6 +423,7 @@ export type Database = {
                created_at?: string | null;
                full_name?: string | null;
                id?: string;
+               updated_at?: string | null;
                username?: string;
                website?: string | null;
             };
@@ -432,24 +467,18 @@ export type Database = {
                created_at: string | null;
                expires_at: string;
                id: string;
-               media_url: string;
-               type: string;
                user_id: string;
             };
             Insert: {
                created_at?: string | null;
                expires_at?: string;
                id?: string;
-               media_url: string;
-               type: string;
                user_id: string;
             };
             Update: {
                created_at?: string | null;
                expires_at?: string;
                id?: string;
-               media_url?: string;
-               type?: string;
                user_id?: string;
             };
             Relationships: [
@@ -458,6 +487,41 @@ export type Database = {
                   columns: ['user_id'];
                   isOneToOne: false;
                   referencedRelation: 'profiles';
+                  referencedColumns: ['id'];
+               },
+            ];
+         };
+         story_media: {
+            Row: {
+               created_at: string | null;
+               id: string;
+               position: number;
+               story_id: string;
+               type: string;
+               url: string;
+            };
+            Insert: {
+               created_at?: string | null;
+               id?: string;
+               position?: number;
+               story_id: string;
+               type: string;
+               url: string;
+            };
+            Update: {
+               created_at?: string | null;
+               id?: string;
+               position?: number;
+               story_id?: string;
+               type?: string;
+               url?: string;
+            };
+            Relationships: [
+               {
+                  foreignKeyName: 'story_media_story_id_fkey';
+                  columns: ['story_id'];
+                  isOneToOne: false;
+                  referencedRelation: 'stories';
                   referencedColumns: ['id'];
                },
             ];
