@@ -8,7 +8,7 @@ interface CreatePostModalStore {
 }
 
 export const useCreatePostModalStore = create<CreatePostModalStore>(set => ({
-   isOpen: false,
+   isOpen: true,
    open: () => set({ isOpen: true }),
    close: () => set({ isOpen: false }),
    toggle: () => set(state => ({ isOpen: !state.isOpen })),
