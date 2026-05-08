@@ -16,7 +16,7 @@ import {
    MdVolumeUp,
 } from 'react-icons/md';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { styles } from '../styles';
+import { styles } from '../index.stylex';
 import type { StoryEntry } from '../types';
 
 interface ActiveStoryOverlayProps {

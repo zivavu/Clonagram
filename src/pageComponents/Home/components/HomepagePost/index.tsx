@@ -1,12 +1,16 @@
+'use client';
+
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
+import { useState } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
+import CarouselArrow from '@/src/components/CarouselArrow';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { styles } from './index.stylex';
 import type { Post } from '../Main';
+import { styles } from './index.stylex';
 
 interface HomepagePostProps {
    post: Post;
@@ -14,6 +18,17 @@ interface HomepagePostProps {
 }
 
 export default function HomepagePost({ post, index }: HomepagePostProps) {
+   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+   const hasMultipleImages = post.media.length > 1;
+
+   const handlePrevious = () => {
+      setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev));
+   };
+
+   const handleNext = () => {
+      setCurrentImageIndex(prev => (prev < post.media.length - 1 ? prev + 1 : prev));
+   };
+
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
@@ -31,13 +46,42 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
             <span {...stylex.props(styles.createdAt)}>{formatRelativeTimeShortUnit(post.createdAt)}</span>
             <TbDots {...stylex.props(styles.actionsIcon)} />
          </div>
-         <Image
-            src={post.media[0].url}
-            alt={post.media[0].type}
-            width={468}
-            height={468}
-            {...stylex.props(styles.postImage)}
-         />
+         <div {...stylex.props(styles.carouselContainer)}>
+            <div
+               {...stylex.props(styles.carouselTrack)}
+               style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+            >
+               {post.media.map((media, mediaIndex) => (
+                  <div key={media.id} {...stylex.props(styles.carouselSlide)}>
+                     <Image
+                        src={media.url}
+                        alt={media.type}
+                        fill
+                        {...stylex.props(styles.postImage)}
+                        priority={index <= 2 && mediaIndex === 0}
+                        loading={index <= 2 && mediaIndex === 0 ? 'eager' : 'lazy'}
+                     />
+                  </div>
+               ))}
+            </div>
+            {hasMultipleImages && currentImageIndex > 0 && <CarouselArrow direction="left" onClick={handlePrevious} />}
+            {hasMultipleImages && currentImageIndex < post.media.length - 1 && (
+               <CarouselArrow direction="right" onClick={handleNext} />
+            )}
+            {hasMultipleImages && (
+               <div {...stylex.props(styles.dotsContainer)}>
+                  {post.media.map((media, dotIndex) => (
+                     <button
+                        key={media.id}
+                        type="button"
+                        aria-label={`Go to image ${dotIndex + 1}`}
+                        onClick={() => setCurrentImageIndex(dotIndex)}
+                        {...stylex.props(styles.dot, dotIndex === currentImageIndex && styles.dotActive)}
+                     />
+                  ))}
+               </div>
+            )}
+         </div>
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Like">

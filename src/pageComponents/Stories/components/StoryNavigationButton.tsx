@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import { CARRET_ICON_PATH } from '../constants';
-import { styles } from '../styles';
+import { styles } from '../index.stylex';
 
 interface StoryNavigationButtonProps {
    onClick: () => void;

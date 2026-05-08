@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors } from '@/src/styles/tokens.stylex';
+import { colors } from '../../styles/tokens.stylex';
 
 const spin = stylex.keyframes({
    from: { transform: 'rotate(0deg)' },

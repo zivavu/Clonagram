@@ -8,7 +8,7 @@ import { STORIES } from '@/src/mocks/stories';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, SWIPE_THRESHOLD } from './constants';
-import { styles } from './styles';
+import { styles } from './index.stylex';
 import type { Layout, StoriesPageProps } from './types';
 import { computeLayout } from './utils';
 
