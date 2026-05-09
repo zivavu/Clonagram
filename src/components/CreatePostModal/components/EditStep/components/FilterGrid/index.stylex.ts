@@ -1,5 +1,4 @@
 import * as stylex from '@stylexjs/stylex';
-import { radius } from '../../../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    grid: {
@@ -30,12 +29,17 @@ export const styles = stylex.create({
       borderWidth: '2px',
       borderStyle: 'solid',
       borderColor: 'rgba(0, 0, 0, 0)',
-      borderRadius: radius.sm,
+      borderRadius: '8px',
       overflow: 'hidden',
    },
    imageWrapActive: {
       borderColor: 'rgb(0, 149, 246)',
       borderRadius: '2px',
+   },
+   placeholder: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgb(38, 38, 38)',
    },
    name: {
       fontSize: '12px',

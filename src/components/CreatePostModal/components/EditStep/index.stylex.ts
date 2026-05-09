@@ -82,7 +82,6 @@ export const styles = stylex.create({
       width: '100%',
       height: '100%',
       objectFit: 'cover',
-      pointerEvents: 'none',
       userSelect: 'none',
    },
    cropContainer: {

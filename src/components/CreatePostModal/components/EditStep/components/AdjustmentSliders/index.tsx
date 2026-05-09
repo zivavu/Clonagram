@@ -10,9 +10,9 @@ interface AdjustmentDef {
 }
 
 const DEFINITIONS: AdjustmentDef[] = [
-   { key: 'brightness', label: 'Brightness', min: -100, max: 100 },
-   { key: 'contrast', label: 'Contrast', min: -100, max: 100 },
-   { key: 'fade', label: 'Fade', min: 0, max: 100 },
+   { key: 'brightness', label: 'Brightness', min: -50, max: 50 },
+   { key: 'contrast', label: 'Contrast', min: -50, max: 50 },
+   { key: 'fade', label: 'Fade', min: -100, max: 100 },
    { key: 'saturation', label: 'Saturation', min: -100, max: 100 },
    { key: 'temperature', label: 'Temperature', min: -100, max: 100 },
    { key: 'vignette', label: 'Vignette', min: 0, max: 100 },
