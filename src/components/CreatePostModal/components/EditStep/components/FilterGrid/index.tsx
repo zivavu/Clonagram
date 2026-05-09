@@ -4,21 +4,21 @@ import { styles } from './index.stylex';
 
 export interface FilterPreset {
    name: string;
-   filter: string;
 }
 
 interface FilterGridProps {
    presets: FilterPreset[];
    selectedPreset: string;
-   preview: string;
+   thumbnails: Record<string, string>;
    onSelect: (name: string) => void;
 }
 
-export default function FilterGrid({ presets, selectedPreset, preview, onSelect }: FilterGridProps) {
+export default function FilterGrid({ presets, selectedPreset, thumbnails, onSelect }: FilterGridProps) {
    return (
       <div {...stylex.props(styles.grid)}>
          {presets.map(preset => {
             const isActive = selectedPreset === preset.name;
+            const thumbSrc = thumbnails[preset.name];
             return (
                <button
                   key={preset.name}
@@ -27,13 +27,17 @@ export default function FilterGrid({ presets, selectedPreset, preview, onSelect 
                   onClick={() => onSelect(preset.name)}
                >
                   <div {...stylex.props(styles.imageWrap, isActive && styles.imageWrapActive)}>
-                     <Image
-                        src={preview}
-                        alt={preset.name}
-                        fill
-                        style={{ filter: preset.filter, objectFit: 'cover' }}
-                        sizes="88px"
-                     />
+                     {thumbSrc ? (
+                        <Image
+                           src={thumbSrc}
+                           alt={preset.name}
+                           fill
+                           style={{ objectFit: 'cover' }}
+                           sizes="88px"
+                        />
+                     ) : (
+                        <div {...stylex.props(styles.placeholder)} />
+                     )}
                   </div>
                   <span {...stylex.props(styles.name, isActive && styles.nameActive)}>{preset.name}</span>
                </button>

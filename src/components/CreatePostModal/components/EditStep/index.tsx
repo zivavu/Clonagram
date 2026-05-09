@@ -2,6 +2,8 @@ import * as stylex from '@stylexjs/stylex';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { IoArrowBack } from 'react-icons/io5';
 import CarouselArrow from '@/src/components/CarouselArrow';
+import { useFilterThumbnails } from '@/src/hooks/useFilterThumbnails';
+import { useWebGLFilter } from '@/src/hooks/useWebGLFilter';
 import type { Adjustments, AspectRatio, SelectedFile } from '../../types';
 import { RATIO_NUMERIC } from '../../types';
 import AdjustmentSliders from './components/AdjustmentSliders';
@@ -10,37 +12,19 @@ import FilterGrid from './components/FilterGrid';
 import { styles } from './index.stylex';
 
 const FILTER_PRESETS: FilterPreset[] = [
-   { name: 'Aden', filter: 'sepia(0.2) brightness(1.15) saturate(0.85)' },
-   { name: 'Clarendon', filter: 'brightness(1.1) contrast(1.2) saturate(1.3)' },
-   { name: 'Crema', filter: 'sepia(0.3) brightness(1.05) contrast(0.95)' },
-   { name: 'Gingham', filter: 'brightness(1.05) sepia(0.15) contrast(0.9)' },
-   { name: 'Juno', filter: 'brightness(1.05) contrast(1.1) saturate(1.4)' },
-   { name: 'Lark', filter: 'brightness(1.1) saturate(1.3) sepia(0.05)' },
-   { name: 'Ludwig', filter: 'sepia(0.1) brightness(1.05) saturate(1.2)' },
-   { name: 'Moon', filter: 'grayscale(1) brightness(1.1) contrast(1.1)' },
-   { name: 'Original', filter: '' },
-   { name: 'Perpetua', filter: 'brightness(1.05) contrast(1.05) saturate(1.1)' },
-   { name: 'Reyes', filter: 'sepia(0.4) brightness(0.9) contrast(0.85)' },
-   { name: 'Slumber', filter: 'sepia(0.35) brightness(0.9) saturate(0.85)' },
+   { name: 'Aden' },
+   { name: 'Clarendon' },
+   { name: 'Crema' },
+   { name: 'Gingham' },
+   { name: 'Juno' },
+   { name: 'Lark' },
+   { name: 'Ludwig' },
+   { name: 'Moon' },
+   { name: 'Original' },
+   { name: 'Perpetua' },
+   { name: 'Reyes' },
+   { name: 'Slumber' },
 ];
-
-function getFilterString(file: SelectedFile): string {
-   const preset = FILTER_PRESETS.find(p => p.name === file.filterPreset);
-   const presetFilter = preset?.filter ?? '';
-   const adj = file.adjustments;
-   const brightness = 100 + adj.brightness;
-   const contrast = 100 + adj.contrast;
-   const saturation = 100 + adj.saturation;
-   let filter = `${presetFilter} brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`.trim();
-   if (adj.temperature !== 0) {
-      const sepia = Math.abs(adj.temperature) * 0.002;
-      filter += ` sepia(${sepia})`;
-      if (adj.temperature > 0) {
-         filter += ` hue-rotate(-10deg)`;
-      }
-   }
-   return filter;
-}
 
 interface EditStepProps {
    files: SelectedFile[];
@@ -61,6 +45,7 @@ export default function EditStep({
 }: EditStepProps) {
    const currentFile = files[currentIndex];
    const [activeTab, setActiveTab] = useState<'filters' | 'adjustments'>('filters');
+   const [showOriginal, setShowOriginal] = useState(false);
    const previewRef = useRef<HTMLDivElement>(null);
    const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
 
@@ -97,6 +82,24 @@ export default function EditStep({
       return { width: Math.round(w), height: Math.round(h) };
    })();
 
+    const effectiveAdjustments = showOriginal
+       ? { brightness: 0, contrast: 0, fade: 0, saturation: 0, temperature: 0, vignette: 0 }
+       : currentFile.adjustments;
+    const effectivePreset = showOriginal ? 'Original' : currentFile.filterPreset;
+
+    const { canvasRef } = useWebGLFilter({
+       src: currentFile.preview,
+       width: cropBox?.width ?? 0,
+       height: cropBox?.height ?? 0,
+       adjustments: effectiveAdjustments,
+       filterPreset: effectivePreset,
+    });
+
+   const thumbnails = useFilterThumbnails(
+      currentFile.preview,
+      FILTER_PRESETS.map(p => p.name),
+   );
+
    const handlePresetChange = (name: string) => {
       onUpdateFile(currentIndex, {
          filterPreset: name,
@@ -104,12 +107,11 @@ export default function EditStep({
       });
    };
 
-   const handleAdjustmentChange = (key: keyof Adjustments, value: number) => {
-      onUpdateFile(currentIndex, {
-         filterPreset: 'Original',
-         adjustments: { ...currentFile.adjustments, [key]: value },
-      });
-   };
+    const handleAdjustmentChange = (key: keyof Adjustments, value: number) => {
+       onUpdateFile(currentIndex, {
+          adjustments: { ...currentFile.adjustments, [key]: value },
+       });
+    };
 
    const isFirst = currentIndex === 0;
    const isLast = currentIndex === files.length - 1;
@@ -122,9 +124,7 @@ export default function EditStep({
                <IoArrowBack style={{ fontSize: 24 }} />
             </button>
             <span {...stylex.props(styles.headerTitle)}>Edit</span>
-            <button type="button" {...stylex.props(styles.shareButton)}>
-               Share
-            </button>
+            <button type="button" {...stylex.props(styles.shareButton)}>Share</button>
          </div>
 
          <div {...stylex.props(styles.body)}>
@@ -143,17 +143,24 @@ export default function EditStep({
                   {...stylex.props(styles.cropContainer)}
                   style={cropBox ? { width: cropBox.width, height: cropBox.height } : { width: '100%', height: '100%' }}
                >
-                  {/* biome-ignore lint/performance/noImgElement: crop preview needs raw img for CSS filters */}
-                  <img
-                     src={currentFile.preview}
-                     alt="Preview"
-                     draggable={false}
-                     {...stylex.props(styles.previewImage)}
-                     style={{
-                        transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
-                        filter: getFilterString(currentFile),
-                     }}
-                  />
+                   <canvas
+                      ref={canvasRef}
+                      {...stylex.props(styles.previewImage)}
+                      style={{
+                         transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
+                      }}
+                      onPointerDown={e => {
+                         const el = e.currentTarget;
+                         el.setPointerCapture(e.pointerId);
+                         setShowOriginal(true);
+                      }}
+                      onPointerUp={e => {
+                         const el = e.currentTarget;
+                         el.releasePointerCapture(e.pointerId);
+                         setShowOriginal(false);
+                      }}
+                      onPointerCancel={() => setShowOriginal(false)}
+                   />
                </div>
             </div>
 
@@ -179,7 +186,7 @@ export default function EditStep({
                   <FilterGrid
                      presets={FILTER_PRESETS}
                      selectedPreset={currentFile.filterPreset}
-                     preview={currentFile.preview}
+                     thumbnails={thumbnails}
                      onSelect={handlePresetChange}
                   />
                )}
