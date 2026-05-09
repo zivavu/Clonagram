@@ -6,6 +6,8 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
+      width: '730px',
+      userSelect: 'none',
    },
    header: {
       display: 'flex',

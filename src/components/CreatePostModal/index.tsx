@@ -4,11 +4,12 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { IoCloseOutline, IoImagesOutline } from 'react-icons/io5';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import CropStep from './components/CropStep';
+import EditStep from './components/EditStep';
+import UploadStep from './components/UploadStep';
 import { styles } from './index.stylex';
-import type { SelectedFile, Step } from './types';
+import type { AspectRatio, SelectedFile, Step } from './types';
 
 const MAX_FILES = 10;
 
@@ -18,16 +19,19 @@ export default function CreatePostModal() {
    const [files, setFiles] = useState<SelectedFile[]>([]);
    const [currentIndex, setCurrentIndex] = useState(0);
    const [isDragActive, setIsDragActive] = useState(false);
+   const [caption, setCaption] = useState('');
+   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('original');
 
    const onDrop = useCallback((acceptedFiles: File[]) => {
       if (acceptedFiles.length === 0) return;
       const newFiles: SelectedFile[] = acceptedFiles.map(file => ({
          file,
          preview: URL.createObjectURL(file),
-         aspectRatio: 'original',
          zoom: 1,
          panX: 0,
          panY: 0,
+         filterPreset: 'Original',
+         adjustments: { brightness: 0, contrast: 0, fade: 0, saturation: 0, temperature: 0, vignette: 0 },
       }));
       setFiles(prev => [...prev, ...newFiles].slice(0, MAX_FILES));
       setStep('crop');
@@ -53,6 +57,8 @@ export default function CreatePostModal() {
       setFiles([]);
       setCurrentIndex(0);
       setStep('upload');
+      setCaption('');
+      setAspectRatio('original');
       close();
    };
 
@@ -80,6 +86,7 @@ export default function CreatePostModal() {
       setFiles([]);
       setCurrentIndex(0);
       setStep('upload');
+      setAspectRatio('original');
    };
 
    return (
@@ -89,27 +96,12 @@ export default function CreatePostModal() {
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={handleClose}>
                <input {...getInputProps()} style={{ display: 'none' }} />
                {step === 'upload' && (
-                  <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Upload photos and videos to create a new post
-                     </Dialog.Description>
-                     <div {...stylex.props(styles.header)}>
-                        <div style={{ width: 30 }} />
-                        <Dialog.Title {...stylex.props(styles.title)}>Create new post</Dialog.Title>
-                        <Dialog.Close asChild>
-                           <button {...stylex.props(styles.closeButton)} aria-label="Close">
-                              <IoCloseOutline style={{ fontSize: 30 }} />
-                           </button>
-                        </Dialog.Close>
-                     </div>
-                     <div {...getRootProps()} {...stylex.props(styles.dropZone, isDragActive && styles.dropZoneActive)}>
-                        <IoImagesOutline style={{ fontSize: 96, color: 'rgb(168, 168, 168)' }} />
-                        <p {...stylex.props(styles.dropText)}>Drag photos and videos here</p>
-                        <button type="button" {...stylex.props(styles.selectButton)} onClick={open}>
-                           Select from computer
-                        </button>
-                     </div>
-                  </>
+                  <UploadStep
+                     getRootProps={getRootProps}
+                     open={open}
+                     isDragActive={isDragActive}
+                     onClose={handleClose}
+                  />
                )}
                {step === 'crop' && (
                   <>
@@ -118,11 +110,26 @@ export default function CreatePostModal() {
                         files={files}
                         currentIndex={currentIndex}
                         onBack={handleBackToUpload}
-                        onNext={() => {}}
+                        onNext={() => setStep('edit')}
                         onSelectIndex={setCurrentIndex}
                         onRemoveFile={handleRemoveFile}
                         onUpdateFile={handleUpdateFile}
                         onAddFiles={open}
+                        aspectRatio={aspectRatio}
+                        onAspectRatioChange={setAspectRatio}
+                     />
+                  </>
+               )}
+               {step === 'edit' && (
+                  <>
+                     <Dialog.Description style={{ display: 'none' }}>Edit your post</Dialog.Description>
+                     <EditStep
+                        files={files}
+                        currentIndex={currentIndex}
+                        onBack={() => setStep('crop')}
+                        onSelectIndex={setCurrentIndex}
+                        onUpdateFile={handleUpdateFile}
+                        aspectRatio={aspectRatio}
                      />
                   </>
                )}

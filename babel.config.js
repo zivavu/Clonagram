@@ -13,6 +13,7 @@ module.exports = {
             treeshakeCompensation: true,
             aliases: { '@/*': [path.join(__dirname, '*')] },
             unstable_moduleResolution: { type: 'commonJS' },
+            enableDebugDataProp: false,
          },
       ],
    ],

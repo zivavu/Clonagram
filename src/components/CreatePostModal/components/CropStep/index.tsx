@@ -8,24 +8,17 @@ import { IoArrowBack, IoClose } from 'react-icons/io5';
 import { MdAdd, MdOutlineAspectRatio, MdZoomIn } from 'react-icons/md';
 import { PiImagesSquareLight } from 'react-icons/pi';
 import CarouselArrow from '@/src/components/CarouselArrow';
-import type { SelectedFile } from '../../types';
+import type { AspectRatio, SelectedFile } from '../../types';
+import { RATIO_NUMERIC } from '../../types';
 import { styles } from './index.stylex';
 
-const ASPECT_RATIOS: { key: SelectedFile['aspectRatio']; label: string }[] = [
+const ASPECT_RATIOS: { key: AspectRatio; label: string }[] = [
    { key: 'original', label: 'Original' },
    { key: '1:1', label: '1:1' },
    { key: '4:5', label: '4:5' },
    { key: '16:9', label: '16:9' },
    { key: '9:16', label: '9:16' },
 ];
-
-const RATIO_NUMERIC: Record<SelectedFile['aspectRatio'], number | null> = {
-   original: null,
-   '1:1': 1,
-   '4:5': 4 / 5,
-   '16:9': 16 / 9,
-   '9:16': 9 / 16,
-};
 
 interface CropStepProps {
    files: SelectedFile[];
@@ -36,6 +29,8 @@ interface CropStepProps {
    onRemoveFile: (index: number) => void;
    onUpdateFile: (index: number, updates: Partial<SelectedFile>) => void;
    onAddFiles: () => void;
+   aspectRatio: AspectRatio;
+   onAspectRatioChange: (ratio: AspectRatio) => void;
 }
 
 export default function CropStep({
@@ -47,6 +42,8 @@ export default function CropStep({
    onRemoveFile,
    onUpdateFile,
    onAddFiles,
+   aspectRatio,
+   onAspectRatioChange,
 }: CropStepProps) {
    const currentFile = files[currentIndex];
    const [showRatioMenu, setShowRatioMenu] = useState(false);
@@ -72,7 +69,7 @@ export default function CropStep({
    const cropBox = (() => {
       if (containerSize.w === 0) return null;
 
-      const ratio = RATIO_NUMERIC[currentFile.aspectRatio];
+      const ratio = RATIO_NUMERIC[aspectRatio];
       const maxW = containerSize.w;
       const maxH = containerSize.h;
 
@@ -102,8 +99,8 @@ export default function CropStep({
       onUpdateFile(currentIndex, { zoom: Number(e.target.value) });
    };
 
-   const handleRatioChange = (ratio: SelectedFile['aspectRatio']) => {
-      onUpdateFile(currentIndex, { aspectRatio: ratio });
+   const handleRatioChange = (ratio: AspectRatio) => {
+      onAspectRatioChange(ratio);
       setShowRatioMenu(false);
    };
 
@@ -220,7 +217,7 @@ export default function CropStep({
                                  type="button"
                                  {...stylex.props(
                                     styles.ratioMenuItem,
-                                    currentFile.aspectRatio === key && styles.ratioMenuItemActive,
+                                     aspectRatio === key && styles.ratioMenuItemActive,
                                  )}
                                  onClick={() => handleRatioChange(key)}
                               >

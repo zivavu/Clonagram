@@ -37,7 +37,6 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                src={post.user.avatar_url}
                alt={post.user.username}
                size={32}
-               priority={index <= 2}
                loading={index <= 2 ? 'eager' : 'lazy'}
             />
             <span {...stylex.props(styles.topUsername)}>{post.user.username}</span>
