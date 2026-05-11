@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { IoArrowBack } from 'react-icons/io5';
 import CarouselArrow from '@/src/components/CarouselArrow';
 import { useFilterThumbnails } from '@/src/hooks/useFilterThumbnails';
+import { useImageNaturalSize } from '@/src/hooks/useImageNaturalSize';
 import { useWebGLFilter } from '@/src/hooks/useWebGLFilter';
 import type { Adjustments, AspectRatio, PostMedia } from '../../types';
 import { RATIO_NUMERIC } from '../../types';
@@ -91,10 +92,24 @@ export default function EditStep({
       : currentFile.adjustments;
    const effectivePreset = showOriginal ? 'Original' : currentFile.filterPreset;
 
+   const naturalSize = useImageNaturalSize(currentFile.preview);
+
+   const imageDisplaySize = (() => {
+      if (!cropBox || naturalSize.w === 0 || naturalSize.h === 0) return null;
+      const imgRatio = naturalSize.w / naturalSize.h;
+      const cropRatio = cropBox.width / cropBox.height;
+      if (imgRatio >= cropRatio) {
+         const h = cropBox.height;
+         return { w: h * imgRatio, h };
+      }
+      const w = cropBox.width;
+      return { w, h: w / imgRatio };
+   })();
+
    const { canvasRef } = useWebGLFilter({
       src: currentFile.preview,
-      width: cropBox?.width ?? 0,
-      height: cropBox?.height ?? 0,
+      width: imageDisplaySize?.w ?? 0,
+      height: imageDisplaySize?.h ?? 0,
       adjustments: effectiveAdjustments,
       filterPreset: effectivePreset,
       filterStrength: showOriginal ? 0 : currentFile.filterStrength,
@@ -159,6 +174,8 @@ export default function EditStep({
                      ref={canvasRef}
                      {...stylex.props(styles.previewImage)}
                      style={{
+                        width: imageDisplaySize ? imageDisplaySize.w : '100%',
+                        height: imageDisplaySize ? imageDisplaySize.h : '100%',
                         transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
                      }}
                      onPointerDown={e => {
