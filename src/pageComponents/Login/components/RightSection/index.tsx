@@ -40,11 +40,8 @@ export default function RightSection() {
          setError('root', { message: error.message });
          return;
       }
-      if (data.user?.confirmed_at === null) {
-         setError('root', { message: 'Please confirm your email before logging in.' });
-      } else {
-         router.push('/');
-      }
+
+      router.push('/');
    }
 
    const googleIcon = <Image src="/icons/google.svg" alt="" aria-hidden width={20} height={20} />;
