@@ -80,9 +80,7 @@ export const styles = stylex.create({
       justifyContent: 'center',
    },
    previewImage: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
+      flexShrink: 0,
       width: '100%',
       height: '100%',
       objectFit: 'cover',
