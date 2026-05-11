@@ -122,6 +122,15 @@ export default function CreatePostModal() {
       });
    };
 
+   const handleReorderFiles = (fromIndex: number, toIndex: number) => {
+      setFiles(prev => {
+         const next = [...prev];
+         const [moved] = next.splice(fromIndex, 1);
+         next.splice(toIndex, 0, moved);
+         return next;
+      });
+   };
+
    const handleBackToUpload = () => {
       resetState();
    };
@@ -144,6 +153,7 @@ export default function CreatePostModal() {
                         onSelectIndex={setCurrentIndex}
                         onRemoveFile={handleRemoveFile}
                         onUpdateFile={handleUpdateFile}
+                        onReorderFiles={handleReorderFiles}
                         onAddFiles={open}
                         aspectRatio={aspectRatio}
                         onAspectRatioChange={setAspectRatio}
