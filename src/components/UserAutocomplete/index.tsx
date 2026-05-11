@@ -36,9 +36,7 @@ export default function UserAutocomplete({
       const q = query.toLowerCase();
       const all = q
          ? SUGGESTED_USERS.filter(
-              u =>
-                 u.username.toLowerCase().includes(q) ||
-                 (u.full_name?.toLowerCase().includes(q) ?? false),
+              u => u.username.toLowerCase().includes(q) || (u.full_name?.toLowerCase().includes(q) ?? false),
            )
          : SUGGESTED_USERS;
       return all.slice(0, 8);

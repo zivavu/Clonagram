@@ -217,7 +217,7 @@ export default function CropStep({
                                  type="button"
                                  {...stylex.props(
                                     styles.ratioMenuItem,
-                                     aspectRatio === key && styles.ratioMenuItemActive,
+                                    aspectRatio === key && styles.ratioMenuItemActive,
                                  )}
                                  onClick={() => handleRatioChange(key)}
                               >

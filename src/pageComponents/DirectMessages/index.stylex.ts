@@ -225,13 +225,13 @@ export const styles = stylex.create({
       flexShrink: 0,
       borderTopWidth: '1px',
       borderTopStyle: 'solid',
-      borderTopColor: colors.borderMuted,
+      borderTopColor: colors.separator,
    },
    requestInfoSection: {
       padding: '16px',
       borderBottomWidth: '1px',
       borderBottomStyle: 'solid',
-      borderBottomColor: colors.borderMuted,
+      borderBottomColor: colors.separator,
    },
    requestInfoTitle: {
       fontSize: '0.875rem',
@@ -278,7 +278,7 @@ export const styles = stylex.create({
    requestButtonDivider: {
       width: '1px',
       height: '100%',
-      backgroundColor: colors.borderMuted,
+      backgroundColor: colors.separator,
       flexShrink: 0,
    },
 });

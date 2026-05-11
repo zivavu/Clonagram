@@ -28,13 +28,7 @@ export default function FilterGrid({ presets, selectedPreset, thumbnails, onSele
                >
                   <div {...stylex.props(styles.imageWrap, isActive && styles.imageWrapActive)}>
                      {thumbSrc ? (
-                        <Image
-                           src={thumbSrc}
-                           alt={preset.name}
-                           fill
-                           style={{ objectFit: 'cover' }}
-                           sizes="88px"
-                        />
+                        <Image src={thumbSrc} alt={preset.name} fill style={{ objectFit: 'cover' }} sizes="88px" />
                      ) : (
                         <div {...stylex.props(styles.placeholder)} />
                      )}

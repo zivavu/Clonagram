@@ -11,7 +11,7 @@ export const styles = stylex.create({
       gap: '18px',
       overflowX: 'auto',
       paddingBottom: spacing.xs,
-      borderBottom: `1px solid ${colors.borderMuted}`,
+      borderBottom: `1px solid ${colors.separator}`,
       paddingTop: '8px',
       paddingLeft: '12px',
       position: 'relative',
