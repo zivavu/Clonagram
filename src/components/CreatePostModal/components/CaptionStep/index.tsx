@@ -109,7 +109,7 @@ export default function CaptionStep({
       return { width: Math.round(w), height: Math.round(h) };
    })();
 
-    const handleImageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+   const handleImageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       const rect = e.currentTarget.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -131,6 +131,12 @@ export default function CaptionStep({
    const handleRemoveTag = (userId: string) => {
       onUpdateFile(currentIndex, {
          tags: currentFile.tags.filter(t => t.user.id !== userId),
+      });
+   };
+
+   const handleMoveTag = (userId: string, x: number, y: number) => {
+      onUpdateFile(currentIndex, {
+         tags: currentFile.tags.map(t => (t.user.id === userId ? { ...t, x, y } : t)),
       });
    };
 
@@ -202,17 +208,18 @@ export default function CaptionStep({
                            transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
                         }}
                      />
-                   )}
-                </button>
-                {currentFile.tags.map(tag => (
-                   <TagPin key={tag.user.id} tag={tag} onRemove={() => handleRemoveTag(tag.user.id)} />
-                ))}
-                {tagPopper && (
-                   <div
-                      role="dialog"
-                      {...stylex.props(styles.tagPopper)}
-                      style={getPopperStyle(tagPopper)}
-                   >
+                  )}
+               </button>
+               {currentFile.tags.map(tag => (
+                  <TagPin
+                     key={tag.user.id}
+                     tag={tag}
+                     onRemove={() => handleRemoveTag(tag.user.id)}
+                     onMove={(x, y) => handleMoveTag(tag.user.id, x, y)}
+                  />
+               ))}
+               {tagPopper && (
+                  <div role="dialog" {...stylex.props(styles.tagPopper)} style={getPopperStyle(tagPopper)}>
                      <UserAutocomplete
                         onSelect={handleTagSelect}
                         onDismiss={() => setTagPopper(null)}

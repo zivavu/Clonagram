@@ -204,22 +204,22 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       render();
    }, [params.width, params.height, render]);
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: individual adjustment values are needed to trigger re-renders
-    useEffect(() => {
-       // Re-render when adjustments or filter strength change
-       if (glRef.current && textureRef.current && curvesTextureRef.current) {
-          render();
-       }
-    }, [
-       params.adjustments.brightness,
-       params.adjustments.contrast,
-       params.adjustments.fade,
-       params.adjustments.saturation,
-       params.adjustments.temperature,
-       params.adjustments.vignette,
-       params.filterStrength,
-       render,
-    ]);
+   // biome-ignore lint/correctness/useExhaustiveDependencies: individual adjustment values are needed to trigger re-renders
+   useEffect(() => {
+      // Re-render when adjustments or filter strength change
+      if (glRef.current && textureRef.current && curvesTextureRef.current) {
+         render();
+      }
+   }, [
+      params.adjustments.brightness,
+      params.adjustments.contrast,
+      params.adjustments.fade,
+      params.adjustments.saturation,
+      params.adjustments.temperature,
+      params.adjustments.vignette,
+      params.filterStrength,
+      render,
+   ]);
 
    return { canvasRef };
 }

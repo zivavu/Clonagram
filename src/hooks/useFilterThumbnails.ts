@@ -35,14 +35,7 @@ function setupThumbnailGL(gl: WebGL2RenderingContext): { program: WebGLProgram; 
 
    gl.useProgram(program);
 
-   const positions = new Float32Array([
-      -1, -1, 0, 0,
-      1, -1, 1, 0,
-      -1, 1, 0, 1,
-      -1, 1, 0, 1,
-      1, -1, 1, 0,
-      1, 1, 1, 1,
-   ]);
+   const positions = new Float32Array([-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, -1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1]);
 
    const buffer = gl.createBuffer();
    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);

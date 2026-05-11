@@ -123,12 +123,12 @@ export function createShader(gl: WebGL2RenderingContext, type: number, source: s
    if (!shader) return null;
    gl.shaderSource(shader, source);
    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-       // biome-ignore lint/suspicious/noConsole: legitimate shader compile error logging
-       console.error('Shader compile error:', gl.getShaderInfoLog(shader));
-       gl.deleteShader(shader);
-       return null;
-    }
+   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      // biome-ignore lint/suspicious/noConsole: legitimate shader compile error logging
+      console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+      return null;
+   }
    return shader;
 }
 
@@ -148,12 +148,12 @@ export function createProgram(
    gl.attachShader(program, fragmentShader);
    gl.linkProgram(program);
 
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-       // biome-ignore lint/suspicious/noConsole: legitimate program link error logging
-       console.error('Program link error:', gl.getProgramInfoLog(program));
-       gl.deleteProgram(program);
-       return null;
-    }
+   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      // biome-ignore lint/suspicious/noConsole: legitimate program link error logging
+      console.error('Program link error:', gl.getProgramInfoLog(program));
+      gl.deleteProgram(program);
+      return null;
+   }
 
    return program;
 }

@@ -46,7 +46,7 @@ export const styles = stylex.create({
       color: colors.textPrimary,
       textAlign: 'center',
       padding: '24px 24px 0',
-      paddingTop: '32px'
+      paddingTop: '32px',
    },
    discardSubtitle: {
       fontSize: '14px',

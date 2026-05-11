@@ -39,7 +39,7 @@ export const styles = stylex.create({
    separator: {
       width: '100%',
       height: '1px',
-      backgroundColor: colors.borderMuted,
+      backgroundColor: colors.separator,
    },
    mainContainer: {
       display: 'flex',

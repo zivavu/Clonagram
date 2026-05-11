@@ -4,21 +4,33 @@ import { radius } from '../../../../../../styles/tokens.stylex';
 export const styles = stylex.create({
    pin: {
       position: 'absolute',
-      transform: 'translate(-50%, -50%)',
+      transform: 'translate(-50%, 0)',
       zIndex: 5,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      touchAction: 'none',
+   },
 
+   triangle: {
+      width: 0,
+      height: 0,
+      borderLeftWidth: '6px',
+      borderLeftStyle: 'solid',
+      borderLeftColor: 'transparent',
+      borderRightWidth: '6px',
+      borderRightStyle: 'solid',
+      borderRightColor: 'transparent',
+      borderBottomWidth: '8px',
+      borderBottomStyle: 'solid',
+      borderBottomColor: 'rgba(0,0,0,0.35)',
    },
 
    label: {
-      position: 'absolute',
-      bottom: '100%',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      marginBottom: '4px',
-      backgroundColor: 'rgba(0,0,0,0.3)',
+      backgroundColor: 'rgba(0,0,0,0.35)',
       color: 'white',
       borderRadius: radius.sm,
-      padding: '4px 16px',
+      padding: '4px 8px 4px 12px',
       fontSize: '13px',
       fontWeight: 600,
       whiteSpace: 'nowrap',
@@ -26,12 +38,17 @@ export const styles = stylex.create({
       alignItems: 'center',
       gap: '6px',
    },
+
    removeBtn: {
       scale: 0.95,
       display: 'flex',
-      transition: 'scale 0.2s ease',
+   },
+
+   removeBtnIcon: {
+      fontSize: 24,
+      scale: 0.9,
       ':hover': {
-         scale: 1.05,
+         scale: 1,
       },
    },
 });
