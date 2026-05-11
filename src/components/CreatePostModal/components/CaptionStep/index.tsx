@@ -34,24 +34,10 @@ interface CaptionStepProps {
 
 interface FilteredPreviewProps {
    file: PostMedia;
-   cropBox: { width: number; height: number } | null;
+   imageDisplaySize: { w: number; h: number } | null;
 }
 
-function FilteredPreview({ file, cropBox }: FilteredPreviewProps) {
-   const naturalSize = useImageNaturalSize(file.preview);
-
-   const imageDisplaySize = (() => {
-      if (!cropBox || naturalSize.w === 0 || naturalSize.h === 0) return null;
-      const imgRatio = naturalSize.w / naturalSize.h;
-      const cropRatio = cropBox.width / cropBox.height;
-      if (imgRatio >= cropRatio) {
-         const h = cropBox.height;
-         return { w: h * imgRatio, h };
-      }
-      const w = cropBox.width;
-      return { w, h: w / imgRatio };
-   })();
-
+function FilteredPreview({ file, imageDisplaySize }: FilteredPreviewProps) {
    const { canvasRef } = useWebGLFilter({
       src: file.preview,
       width: imageDisplaySize?.w ?? 0,
@@ -95,6 +81,7 @@ export default function CaptionStep({
    const previewRef = useRef<HTMLDivElement>(null);
    const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
    const [tagPopper, setTagPopper] = useState<{ x: number; y: number } | null>(null);
+   const naturalSize = useImageNaturalSize(currentFile.preview);
 
    const measureContainer = useCallback(() => {
       const el = previewRef.current;
@@ -124,6 +111,18 @@ export default function CaptionStep({
          w = h * ratio;
       }
       return { width: Math.round(w), height: Math.round(h) };
+   })();
+
+   const imageDisplaySize = (() => {
+      if (!cropBox || naturalSize.w === 0 || naturalSize.h === 0) return null;
+      const imgRatio = naturalSize.w / naturalSize.h;
+      const cropRatio = cropBox.width / cropBox.height;
+      if (imgRatio >= cropRatio) {
+         const h = cropBox.height;
+         return { w: h * imgRatio, h };
+      }
+      const w = cropBox.width;
+      return { w, h: w / imgRatio };
    })();
 
    const handleImageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -213,15 +212,18 @@ export default function CaptionStep({
                   onClick={handleImageClick}
                >
                   {useCanvas ? (
-                     <FilteredPreview file={currentFile} cropBox={cropBox} />
+                     <FilteredPreview file={currentFile} imageDisplaySize={imageDisplaySize} />
                   ) : (
                      /* biome-ignore lint/performance/noImgElement: preview needs raw img for pan/zoom transform */
                      <img
+                        key={currentFile.preview}
                         src={currentFile.preview}
                         alt="Preview"
                         draggable={false}
                         {...stylex.props(styles.previewImage)}
                         style={{
+                           width: imageDisplaySize ? imageDisplaySize.w : '100%',
+                           height: imageDisplaySize ? imageDisplaySize.h : '100%',
                            transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
                         }}
                      />
