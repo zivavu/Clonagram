@@ -9,21 +9,6 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 
 <!-- END:nextjs-agent-rules -->
 
-<!-- BEGIN:doc-search-rules -->
-
-# Documentation and External Knowledge
-
-When looking up documentation, APIs, or how libraries/frameworks work:
-
-1. **Prefer Context7** (mcp-server-context7 tools) over web fetching. Context7 provides up-to-date, code-level documentation directly from source.
-2. Use `mcp-server-context7_resolve-library-id` first to find the library ID (e.g. `/vercel/next.js` for Next.js).
-3. Then use `mcp-server-context7_query-docs` with specific queries to get relevant code examples and API docs.
-4. Only fall back to web search if Context7 returns nothing useful or the library is not indexed.
-
-This gives more accurate, code-level answers than web search or general knowledge.
-
-<!-- END:doc-search-rules -->
-
 <!-- BEGIN:stylex-agent-rules -->
 
 This project uses StyleX (@stylexjs/stylex) for all styling.
@@ -158,7 +143,7 @@ The only exception is when you need precise control over a memoized value used a
 
 # Commit Conventions
 
-After every medium-sized feature, commit with a very short commit message.
+After every medium-sized feature, commit with a very short commit message(3-7 words).
 Capitalize the first letter. Do not use prefixes like "chore:", "feat:", "fix:", etc.
 Example: "Add user profile page" not "feat: add user profile page".
 
