@@ -175,10 +175,7 @@ export default function CropControls({
                            >
                               <button
                                  type="button"
-                                 {...stylex.props(
-                                    styles.popoverThumb,
-                                    idx === currentIndex && styles.popoverThumbActive,
-                                 )}
+                                 {...stylex.props(styles.popoverThumb)}
                                  onClick={() => onSelectIndex(idx)}
                               >
                                  <Image
