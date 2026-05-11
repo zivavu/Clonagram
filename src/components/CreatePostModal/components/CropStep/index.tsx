@@ -312,17 +312,24 @@ export default function CropStep({
                                        styles.popoverThumbWrapper,
                                        dragOverIndex === idx && styles.popoverThumbWrapperDragOver,
                                     )}
-                                    onDragStart={() => setDragOverIndex(idx)}
+                                    onDragStart={e => {
+                                       e.dataTransfer.setData('text/plain', String(idx));
+                                       e.dataTransfer.effectAllowed = 'move';
+                                    }}
                                     onDragOver={e => {
                                        e.preventDefault();
+                                       e.dataTransfer.dropEffect = 'move';
                                        setDragOverIndex(idx);
                                     }}
-                                    onDrop={() => {
-                                       if (dragOverIndex !== null && dragOverIndex !== idx) {
-                                          onReorderFiles(dragOverIndex, idx);
+                                    onDrop={e => {
+                                       e.preventDefault();
+                                       const sourceIdx = Number(e.dataTransfer.getData('text/plain'));
+                                       if (!Number.isNaN(sourceIdx) && sourceIdx !== idx) {
+                                          onReorderFiles(sourceIdx, idx);
                                        }
                                        setDragOverIndex(null);
                                     }}
+                                    onDragLeave={() => setDragOverIndex(null)}
                                     onDragEnd={() => setDragOverIndex(null)}
                                  >
                                     <button
