@@ -30,7 +30,7 @@ export const REQUEST_USER: PartialUser = {
    id: 'r1',
    username: 'd1anth00s._',
    full_name: 'Dianthos',
-   avatar_url: 'https://picsum.photos/seed/dianthos/200/200',
+   avatar_url: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/dianthos.jpg',
 };
 
 export const MESSAGE_THREADS: MessageThread[] = [
