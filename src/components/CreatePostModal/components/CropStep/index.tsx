@@ -52,6 +52,7 @@ export default function CropStep({
    const thumbnailsRef = useRef<HTMLDivElement>(null);
    const dragRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(null);
    const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
+   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
 
    const measureContainer = useCallback(() => {
       const el = previewRef.current;
@@ -89,6 +90,18 @@ export default function CropStep({
       return { width: Math.round(w), height: Math.round(h) };
    })();
 
+   const imageDisplaySize = (() => {
+      if (!cropBox || naturalSize.w === 0 || naturalSize.h === 0) return null;
+      const imgRatio = naturalSize.w / naturalSize.h;
+      const cropRatio = cropBox.width / cropBox.height;
+      if (imgRatio >= cropRatio) {
+         const h = cropBox.height;
+         return { w: h * imgRatio, h };
+      }
+      const w = cropBox.width;
+      return { w, h: w / imgRatio };
+   })();
+
    const scrollThumbnails = useCallback((direction: 'left' | 'right') => {
       const el = thumbnailsRef.current;
       if (!el) return;
@@ -101,6 +114,7 @@ export default function CropStep({
 
    const handleRatioChange = (ratio: AspectRatio) => {
       onAspectRatioChange(ratio);
+      onUpdateFile(currentIndex, { panX: 0, panY: 0 });
       setShowRatioMenu(false);
    };
 
@@ -119,11 +133,11 @@ export default function CropStep({
    };
 
    const handlePointerMove = (e: React.PointerEvent) => {
-      if (!dragRef.current || !cropBox) return;
+      if (!dragRef.current || !cropBox || !imageDisplaySize) return;
       const dx = e.clientX - dragRef.current.startX;
       const dy = e.clientY - dragRef.current.startY;
-      const maxPanX = Math.max(0, (currentFile.zoom - 1) * (cropBox.width / 2) - 80);
-      const maxPanY = Math.max(0, (currentFile.zoom - 1) * (cropBox.height / 2) - 80);
+      const maxPanX = Math.max(0, (imageDisplaySize.w * currentFile.zoom - cropBox.width) / 2);
+      const maxPanY = Math.max(0, (imageDisplaySize.h * currentFile.zoom - cropBox.height) / 2);
       onUpdateFile(currentIndex, {
          panX: Math.max(-maxPanX, Math.min(maxPanX, dragRef.current.panX + dx)),
          panY: Math.max(-maxPanY, Math.min(maxPanY, dragRef.current.panY + dy)),
@@ -175,11 +189,15 @@ export default function CropStep({
             >
                {/* biome-ignore lint/performance/noImgElement: crop preview needs raw img for panning */}
                <img
+                  key={currentFile.preview}
                   src={currentFile.preview}
                   alt="Preview"
                   draggable={false}
+                  onLoad={e => setNaturalSize({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })}
                   {...stylex.props(styles.previewImage)}
                   style={{
+                     width: imageDisplaySize ? imageDisplaySize.w : '100%',
+                     height: imageDisplaySize ? imageDisplaySize.h : '100%',
                      transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
                      transition: isDragging ? 'none' : 'transform 0.15s ease-out',
                   }}
@@ -232,7 +250,9 @@ export default function CropStep({
                                                ? '1/1'
                                                : key === '4:5'
                                                  ? '4/5'
-                                                 : '16/9',
+                                                 : key === '16:9'
+                                                   ? '16/9'
+                                                   : '9/16',
                                     }}
                                  />
                               </button>
