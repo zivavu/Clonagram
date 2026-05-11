@@ -273,6 +273,11 @@ export const styles = stylex.create({
    popoverThumbWrapper: {
       position: 'relative',
       flexShrink: 0,
+      cursor: 'grab',
+   },
+   popoverThumbWrapperDragOver: {
+      opacity: 0.5,
+      cursor: 'grabbing',
    },
    popoverThumb: {
       position: 'relative',

@@ -28,6 +28,7 @@ interface CropStepProps {
    onSelectIndex: (index: number) => void;
    onRemoveFile: (index: number) => void;
    onUpdateFile: (index: number, updates: Partial<PostMedia>) => void;
+   onReorderFiles: (fromIndex: number, toIndex: number) => void;
    onAddFiles: () => void;
    aspectRatio: AspectRatio;
    onAspectRatioChange: (ratio: AspectRatio) => void;
@@ -41,6 +42,7 @@ export default function CropStep({
    onSelectIndex,
    onRemoveFile,
    onUpdateFile,
+   onReorderFiles,
    onAddFiles,
    aspectRatio,
    onAspectRatioChange,
@@ -119,6 +121,7 @@ export default function CropStep({
    };
 
    const [isDragging, setIsDragging] = useState(false);
+   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
    const handlePointerDown = (e: React.PointerEvent) => {
       const el = e.currentTarget;
@@ -300,9 +303,28 @@ export default function CropStep({
                                  <CarouselArrow direction="left" onClick={() => scrollThumbnails('left')} />
                               </div>
                            )}
-                           <div {...stylex.props(styles.popoverScroll)} ref={thumbnailsRef}>
+                           <ul {...stylex.props(styles.popoverScroll)} ref={thumbnailsRef}>
                               {files.map((file, idx) => (
-                                 <div key={file.preview} {...stylex.props(styles.popoverThumbWrapper)}>
+                                 <li
+                                    key={file.preview}
+                                    draggable={files.length > 1}
+                                    {...stylex.props(
+                                       styles.popoverThumbWrapper,
+                                       dragOverIndex === idx && styles.popoverThumbWrapperDragOver,
+                                    )}
+                                    onDragStart={() => setDragOverIndex(idx)}
+                                    onDragOver={e => {
+                                       e.preventDefault();
+                                       setDragOverIndex(idx);
+                                    }}
+                                    onDrop={() => {
+                                       if (dragOverIndex !== null && dragOverIndex !== idx) {
+                                          onReorderFiles(dragOverIndex, idx);
+                                       }
+                                       setDragOverIndex(null);
+                                    }}
+                                    onDragEnd={() => setDragOverIndex(null)}
+                                 >
                                     <button
                                        type="button"
                                        {...stylex.props(
@@ -327,14 +349,20 @@ export default function CropStep({
                                           <IoClose style={{ fontSize: 12 }} />
                                        </button>
                                     )}
-                                 </div>
+                                 </li>
                               ))}
                               {files.length < 10 && (
-                                 <button type="button" {...stylex.props(styles.popoverAddButton)} onClick={onAddFiles}>
-                                    <MdAdd style={{ fontSize: 20 }} />
-                                 </button>
+                                 <li key="add" {...stylex.props(styles.popoverThumbWrapper)}>
+                                    <button
+                                       type="button"
+                                       {...stylex.props(styles.popoverAddButton)}
+                                       onClick={onAddFiles}
+                                    >
+                                       <MdAdd style={{ fontSize: 20 }} />
+                                    </button>
+                                 </li>
                               )}
-                           </div>
+                           </ul>
                            {files.length > 3 && (
                               <div {...stylex.props(styles.popoverArrow)}>
                                  <CarouselArrow direction="right" onClick={() => scrollThumbnails('right')} />
