@@ -31,7 +31,6 @@ export const styles = stylex.create({
       justifyContent: 'space-between',
       fontSize: '16px',
       color: colors.textPrimary,
-      backgroundColor: colors.bgSecondary,
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: colors.border,
