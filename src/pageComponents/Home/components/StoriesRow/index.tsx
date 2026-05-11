@@ -105,6 +105,7 @@ export default function StoriesRow() {
                                  alt={username}
                                  width={74}
                                  height={74}
+                                 preload
                               />
                            </div>
                         </div>

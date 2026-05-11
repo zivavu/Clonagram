@@ -25,7 +25,7 @@ export default function UserAvatar({ src, size, ...props }: UserAvatarProps) {
       );
    }
 
-   return <Image src={src} width={size} height={size} {...stylex.props(styles.image)} {...props} />;
+   return <Image src={src} width={size} height={size} {...stylex.props(styles.image)} preload {...props} />;
 }
 
 const styles = stylex.create({
