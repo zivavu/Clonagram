@@ -57,7 +57,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                         fill
                         sizes="468px"
                         {...stylex.props(styles.postImage)}
-                        priority={index <= 2 && mediaIndex === 0}
+                        preload={index <= 2 && mediaIndex === 0}
                         loading={index <= 2 && mediaIndex === 0 ? 'eager' : 'lazy'}
                      />
                   </div>
