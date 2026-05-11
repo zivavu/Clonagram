@@ -68,7 +68,7 @@ export default function BirthdatePicker({ topLabel = 'Birthdate', value, onChang
                      {part.value !== null && (
                         <span>{part.label === 'Month' ? monthNames[part.value - 1] : part.value}</span>
                      )}
-                     <MdKeyboardArrowDown style={{ fontSize: 16, color: 'var(--colors-textSecondary)' }} />
+                     <MdKeyboardArrowDown {...stylex.props(styles.arrow)} />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent {...stylex.props(styles.content)}>
                      {part.options.map(option => (

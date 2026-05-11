@@ -6,7 +6,7 @@ import { IoClose } from 'react-icons/io5';
 import { MdAdd, MdOutlineAspectRatio, MdZoomIn } from 'react-icons/md';
 import { PiImagesSquareLight } from 'react-icons/pi';
 import CarouselArrow from '@/src/components/CarouselArrow';
-import type { AspectRatio, PostMedia } from '../../../types';
+import type { AspectRatio, PostMedia } from '../../../../types';
 import { styles } from './index.stylex';
 
 const ASPECT_RATIOS: { key: AspectRatio; label: string }[] = [
@@ -49,7 +49,7 @@ export default function CropControls({
    const scrollThumbnails = useCallback((direction: 'left' | 'right') => {
       const el = thumbnailsRef.current;
       if (!el) return;
-      el.scrollBy({ left: direction === 'left' ? -120 : 120, behavior: 'smooth' });
+      el.scrollBy({ left: direction === 'left' ? -200 : 200, behavior: 'smooth' });
    }, []);
 
    const handleZoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,11 +184,13 @@ export default function CropControls({
                                  <Image
                                     src={file.preview}
                                     alt={`Thumbnail ${idx + 1}`}
-                                    fill
+                                    width={94}
+                                    height={94}
                                     {...stylex.props(styles.thumbImage)}
                                  />
+                                 {idx !== currentIndex && <div {...stylex.props(styles.thumbImageOverlay)}></div>}
                               </button>
-                              {files.length > 1 && (
+                              {files.length > 1 && idx === currentIndex && (
                                  <button
                                     type="button"
                                     {...stylex.props(styles.thumbRemove)}

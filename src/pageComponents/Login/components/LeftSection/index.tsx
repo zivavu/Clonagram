@@ -72,7 +72,7 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
             <div {...stylex.props(imageCardStyles.commentBorder)}></div>
             <MdFavorite style={{ fontSize: 38 }} />
          </div>
-         <Image src={`/loginPageCardsPeople/${image.src}`} alt={image.alt} width={260} height={460} />
+         <Image src={`/loginPageCardsPeople/${image.src}`} alt={image.alt} width={260} height={460} loading="eager" />
       </div>
    );
 }
