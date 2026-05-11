@@ -1,8 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import CarouselArrow from '@/src/components/CarouselArrow';
-import type { AspectRatio, PostMedia } from '../../../types';
-import { RATIO_NUMERIC } from '../../../types';
+import type { AspectRatio, PostMedia } from '../../../../types';
+import { RATIO_NUMERIC } from '../../../../types';
 import { styles } from './index.stylex';
 
 interface CropPreviewProps {

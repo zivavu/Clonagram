@@ -8,6 +8,7 @@ export const styles = stylex.create({
       height: '100%',
       width: '730px',
       userSelect: 'none',
+      position: 'relative',
    },
    header: {
       display: 'flex',

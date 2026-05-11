@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import { MdChevronLeft } from 'react-icons/md';
 import z from 'zod';
@@ -63,6 +64,7 @@ export default function EmailSignUpPage() {
       if (error) {
          setError('root', { message: error.message });
       }
+      redirect('/');
    };
 
    return (
@@ -76,18 +78,20 @@ export default function EmailSignUpPage() {
                <h1 {...stylex.props(styles.title)}>Get started on Clonagram</h1>
                <span {...stylex.props(styles.description)}>Sign up to see photos and videos from your friends.</span>
                <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
-                  <EmailSignupInput
-                     label="Mobile number or email"
-                     topLabel="Mobile number or email"
-                     {...register('email')}
-                  />
+                  <EmailSignupInput label="Email address" topLabel="Email address" {...register('email')} />
                   <span {...stylex.props(styles.learnMoreLinkContainer)}>
                      You may receive notifications from us.{' '}
                      <Link href="/" {...stylex.props(styles.accentLink)}>
                         Learn why we ask for your contact information
                      </Link>
                   </span>
-                  <EmailSignupInput label="Password" topLabel="Password" {...register('password')} />
+                  <EmailSignupInput
+                     label="Password"
+                     topLabel="Password"
+                     type="password"
+                     autoComplete="new-password"
+                     {...register('password')}
+                  />
                   <Controller
                      control={control}
                      name="birthdate"

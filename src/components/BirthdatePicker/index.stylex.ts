@@ -58,6 +58,14 @@ export const styles = stylex.create({
       transform: 'translateY(0)',
       fontSize: '12px',
    },
+   arrow: {
+      fontSize: 32,
+      color: 'var(--colors-textSecondary)',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      right: 16,
+   },
    content: {
       backgroundColor: colors.bgElevated,
       borderWidth: '1px',
