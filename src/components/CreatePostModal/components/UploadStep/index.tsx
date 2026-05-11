@@ -7,10 +7,9 @@ interface UploadStepProps {
    getRootProps: () => Record<string, unknown>;
    open: () => void;
    isDragActive: boolean;
-   onClose: () => void;
 }
 
-export default function UploadStep({ getRootProps, open, isDragActive, onClose }: UploadStepProps) {
+export default function UploadStep({ getRootProps, open, isDragActive }: UploadStepProps) {
    return (
       <>
          <Dialog.Description style={{ display: 'none' }}>
@@ -20,7 +19,7 @@ export default function UploadStep({ getRootProps, open, isDragActive, onClose }
             <div style={{ width: 30 }} />
             <Dialog.Title {...stylex.props(styles.title)}>Create new post</Dialog.Title>
             <Dialog.Close asChild>
-               <button {...stylex.props(styles.closeButton)} aria-label="Close" onClick={onClose}>
+               <button {...stylex.props(styles.closeButton)} aria-label="Close">
                   <IoCloseOutline style={{ fontSize: 30 }} />
                </button>
             </Dialog.Close>

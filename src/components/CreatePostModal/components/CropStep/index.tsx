@@ -8,7 +8,7 @@ import { IoArrowBack, IoClose } from 'react-icons/io5';
 import { MdAdd, MdOutlineAspectRatio, MdZoomIn } from 'react-icons/md';
 import { PiImagesSquareLight } from 'react-icons/pi';
 import CarouselArrow from '@/src/components/CarouselArrow';
-import type { AspectRatio, SelectedFile } from '../../types';
+import type { AspectRatio, PostMedia } from '../../types';
 import { RATIO_NUMERIC } from '../../types';
 import { styles } from './index.stylex';
 
@@ -21,13 +21,13 @@ const ASPECT_RATIOS: { key: AspectRatio; label: string }[] = [
 ];
 
 interface CropStepProps {
-   files: SelectedFile[];
+   files: PostMedia[];
    currentIndex: number;
    onBack: () => void;
    onNext: () => void;
    onSelectIndex: (index: number) => void;
    onRemoveFile: (index: number) => void;
-   onUpdateFile: (index: number, updates: Partial<SelectedFile>) => void;
+   onUpdateFile: (index: number, updates: Partial<PostMedia>) => void;
    onAddFiles: () => void;
    aspectRatio: AspectRatio;
    onAspectRatioChange: (ratio: AspectRatio) => void;

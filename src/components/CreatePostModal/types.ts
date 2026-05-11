@@ -1,3 +1,5 @@
+import type { PartialUser } from '@/src/types/global';
+
 export type AspectRatio = 'original' | '1:1' | '4:5' | '16:9' | '9:16';
 
 export const RATIO_NUMERIC: Record<AspectRatio, number | null> = {
@@ -17,14 +19,30 @@ export interface Adjustments {
    vignette: number;
 }
 
-export interface SelectedFile {
+export interface TaggedPerson {
+   user: PartialUser;
+   x: number;
+   y: number;
+}
+
+export interface PostMedia {
    file: File;
    preview: string;
    zoom: number;
    panX: number;
    panY: number;
    filterPreset: string;
+   filterStrength: number;
    adjustments: Adjustments;
+   tags: TaggedPerson[];
 }
 
-export type Step = 'upload' | 'crop' | 'edit';
+export interface PostSettings {
+   hideLikes: boolean;
+   commentsOff: boolean;
+   shareToThreads: boolean;
+   shareToFacebook: boolean;
+   shareToClonedbook: boolean;
+}
+
+export type Step = 'upload' | 'crop' | 'edit' | 'caption';

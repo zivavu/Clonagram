@@ -61,14 +61,13 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
    return (
       <>
          {navItemsConfig.map(({ href, icon: Icon, activeIcon: ActiveIcon, label, action }) => {
-            const isActive =
-               action === 'search'
-                  ? isSearchOpen
-                  : action === 'notifications'
-                    ? isNotificationsOpen
-                    : action === 'create'
-                      ? false
-                      : pathname.split('/')[1] === href!.split('/')[1];
+            const isActive = (() => {
+               if (action === 'search') return isSearchOpen;
+               if (action === 'notifications') return isNotificationsOpen;
+               if (action === 'create') return false;
+               return pathname.split('/')[1] === href?.split('/')[1];
+            })();
+
             const IconComponent = isActive ? ActiveIcon : Icon;
 
             const content = (
@@ -122,10 +121,11 @@ export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) 
                );
             }
 
+            if (!href) return <div {...stylex.props(mainSidebarStyles.navItem)}>{content}</div>;
             return (
                <Link
                   key={href}
-                  href={href!}
+                  href={href}
                   aria-label={label}
                   {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
                >

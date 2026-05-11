@@ -34,7 +34,7 @@ export const styles = stylex.create({
       fontSize: '16px',
       fontWeight: 700,
    },
-   shareButton: {
+   nextButton: {
       padding: '8px 0',
       background: 'none',
       border: 'none',
@@ -125,5 +125,39 @@ export const styles = stylex.create({
    },
    tabInactive: {
       opacity: 0.3,
+   },
+   strengthRow: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: '16px',
+   },
+   strengthSlider: {
+      flex: 1,
+      height: '2px',
+      WebkitAppearance: 'none',
+      appearance: 'none',
+      outline: 'none',
+      '::-webkit-slider-thumb': {
+         WebkitAppearance: 'none',
+         width: '16px',
+         height: '16px',
+         borderRadius: '50%',
+         backgroundColor: 'white',
+      },
+      '::-moz-range-thumb': {
+         width: '16px',
+         height: '16px',
+         borderRadius: '50%',
+         backgroundColor: 'white',
+         border: 'none',
+      },
+   },
+   strengthValue: {
+      width: '24px',
+      marginLeft: '8px',
+      fontSize: '12px',
+      lineHeight: '16px',
+      color: colors.textSecondary,
+      textAlign: 'right',
    },
 });
