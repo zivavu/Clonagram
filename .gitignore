@@ -24,10 +24,13 @@
 .DS_Store
 *.pem
 /supabase
-AGENTS.md
-CLAUDE.md
 /scripts
 
+
+# AI
+AGENTS.md
+CLAUDE.md
+.claude
 
 # debug
 npm-debug.log*

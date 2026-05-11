@@ -4,7 +4,7 @@ import { IoArrowBack } from 'react-icons/io5';
 import CarouselArrow from '@/src/components/CarouselArrow';
 import { useFilterThumbnails } from '@/src/hooks/useFilterThumbnails';
 import { useWebGLFilter } from '@/src/hooks/useWebGLFilter';
-import type { Adjustments, AspectRatio, SelectedFile } from '../../types';
+import type { Adjustments, AspectRatio, PostMedia } from '../../types';
 import { RATIO_NUMERIC } from '../../types';
 import AdjustmentSliders from './components/AdjustmentSliders';
 import type { FilterPreset } from './components/FilterGrid';
@@ -27,11 +27,12 @@ const FILTER_PRESETS: FilterPreset[] = [
 ];
 
 interface EditStepProps {
-   files: SelectedFile[];
+   files: PostMedia[];
    currentIndex: number;
    onBack: () => void;
+   onNext: () => void;
    onSelectIndex: (index: number) => void;
-   onUpdateFile: (index: number, updates: Partial<SelectedFile>) => void;
+   onUpdateFile: (index: number, updates: Partial<PostMedia>) => void;
    aspectRatio: AspectRatio;
 }
 
@@ -39,6 +40,7 @@ export default function EditStep({
    files,
    currentIndex,
    onBack,
+   onNext,
    onSelectIndex,
    onUpdateFile,
    aspectRatio,
@@ -82,18 +84,19 @@ export default function EditStep({
       return { width: Math.round(w), height: Math.round(h) };
    })();
 
-    const effectiveAdjustments = showOriginal
-       ? { brightness: 0, contrast: 0, fade: 0, saturation: 0, temperature: 0, vignette: 0 }
-       : currentFile.adjustments;
-    const effectivePreset = showOriginal ? 'Original' : currentFile.filterPreset;
+   const effectiveAdjustments = showOriginal
+      ? { brightness: 0, contrast: 0, fade: 0, saturation: 0, temperature: 0, vignette: 0 }
+      : currentFile.adjustments;
+   const effectivePreset = showOriginal ? 'Original' : currentFile.filterPreset;
 
-    const { canvasRef } = useWebGLFilter({
-       src: currentFile.preview,
-       width: cropBox?.width ?? 0,
-       height: cropBox?.height ?? 0,
-       adjustments: effectiveAdjustments,
-       filterPreset: effectivePreset,
-    });
+   const { canvasRef } = useWebGLFilter({
+      src: currentFile.preview,
+      width: cropBox?.width ?? 0,
+      height: cropBox?.height ?? 0,
+      adjustments: effectiveAdjustments,
+      filterPreset: effectivePreset,
+      filterStrength: showOriginal ? 0 : currentFile.filterStrength,
+   });
 
    const thumbnails = useFilterThumbnails(
       currentFile.preview,
@@ -103,15 +106,20 @@ export default function EditStep({
    const handlePresetChange = (name: string) => {
       onUpdateFile(currentIndex, {
          filterPreset: name,
+         filterStrength: 100,
          adjustments: { brightness: 0, contrast: 0, fade: 0, saturation: 0, temperature: 0, vignette: 0 },
       });
    };
 
-    const handleAdjustmentChange = (key: keyof Adjustments, value: number) => {
-       onUpdateFile(currentIndex, {
-          adjustments: { ...currentFile.adjustments, [key]: value },
-       });
-    };
+   const handleStrengthChange = (value: number) => {
+      onUpdateFile(currentIndex, { filterStrength: value });
+   };
+
+   const handleAdjustmentChange = (key: keyof Adjustments, value: number) => {
+      onUpdateFile(currentIndex, {
+         adjustments: { ...currentFile.adjustments, [key]: value },
+      });
+   };
 
    const isFirst = currentIndex === 0;
    const isLast = currentIndex === files.length - 1;
@@ -124,7 +132,9 @@ export default function EditStep({
                <IoArrowBack style={{ fontSize: 24 }} />
             </button>
             <span {...stylex.props(styles.headerTitle)}>Edit</span>
-            <button type="button" {...stylex.props(styles.shareButton)}>Share</button>
+            <button type="button" {...stylex.props(styles.nextButton)} onClick={onNext}>
+               Next
+            </button>
          </div>
 
          <div {...stylex.props(styles.body)}>
@@ -143,24 +153,24 @@ export default function EditStep({
                   {...stylex.props(styles.cropContainer)}
                   style={cropBox ? { width: cropBox.width, height: cropBox.height } : { width: '100%', height: '100%' }}
                >
-                   <canvas
-                      ref={canvasRef}
-                      {...stylex.props(styles.previewImage)}
-                      style={{
-                         transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
-                      }}
-                      onPointerDown={e => {
-                         const el = e.currentTarget;
-                         el.setPointerCapture(e.pointerId);
-                         setShowOriginal(true);
-                      }}
-                      onPointerUp={e => {
-                         const el = e.currentTarget;
-                         el.releasePointerCapture(e.pointerId);
-                         setShowOriginal(false);
-                      }}
-                      onPointerCancel={() => setShowOriginal(false)}
-                   />
+                  <canvas
+                     ref={canvasRef}
+                     {...stylex.props(styles.previewImage)}
+                     style={{
+                        transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
+                     }}
+                     onPointerDown={e => {
+                        const el = e.currentTarget;
+                        el.setPointerCapture(e.pointerId);
+                        setShowOriginal(true);
+                     }}
+                     onPointerUp={e => {
+                        const el = e.currentTarget;
+                        el.releasePointerCapture(e.pointerId);
+                        setShowOriginal(false);
+                     }}
+                     onPointerCancel={() => setShowOriginal(false)}
+                  />
                </div>
             </div>
 
@@ -183,12 +193,30 @@ export default function EditStep({
                </div>
 
                {activeTab === 'filters' && (
-                  <FilterGrid
-                     presets={FILTER_PRESETS}
-                     selectedPreset={currentFile.filterPreset}
-                     thumbnails={thumbnails}
-                     onSelect={handlePresetChange}
-                  />
+                  <>
+                     <FilterGrid
+                        presets={FILTER_PRESETS}
+                        selectedPreset={currentFile.filterPreset}
+                        thumbnails={thumbnails}
+                        onSelect={handlePresetChange}
+                     />
+                     {currentFile.filterPreset !== 'Original' && (
+                        <div {...stylex.props(styles.strengthRow)}>
+                           <input
+                              type="range"
+                              min={0}
+                              max={100}
+                              value={currentFile.filterStrength}
+                              onChange={e => handleStrengthChange(Number(e.target.value))}
+                              {...stylex.props(styles.strengthSlider)}
+                              style={{
+                                 background: `linear-gradient(to right, rgb(255,255,255) 0%, rgb(255,255,255) ${currentFile.filterStrength}%, rgb(0,0,0) ${currentFile.filterStrength}%, rgb(0,0,0) 100%)`,
+                              }}
+                           />
+                           <span {...stylex.props(styles.strengthValue)}>{currentFile.filterStrength}</span>
+                        </div>
+                     )}
+                  </>
                )}
 
                {activeTab === 'adjustments' && (
