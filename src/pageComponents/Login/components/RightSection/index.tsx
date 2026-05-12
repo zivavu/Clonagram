@@ -44,6 +44,16 @@ export default function RightSection() {
       router.push('/');
    }
 
+   async function signInAnonymously() {
+      const { error } = await supabase.auth.signInAnonymously();
+      if (error) {
+         console.error(error);
+         setError('root', { message: error.message });
+         return;
+      }
+      router.push('/');
+   }
+
    const googleIcon = <Image src="/icons/google.svg" alt="" aria-hidden width={20} height={20} />;
 
    async function signInWithGoogle() {
@@ -86,6 +96,11 @@ export default function RightSection() {
             icon={googleIcon}
             onClick={signInWithGoogle}
             style={{ marginTop: '42px' }}
+         />
+         <LoginPageButton
+            variant="outlined"
+            text="Anonymous login"
+            onClick={signInAnonymously}
          />
          <LoginPageButton
             variant="outlined"
