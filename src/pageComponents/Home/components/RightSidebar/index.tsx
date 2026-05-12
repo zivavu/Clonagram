@@ -3,6 +3,7 @@ import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
 import { CURRENT_USER, SUGGESTED_USERS } from '@/src/mocks/users';
 import { styles } from './index.stylex';
+import SwitchButton from './SwitchButton';
 
 const FOOTER_LINKS = [
    'About',
@@ -26,9 +27,7 @@ export default function RightSidebar() {
                <span {...stylex.props(styles.profileUsername)}>{CURRENT_USER.username}</span>
                <span {...stylex.props(styles.profileName)}>{CURRENT_USER.full_name}</span>
             </div>
-            <Link href="/accounts/switch" {...stylex.props(styles.switchLink)}>
-               Switch
-            </Link>
+            <SwitchButton />
          </div>
 
          <div {...stylex.props(styles.suggestionsHeader)}>
