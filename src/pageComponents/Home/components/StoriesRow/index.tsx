@@ -105,8 +105,6 @@ export default function StoriesRow() {
                                  alt={username}
                                  width={74}
                                  height={74}
-                                 preload={index < 6}
-                                 loading={index < 6 ? 'eager' : 'lazy'}
                               />
                            </div>
                         </div>

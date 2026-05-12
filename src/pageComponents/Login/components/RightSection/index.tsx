@@ -67,14 +67,13 @@ export default function RightSection() {
       if (error) {
          setError('root', { message: error.message });
       }
-
    }
 
    return (
       <main {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.titleContainer)}>Log into Clonagram</div>
          <form onSubmit={handleSubmit(signInUser)} style={{ display: 'contents' }}>
-            <FloatingInput label="Email adress" {...register('email')} autoComplete='email' />
+            <FloatingInput label="Email adress" {...register('email')} autoComplete="email" />
             <FloatingInput label="Password" type="password" {...register('password')} autoComplete="current-password" />
             <LoginPageButton
                variant="primary"
@@ -97,11 +96,7 @@ export default function RightSection() {
             onClick={signInWithGoogle}
             style={{ marginTop: '42px' }}
          />
-         <LoginPageButton
-            variant="outlined"
-            text="Anonymous login"
-            onClick={signInAnonymously}
-         />
+         <LoginPageButton variant="outlined" text="Anonymous login" onClick={signInAnonymously} />
          <LoginPageButton
             variant="outlined"
             text="Create new account"

@@ -141,7 +141,12 @@ export default function CreatePostModal() {
             <Dialog.Overlay {...stylex.props(styles.overlay)} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={handleEscapeKeyDown}>
                <input {...getInputProps()} style={{ display: 'none' }} />
-               {step === 'upload' && <UploadStep getRootProps={getRootProps} open={open} isDragActive={isDragActive} />}
+               {step === 'upload' && (
+                  <>
+                     <Dialog.Description style={{ display: 'none' }}>Upload a photo or video</Dialog.Description>
+                     <UploadStep getRootProps={getRootProps} open={open} isDragActive={isDragActive} />
+                  </>
+               )}
                {step === 'crop' && (
                   <>
                      <Dialog.Description style={{ display: 'none' }}>Crop your photo</Dialog.Description>

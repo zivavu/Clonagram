@@ -1,8 +1,8 @@
 'use client';
 
+import * as stylex from '@stylexjs/stylex';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/src/lib/supabase/client';
-import * as stylex from '@stylexjs/stylex';
 import { styles } from './index.stylex';
 
 export default function SwitchButton() {

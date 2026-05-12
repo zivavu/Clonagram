@@ -33,14 +33,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
-            <UserAvatar
-               src={post.user.avatar_url}
-               alt={post.user.username}
-               size={32}
-               preload={false}
-               loading={index <= 2 ? 'eager' : undefined}
-               fetchPriority={index <= 2 ? 'high' : 'auto'}
-            />
+            <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
             <span {...stylex.props(styles.topUsername)}>{post.user.username}</span>
             <span {...stylex.props(styles.separator)}>•</span>
             <span {...stylex.props(styles.createdAt)}>{formatRelativeTimeShortUnit(post.createdAt)}</span>
@@ -53,15 +46,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
             >
                {post.media.map((media, mediaIndex) => (
                   <div key={media.id} {...stylex.props(styles.carouselSlide)}>
-                     <Image
-                        src={media.url}
-                        alt={media.type}
-                        fill
-                        sizes="468px"
-                        {...stylex.props(styles.postImage)}
-                        preload={index < 2 && mediaIndex === 0}
-                        loading={index < 2 && mediaIndex === 0 ? 'eager' : 'lazy'}
-                     />
+                     <Image src={media.url} alt={media.type} fill sizes="468px" {...stylex.props(styles.postImage)} />
                   </div>
                ))}
             </div>

@@ -51,6 +51,7 @@ export default function NewMessageModal() {
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
+               <Dialog.Description style={{ display: 'none' }}>Start a new direct message</Dialog.Description>
                <div {...stylex.props(styles.header)}>
                   <IoCloseOutline style={{ fontSize: 30, visibility: 'hidden' }} />
                   <Dialog.Title {...stylex.props(styles.title)}>New message</Dialog.Title>

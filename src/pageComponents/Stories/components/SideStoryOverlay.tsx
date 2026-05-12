@@ -16,7 +16,6 @@ export default function SideStoryOverlay({ story }: SideStoryOverlayProps) {
             alt={story.username}
             width={64}
             height={64}
-            loading="eager"
             {...stylex.props(styles.avatarImage)}
          />
          <span {...stylex.props(styles.sideStoryUsername)}>{story.username}</span>

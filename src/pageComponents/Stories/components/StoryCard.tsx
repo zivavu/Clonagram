@@ -119,13 +119,7 @@ export default function StoryCard({
             />
          ) : (
             currentMedia.url && (
-               <Image
-                  src={currentMedia.url}
-                  alt={story.username}
-                  fill
-                  loading="eager"
-                  sizes="(max-width: 640px) 100vw, 33vw"
-               />
+               <Image src={currentMedia.url} alt={story.username} fill sizes="(max-width: 640px) 100vw, 33vw" />
             )
          )}
       </div>
