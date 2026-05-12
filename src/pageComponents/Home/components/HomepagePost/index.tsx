@@ -37,7 +37,9 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                src={post.user.avatar_url}
                alt={post.user.username}
                size={32}
-               loading={index <= 2 ? 'eager' : 'lazy'}
+               preload={false}
+               loading={index <= 2 ? 'eager' : undefined}
+               fetchPriority={index <= 2 ? 'high' : 'auto'}
             />
             <span {...stylex.props(styles.topUsername)}>{post.user.username}</span>
             <span {...stylex.props(styles.separator)}>•</span>
@@ -57,8 +59,8 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                         fill
                         sizes="468px"
                         {...stylex.props(styles.postImage)}
-                        preload={index <= 2 && mediaIndex === 0}
-                        loading={index <= 2 && mediaIndex === 0 ? 'eager' : 'lazy'}
+                        preload={index < 2 && mediaIndex === 0}
+                        loading={index < 2 && mediaIndex === 0 ? 'eager' : 'lazy'}
                      />
                   </div>
                ))}

@@ -9,10 +9,10 @@ import { styles } from './index.stylex';
 export default function LoginPage() {
    return (
       <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.content)}>
+         <main {...stylex.props(styles.content)}>
             <LeftSection />
             <RightSection />
-         </div>
+         </main>
          <AuthPagesFooter />
       </div>
    );

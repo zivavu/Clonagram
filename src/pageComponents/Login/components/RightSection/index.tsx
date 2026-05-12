@@ -57,13 +57,14 @@ export default function RightSection() {
       if (error) {
          setError('root', { message: error.message });
       }
+
    }
 
    return (
-      <div {...stylex.props(styles.root)}>
+      <main {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.titleContainer)}>Log into Clonagram</div>
          <form onSubmit={handleSubmit(signInUser)} style={{ display: 'contents' }}>
-            <FloatingInput label="Mobile number, username or email" {...register('email')} autoComplete="off" />
+            <FloatingInput label="Email adress" {...register('email')} autoComplete='email' />
             <FloatingInput label="Password" type="password" {...register('password')} autoComplete="current-password" />
             <LoginPageButton
                variant="primary"
@@ -100,6 +101,6 @@ export default function RightSection() {
             </Link>{' '}
             in your country without logging in.
          </span>
-      </div>
+      </main>
    );
 }
