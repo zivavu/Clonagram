@@ -63,6 +63,7 @@ export default function EmailSignUpPage() {
       });
       if (error) {
          setError('root', { message: error.message });
+         return;
       }
       redirect('/');
    };
