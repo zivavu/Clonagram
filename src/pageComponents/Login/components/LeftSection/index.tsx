@@ -13,7 +13,7 @@ const initialCardPeople: readonly LoginCardPerson[] = loginCardPeople.slice(0, 3
 
 let clientCardPeople: readonly LoginCardPerson[] | null = null;
 function subscribe() {
-   return () => { };
+   return () => {};
 }
 function getClientSnapshot(): readonly LoginCardPerson[] {
    clientCardPeople ??= getRandomDistinctPeople(loginCardPeople, 3);

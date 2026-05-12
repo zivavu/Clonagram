@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap");
-
 @font-face {
    font-family: "Chivo";
    src: url("/Chivo/Chivo-VariableFont_wght.ttf") format("truetype");
@@ -11,7 +9,6 @@
 :root {
    --font-body: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
    --font-auth: "Chivo", var(--font-body);
-   --font-grand-hotel: "Grand Hotel", cursive;
    --main-sidebar-width: 72px;
 }
 

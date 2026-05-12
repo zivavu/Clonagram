@@ -159,7 +159,6 @@ export const styles = stylex.create({
    },
    thumbImage: {
       objectFit: 'cover',
-
    },
    thumbImageOverlay: {
       position: 'absolute',
@@ -168,7 +167,6 @@ export const styles = stylex.create({
       width: '100%',
       height: '100%',
       backgroundColor: 'rgba(0, 0, 0, 0.3)',
-
    },
    thumbRemove: {
       position: 'absolute',

@@ -194,6 +194,7 @@ export default function NotificationsPortal() {
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} onClick={close} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
+               <Dialog.Description style={{ display: 'none' }}>Your recent notifications</Dialog.Description>
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Notifications</Dialog.Title>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

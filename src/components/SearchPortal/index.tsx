@@ -30,6 +30,7 @@ export default function SearchPortal() {
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} onClick={close} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
+               <Dialog.Description style={{ display: 'none' }}>Search for people</Dialog.Description>
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Search</Dialog.Title>
                   <Dialog.Close asChild>

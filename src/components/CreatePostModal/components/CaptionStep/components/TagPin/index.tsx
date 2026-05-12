@@ -25,15 +25,17 @@ export default function TagPin({ tag, onRemove, onMove }: TagPinProps) {
       pin.setPointerCapture(e.pointerId);
 
       function handlePointerMove(moveEvent: PointerEvent) {
-         const rect = container!.getBoundingClientRect();
+         if (!container?.getBoundingClientRect()) return;
+         const rect = container.getBoundingClientRect();
          const x = ((moveEvent.clientX - rect.left) / rect.width) * 100;
          const y = ((moveEvent.clientY - rect.top) / rect.height) * 100;
          onMove(Math.max(0, Math.min(100, x)), Math.max(0, Math.min(100, y)));
       }
 
       function handlePointerUp() {
-         pin!.removeEventListener('pointermove', handlePointerMove);
-         pin!.removeEventListener('pointerup', handlePointerUp);
+         if (!pin) return;
+         pin.removeEventListener('pointermove', handlePointerMove);
+         pin.removeEventListener('pointerup', handlePointerUp);
       }
 
       pin.addEventListener('pointermove', handlePointerMove);
