@@ -2,14 +2,14 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/src/lib/supabase/client';
+import { createBrowserClient } from '@/src/lib/supabase/client';
 import { styles } from './index.stylex';
 
 export default function SwitchButton() {
    const router = useRouter();
 
    async function handleSwitch() {
-      const supabase = createClient();
+      const supabase = createBrowserClient();
       await supabase.auth.signOut();
       router.push('/login');
    }

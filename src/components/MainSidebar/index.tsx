@@ -1,5 +1,4 @@
 import * as stylex from '@stylexjs/stylex';
-import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MdGridView } from 'react-icons/md';
@@ -11,9 +10,6 @@ import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 
 export default async function MainSidebar() {
-   const headersList = await headers();
-   const url = headersList.get('x-url');
-   const pathname = url ? new URL(url, 'http://localhost').pathname : '/';
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -29,7 +25,7 @@ export default async function MainSidebar() {
          </Link>
 
          <nav {...stylex.props(styles.nav)}>
-            <NavItems initialPathname={pathname} mainSidebarStyles={styles} />
+            <NavItems mainSidebarStyles={styles} />
          </nav>
 
          <div {...stylex.props(styles.nav)}>

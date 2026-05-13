@@ -45,13 +45,11 @@ const navItemsConfig: NavItemConfig[] = [
 ];
 
 interface NavItemsProps {
-   initialPathname: string;
    mainSidebarStyles: MainSidebarStyles;
 }
 
-export function NavItems({ initialPathname, mainSidebarStyles }: NavItemsProps) {
-   const clientPathname = usePathname();
-   const pathname = clientPathname || initialPathname;
+export function NavItems({ mainSidebarStyles }: NavItemsProps) {
+   const pathname = usePathname();
    const openSearch = useSearchPortalStore(state => state.open);
    const isSearchOpen = useSearchPortalStore(state => state.isOpen);
    const openNotifications = useNotificationsPortalStore(state => state.open);

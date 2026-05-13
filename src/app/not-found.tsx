@@ -2,11 +2,11 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import AuthPagesFooter from '@/src/components/AuthPagesFooter';
 import MainSidebar from '../components/MainSidebar';
-import { createClient } from '../lib/supabase/server';
+import { createServerClient } from '../lib/supabase/server';
 import { styles } from './not-found.stylex';
 
 export default async function NotFound() {
-   const supabase = await createClient();
+   const supabase = await createServerClient();
    const {
       data: { user },
    } = await supabase.auth.getUser();
