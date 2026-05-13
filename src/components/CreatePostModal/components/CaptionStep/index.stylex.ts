@@ -72,6 +72,9 @@ export const styles = stylex.create({
       justifyContent: 'center',
       cursor: 'crosshair',
    },
+   cropContainerVideo: {
+      cursor: 'default',
+   },
    previewImage: {
       flexShrink: 0,
       width: '100%',

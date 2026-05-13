@@ -39,6 +39,7 @@ export const styles = stylex.create({
       objectFit: 'cover',
       flexShrink: 0,
       pointerEvents: 'none',
+      userSelect: 'none',
    },
    coverSelector: {
       position: 'absolute',

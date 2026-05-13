@@ -2,7 +2,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import type { PartialUser } from '@/src/types/global';
@@ -36,10 +36,34 @@ export default function CreatePostModal() {
    const [collaborators, setCollaborators] = useState<PartialUser[]>([]);
    const [postSettings, setPostSettings] = useState<PostSettings>(DEFAULT_POST_SETTINGS);
    const [isDiscardOpen, setIsDiscardOpen] = useState(false);
+   const [fileLimitToast, setFileLimitToast] = useState<number | null>(null);
+   const filesRef = useRef(files);
+   filesRef.current = files;
+
+   useEffect(() => {
+      if (fileLimitToast === null) return;
+      const timer = setTimeout(() => setFileLimitToast(null), 3000);
+      return () => clearTimeout(timer);
+   }, [fileLimitToast]);
 
    const onDrop = useCallback((acceptedFiles: File[]) => {
       if (acceptedFiles.length === 0) return;
-      const newFiles: PostMedia[] = acceptedFiles.map(file => {
+      const currentLength = filesRef.current.length;
+      const remainingSlots = MAX_FILES - currentLength;
+
+      if (remainingSlots <= 0) {
+         setFileLimitToast(acceptedFiles.length);
+         return;
+      }
+
+      const filesToProcess = acceptedFiles.slice(0, remainingSlots);
+      const cutCount = acceptedFiles.length - filesToProcess.length;
+
+      if (cutCount > 0) {
+         setFileLimitToast(cutCount);
+      }
+
+      const newFiles: PostMedia[] = filesToProcess.map(file => {
          const isVideo = file.type.startsWith('video/');
          return {
             file,
@@ -67,14 +91,14 @@ export default function CreatePostModal() {
             frames: undefined,
          };
       });
-      setFiles(prev => [...prev, ...newFiles].slice(0, MAX_FILES));
+      setFiles(prev => [...prev, ...newFiles]);
       setStep('crop');
       for (const media of newFiles) {
          if (media.type !== 'video') continue;
          extractVideoFrames(media.preview)
             .then(({ urls, duration }) => {
-               setFiles(prev =>
-                  prev.map(f =>
+               setFiles(prevFiles =>
+                  prevFiles.map(f =>
                      f.preview === media.preview
                         ? { ...f, frames: urls, duration, trimEnd: duration }
                         : f,
@@ -91,7 +115,6 @@ export default function CreatePostModal() {
          'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
          'video/*': ['.mp4', '.mov', '.webm'],
       },
-      maxFiles: MAX_FILES,
       noClick: true,
       noKeyboard: true,
       onDragEnter: () => setIsDragActive(true),
@@ -101,6 +124,7 @@ export default function CreatePostModal() {
    const resetState = () => {
       for (const f of files) {
          URL.revokeObjectURL(f.preview);
+         if (f.poster) URL.revokeObjectURL(f.poster);
          for (const url of f.frames ?? []) URL.revokeObjectURL(url);
       }
       setFiles([]);
@@ -275,6 +299,13 @@ export default function CreatePostModal() {
                         </button>
                      </div>
                   </>
+               )}
+               {fileLimitToast !== null && (
+                  <div {...stylex.props(styles.toast)}>
+                     {fileLimitToast} file
+                     {fileLimitToast > 1 ? 's' : ''} were not uploaded. You can only choose 10 or
+                     fewer files.
+                  </div>
                )}
             </Dialog.Content>
          </Dialog.Portal>

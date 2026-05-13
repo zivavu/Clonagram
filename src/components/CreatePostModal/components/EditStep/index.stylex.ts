@@ -97,13 +97,9 @@ export const styles = stylex.create({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      zIndex: 3,
    },
    playButton: {
-      width: '56px',
-      height: '56px',
       borderRadius: '50%',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

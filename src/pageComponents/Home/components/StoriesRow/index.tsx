@@ -98,7 +98,7 @@ export default function StoriesRow() {
             <MdExpandCircleDown {...stylex.props(styles.navIcon, styles.navIconRight)} />
          </button>
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef} onScroll={handleScroll}>
-            {STORIES.map((story, index) => {
+            {STORIES.map((story, _index) => {
                const { username, avatarUrl } = story;
                if (!avatarUrl) return null;
 

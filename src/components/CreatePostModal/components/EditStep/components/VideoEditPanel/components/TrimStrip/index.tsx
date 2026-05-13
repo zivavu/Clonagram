@@ -132,7 +132,7 @@ export default function TrimStrip({
                style={{ left: `${endPct}%` }}
                onPointerDown={e => handlePointerDown(e, 'trimEnd')}
             >
-               <div {...stylex.props(styles.handleThumb)}>
+               <div {...stylex.props(styles.handleThumb, styles.handleThumbEnd)}>
                   <div {...stylex.props(styles.handleBar)} />
                </div>
             </div>

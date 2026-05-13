@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors } from '../../../../../../../../styles/tokens.stylex';
+import { colors, radius } from '../../../../../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    wrapper: {
@@ -10,9 +10,10 @@ export const styles = stylex.create({
    container: {
       position: 'relative',
       width: '100%',
-      height: '100px',
+      height: '64px',
+      borderRadius: radius.sm,
       overflow: 'hidden',
-      borderRadius: '4px',
+      userSelect: 'none',
    },
    strip: {
       display: 'flex',
@@ -56,16 +57,23 @@ export const styles = stylex.create({
    },
    handleThumb: {
       width: '12px',
-      backgroundColor: 'rgba(10, 10, 20, 0.88)',
-      borderRadius: '3px',
+      backgroundColor: 'rgb(255, 255, 255)',
+      borderTopLeftRadius: '6px',
+      borderBottomLeftRadius: '6px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
    },
+   handleThumbEnd: {
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+      borderTopRightRadius: '6px',
+      borderBottomRightRadius: '6px',
+   },
    handleBar: {
       width: '2px',
-      height: '32px',
-      backgroundColor: 'white',
+      height: '20px',
+      backgroundColor: 'black',
       borderRadius: '1px',
    },
    playhead: {

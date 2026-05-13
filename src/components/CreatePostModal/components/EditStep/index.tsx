@@ -6,10 +6,10 @@ import { IoArrowBack, IoPlay } from 'react-icons/io5';
 import CarouselArrow from '@/src/components/CarouselArrow';
 import { useFilterThumbnails } from '@/src/hooks/useFilterThumbnails';
 import { useMediaNaturalSize } from '@/src/hooks/useMediaNaturalSize';
-import { useWebGLFilter } from '@/src/hooks/useWebGLFilter';
 import type { Adjustments, AspectRatio, PostMedia } from '../../types';
 import { RATIO_NUMERIC } from '../../types';
 import AdjustmentSliders from './components/AdjustmentSliders';
+import FilteredCanvas from './components/FilteredCanvas';
 import type { FilterPreset } from './components/FilterGrid';
 import FilterGrid from './components/FilterGrid';
 import VideoEditPanel from './components/VideoEditPanel';
@@ -88,7 +88,6 @@ export default function EditStep({
 }: EditStepProps) {
    const currentFile = files[currentIndex];
    const [activeTab, setActiveTab] = useState<'filters' | 'adjustments'>('filters');
-   const [showOriginal, setShowOriginal] = useState(false);
    const previewRef = useRef<HTMLDivElement>(null);
    const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
    const [videoPoster, setVideoPoster] = useState<string | null>(null);
@@ -98,10 +97,14 @@ export default function EditStep({
    const coverTimeRef = useRef(currentFile.coverTime);
    const trimStartRef = useRef(currentFile.trimStart);
    const trimEndRef = useRef(currentFile.trimEnd);
+   const onUpdateFileRef = useRef(onUpdateFile);
+   const currentIndexRef = useRef(currentIndex);
 
    coverTimeRef.current = currentFile.coverTime;
    trimStartRef.current = currentFile.trimStart;
    trimEndRef.current = currentFile.trimEnd;
+   onUpdateFileRef.current = onUpdateFile;
+   currentIndexRef.current = currentIndex;
 
    const measureContainer = useCallback(() => {
       const el = previewRef.current;
@@ -130,6 +133,7 @@ export default function EditStep({
             if (oldUrl) URL.revokeObjectURL(oldUrl);
             posterRef.current = url;
             setVideoPoster(url);
+            onUpdateFileRef.current(currentIndexRef.current, { poster: url });
          })
          .catch(() => {});
 
@@ -137,12 +141,6 @@ export default function EditStep({
          cancelled = true;
       };
    }, [currentFile.preview, currentFile.coverTime, currentFile.type]);
-
-   useEffect(() => {
-      return () => {
-         if (posterRef.current) URL.revokeObjectURL(posterRef.current);
-      };
-   }, []);
 
    const handleVideoClick = () => {
       const video = videoRef.current;
@@ -207,20 +205,6 @@ export default function EditStep({
       const w = cropBox.width;
       return { w, h: w / imgRatio };
    })();
-
-   const effectiveAdjustments = showOriginal
-      ? { brightness: 0, contrast: 0, fade: 0, saturation: 0, temperature: 0, vignette: 0 }
-      : currentFile.adjustments;
-   const effectivePreset = showOriginal ? 'Original' : currentFile.filterPreset;
-
-   const { canvasRef } = useWebGLFilter({
-      src: currentFile.preview,
-      width: imageDisplaySize?.w ?? 0,
-      height: imageDisplaySize?.h ?? 0,
-      adjustments: effectiveAdjustments,
-      filterPreset: effectivePreset,
-      filterStrength: showOriginal ? 0 : currentFile.filterStrength,
-   });
 
    const thumbnails = useFilterThumbnails(
       currentFile.type === 'image' ? currentFile.preview : '',
@@ -330,27 +314,20 @@ export default function EditStep({
                         >
                            {!isPlaying && (
                               <div {...stylex.props(styles.playButton)}>
-                                 <IoPlay />
+                                 <IoPlay fontSize={80} />
                               </div>
                            )}
                         </button>
                      </>
                   ) : (
-                     <canvas
-                        ref={canvasRef}
-                        {...stylex.props(styles.previewImage)}
+                     <FilteredCanvas
+                        src={currentFile.preview}
+                        width={imageDisplaySize?.w ?? 0}
+                        height={imageDisplaySize?.h ?? 0}
+                        adjustments={currentFile.adjustments}
+                        filterPreset={currentFile.filterPreset}
+                        filterStrength={currentFile.filterStrength}
                         style={previewTransform}
-                        onPointerDown={e => {
-                           const el = e.currentTarget;
-                           el.setPointerCapture(e.pointerId);
-                           setShowOriginal(true);
-                        }}
-                        onPointerUp={e => {
-                           const el = e.currentTarget;
-                           el.releasePointerCapture(e.pointerId);
-                           setShowOriginal(false);
-                        }}
-                        onPointerCancel={() => setShowOriginal(false)}
                      />
                   )}
                </div>

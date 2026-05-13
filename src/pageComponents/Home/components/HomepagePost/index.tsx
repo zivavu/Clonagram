@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import * as stylex from "@stylexjs/stylex";
-import Image from "next/image";
-import { useState } from "react";
-import { FiMessageCircle } from "react-icons/fi";
-import { LuSend } from "react-icons/lu";
-import { MdBookmarkBorder, MdFavoriteBorder } from "react-icons/md";
-import { TbDots, TbRepeat } from "react-icons/tb";
-import CarouselArrow from "@/src/components/CarouselArrow";
-import UserAvatar from "@/src/components/UserAvatar";
-import { formatRelativeTimeShortUnit } from "@/src/utils/time";
-import type { Post } from "../Main";
-import { styles } from "./index.stylex";
+import * as stylex from '@stylexjs/stylex';
+import Image from 'next/image';
+import { useState } from 'react';
+import { FiMessageCircle } from 'react-icons/fi';
+import { LuSend } from 'react-icons/lu';
+import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
+import { TbDots, TbRepeat } from 'react-icons/tb';
+import CarouselArrow from '@/src/components/CarouselArrow';
+import UserAvatar from '@/src/components/UserAvatar';
+import { formatRelativeTimeShortUnit } from '@/src/utils/time';
+import type { Post } from '../Main';
+import { styles } from './index.stylex';
 
 interface HomepagePostProps {
    post: Post;
    index: number;
 }
 
-export default function HomepagePost({ post, index }: HomepagePostProps) {
+export default function HomepagePost({ post }: HomepagePostProps) {
    const [currentImageIndex, setCurrentImageIndex] = useState(0);
    const hasMultipleImages = post.media.length > 1;
 
    const handlePrevious = () => {
-      setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : prev));
+      setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev));
    };
 
    const handleNext = () => {
-      setCurrentImageIndex((prev) => (prev < post.media.length - 1 ? prev + 1 : prev));
+      setCurrentImageIndex(prev => (prev < post.media.length - 1 ? prev + 1 : prev));
    };
 
    return (
@@ -36,7 +36,9 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
             <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
             <span {...stylex.props(styles.topUsername)}>{post.user.username}</span>
             <span {...stylex.props(styles.separator)}>•</span>
-            <span {...stylex.props(styles.createdAt)}>{formatRelativeTimeShortUnit(post.createdAt)}</span>
+            <span {...stylex.props(styles.createdAt)}>
+               {formatRelativeTimeShortUnit(post.createdAt)}
+            </span>
             <TbDots {...stylex.props(styles.actionsIcon)} />
          </div>
          <div {...stylex.props(styles.carouselContainer)}>
@@ -44,13 +46,21 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                {...stylex.props(styles.carouselTrack)}
                style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
             >
-               {post.media.map((media) => (
+               {post.media.map(media => (
                   <div key={media.id} {...stylex.props(styles.carouselSlide)}>
-                     <Image src={media.url} alt={media.type} fill sizes="468px" {...stylex.props(styles.postImage)} />
+                     <Image
+                        src={media.url}
+                        alt={media.type}
+                        fill
+                        sizes="468px"
+                        {...stylex.props(styles.postImage)}
+                     />
                   </div>
                ))}
             </div>
-            {hasMultipleImages && currentImageIndex > 0 && <CarouselArrow direction="left" onClick={handlePrevious} />}
+            {hasMultipleImages && currentImageIndex > 0 && (
+               <CarouselArrow direction="left" onClick={handlePrevious} />
+            )}
             {hasMultipleImages && currentImageIndex < post.media.length - 1 && (
                <CarouselArrow direction="right" onClick={handleNext} />
             )}
@@ -62,7 +72,10 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                         type="button"
                         aria-label={`Go to image ${dotIndex + 1}`}
                         onClick={() => setCurrentImageIndex(dotIndex)}
-                        {...stylex.props(styles.dot, dotIndex === currentImageIndex && styles.dotActive)}
+                        {...stylex.props(
+                           styles.dot,
+                           dotIndex === currentImageIndex && styles.dotActive,
+                        )}
                      />
                   ))}
                </div>
@@ -90,7 +103,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
             <button type="button" aria-label="Share">
                <LuSend size={20} />
             </button>
-            <button type="button" aria-label="Bookmark" style={{ marginLeft: "auto" }}>
+            <button type="button" aria-label="Bookmark" style={{ marginLeft: 'auto' }}>
                <MdBookmarkBorder size={24} />
             </button>
          </div>
