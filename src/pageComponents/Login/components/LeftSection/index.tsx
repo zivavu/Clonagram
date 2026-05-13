@@ -1,9 +1,9 @@
-import * as stylex from "@stylexjs/stylex";
-import Image from "next/image";
-import { useSyncExternalStore } from "react";
-import { MdFavorite } from "react-icons/md";
-import loginCardPeople, { type LoginCardPerson } from "../../loginCardPeople";
-import { imageCardStyles, styles } from "./index.stylex";
+import * as stylex from '@stylexjs/stylex';
+import Image from 'next/image';
+import { useSyncExternalStore } from 'react';
+import { MdFavorite } from 'react-icons/md';
+import loginCardPeople, { type LoginCardPerson } from '../../loginCardPeople';
+import { imageCardStyles, styles } from './index.stylex';
 
 function getRandomDistinctPeople(people: readonly LoginCardPerson[], count: number) {
    return [...people].sort(() => Math.random() - 0.5).slice(0, count);
@@ -35,8 +35,16 @@ export default function LeftSection() {
 
    return (
       <div {...stylex.props(styles.root)}>
-         <Image src="/clonagram.png" alt="Clonagram" {...stylex.props(styles.clonagramLogo)} width={78} height={78} />
-         <span {...stylex.props(styles.description)}>See everyday moments from your close friends.</span>
+         <Image
+            src="/clonagram.png"
+            alt="Clonagram"
+            {...stylex.props(styles.clonagramLogo)}
+            width={78}
+            height={78}
+         />
+         <span {...stylex.props(styles.description)}>
+            See everyday moments from your close friends.
+         </span>
 
          <div {...stylex.props(styles.imagesContainer)}>
             {images.map((image, index) => (
@@ -73,7 +81,13 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
             <div {...stylex.props(imageCardStyles.commentBorder)}></div>
             <MdFavorite style={{ fontSize: 38 }} />
          </div>
-         <Image src={`/loginPageCardsPeople/${image.src}`} alt={image.alt} width={260} height={460} preload />
+         <Image
+            src={`/loginPageCardsPeople/${image.src}`}
+            alt={image.alt}
+            width={260}
+            height={460}
+            preload
+         />
       </div>
    );
 }

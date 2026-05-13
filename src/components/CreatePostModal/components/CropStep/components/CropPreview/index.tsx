@@ -106,6 +106,13 @@ export default function CropPreview({
    const isLast = currentIndex === files.length - 1;
    const hasMultiple = files.length > 1;
 
+   const transformStyle = {
+      width: imageDisplaySize ? imageDisplaySize.w : '100%',
+      height: imageDisplaySize ? imageDisplaySize.h : '100%',
+      transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
+      transition: isDragging ? 'none' : 'transform 0.15s ease-out',
+   };
+
    return (
       <div ref={previewRef} {...stylex.props(styles.root)}>
          {hasMultiple && !isFirst && (
@@ -131,26 +138,41 @@ export default function CropPreview({
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
          >
-            {/* biome-ignore lint/performance/noImgElement: crop preview needs raw img for panning */}
-            <img
-               key={currentFile.preview}
-               src={currentFile.preview}
-               alt="Preview"
-               draggable={false}
-               onLoad={e =>
-                  setNaturalSize({
-                     w: e.currentTarget.naturalWidth,
-                     h: e.currentTarget.naturalHeight,
-                  })
-               }
-               {...stylex.props(styles.previewImage)}
-               style={{
-                  width: imageDisplaySize ? imageDisplaySize.w : '100%',
-                  height: imageDisplaySize ? imageDisplaySize.h : '100%',
-                  transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
-                  transition: isDragging ? 'none' : 'transform 0.15s ease-out',
-               }}
-            />
+            {currentFile.type === 'video' ? (
+               <video
+                  key={currentFile.preview}
+                  src={currentFile.preview}
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                  draggable={false}
+                  onLoadedMetadata={e =>
+                     setNaturalSize({
+                        w: e.currentTarget.videoWidth,
+                        h: e.currentTarget.videoHeight,
+                     })
+                  }
+                  {...stylex.props(styles.previewImage)}
+                  style={transformStyle}
+               />
+            ) : (
+               /* biome-ignore lint/performance/noImgElement: crop preview needs raw img for panning */
+               <img
+                  key={currentFile.preview}
+                  src={currentFile.preview}
+                  alt="Preview"
+                  draggable={false}
+                  onLoad={e =>
+                     setNaturalSize({
+                        w: e.currentTarget.naturalWidth,
+                        h: e.currentTarget.naturalHeight,
+                     })
+                  }
+                  {...stylex.props(styles.previewImage)}
+                  style={transformStyle}
+               />
+            )}
          </div>
          {isDragging && (
             <svg

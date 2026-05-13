@@ -42,6 +42,7 @@ export interface PostMedia {
    trimEnd: number;
    muted: boolean;
    frames?: string[];
+   poster?: string;
 }
 
 export interface PostSettings {

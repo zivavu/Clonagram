@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { IoArrowBack } from 'react-icons/io5';
 import CarouselArrow from '@/src/components/CarouselArrow';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
-import { useImageNaturalSize } from '@/src/hooks/useImageNaturalSize';
+import { useMediaNaturalSize } from '@/src/hooks/useMediaNaturalSize';
 import { useWebGLFilter } from '@/src/hooks/useWebGLFilter';
 import type { PartialUser } from '@/src/types/global';
 import type { AspectRatio, PostMedia, PostSettings } from '../../types';
@@ -81,7 +81,13 @@ export default function CaptionStep({
    const previewRef = useRef<HTMLDivElement>(null);
    const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
    const [tagPopper, setTagPopper] = useState<{ x: number; y: number } | null>(null);
-   const naturalSize = useImageNaturalSize(currentFile.preview);
+   const naturalSize = useMediaNaturalSize(currentFile.preview, currentFile.type);
+   const videoRef = useRef<HTMLVideoElement>(null);
+   const trimStartRef = useRef(currentFile.trimStart);
+   const trimEndRef = useRef(currentFile.trimEnd);
+
+   trimStartRef.current = currentFile.trimStart;
+   trimEndRef.current = currentFile.trimEnd;
 
    const measureContainer = useCallback(() => {
       const el = previewRef.current;
@@ -94,6 +100,11 @@ export default function CaptionStep({
       window.addEventListener('resize', measureContainer);
       return () => window.removeEventListener('resize', measureContainer);
    }, [measureContainer]);
+
+   useEffect(() => {
+      setTagPopper(null);
+      void currentFile.preview;
+   }, [currentFile.preview]);
 
    const cropBox = (() => {
       if (containerSize.w === 0) return null;
@@ -175,11 +186,17 @@ export default function CaptionStep({
    const isLast = currentIndex === files.length - 1;
    const hasMultiple = files.length > 1;
 
-   const isImage = currentFile.file.type.startsWith('image/');
+   const isImage = currentFile.type === 'image';
    const hasFilters =
       currentFile.filterPreset !== 'Original' ||
       Object.values(currentFile.adjustments).some(v => v !== 0);
    const useCanvas = isImage && hasFilters;
+
+   const previewStyle = {
+      width: imageDisplaySize ? imageDisplaySize.w : '100%',
+      height: imageDisplaySize ? imageDisplaySize.h : '100%',
+      transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
+   };
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -217,43 +234,82 @@ export default function CaptionStep({
                   </div>
                )}
 
-               <button
-                  type="button"
-                  {...stylex.props(styles.cropContainer)}
-                  style={
-                     cropBox
-                        ? { width: cropBox.width, height: cropBox.height }
-                        : { width: '100%', height: '100%' }
-                  }
-                  onClick={handleImageClick}
-               >
-                  {useCanvas ? (
-                     <FilteredPreview file={currentFile} imageDisplaySize={imageDisplaySize} />
-                  ) : (
-                     /* biome-ignore lint/performance/noImgElement: preview needs raw img for pan/zoom transform */
-                     <img
+               {isImage ? (
+                  <button
+                     type="button"
+                     {...stylex.props(styles.cropContainer)}
+                     style={
+                        cropBox
+                           ? { width: cropBox.width, height: cropBox.height }
+                           : { width: '100%', height: '100%' }
+                     }
+                     onClick={handleImageClick}
+                  >
+                     {useCanvas ? (
+                        <FilteredPreview file={currentFile} imageDisplaySize={imageDisplaySize} />
+                     ) : (
+                        /* biome-ignore lint/performance/noImgElement: preview needs raw img for pan/zoom transform */
+                        <img
+                           key={currentFile.preview}
+                           src={currentFile.preview}
+                           alt="Preview"
+                           draggable={false}
+                           {...stylex.props(styles.previewImage)}
+                           style={previewStyle}
+                        />
+                     )}
+                  </button>
+               ) : (
+                  <div
+                     {...stylex.props(styles.cropContainer, styles.cropContainerVideo)}
+                     style={
+                        cropBox
+                           ? { width: cropBox.width, height: cropBox.height }
+                           : { width: '100%', height: '100%' }
+                     }
+                  >
+                     <video
+                        ref={videoRef}
                         key={currentFile.preview}
                         src={currentFile.preview}
-                        alt="Preview"
+                        muted={currentFile.muted}
+                        playsInline
+                        poster={currentFile.poster ?? undefined}
                         draggable={false}
-                        {...stylex.props(styles.previewImage)}
-                        style={{
-                           width: imageDisplaySize ? imageDisplaySize.w : '100%',
-                           height: imageDisplaySize ? imageDisplaySize.h : '100%',
-                           transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
+                        onLoadedData={() => {
+                           const video = videoRef.current;
+                           if (!video) return;
+                           video.currentTime = currentFile.trimStart;
+                           video.play().catch(() => {});
                         }}
+                        onTimeUpdate={() => {
+                           const video = videoRef.current;
+                           if (!video || trimEndRef.current <= 0) return;
+                           if (video.currentTime >= trimEndRef.current) {
+                              video.currentTime = trimStartRef.current;
+                           }
+                        }}
+                        onEnded={() => {
+                           const video = videoRef.current;
+                           if (!video) return;
+                           video.currentTime = trimStartRef.current;
+                           video.play().catch(() => {});
+                        }}
+                        {...stylex.props(styles.previewImage)}
+                        style={previewStyle}
                      />
-                  )}
-               </button>
-               {currentFile.tags.map(tag => (
-                  <TagPin
-                     key={tag.user.id}
-                     tag={tag}
-                     onRemove={() => handleRemoveTag(tag.user.id)}
-                     onMove={(x, y) => handleMoveTag(tag.user.id, x, y)}
-                  />
-               ))}
-               {tagPopper && (
+                  </div>
+               )}
+               {isImage &&
+                  currentFile.tags.map(tag => (
+                     <TagPin
+                        key={tag.user.id}
+                        tag={tag}
+                        onRemove={() => handleRemoveTag(tag.user.id)}
+                        onMove={(x, y) => handleMoveTag(tag.user.id, x, y)}
+                     />
+                  ))}
+               {isImage && tagPopper && (
                   <div
                      role="dialog"
                      {...stylex.props(styles.tagPopper)}
@@ -269,7 +325,7 @@ export default function CaptionStep({
                   </div>
                )}
 
-               {!tagPopper && currentFile.tags.length === 0 && (
+               {isImage && !tagPopper && currentFile.tags.length === 0 && (
                   <div {...stylex.props(styles.tagHint)}>Click photo to tag people</div>
                )}
             </div>

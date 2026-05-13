@@ -193,13 +193,24 @@ export default function CropControls({
                                  {...stylex.props(styles.popoverThumb)}
                                  onClick={() => onSelectIndex(idx)}
                               >
-                                 <Image
-                                    src={file.preview}
-                                    alt={`Thumbnail ${idx + 1}`}
-                                    width={94}
-                                    height={94}
-                                    {...stylex.props(styles.thumbImage)}
-                                 />
+                                 {file.type === 'video' ? (
+                                    <video
+                                       src={file.preview}
+                                       muted
+                                       playsInline
+                                       width={94}
+                                       height={94}
+                                       {...stylex.props(styles.thumbImage)}
+                                    />
+                                 ) : (
+                                    <Image
+                                       src={file.preview}
+                                       alt={`Thumbnail ${idx + 1}`}
+                                       width={94}
+                                       height={94}
+                                       {...stylex.props(styles.thumbImage)}
+                                    />
+                                 )}
                                  {idx !== currentIndex && (
                                     <div {...stylex.props(styles.thumbImageOverlay)}></div>
                                  )}
