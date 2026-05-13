@@ -14,7 +14,7 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 This project uses StyleX (@stylexjs/stylex) for all styling.
 Do NOT use Tailwind CSS classes or suggest them.
 All styles must use stylex.create() and stylex.props().
-When importing tokens(colors, radius) from `tokens.stylex.ts`, always use relative imports, for example `../../styles/tokens.stylex`.
+When importing tokens(colors, radius) from `tokens.stylex.ts`, use relative imports, for example `../../styles/tokens.stylex`. For all of the other imports, use absolute imports.
 
 <!-- END:stylex-agent-rules -->
 
@@ -104,6 +104,7 @@ Always define proper types and interfaces. Prefer explicit return types on expor
 # Biome Configuration
 
 Use Biome for formatting and linting. Key settings:
+
 - Line width: 100
 - Indent: 3 spaces
 - Line ending: lf
@@ -171,9 +172,11 @@ Do not write comments in code. Write self-explanatory code with clear variable a
 # Linting
 
 After finishing any coding task, always run the linter:
+
 ```
 bun biome check --write .
 ```
+
 Fix any errors before considering the task complete.
 
 <!-- END:linting-rules -->

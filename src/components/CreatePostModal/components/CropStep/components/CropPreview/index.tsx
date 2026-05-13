@@ -1,9 +1,17 @@
 import * as stylex from '@stylexjs/stylex';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import CarouselArrow from '@/src/components/CarouselArrow';
+import { useRef, useState } from 'react';
+import { useContainerSize } from '../../../../hooks/useContainerSize';
+import { useCropDimensions } from '../../../../hooks/useCropDimensions';
 import type { AspectRatio, PostMedia } from '../../../../types';
-import { RATIO_NUMERIC } from '../../../../types';
+import PreviewArrows from '../../../PreviewArrows';
 import { styles } from './index.stylex';
+
+const GRID_LINES: [number, number, number, number][] = [
+   [1, 0, 1, 3],
+   [2, 0, 2, 3],
+   [0, 1, 3, 1],
+   [0, 2, 3, 2],
+];
 
 interface CropPreviewProps {
    files: PostMedia[];
@@ -11,6 +19,13 @@ interface CropPreviewProps {
    aspectRatio: AspectRatio;
    onSelectIndex: (index: number) => void;
    onUpdateFile: (index: number, updates: Partial<PostMedia>) => void;
+}
+
+interface DragState {
+   startX: number;
+   startY: number;
+   panX: number;
+   panY: number;
 }
 
 export default function CropPreview({
@@ -22,60 +37,14 @@ export default function CropPreview({
 }: CropPreviewProps) {
    const currentFile = files[currentIndex];
    const previewRef = useRef<HTMLDivElement>(null);
-   const dragRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(
-      null,
-   );
-   const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
+   const dragRef = useRef<DragState | null>(null);
+   const containerSize = useContainerSize(previewRef);
    const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
    const [isDragging, setIsDragging] = useState(false);
-
-   const measureContainer = useCallback(() => {
-      const el = previewRef.current;
-      if (!el) return;
-      setContainerSize({ w: el.clientWidth, h: el.clientHeight });
-   }, []);
-
-   useEffect(() => {
-      measureContainer();
-      window.addEventListener('resize', measureContainer);
-      return () => window.removeEventListener('resize', measureContainer);
-   }, [measureContainer]);
-
-   const cropBox = (() => {
-      if (containerSize.w === 0) return null;
-      const ratio = RATIO_NUMERIC[aspectRatio];
-      const maxW = containerSize.w;
-      const maxH = containerSize.h;
-      if (!ratio) {
-         return { width: maxW, height: maxH };
-      }
-      let w: number;
-      let h: number;
-      if (ratio >= 1) {
-         w = Math.min(maxW, maxH * ratio);
-         h = w / ratio;
-      } else {
-         h = Math.min(maxH, maxW / ratio);
-         w = h * ratio;
-      }
-      return { width: Math.round(w), height: Math.round(h) };
-   })();
-
-   const imageDisplaySize = (() => {
-      if (!cropBox || naturalSize.w === 0 || naturalSize.h === 0) return null;
-      const imgRatio = naturalSize.w / naturalSize.h;
-      const cropRatio = cropBox.width / cropBox.height;
-      if (imgRatio >= cropRatio) {
-         const h = cropBox.height;
-         return { w: h * imgRatio, h };
-      }
-      const w = cropBox.width;
-      return { w, h: w / imgRatio };
-   })();
+   const { cropBox, imageDisplaySize } = useCropDimensions(containerSize, naturalSize, aspectRatio);
 
    const handlePointerDown = (e: React.PointerEvent) => {
-      const el = e.currentTarget;
-      el.setPointerCapture(e.pointerId);
+      e.currentTarget.setPointerCapture(e.pointerId);
       dragRef.current = {
          startX: e.clientX,
          startY: e.clientY,
@@ -102,10 +71,6 @@ export default function CropPreview({
       setIsDragging(false);
    };
 
-   const isFirst = currentIndex === 0;
-   const isLast = currentIndex === files.length - 1;
-   const hasMultiple = files.length > 1;
-
    const transformStyle = {
       width: imageDisplaySize ? imageDisplaySize.w : '100%',
       height: imageDisplaySize ? imageDisplaySize.h : '100%',
@@ -113,26 +78,20 @@ export default function CropPreview({
       transition: isDragging ? 'none' : 'transform 0.15s ease-out',
    };
 
+   const cropBoxStyle = cropBox
+      ? { width: cropBox.width, height: cropBox.height }
+      : { width: '100%', height: '100%' };
+
    return (
       <div ref={previewRef} {...stylex.props(styles.root)}>
-         {hasMultiple && !isFirst && (
-            <div {...stylex.props(styles.arrowLeft)}>
-               <CarouselArrow direction="left" onClick={() => onSelectIndex(currentIndex - 1)} />
-            </div>
-         )}
-         {hasMultiple && !isLast && (
-            <div {...stylex.props(styles.arrowRight)}>
-               <CarouselArrow direction="right" onClick={() => onSelectIndex(currentIndex + 1)} />
-            </div>
-         )}
-
+         <PreviewArrows
+            currentIndex={currentIndex}
+            total={files.length}
+            onSelectIndex={onSelectIndex}
+         />
          <div
             {...stylex.props(styles.cropContainer)}
-            style={
-               cropBox
-                  ? { width: cropBox.width, height: cropBox.height }
-                  : { width: '100%', height: '100%' }
-            }
+            style={cropBoxStyle}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -181,42 +140,19 @@ export default function CropPreview({
                aria-label="Crop grid"
                {...stylex.props(styles.gridOverlay)}
             >
-               <line
-                  x1="1"
-                  y1="0"
-                  x2="1"
-                  y2="3"
-                  stroke="white"
-                  strokeOpacity={0.3}
-                  strokeWidth="0.005"
-               />
-               <line
-                  x1="2"
-                  y1="0"
-                  x2="2"
-                  y2="3"
-                  stroke="white"
-                  strokeOpacity={0.3}
-                  strokeWidth="0.005"
-               />
-               <line
-                  x1="0"
-                  y1="1"
-                  x2="3"
-                  y2="1"
-                  stroke="white"
-                  strokeOpacity={0.3}
-                  strokeWidth="0.005"
-               />
-               <line
-                  x1="0"
-                  y1="2"
-                  x2="3"
-                  y2="2"
-                  stroke="white"
-                  strokeOpacity={0.3}
-                  strokeWidth="0.005"
-               />
+               <title>Crop grid</title>
+               {GRID_LINES.map(([x1, y1, x2, y2]) => (
+                  <line
+                     key={`${x1}-${y1}-${x2}-${y2}`}
+                     x1={x1}
+                     y1={y1}
+                     x2={x2}
+                     y2={y2}
+                     stroke="white"
+                     strokeOpacity={0.3}
+                     strokeWidth={0.005}
+                  />
+               ))}
             </svg>
          )}
       </div>

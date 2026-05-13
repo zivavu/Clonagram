@@ -9,20 +9,6 @@ export const styles = stylex.create({
       position: 'relative',
       overflow: 'hidden',
    },
-   arrowLeft: {
-      position: 'absolute',
-      left: '12px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      zIndex: 2,
-   },
-   arrowRight: {
-      position: 'absolute',
-      right: '12px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      zIndex: 2,
-   },
    cropContainer: {
       position: 'relative',
       maxWidth: '100%',

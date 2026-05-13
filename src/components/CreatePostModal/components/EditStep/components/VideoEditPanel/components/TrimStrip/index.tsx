@@ -1,7 +1,8 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useContainerSize } from '../../../../../../hooks/useContainerSize';
 import { styles } from './index.stylex';
 
 interface TrimStripProps {
@@ -31,20 +32,7 @@ export default function TrimStrip({
    const containerRef = useRef<HTMLDivElement>(null);
    const playheadRef = useRef<HTMLDivElement>(null);
    const draggingRef = useRef<'trimStart' | 'trimEnd' | null>(null);
-   const [containerWidth, setContainerWidth] = useState(0);
-
-   useEffect(() => {
-      const el = containerRef.current;
-      if (!el) return;
-      const ro = new ResizeObserver(entries => {
-         for (const entry of entries) {
-            const w = entry.contentRect.width;
-            if (w > 0) setContainerWidth(w);
-         }
-      });
-      ro.observe(el);
-      return () => ro.disconnect();
-   }, []);
+   const containerSize = useContainerSize(containerRef);
 
    useEffect(() => {
       let rafId: number;
@@ -86,7 +74,8 @@ export default function TrimStrip({
 
    const startPct = duration > 0 ? (trimStart / duration) * 100 : 0;
    const endPct = duration > 0 ? (trimEnd / duration) * 100 : 100;
-   const frameWidth = containerWidth > 0 && frames.length > 0 ? containerWidth / frames.length : 0;
+   const frameWidth =
+      containerSize.w > 0 && frames.length > 0 ? containerSize.w / frames.length : 0;
 
    return (
       <div {...stylex.props(styles.wrapper)}>

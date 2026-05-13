@@ -54,3 +54,48 @@ export interface PostSettings {
 }
 
 export type Step = 'upload' | 'crop' | 'edit' | 'caption';
+
+export const DEFAULT_ADJUSTMENTS: Adjustments = {
+   brightness: 0,
+   contrast: 0,
+   fade: 0,
+   saturation: 0,
+   temperature: 0,
+   vignette: 0,
+};
+
+export const DEFAULT_POST_SETTINGS: PostSettings = {
+   hideLikes: false,
+   commentsOff: false,
+   shareToThreads: false,
+   shareToFacebook: false,
+   shareToClonedbook: false,
+};
+
+export function createPostMedia(file: File): PostMedia {
+   const isVideo = file.type.startsWith('video/');
+   return {
+      file,
+      preview: URL.createObjectURL(file),
+      type: isVideo ? 'video' : 'image',
+      zoom: 1,
+      panX: 0,
+      panY: 0,
+      filterPreset: 'Original',
+      filterStrength: 100,
+      adjustments: { ...DEFAULT_ADJUSTMENTS },
+      tags: [],
+      duration: 0,
+      coverTime: 0,
+      trimStart: 0,
+      trimEnd: 0,
+      muted: false,
+      frames: undefined,
+   };
+}
+
+export function revokeMediaUrls(media: PostMedia): void {
+   URL.revokeObjectURL(media.preview);
+   if (media.poster) URL.revokeObjectURL(media.poster);
+   for (const url of media.frames ?? []) URL.revokeObjectURL(url);
+}

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import type { Adjustments } from '../components/CreatePostModal/types';
 import {
    createCurveTexture,
    createProgram,
@@ -7,7 +6,8 @@ import {
    getPreset,
    loadTexture,
    VERTEX_SHADER,
-} from '../utils/filterShader';
+} from '@/src/utils/filterShader';
+import type { Adjustments } from '../types';
 
 export interface WebGLFilterResult {
    canvasRef: React.RefObject<HTMLCanvasElement | null>;
@@ -79,7 +79,6 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       gl.bindTexture(gl.TEXTURE_2D, curvesTexture);
       if (locs.u_curves) gl.uniform1i(locs.u_curves, 1);
 
-      // Preset uniforms
       const preset = getPreset(filterPresetRef.current);
       if (locs.u_presetActive)
          gl.uniform1f(locs.u_presetActive, filterPresetRef.current === 'Original' ? 0.0 : 1.0);
@@ -94,7 +93,6 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       if (locs.u_filterStrength)
          gl.uniform1f(locs.u_filterStrength, filterStrengthRef.current / 100);
 
-      // User adjustment uniforms
       const adj = adjustmentsRef.current;
       if (locs.u_brightness) gl.uniform1f(locs.u_brightness, adj.brightness / 100);
       if (locs.u_contrast) gl.uniform1f(locs.u_contrast, 1 + adj.contrast / 100);
@@ -106,7 +104,6 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       gl.drawArrays(gl.TRIANGLES, 0, 6);
    }, []);
 
-   // Initialize WebGL
    useEffect(() => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -163,7 +160,6 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       };
    }, []);
 
-   // Load image
    useEffect(() => {
       const gl = glRef.current;
       if (!gl) return;
@@ -182,7 +178,6 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       img.src = params.src;
    }, [params.src, render]);
 
-   // Update curve texture when preset changes
    useEffect(() => {
       const gl = glRef.current;
       if (!gl) return;
@@ -196,7 +191,6 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       render();
    }, [params.filterPreset, render]);
 
-   // Update canvas size
    useEffect(() => {
       const canvas = canvasRef.current;
       const gl = glRef.current;
@@ -215,7 +209,6 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
 
    // biome-ignore lint/correctness/useExhaustiveDependencies: individual adjustment values are needed to trigger re-renders
    useEffect(() => {
-      // Re-render when adjustments or filter strength change
       if (glRef.current && textureRef.current && curvesTextureRef.current) {
          render();
       }

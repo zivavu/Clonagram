@@ -2,27 +2,29 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import type { PartialUser } from '@/src/types/global';
 import { extractVideoFrames } from '@/src/utils/extractVideoFrames';
 import CaptionStep from './components/CaptionStep';
 import CropStep from './components/CropStep';
+import DiscardDialog from './components/DiscardDialog';
 import EditStep from './components/EditStep';
 import UploadStep from './components/UploadStep';
 import { styles } from './index.stylex';
-import type { AspectRatio, PostMedia, PostSettings, Step } from './types';
+import {
+   type AspectRatio,
+   createPostMedia,
+   DEFAULT_POST_SETTINGS,
+   type PostMedia,
+   type PostSettings,
+   revokeMediaUrls,
+   type Step,
+} from './types';
 
 const MAX_FILES = 10;
-
-const DEFAULT_POST_SETTINGS: PostSettings = {
-   hideLikes: false,
-   commentsOff: false,
-   shareToThreads: false,
-   shareToFacebook: false,
-   shareToClonedbook: false,
-};
+const TOAST_DURATION = 3000;
 
 export default function CreatePostModal() {
    const { isOpen, close } = useCreatePostModalStore();
@@ -37,77 +39,51 @@ export default function CreatePostModal() {
    const [postSettings, setPostSettings] = useState<PostSettings>(DEFAULT_POST_SETTINGS);
    const [isDiscardOpen, setIsDiscardOpen] = useState(false);
    const [fileLimitToast, setFileLimitToast] = useState<number | null>(null);
+   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
    const filesRef = useRef(files);
    filesRef.current = files;
 
-   useEffect(() => {
-      if (fileLimitToast === null) return;
-      const timer = setTimeout(() => setFileLimitToast(null), 3000);
-      return () => clearTimeout(timer);
-   }, [fileLimitToast]);
-
-   const onDrop = useCallback((acceptedFiles: File[]) => {
-      if (acceptedFiles.length === 0) return;
-      const currentLength = filesRef.current.length;
-      const remainingSlots = MAX_FILES - currentLength;
-
-      if (remainingSlots <= 0) {
-         setFileLimitToast(acceptedFiles.length);
-         return;
-      }
-
-      const filesToProcess = acceptedFiles.slice(0, remainingSlots);
-      const cutCount = acceptedFiles.length - filesToProcess.length;
-
-      if (cutCount > 0) {
-         setFileLimitToast(cutCount);
-      }
-
-      const newFiles: PostMedia[] = filesToProcess.map(file => {
-         const isVideo = file.type.startsWith('video/');
-         return {
-            file,
-            preview: URL.createObjectURL(file),
-            type: isVideo ? 'video' : 'image',
-            zoom: 1,
-            panX: 0,
-            panY: 0,
-            filterPreset: 'Original',
-            filterStrength: 100,
-            adjustments: {
-               brightness: 0,
-               contrast: 0,
-               fade: 0,
-               saturation: 0,
-               temperature: 0,
-               vignette: 0,
-            },
-            tags: [],
-            duration: 0,
-            coverTime: 0,
-            trimStart: 0,
-            trimEnd: 0,
-            muted: false,
-            frames: undefined,
-         };
-      });
-      setFiles(prev => [...prev, ...newFiles]);
-      setStep('crop');
-      for (const media of newFiles) {
-         if (media.type !== 'video') continue;
-         extractVideoFrames(media.preview)
-            .then(({ urls, duration }) => {
-               setFiles(prevFiles =>
-                  prevFiles.map(f =>
-                     f.preview === media.preview
-                        ? { ...f, frames: urls, duration, trimEnd: duration }
-                        : f,
-                  ),
-               );
-            })
-            .catch(() => {});
-      }
+   const showToast = useCallback((count: number) => {
+      setFileLimitToast(count);
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setFileLimitToast(null), TOAST_DURATION);
    }, []);
+
+   const onDrop = useCallback(
+      (acceptedFiles: File[]) => {
+         if (acceptedFiles.length === 0) return;
+         const remainingSlots = MAX_FILES - filesRef.current.length;
+
+         if (remainingSlots <= 0) {
+            showToast(acceptedFiles.length);
+            return;
+         }
+
+         const filesToProcess = acceptedFiles.slice(0, remainingSlots);
+         const cutCount = acceptedFiles.length - filesToProcess.length;
+         if (cutCount > 0) showToast(cutCount);
+
+         const newFiles = filesToProcess.map(createPostMedia);
+         setFiles(prev => [...prev, ...newFiles]);
+         setStep('crop');
+
+         for (const media of newFiles) {
+            if (media.type !== 'video') continue;
+            extractVideoFrames(media.preview)
+               .then(({ urls, duration }) => {
+                  setFiles(prev =>
+                     prev.map(f =>
+                        f.preview === media.preview
+                           ? { ...f, frames: urls, duration, trimEnd: duration }
+                           : f,
+                     ),
+                  );
+               })
+               .catch(() => {});
+         }
+      },
+      [showToast],
+   );
 
    const { getRootProps, getInputProps, open } = useDropzone({
       onDrop,
@@ -122,11 +98,7 @@ export default function CreatePostModal() {
    });
 
    const resetState = () => {
-      for (const f of files) {
-         URL.revokeObjectURL(f.preview);
-         if (f.poster) URL.revokeObjectURL(f.poster);
-         for (const url of f.frames ?? []) URL.revokeObjectURL(url);
-      }
+      for (const f of files) revokeMediaUrls(f);
       setFiles([]);
       setCurrentIndex(0);
       setStep('upload');
@@ -143,27 +115,10 @@ export default function CreatePostModal() {
       close();
    };
 
-   const handleOpenChange = (open: boolean) => {
-      if (!open) {
-         if (isDiscardOpen) {
-            setIsDiscardOpen(false);
-         } else if (step === 'upload') {
-            performClose();
-         } else {
-            setIsDiscardOpen(true);
-         }
-      }
-   };
-
-   const handleEscapeKeyDown = (e: KeyboardEvent) => {
-      e.preventDefault();
-      if (isDiscardOpen) {
-         setIsDiscardOpen(false);
-      } else if (step !== 'upload') {
-         setIsDiscardOpen(true);
-      } else {
-         performClose();
-      }
+   const requestClose = () => {
+      if (isDiscardOpen) setIsDiscardOpen(false);
+      else if (step === 'upload') performClose();
+      else setIsDiscardOpen(true);
    };
 
    const handleUpdateFile = (index: number, updates: Partial<PostMedia>) => {
@@ -188,15 +143,17 @@ export default function CreatePostModal() {
       });
    };
 
-   const handleBackToUpload = () => {
-      resetState();
-   };
-
    return (
-      <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
+      <Dialog.Root open={isOpen} onOpenChange={open => !open && requestClose()}>
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} />
-            <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={handleEscapeKeyDown}>
+            <Dialog.Content
+               {...stylex.props(styles.content)}
+               onEscapeKeyDown={e => {
+                  e.preventDefault();
+                  requestClose();
+               }}
+            >
                <input {...getInputProps()} style={{ display: 'none' }} />
                {step === 'upload' && (
                   <>
@@ -218,7 +175,7 @@ export default function CreatePostModal() {
                      <CropStep
                         files={files}
                         currentIndex={currentIndex}
-                        onBack={handleBackToUpload}
+                        onBack={resetState}
                         onNext={() => setStep('edit')}
                         onSelectIndex={setCurrentIndex}
                         onRemoveFile={handleRemoveFile}
@@ -271,34 +228,10 @@ export default function CreatePostModal() {
                   </>
                )}
                {isDiscardOpen && (
-                  <>
-                     <button
-                        type="button"
-                        aria-label="Close confirmation"
-                        {...stylex.props(styles.discardOverlay)}
-                        onClick={() => setIsDiscardOpen(false)}
-                     />
-                     <div {...stylex.props(styles.discardCard)}>
-                        <h3 {...stylex.props(styles.discardTitle)}>Discard post?</h3>
-                        <p {...stylex.props(styles.discardSubtitle)}>
-                           If you leave, your edits won't be saved.
-                        </p>
-                        <button
-                           type="button"
-                           {...stylex.props(styles.discardButton, styles.discardDanger)}
-                           onClick={performClose}
-                        >
-                           Discard
-                        </button>
-                        <button
-                           type="button"
-                           {...stylex.props(styles.discardButton)}
-                           onClick={() => setIsDiscardOpen(false)}
-                        >
-                           Cancel
-                        </button>
-                     </div>
-                  </>
+                  <DiscardDialog
+                     onCancel={() => setIsDiscardOpen(false)}
+                     onConfirm={performClose}
+                  />
                )}
                {fileLimitToast !== null && (
                   <div {...stylex.props(styles.toast)}>
