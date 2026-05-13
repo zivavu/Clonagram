@@ -28,6 +28,7 @@ export interface TaggedPerson {
 export interface PostMedia {
    file: File;
    preview: string;
+   type: 'image' | 'video';
    zoom: number;
    panX: number;
    panY: number;
@@ -35,6 +36,12 @@ export interface PostMedia {
    filterStrength: number;
    adjustments: Adjustments;
    tags: TaggedPerson[];
+   duration: number;
+   coverTime: number;
+   trimStart: number;
+   trimEnd: number;
+   muted: boolean;
+   frames?: string[];
 }
 
 export interface PostSettings {

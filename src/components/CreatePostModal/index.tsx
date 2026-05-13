@@ -6,6 +6,7 @@ import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import type { PartialUser } from '@/src/types/global';
+import { extractVideoFrames } from '@/src/utils/extractVideoFrames';
 import CaptionStep from './components/CaptionStep';
 import CropStep from './components/CropStep';
 import EditStep from './components/EditStep';
@@ -38,26 +39,50 @@ export default function CreatePostModal() {
 
    const onDrop = useCallback((acceptedFiles: File[]) => {
       if (acceptedFiles.length === 0) return;
-      const newFiles: PostMedia[] = acceptedFiles.map(file => ({
-         file,
-         preview: URL.createObjectURL(file),
-         zoom: 1,
-         panX: 0,
-         panY: 0,
-         filterPreset: 'Original',
-         filterStrength: 100,
-         adjustments: {
-            brightness: 0,
-            contrast: 0,
-            fade: 0,
-            saturation: 0,
-            temperature: 0,
-            vignette: 0,
-         },
-         tags: [],
-      }));
+      const newFiles: PostMedia[] = acceptedFiles.map(file => {
+         const isVideo = file.type.startsWith('video/');
+         return {
+            file,
+            preview: URL.createObjectURL(file),
+            type: isVideo ? 'video' : 'image',
+            zoom: 1,
+            panX: 0,
+            panY: 0,
+            filterPreset: 'Original',
+            filterStrength: 100,
+            adjustments: {
+               brightness: 0,
+               contrast: 0,
+               fade: 0,
+               saturation: 0,
+               temperature: 0,
+               vignette: 0,
+            },
+            tags: [],
+            duration: 0,
+            coverTime: 0,
+            trimStart: 0,
+            trimEnd: 0,
+            muted: false,
+            frames: undefined,
+         };
+      });
       setFiles(prev => [...prev, ...newFiles].slice(0, MAX_FILES));
       setStep('crop');
+      for (const media of newFiles) {
+         if (media.type !== 'video') continue;
+         extractVideoFrames(media.preview)
+            .then(({ urls, duration }) => {
+               setFiles(prev =>
+                  prev.map(f =>
+                     f.preview === media.preview
+                        ? { ...f, frames: urls, duration, trimEnd: duration }
+                        : f,
+                  ),
+               );
+            })
+            .catch(() => {});
+      }
    }, []);
 
    const { getRootProps, getInputProps, open } = useDropzone({
@@ -76,6 +101,7 @@ export default function CreatePostModal() {
    const resetState = () => {
       for (const f of files) {
          URL.revokeObjectURL(f.preview);
+         for (const url of f.frames ?? []) URL.revokeObjectURL(url);
       }
       setFiles([]);
       setCurrentIndex(0);
