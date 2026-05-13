@@ -12,7 +12,12 @@ export function RequestsContent() {
    return (
       <>
          <div {...stylex.props(styles.requestsHeader)}>
-            <Link href="/direct" {...stylex.props(styles.backButton)} aria-label="Back to messages" role="button">
+            <Link
+               href="/direct"
+               {...stylex.props(styles.backButton)}
+               aria-label="Back to messages"
+               role="button"
+            >
                <FaArrowLeft size={24} />
             </Link>
             <span {...stylex.props(styles.headerTitle)}>Message requests</span>
@@ -20,8 +25,8 @@ export function RequestsContent() {
 
          <div {...stylex.props(styles.infoBanner)}>
             <p {...stylex.props(styles.infoText)}>
-               Open a chat to get more info about who&apos;s messaging you. They won&apos;t know you&apos;ve seen it
-               until you accept.
+               Open a chat to get more info about who&apos;s messaging you. They won&apos;t know
+               you&apos;ve seen it until you accept.
             </p>
             <a {...stylex.props(styles.infoLink)} href="/accounts/privacy_and_security/">
                Decide who can message you
@@ -43,7 +48,9 @@ export function RequestsContent() {
          </div>
 
          <div {...stylex.props(styles.bottomSection)}>
-            <button {...stylex.props(styles.deleteAllButton)}>Delete all {requestThreads.length}</button>
+            <button {...stylex.props(styles.deleteAllButton)}>
+               Delete all {requestThreads.length}
+            </button>
          </div>
       </>
    );

@@ -22,7 +22,9 @@ export default function CropPreview({
 }: CropPreviewProps) {
    const currentFile = files[currentIndex];
    const previewRef = useRef<HTMLDivElement>(null);
-   const dragRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(null);
+   const dragRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(
+      null,
+   );
    const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
    const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
    const [isDragging, setIsDragging] = useState(false);
@@ -119,7 +121,11 @@ export default function CropPreview({
 
          <div
             {...stylex.props(styles.cropContainer)}
-            style={cropBox ? { width: cropBox.width, height: cropBox.height } : { width: '100%', height: '100%' }}
+            style={
+               cropBox
+                  ? { width: cropBox.width, height: cropBox.height }
+                  : { width: '100%', height: '100%' }
+            }
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -131,7 +137,12 @@ export default function CropPreview({
                src={currentFile.preview}
                alt="Preview"
                draggable={false}
-               onLoad={e => setNaturalSize({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })}
+               onLoad={e =>
+                  setNaturalSize({
+                     w: e.currentTarget.naturalWidth,
+                     h: e.currentTarget.naturalHeight,
+                  })
+               }
                {...stylex.props(styles.previewImage)}
                style={{
                   width: imageDisplaySize ? imageDisplaySize.w : '100%',
@@ -148,10 +159,42 @@ export default function CropPreview({
                aria-label="Crop grid"
                {...stylex.props(styles.gridOverlay)}
             >
-               <line x1="1" y1="0" x2="1" y2="3" stroke="white" strokeOpacity={0.3} strokeWidth="0.005" />
-               <line x1="2" y1="0" x2="2" y2="3" stroke="white" strokeOpacity={0.3} strokeWidth="0.005" />
-               <line x1="0" y1="1" x2="3" y2="1" stroke="white" strokeOpacity={0.3} strokeWidth="0.005" />
-               <line x1="0" y1="2" x2="3" y2="2" stroke="white" strokeOpacity={0.3} strokeWidth="0.005" />
+               <line
+                  x1="1"
+                  y1="0"
+                  x2="1"
+                  y2="3"
+                  stroke="white"
+                  strokeOpacity={0.3}
+                  strokeWidth="0.005"
+               />
+               <line
+                  x1="2"
+                  y1="0"
+                  x2="2"
+                  y2="3"
+                  stroke="white"
+                  strokeOpacity={0.3}
+                  strokeWidth="0.005"
+               />
+               <line
+                  x1="0"
+                  y1="1"
+                  x2="3"
+                  y2="1"
+                  stroke="white"
+                  strokeOpacity={0.3}
+                  strokeWidth="0.005"
+               />
+               <line
+                  x1="0"
+                  y1="2"
+                  x2="3"
+                  y2="2"
+                  stroke="white"
+                  strokeOpacity={0.3}
+                  strokeWidth="0.005"
+               />
             </svg>
          )}
       </div>

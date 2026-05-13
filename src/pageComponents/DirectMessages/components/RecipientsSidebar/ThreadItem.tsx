@@ -6,7 +6,15 @@ import { formatTimestamp } from '@/src/utils/formatters';
 import { getLastMessagePreview } from '@/src/utils/messages';
 import { styles } from './index.stylex';
 
-export function ThreadItem({ thread, href, unread }: { thread: MessageThread; href: string; unread?: boolean }) {
+export function ThreadItem({
+   thread,
+   href,
+   unread,
+}: {
+   thread: MessageThread;
+   href: string;
+   unread?: boolean;
+}) {
    const participant = thread.participants[0];
    const displayName = participant.full_name || participant.username;
 
@@ -14,7 +22,9 @@ export function ThreadItem({ thread, href, unread }: { thread: MessageThread; hr
       <Link href={href} {...stylex.props(styles.threadItem)}>
          <UserAvatar src={participant.avatar_url} alt={displayName} size={56} />
          <div {...stylex.props(styles.threadContent)}>
-            <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>{displayName}</span>
+            <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>
+               {displayName}
+            </span>
             <div {...stylex.props(styles.threadPreviewRow)}>
                <span {...stylex.props(styles.threadPreview, unread && styles.threadPreviewUnread)}>
                   {getLastMessagePreview(thread)}

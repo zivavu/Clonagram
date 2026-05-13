@@ -3,7 +3,8 @@ import * as stylex from '@stylexjs/stylex';
 import { type InputHTMLAttributes, useState } from 'react';
 import { styles } from './index.stylex';
 
-export interface FloatingInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
+export interface FloatingInputProps
+   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
    label: string;
 }
 
@@ -34,7 +35,11 @@ export default function FloatingInput({ label, onChange, ...props }: FloatingInp
          />
          <label
             htmlFor={props.id}
-            {...stylex.props(styles.label, floated && styles.labelFloated, isFocused && styles.labelFocused)}
+            {...stylex.props(
+               styles.label,
+               floated && styles.labelFloated,
+               isFocused && styles.labelFocused,
+            )}
          >
             {label}
          </label>

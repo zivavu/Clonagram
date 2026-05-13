@@ -35,7 +35,14 @@ const PRESET_UNIFORMS = [
    'u_filterStrength',
 ] as const;
 
-const USER_UNIFORMS = ['u_brightness', 'u_contrast', 'u_saturation', 'u_temperature', 'u_fade', 'u_vignette'] as const;
+const USER_UNIFORMS = [
+   'u_brightness',
+   'u_contrast',
+   'u_saturation',
+   'u_temperature',
+   'u_fade',
+   'u_vignette',
+] as const;
 
 export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
    const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -74,7 +81,8 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
 
       // Preset uniforms
       const preset = getPreset(filterPresetRef.current);
-      if (locs.u_presetActive) gl.uniform1f(locs.u_presetActive, filterPresetRef.current === 'Original' ? 0.0 : 1.0);
+      if (locs.u_presetActive)
+         gl.uniform1f(locs.u_presetActive, filterPresetRef.current === 'Original' ? 0.0 : 1.0);
       if (locs.u_pBrightness) gl.uniform1f(locs.u_pBrightness, preset.brightness);
       if (locs.u_pContrast) gl.uniform1f(locs.u_pContrast, preset.contrast);
       if (locs.u_pSaturation) gl.uniform1f(locs.u_pSaturation, preset.saturation);
@@ -83,7 +91,8 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       if (locs.u_pFade) gl.uniform4fv(locs.u_pFade, preset.fade);
       if (locs.u_pColorBalance) gl.uniform3fv(locs.u_pColorBalance, preset.colorBalance);
       if (locs.u_pVignette) gl.uniform1f(locs.u_pVignette, preset.vignette);
-      if (locs.u_filterStrength) gl.uniform1f(locs.u_filterStrength, filterStrengthRef.current / 100);
+      if (locs.u_filterStrength)
+         gl.uniform1f(locs.u_filterStrength, filterStrengthRef.current / 100);
 
       // User adjustment uniforms
       const adj = adjustmentsRef.current;

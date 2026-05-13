@@ -104,7 +104,7 @@ Always define proper types and interfaces. Prefer explicit return types on expor
 # Biome Configuration
 
 Use Biome for formatting and linting. Key settings:
-- Line width: 120
+- Line width: 100
 - Indent: 3 spaces
 - Line ending: lf
 - Quotes: single

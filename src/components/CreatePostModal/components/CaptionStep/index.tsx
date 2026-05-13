@@ -177,13 +177,19 @@ export default function CaptionStep({
 
    const isImage = currentFile.file.type.startsWith('image/');
    const hasFilters =
-      currentFile.filterPreset !== 'Original' || Object.values(currentFile.adjustments).some(v => v !== 0);
+      currentFile.filterPreset !== 'Original' ||
+      Object.values(currentFile.adjustments).some(v => v !== 0);
    const useCanvas = isImage && hasFilters;
 
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
-            <button type="button" {...stylex.props(styles.headerButton)} onClick={onBack} aria-label="Back">
+            <button
+               type="button"
+               {...stylex.props(styles.headerButton)}
+               onClick={onBack}
+               aria-label="Back"
+            >
                <IoArrowBack style={{ fontSize: 24 }} />
             </button>
             <span {...stylex.props(styles.headerTitle)}>Create new post</span>
@@ -196,19 +202,29 @@ export default function CaptionStep({
             <div ref={previewRef} {...stylex.props(styles.previewSection)}>
                {hasMultiple && !isFirst && (
                   <div {...stylex.props(styles.arrowLeft)}>
-                     <CarouselArrow direction="left" onClick={() => onSelectIndex(currentIndex - 1)} />
+                     <CarouselArrow
+                        direction="left"
+                        onClick={() => onSelectIndex(currentIndex - 1)}
+                     />
                   </div>
                )}
                {hasMultiple && !isLast && (
                   <div {...stylex.props(styles.arrowRight)}>
-                     <CarouselArrow direction="right" onClick={() => onSelectIndex(currentIndex + 1)} />
+                     <CarouselArrow
+                        direction="right"
+                        onClick={() => onSelectIndex(currentIndex + 1)}
+                     />
                   </div>
                )}
 
                <button
                   type="button"
                   {...stylex.props(styles.cropContainer)}
-                  style={cropBox ? { width: cropBox.width, height: cropBox.height } : { width: '100%', height: '100%' }}
+                  style={
+                     cropBox
+                        ? { width: cropBox.width, height: cropBox.height }
+                        : { width: '100%', height: '100%' }
+                  }
                   onClick={handleImageClick}
                >
                   {useCanvas ? (
@@ -238,7 +254,11 @@ export default function CaptionStep({
                   />
                ))}
                {tagPopper && (
-                  <div role="dialog" {...stylex.props(styles.tagPopper)} style={getPopperStyle(tagPopper)}>
+                  <div
+                     role="dialog"
+                     {...stylex.props(styles.tagPopper)}
+                     style={getPopperStyle(tagPopper)}
+                  >
                      <UserAutocomplete
                         onSelect={handleTagSelect}
                         onDismiss={() => setTagPopper(null)}

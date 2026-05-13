@@ -10,10 +10,13 @@ import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 
 export default async function MainSidebar() {
-
    return (
       <div {...stylex.props(styles.root)}>
-         <Link href="/" {...stylex.props(styles.navItem)} style={{ width: 'fit-content', padding: '8px' }}>
+         <Link
+            href="/"
+            {...stylex.props(styles.navItem)}
+            style={{ width: 'fit-content', padding: '8px' }}
+         >
             <Image
                src="/clonagram.png"
                alt="Clonagram"

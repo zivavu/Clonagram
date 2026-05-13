@@ -118,7 +118,11 @@ void main() {
   outColor = color;
 }`;
 
-export function createShader(gl: WebGL2RenderingContext, type: number, source: string): WebGLShader | null {
+export function createShader(
+   gl: WebGL2RenderingContext,
+   type: number,
+   source: string,
+): WebGLShader | null {
    const shader = gl.createShader(type);
    if (!shader) return null;
    gl.shaderSource(shader, source);
@@ -158,7 +162,10 @@ export function createProgram(
    return program;
 }
 
-export function loadTexture(gl: WebGL2RenderingContext, image: HTMLImageElement | HTMLCanvasElement): WebGLTexture {
+export function loadTexture(
+   gl: WebGL2RenderingContext,
+   image: HTMLImageElement | HTMLCanvasElement,
+): WebGLTexture {
    const texture = gl.createTexture();
    gl.bindTexture(gl.TEXTURE_2D, texture);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);

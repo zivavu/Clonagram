@@ -14,7 +14,9 @@ export default function CarouselArrow({ direction, onClick }: CarouselArrowProps
          onClick={onClick}
          {...stylex.props(styles.root, direction === 'left' ? styles.left : styles.right)}
       >
-         <FaCircleChevronRight {...stylex.props(styles.icon, direction === 'left' ? styles.iconLeft : undefined)} />
+         <FaCircleChevronRight
+            {...stylex.props(styles.icon, direction === 'left' ? styles.iconLeft : undefined)}
+         />
       </button>
    );
 }

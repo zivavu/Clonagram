@@ -80,7 +80,10 @@ export default function CropControls({
                         <button
                            key={key}
                            type="button"
-                           {...stylex.props(styles.ratioMenuItem, aspectRatio === key && styles.ratioMenuItemActive)}
+                           {...stylex.props(
+                              styles.ratioMenuItem,
+                              aspectRatio === key && styles.ratioMenuItemActive,
+                           )}
                            onClick={() => handleRatioChange(key)}
                         >
                            <span>{label}</span>
@@ -132,16 +135,28 @@ export default function CropControls({
 
          <Popover.Root>
             <Popover.Trigger asChild>
-               <button type="button" {...stylex.props(styles.controlButton)} aria-label="View all media">
+               <button
+                  type="button"
+                  {...stylex.props(styles.controlButton)}
+                  aria-label="View all media"
+               >
                   <PiImagesSquareLight style={{ fontSize: 20 }} />
                </button>
             </Popover.Trigger>
             <Popover.Portal>
-               <Popover.Content {...stylex.props(styles.popoverContent)} side="top" align="end" sideOffset={8}>
+               <Popover.Content
+                  {...stylex.props(styles.popoverContent)}
+                  side="top"
+                  align="end"
+                  sideOffset={8}
+               >
                   <div {...stylex.props(styles.popoverThumbnails)}>
                      {files.length > 3 && (
                         <div {...stylex.props(styles.popoverArrow)}>
-                           <CarouselArrow direction="left" onClick={() => scrollThumbnails('left')} />
+                           <CarouselArrow
+                              direction="left"
+                              onClick={() => scrollThumbnails('left')}
+                           />
                         </div>
                      )}
                      <ul {...stylex.props(styles.popoverScroll)} ref={thumbnailsRef}>
@@ -185,7 +200,9 @@ export default function CropControls({
                                     height={94}
                                     {...stylex.props(styles.thumbImage)}
                                  />
-                                 {idx !== currentIndex && <div {...stylex.props(styles.thumbImageOverlay)}></div>}
+                                 {idx !== currentIndex && (
+                                    <div {...stylex.props(styles.thumbImageOverlay)}></div>
+                                 )}
                               </button>
                               {files.length > 1 && idx === currentIndex && (
                                  <button
@@ -200,7 +217,11 @@ export default function CropControls({
                         ))}
                         {files.length < 10 && (
                            <li key="add" {...stylex.props(styles.popoverThumbWrapper)}>
-                              <button type="button" {...stylex.props(styles.popoverAddButton)} onClick={onAddFiles}>
+                              <button
+                                 type="button"
+                                 {...stylex.props(styles.popoverAddButton)}
+                                 onClick={onAddFiles}
+                              >
                                  <MdAdd style={{ fontSize: 20 }} />
                               </button>
                            </li>
@@ -208,7 +229,10 @@ export default function CropControls({
                      </ul>
                      {files.length > 3 && (
                         <div {...stylex.props(styles.popoverArrow)}>
-                           <CarouselArrow direction="right" onClick={() => scrollThumbnails('right')} />
+                           <CarouselArrow
+                              direction="right"
+                              onClick={() => scrollThumbnails('right')}
+                           />
                         </div>
                      )}
                   </div>

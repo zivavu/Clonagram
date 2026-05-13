@@ -79,7 +79,11 @@ export default function StoryCard({
       >
          {!isCurrent && <SideStoryOverlay story={story} />}
          {!isCurrent && (
-            <button type="button" onClick={() => onClick()} {...stylex.props(styles.sideStoryClickTarget)}></button>
+            <button
+               type="button"
+               onClick={() => onClick()}
+               {...stylex.props(styles.sideStoryClickTarget)}
+            ></button>
          )}
          {isCurrent && (
             <ActiveStoryOverlay
@@ -119,7 +123,12 @@ export default function StoryCard({
             />
          ) : (
             currentMedia.url && (
-               <Image src={currentMedia.url} alt={story.username} fill sizes="(max-width: 640px) 100vw, 33vw" />
+               <Image
+                  src={currentMedia.url}
+                  alt={story.username}
+                  fill
+                  sizes="(max-width: 640px) 100vw, 33vw"
+               />
             )
          )}
       </div>

@@ -30,7 +30,9 @@ export default function SearchPortal() {
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} onClick={close} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
-               <Dialog.Description style={{ display: 'none' }}>Search for people</Dialog.Description>
+               <Dialog.Description style={{ display: 'none' }}>
+                  Search for people
+               </Dialog.Description>
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Search</Dialog.Title>
                   <Dialog.Close asChild>
@@ -71,10 +73,23 @@ export default function SearchPortal() {
                            avatarUrl={user.avatar_url}
                            avatarAlt={user.username}
                            name={
-                              <span style={{ display: 'flex', fontWeight: 600, alignItems: 'center', gap: 4 }}>
+                              <span
+                                 style={{
+                                    display: 'flex',
+                                    fontWeight: 600,
+                                    alignItems: 'center',
+                                    gap: 4,
+                                 }}
+                              >
                                  {user.username}
                                  {isVerified && (
-                                    <MdVerified style={{ color: 'rgb(0, 149, 246)', fontSize: 14, flexShrink: 0 }} />
+                                    <MdVerified
+                                       style={{
+                                          color: 'rgb(0, 149, 246)',
+                                          fontSize: 14,
+                                          flexShrink: 0,
+                                       }}
+                                    />
                                  )}
                               </span>
                            }

@@ -13,7 +13,12 @@ interface FilterGridProps {
    onSelect: (name: string) => void;
 }
 
-export default function FilterGrid({ presets, selectedPreset, thumbnails, onSelect }: FilterGridProps) {
+export default function FilterGrid({
+   presets,
+   selectedPreset,
+   thumbnails,
+   onSelect,
+}: FilterGridProps) {
    return (
       <div {...stylex.props(styles.grid)}>
          {presets.map(preset => {
@@ -28,12 +33,20 @@ export default function FilterGrid({ presets, selectedPreset, thumbnails, onSele
                >
                   <div {...stylex.props(styles.imageWrap, isActive && styles.imageWrapActive)}>
                      {thumbSrc ? (
-                        <Image src={thumbSrc} alt={preset.name} fill style={{ objectFit: 'cover' }} sizes="88px" />
+                        <Image
+                           src={thumbSrc}
+                           alt={preset.name}
+                           fill
+                           style={{ objectFit: 'cover' }}
+                           sizes="88px"
+                        />
                      ) : (
                         <div {...stylex.props(styles.placeholder)} />
                      )}
                   </div>
-                  <span {...stylex.props(styles.name, isActive && styles.nameActive)}>{preset.name}</span>
+                  <span {...stylex.props(styles.name, isActive && styles.nameActive)}>
+                     {preset.name}
+                  </span>
                </button>
             );
          })}

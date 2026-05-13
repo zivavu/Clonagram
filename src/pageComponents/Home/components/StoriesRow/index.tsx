@@ -73,7 +73,11 @@ export default function StoriesRow() {
    return (
       <div {...stylex.props(styles.root)}>
          <button
-            {...stylex.props(styles.storiesRowButton, styles.storiesRowButtonLeft, isFirst && styles.hidden)}
+            {...stylex.props(
+               styles.storiesRowButton,
+               styles.storiesRowButtonLeft,
+               isFirst && styles.hidden,
+            )}
             onClick={() => scrollBy(-STORY_ITEM_WIDTH * SCROLL_PAGES)}
             disabled={isScrolling}
          >
@@ -83,7 +87,11 @@ export default function StoriesRow() {
             />
          </button>
          <button
-            {...stylex.props(styles.storiesRowButton, styles.storiesRowButtonRight, isLast && styles.hidden)}
+            {...stylex.props(
+               styles.storiesRowButton,
+               styles.storiesRowButtonRight,
+               isLast && styles.hidden,
+            )}
             onClick={() => scrollBy(STORY_ITEM_WIDTH * SCROLL_PAGES)}
             disabled={isScrolling}
          >
@@ -95,7 +103,11 @@ export default function StoriesRow() {
                if (!avatarUrl) return null;
 
                return (
-                  <Link href={`/stories/${username}`} key={username} {...stylex.props(styles.storyLink)}>
+                  <Link
+                     href={`/stories/${username}`}
+                     key={username}
+                     {...stylex.props(styles.storyLink)}
+                  >
                      <div {...stylex.props(styles.storyItem)}>
                         <div {...stylex.props(styles.storyRing)}>
                            <div {...stylex.props(styles.storyRingInner)}>

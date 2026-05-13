@@ -1,6 +1,11 @@
 const DAY_MS = 86_400_000;
 
-export function getDateDiff(isoString: string): { date: Date; now: Date; diff: number; days: number } {
+export function getDateDiff(isoString: string): {
+   date: Date;
+   now: Date;
+   diff: number;
+   days: number;
+} {
    const date = new Date(isoString);
    const now = new Date();
    const diff = now.getTime() - date.getTime();
@@ -35,7 +40,8 @@ export function formatGroupSeparator(isoString: string): string {
 
    if (days === 0) return timeStr;
    if (days < 7) return `${date.toLocaleDateString('en-US', { weekday: 'short' })} ${timeStr}`;
-   if (days < 365) return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${timeStr}`;
+   if (days < 365)
+      return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${timeStr}`;
    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} ${timeStr}`;
 }
 

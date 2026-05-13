@@ -51,7 +51,9 @@ export default function NewMessageModal() {
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
-               <Dialog.Description style={{ display: 'none' }}>Start a new direct message</Dialog.Description>
+               <Dialog.Description style={{ display: 'none' }}>
+                  Start a new direct message
+               </Dialog.Description>
                <div {...stylex.props(styles.header)}>
                   <IoCloseOutline style={{ fontSize: 30, visibility: 'hidden' }} />
                   <Dialog.Title {...stylex.props(styles.title)}>New message</Dialog.Title>
@@ -107,7 +109,12 @@ export default function NewMessageModal() {
                               name={user.full_name || user.username}
                               subtitle={user.username}
                               rightElement={
-                                 <div {...stylex.props(styles.radioCircle, isSelected && styles.radioCircleSelected)}>
+                                 <div
+                                    {...stylex.props(
+                                       styles.radioCircle,
+                                       isSelected && styles.radioCircleSelected,
+                                    )}
+                                 >
                                     {isSelected && <IoCheckmark style={{ fontSize: '14px' }} />}
                                  </div>
                               }
@@ -124,7 +131,10 @@ export default function NewMessageModal() {
                <div {...stylex.props(styles.footer)}>
                   <button
                      type="button"
-                     {...stylex.props(styles.chatButton, !hasSelection && styles.chatButtonDisabled)}
+                     {...stylex.props(
+                        styles.chatButton,
+                        !hasSelection && styles.chatButtonDisabled,
+                     )}
                      disabled={!hasSelection}
                      onClick={() => {
                         // TODO: create or navigate to thread
