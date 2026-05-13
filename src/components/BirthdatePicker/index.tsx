@@ -22,12 +22,20 @@ export interface BirthdatePickerProps {
    onChange: (value: BirthdateValue) => void;
 }
 
-export default function BirthdatePicker({ topLabel = 'Birthdate', value, onChange }: BirthdatePickerProps) {
+export default function BirthdatePicker({
+   topLabel = 'Birthdate',
+   value,
+   onChange,
+}: BirthdatePickerProps) {
    const update = (patch: Partial<BirthdateValue>) => onChange({ ...value, ...patch });
 
    const currentYear = new Date().getFullYear();
 
-   const monthLength = new Date(value.year ?? new Date().getFullYear(), value.month ?? 1, 0).getDate();
+   const monthLength = new Date(
+      value.year ?? new Date().getFullYear(),
+      value.month ?? 1,
+      0,
+   ).getDate();
 
    const monthNames = Array.from({ length: 12 }, (_, i) =>
       new Date(currentYear, i, 1).toLocaleString('en-US', {
@@ -62,11 +70,18 @@ export default function BirthdatePicker({ topLabel = 'Birthdate', value, onChang
             {BirthdateParts.map(part => (
                <DropdownMenu key={part.label}>
                   <DropdownMenuTrigger {...stylex.props(styles.trigger)}>
-                     <span {...stylex.props(styles.triggerLabel, part.value !== null && styles.triggerLabelFloated)}>
+                     <span
+                        {...stylex.props(
+                           styles.triggerLabel,
+                           part.value !== null && styles.triggerLabelFloated,
+                        )}
+                     >
                         {part.label}
                      </span>
                      {part.value !== null && (
-                        <span>{part.label === 'Month' ? monthNames[part.value - 1] : part.value}</span>
+                        <span>
+                           {part.label === 'Month' ? monthNames[part.value - 1] : part.value}
+                        </span>
                      )}
                      <MdKeyboardArrowDown {...stylex.props(styles.arrow)} />
                   </DropdownMenuTrigger>

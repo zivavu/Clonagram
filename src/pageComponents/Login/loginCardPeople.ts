@@ -4,7 +4,8 @@ const loginCardPeople = [
       alt: 'A woman in a red and yellow coat is dancing',
       photographerName: 'Erik Torres',
       photographerUrl: 'https://unsplash.com/@theeriktornes',
-      photoUrl: 'https://unsplash.com/photos/a-woman-in-a-red-and-yellow-coat-is-dancing-4vQtupdTSvI',
+      photoUrl:
+         'https://unsplash.com/photos/a-woman-in-a-red-and-yellow-coat-is-dancing-4vQtupdTSvI',
    },
    {
       src: 'baran-lotfollahi-cdZcKaTehbs-unsplash.jpg',
@@ -26,7 +27,8 @@ const loginCardPeople = [
       alt: 'A woman in overalls holding a baseball bat',
       photographerName: 'alex Roosso',
       photographerUrl: 'https://unsplash.com/@roosso',
-      photoUrl: 'https://unsplash.com/photos/a-woman-in-overalls-holding-a-baseball-bat-o3zlxuQimSk',
+      photoUrl:
+         'https://unsplash.com/photos/a-woman-in-overalls-holding-a-baseball-bat-o3zlxuQimSk',
    },
    {
       src: 'sed-creatives-sardar-yB_wHrjHWEw-unsplash.jpg',
@@ -54,7 +56,8 @@ const loginCardPeople = [
       alt: 'A woman with freckles on her face looking through a tree',
       photographerName: 'see plus',
       photographerUrl: 'https://unsplash.com/@seeplus',
-      photoUrl: 'https://unsplash.com/photos/a-woman-with-freckles-on-her-face-looking-through-a-tree-NP3s9BYOqAc',
+      photoUrl:
+         'https://unsplash.com/photos/a-woman-with-freckles-on-her-face-looking-through-a-tree-NP3s9BYOqAc',
    },
    {
       src: 'juan-ordonez-QtDSDm0RX50-unsplash.jpg',
@@ -82,7 +85,8 @@ const loginCardPeople = [
       alt: 'Man sitting near wall wearing black framed sunglasses',
       photographerName: 'CONNOR BOTTS',
       photographerUrl: 'https://unsplash.com/@cinemamaster',
-      photoUrl: 'https://unsplash.com/photos/man-sitting-near-wall-wearing-black-framed-sunglasses-k6rQYHBIAfs',
+      photoUrl:
+         'https://unsplash.com/photos/man-sitting-near-wall-wearing-black-framed-sunglasses-k6rQYHBIAfs',
    },
    {
       src: 'brooke-cagle-oTweoxMKdkA-unsplash.jpg',

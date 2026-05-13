@@ -24,7 +24,10 @@ export default function UploadStep({ getRootProps, open, isDragActive }: UploadS
                </button>
             </Dialog.Close>
          </div>
-         <div {...getRootProps()} {...stylex.props(styles.dropZone, isDragActive && styles.dropZoneActive)}>
+         <div
+            {...getRootProps()}
+            {...stylex.props(styles.dropZone, isDragActive && styles.dropZoneActive)}
+         >
             <IoImagesOutline style={{ fontSize: 96, color: 'rgb(168, 168, 168)' }} />
             <p {...stylex.props(styles.dropText)}>Drag photos and videos here</p>
             <button type="button" {...stylex.props(styles.selectButton)} onClick={open}>

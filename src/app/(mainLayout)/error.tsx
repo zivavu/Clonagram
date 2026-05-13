@@ -4,7 +4,13 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { styles } from './error.stylex';
 
-export default function MainLayoutError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function MainLayoutError({
+   error,
+   reset,
+}: {
+   error: Error & { digest?: string };
+   reset: () => void;
+}) {
    return (
       <div {...stylex.props(styles.container)}>
          <h1 {...stylex.props(styles.heading)}>Something went wrong</h1>

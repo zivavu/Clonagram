@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
-import { useState } from 'react';
-import { FiMessageCircle } from 'react-icons/fi';
-import { LuSend } from 'react-icons/lu';
-import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
-import { TbDots, TbRepeat } from 'react-icons/tb';
-import CarouselArrow from '@/src/components/CarouselArrow';
-import UserAvatar from '@/src/components/UserAvatar';
-import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import type { Post } from '../Main';
-import { styles } from './index.stylex';
+import * as stylex from "@stylexjs/stylex";
+import Image from "next/image";
+import { useState } from "react";
+import { FiMessageCircle } from "react-icons/fi";
+import { LuSend } from "react-icons/lu";
+import { MdBookmarkBorder, MdFavoriteBorder } from "react-icons/md";
+import { TbDots, TbRepeat } from "react-icons/tb";
+import CarouselArrow from "@/src/components/CarouselArrow";
+import UserAvatar from "@/src/components/UserAvatar";
+import { formatRelativeTimeShortUnit } from "@/src/utils/time";
+import type { Post } from "../Main";
+import { styles } from "./index.stylex";
 
 interface HomepagePostProps {
    post: Post;
@@ -23,11 +23,11 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
    const hasMultipleImages = post.media.length > 1;
 
    const handlePrevious = () => {
-      setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev));
+      setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : prev));
    };
 
    const handleNext = () => {
-      setCurrentImageIndex(prev => (prev < post.media.length - 1 ? prev + 1 : prev));
+      setCurrentImageIndex((prev) => (prev < post.media.length - 1 ? prev + 1 : prev));
    };
 
    return (
@@ -44,7 +44,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
                {...stylex.props(styles.carouselTrack)}
                style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
             >
-               {post.media.map((media, mediaIndex) => (
+               {post.media.map((media) => (
                   <div key={media.id} {...stylex.props(styles.carouselSlide)}>
                      <Image src={media.url} alt={media.type} fill sizes="468px" {...stylex.props(styles.postImage)} />
                   </div>
@@ -90,7 +90,7 @@ export default function HomepagePost({ post, index }: HomepagePostProps) {
             <button type="button" aria-label="Share">
                <LuSend size={20} />
             </button>
-            <button type="button" aria-label="Bookmark" style={{ marginLeft: 'auto' }}>
+            <button type="button" aria-label="Bookmark" style={{ marginLeft: "auto" }}>
                <MdBookmarkBorder size={24} />
             </button>
          </div>

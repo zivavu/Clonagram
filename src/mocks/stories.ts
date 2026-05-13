@@ -4,7 +4,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 0,
       username: 'code.syntax',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona20.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona20.jpg',
       timestamp: '2026-04-25T00:15:00Z',
       stories: [
          {
@@ -37,7 +38,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 1,
       username: 'aurora.mp4',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona1.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona1.jpg',
       timestamp: '2026-04-25T15:42:00Z',
       stories: [
          {
@@ -60,7 +62,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 2,
       username: 'darkwave99',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona2.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona2.jpg',
       timestamp: '2026-04-25T15:10:00Z',
       stories: [
          {
@@ -78,7 +81,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 3,
       username: 'jpeg.ghost',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona3.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona3.jpg',
       timestamp: '2026-04-25T14:55:00Z',
       stories: [
          {
@@ -106,7 +110,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 4,
       username: 'velvet.avi',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona4.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona4.jpg',
       timestamp: '2026-04-25T14:30:00Z',
       stories: [
          {
@@ -119,7 +124,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 5,
       username: 'solarflux',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona5.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona5.jpg',
       timestamp: '2026-04-25T14:05:00Z',
       stories: [
          {
@@ -152,7 +158,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 6,
       username: 'nxght.mode',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona6.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona6.jpg',
       timestamp: '2026-04-25T13:48:00Z',
       stories: [
          {
@@ -170,7 +177,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 7,
       username: 'glitch.muse',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona7.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona7.jpg',
       timestamp: '2026-04-25T13:20:00Z',
       stories: [
          {
@@ -193,7 +201,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 8,
       username: 'fog.machine',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona8.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona8.jpg',
       timestamp: '2026-04-25T12:50:00Z',
       stories: [
          {
@@ -221,7 +230,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 9,
       username: 'pixl.witch',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona9.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona9.jpg',
       timestamp: '2026-04-25T12:17:00Z',
       stories: [
          {
@@ -234,7 +244,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 10,
       username: 'static.eden',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona10.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona10.jpg',
       timestamp: '2026-04-25T11:40:00Z',
       stories: [
          {
@@ -267,7 +278,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 11,
       username: 'lo.fi.wolf',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona11.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona11.jpg',
       timestamp: '2026-04-25T11:05:00Z',
       stories: [
          {
@@ -285,7 +297,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 12,
       username: 'neon.relic',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona12.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona12.jpg',
       timestamp: '2026-04-25T10:30:00Z',
       stories: [
          {
@@ -308,7 +321,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 13,
       username: 'void.jpeg',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona13.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona13.jpg',
       timestamp: '2026-04-25T09:55:00Z',
       stories: [
          {
@@ -336,7 +350,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 14,
       username: 'synth.driftr',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona14.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona14.jpg',
       timestamp: '2026-04-25T08:22:00Z',
       stories: [
          {
@@ -349,7 +364,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 15,
       username: 'cassette.era',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona15.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona15.jpg',
       timestamp: '2026-04-25T07:48:00Z',
       stories: [
          {
@@ -382,7 +398,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 16,
       username: 'analog.flow',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona16.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona16.jpg',
       timestamp: '2026-04-25T06:33:00Z',
       stories: [
          {
@@ -400,7 +417,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 17,
       username: 'digital.pulse',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona17.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona17.jpg',
       timestamp: '2026-04-25T05:10:00Z',
       stories: [
          {
@@ -423,7 +441,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 18,
       username: 'noise.wave',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona18.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona18.jpg',
       timestamp: '2026-04-25T03:45:00Z',
       stories: [
          {
@@ -451,7 +470,8 @@ export const STORIES: StoryEntry[] = [
    {
       id: 19,
       username: 'pixel.dreams',
-      avatarUrl: 'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona19.jpg',
+      avatarUrl:
+         'https://pggvzapkivjgsybyzjok.supabase.co/storage/v1/object/public/mock-images/clona19.jpg',
       timestamp: '2026-04-25T02:00:00Z',
       stories: [
          {

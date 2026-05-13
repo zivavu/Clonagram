@@ -47,7 +47,8 @@ export const styles = stylex.create({
       flexShrink: 0,
       overflow: 'hidden',
       cursor: 'pointer',
-      transition: 'width 380ms cubic-bezier(0.4, 0, 0.2, 1), height 380ms cubic-bezier(0.4, 0, 0.2, 1)',
+      transition:
+         'width 380ms cubic-bezier(0.4, 0, 0.2, 1), height 380ms cubic-bezier(0.4, 0, 0.2, 1)',
    },
    storyRounded: {
       borderRadius: radius.md,

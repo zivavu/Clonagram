@@ -38,9 +38,19 @@ const navItemsConfig: NavItemConfig[] = [
    { href: '/direct', icon: BsSend, activeIcon: BsSendFill, label: 'Messages' },
    { icon: MdSearch, activeIcon: MdSearch, label: 'Search', action: 'search' },
    { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
-   { icon: MdFavoriteBorder, activeIcon: MdFavorite, label: 'Notifications', action: 'notifications' },
+   {
+      icon: MdFavoriteBorder,
+      activeIcon: MdFavorite,
+      label: 'Notifications',
+      action: 'notifications',
+   },
    { icon: FaRegSquarePlus, activeIcon: FaSquarePlus, label: 'Create', action: 'create' },
-   { href: '/dashboard', icon: RiBarChartBoxLine, activeIcon: RiBarChartBoxFill, label: 'Dashboard' },
+   {
+      href: '/dashboard',
+      icon: RiBarChartBoxLine,
+      activeIcon: RiBarChartBoxFill,
+      label: 'Dashboard',
+   },
    { href: '/profile', icon: MdOutlinePerson, activeIcon: MdPerson, label: 'Profile' },
 ];
 
@@ -71,7 +81,10 @@ export function NavItems({ mainSidebarStyles }: NavItemsProps) {
             const content = (
                <>
                   <IconComponent style={{ fontSize: 28 }} />
-                  <span {...stylex.props(mainSidebarStyles.navItemLabel)} style={{ fontWeight: isActive ? 700 : 400 }}>
+                  <span
+                     {...stylex.props(mainSidebarStyles.navItemLabel)}
+                     style={{ fontWeight: isActive ? 700 : 400 }}
+                  >
                      {label}
                   </span>
                </>
@@ -84,7 +97,10 @@ export function NavItems({ mainSidebarStyles }: NavItemsProps) {
                      type="button"
                      onClick={openSearch}
                      aria-label={label}
-                     {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
+                     {...stylex.props(
+                        mainSidebarStyles.navItem,
+                        isActive && mainSidebarStyles.navItemActive,
+                     )}
                   >
                      {content}
                   </button>
@@ -98,7 +114,10 @@ export function NavItems({ mainSidebarStyles }: NavItemsProps) {
                      type="button"
                      onClick={openNotifications}
                      aria-label={label}
-                     {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
+                     {...stylex.props(
+                        mainSidebarStyles.navItem,
+                        isActive && mainSidebarStyles.navItemActive,
+                     )}
                   >
                      {content}
                   </button>
@@ -112,7 +131,10 @@ export function NavItems({ mainSidebarStyles }: NavItemsProps) {
                      type="button"
                      onClick={openCreate}
                      aria-label={label}
-                     {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
+                     {...stylex.props(
+                        mainSidebarStyles.navItem,
+                        isActive && mainSidebarStyles.navItemActive,
+                     )}
                   >
                      {content}
                   </button>
@@ -125,7 +147,10 @@ export function NavItems({ mainSidebarStyles }: NavItemsProps) {
                   key={href}
                   href={href}
                   aria-label={label}
-                  {...stylex.props(mainSidebarStyles.navItem, isActive && mainSidebarStyles.navItemActive)}
+                  {...stylex.props(
+                     mainSidebarStyles.navItem,
+                     isActive && mainSidebarStyles.navItemActive,
+                  )}
                >
                   {content}
                </Link>

@@ -12,7 +12,11 @@ export default function HomePage({ variant }: { variant: string | null }) {
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.forYouFollowingContainer)}>
             <div {...stylex.props(styles.forYouFollowingSwitch)}>
-               <Link href="?variant=home" aria-label="For You" {...stylex.props(styles.forYouFollowingLink)}>
+               <Link
+                  href="?variant=home"
+                  aria-label="For You"
+                  {...stylex.props(styles.forYouFollowingLink)}
+               >
                   <span
                      {...stylex.props(
                         styles.forYouFollowingSwitchButtonLabel,
@@ -22,7 +26,11 @@ export default function HomePage({ variant }: { variant: string | null }) {
                      For you
                   </span>
                </Link>
-               <Link href="?variant=following" aria-label="Following" {...stylex.props(styles.forYouFollowingLink)}>
+               <Link
+                  href="?variant=following"
+                  aria-label="Following"
+                  {...stylex.props(styles.forYouFollowingLink)}
+               >
                   <span
                      {...stylex.props(
                         styles.forYouFollowingSwitchButtonLabel,

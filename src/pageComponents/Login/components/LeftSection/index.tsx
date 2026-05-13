@@ -1,9 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
-import { useSyncExternalStore } from 'react';
-import { MdFavorite } from 'react-icons/md';
-import loginCardPeople, { type LoginCardPerson } from '../../loginCardPeople';
-import { imageCardStyles, styles } from './index.stylex';
+import * as stylex from "@stylexjs/stylex";
+import Image from "next/image";
+import { useSyncExternalStore } from "react";
+import { MdFavorite } from "react-icons/md";
+import loginCardPeople, { type LoginCardPerson } from "../../loginCardPeople";
+import { imageCardStyles, styles } from "./index.stylex";
 
 function getRandomDistinctPeople(people: readonly LoginCardPerson[], count: number) {
    return [...people].sort(() => Math.random() - 0.5).slice(0, count);
@@ -13,8 +13,9 @@ const initialCardPeople: readonly LoginCardPerson[] = loginCardPeople.slice(0, 3
 
 let clientCardPeople: readonly LoginCardPerson[] | null = null;
 function subscribe() {
-   return () => { };
+   return () => {};
 }
+
 function getClientSnapshot(): readonly LoginCardPerson[] {
    clientCardPeople ??= getRandomDistinctPeople(loginCardPeople, 3);
    return clientCardPeople;

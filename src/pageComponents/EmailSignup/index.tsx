@@ -77,9 +77,15 @@ export default function EmailSignUpPage() {
             <div {...stylex.props(styles.contentContainer)}>
                <ZetaLogo />
                <h1 {...stylex.props(styles.title)}>Get started on Clonagram</h1>
-               <span {...stylex.props(styles.description)}>Sign up to see photos and videos from your friends.</span>
+               <span {...stylex.props(styles.description)}>
+                  Sign up to see photos and videos from your friends.
+               </span>
                <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
-                  <EmailSignupInput label="Email address" topLabel="Email address" {...register('email')} />
+                  <EmailSignupInput
+                     label="Email address"
+                     topLabel="Email address"
+                     {...register('email')}
+                  />
                   <span {...stylex.props(styles.learnMoreLinkContainer)}>
                      You may receive notifications from us.{' '}
                      <Link href="/" {...stylex.props(styles.accentLink)}>
@@ -96,14 +102,21 @@ export default function EmailSignUpPage() {
                   <Controller
                      control={control}
                      name="birthdate"
-                     render={({ field }) => <BirthdatePicker value={field.value} onChange={field.onChange} />}
+                     render={({ field }) => (
+                        <BirthdatePicker value={field.value} onChange={field.onChange} />
+                     )}
                   />
                   <EmailSignupInput label="Full Name" topLabel="Name" {...register('fullName')} />
-                  <EmailSignupInput label="Username" topLabel="Username" {...register('username')} />
+                  <EmailSignupInput
+                     label="Username"
+                     topLabel="Username"
+                     {...register('username')}
+                  />
 
                   <div {...stylex.props(styles.policyText)}>
                      <span>
-                        People who use our service may have uploaded your contact information to Instagram.{' '}
+                        People who use our service may have uploaded your contact information to
+                        Instagram.{' '}
                         <Link href="/" {...stylex.props(styles.accentLink)}>
                            Learn more.
                         </Link>
@@ -127,9 +140,9 @@ export default function EmailSignUpPage() {
                         <Link href="/" {...stylex.props(styles.accentLink)}>
                            Privacy Policy
                         </Link>{' '}
-                        describes the ways we can use the information we collect when you create an account. For
-                        example, we use this information to provide, personalize and improve our products, including
-                        ads.
+                        describes the ways we can use the information we collect when you create an
+                        account. For example, we use this information to provide, personalize and
+                        improve our products, including ads.
                      </span>
                   </div>
                   {errors.root?.message && (

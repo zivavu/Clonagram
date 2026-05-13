@@ -52,7 +52,9 @@ export default function ExplorePage({ variant }: { variant: string | null }) {
          <div {...stylex.props(styles.content)}>
             <div {...stylex.props(styles.header)}>
                <Link href="/explore?variant=for_you" {...stylex.props(styles.headerLink)}>
-                  <span {...stylex.props(isForYou ? styles.headerActive : styles.headerInactive)}>For you</span>
+                  <span {...stylex.props(isForYou ? styles.headerActive : styles.headerInactive)}>
+                     For you
+                  </span>
                </Link>
                <Link href="/explore?variant=nonpersonalized" {...stylex.props(styles.headerLink)}>
                   <span {...stylex.props(!isForYou ? styles.headerActive : styles.headerInactive)}>

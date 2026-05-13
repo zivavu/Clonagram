@@ -43,7 +43,9 @@ export default async function DirectMessagesPage({
                      <VscSend {...stylex.props(styles.messageIcon)} />
                   </div>
                   <div {...stylex.props(styles.chatNotSelectedTitle)}>Your messages</div>
-                  <div {...stylex.props(styles.chatNotSelectedSubtitle)}>Send a message to start a chat.</div>
+                  <div {...stylex.props(styles.chatNotSelectedSubtitle)}>
+                     Send a message to start a chat.
+                  </div>
                   <NewMessageTrigger styleProps={stylex.props(styles.sendMessageButton)}>
                      Send message
                   </NewMessageTrigger>
@@ -56,8 +58,9 @@ export default async function DirectMessagesPage({
                   </div>
                   <div {...stylex.props(styles.chatNotSelectedTitle)}>Message requests</div>
                   <div {...stylex.props(styles.chatNotSelectedSubtitle)}>
-                     These messages are from people you&apos;ve restricted or don&apos;t follow. They won&apos;t know
-                     you viewed their request until you allow them to message you.
+                     These messages are from people you&apos;ve restricted or don&apos;t follow.
+                     They won&apos;t know you viewed their request until you allow them to message
+                     you.
                   </div>
                </div>
             )}
@@ -67,14 +70,20 @@ export default async function DirectMessagesPage({
                      <div {...stylex.props(styles.chatTopBarRecipient)}>
                         <UserAvatar src={user?.avatar_url} alt={user?.username || ''} size={44} />
                         <div>
-                           <div {...stylex.props(styles.chatTopBarRecipientName)}>{user?.full_name}</div>
-                           <div {...stylex.props(styles.chatTopBarRecipientUsername)}>{user?.username}</div>
+                           <div {...stylex.props(styles.chatTopBarRecipientName)}>
+                              {user?.full_name}
+                           </div>
+                           <div {...stylex.props(styles.chatTopBarRecipientUsername)}>
+                              {user?.username}
+                           </div>
                         </div>
                      </div>
                      <div {...stylex.props(styles.chatTopBarActions)}>
                         <IoCallOutline {...stylex.props(styles.chatTopBarActionIcon)} />
                         <HiOutlineVideoCamera {...stylex.props(styles.chatTopBarActionIcon)} />
-                        <IoInformationCircleOutline {...stylex.props(styles.chatTopBarActionIcon)} />
+                        <IoInformationCircleOutline
+                           {...stylex.props(styles.chatTopBarActionIcon)}
+                        />
                      </div>
                   </div>
 
@@ -89,11 +98,13 @@ export default async function DirectMessagesPage({
                      {chat.messages.map((msg, idx) => {
                         const isSent = msg.senderId === CURRENT_USER.id;
                         const prevMsg = idx > 0 ? chat.messages[idx - 1] : null;
-                        const nextMsg = idx < chat.messages.length - 1 ? chat.messages[idx + 1] : null;
+                        const nextMsg =
+                           idx < chat.messages.length - 1 ? chat.messages[idx + 1] : null;
                         const isLastInGroup = !nextMsg || nextMsg.senderId !== msg.senderId;
                         const MS_PER_DAY = 86_400_000;
                         const gapToPrev = prevMsg
-                           ? new Date(msg.timestamp).getTime() - new Date(prevMsg.timestamp).getTime()
+                           ? new Date(msg.timestamp).getTime() -
+                             new Date(prevMsg.timestamp).getTime()
                            : Infinity;
                         const showSeparator = gapToPrev > MS_PER_DAY;
 
@@ -115,14 +126,20 @@ export default async function DirectMessagesPage({
                                  {!isSent && (
                                     <div {...stylex.props(styles.messageAvatarSlot)}>
                                        {isLastInGroup && (
-                                          <UserAvatar src={user.avatar_url} alt={user.username} size={28} />
+                                          <UserAvatar
+                                             src={user.avatar_url}
+                                             alt={user.username}
+                                             size={28}
+                                          />
                                        )}
                                     </div>
                                  )}
                                  <div
                                     {...stylex.props(
                                        styles.messageBubble,
-                                       isSent ? styles.messageBubbleSent : styles.messageBubbleReceived,
+                                       isSent
+                                          ? styles.messageBubbleSent
+                                          : styles.messageBubbleReceived,
                                     )}
                                  >
                                     {msg.text}
@@ -138,12 +155,17 @@ export default async function DirectMessagesPage({
                         <div {...stylex.props(styles.requestInfoSection)}>
                            <div {...stylex.props(styles.requestInfoTitle)}>
                               Accept message request from{' '}
-                              <span {...stylex.props(styles.requestInfoUsername)}>{user.username}</span>{' '}
-                              <span {...stylex.props(styles.requestInfoUsername)}>({user.username})</span>?
+                              <span {...stylex.props(styles.requestInfoUsername)}>
+                                 {user.username}
+                              </span>{' '}
+                              <span {...stylex.props(styles.requestInfoUsername)}>
+                                 ({user.username})
+                              </span>
+                              ?
                            </div>
                            <div {...stylex.props(styles.requestInfoSubtitle)}>
-                              If you accept, they will also be able to call you and see info such as your activity
-                              status and when you&apos;ve read messages.
+                              If you accept, they will also be able to call you and see info such as
+                              your activity status and when you&apos;ve read messages.
                            </div>
                         </div>
                         <div {...stylex.props(styles.requestButtonsRow)}>
@@ -152,7 +174,10 @@ export default async function DirectMessagesPage({
                            </button>
                            <Separator {...stylex.props(styles.requestButtonDivider)} />
 
-                           <button {...stylex.props(styles.requestButton, styles.requestButtonDanger)} type="button">
+                           <button
+                              {...stylex.props(styles.requestButton, styles.requestButtonDanger)}
+                              type="button"
+                           >
                               Delete
                            </button>
                            <Separator {...stylex.props(styles.requestButtonDivider)} />
@@ -166,7 +191,11 @@ export default async function DirectMessagesPage({
                      <div {...stylex.props(styles.inputContainer)}>
                         <div {...stylex.props(styles.inputWrapper)}>
                            <AiOutlineSmile {...stylex.props(styles.inputIcon)} />
-                           <input {...stylex.props(styles.inputField)} type="text" placeholder="Message..." />
+                           <input
+                              {...stylex.props(styles.inputField)}
+                              type="text"
+                              placeholder="Message..."
+                           />
                            <IoMicOutline {...stylex.props(styles.inputIcon)} />
                            <TbPhoto {...stylex.props(styles.inputIcon)} />
                            <LuSticker {...stylex.props(styles.inputIcon)} />

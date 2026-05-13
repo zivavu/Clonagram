@@ -56,7 +56,8 @@ function getGroupLabel(dateString: string): string | null {
    const now = new Date();
    const diffMs = now.getTime() - date.getTime();
    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-   const diffMonths = now.getMonth() - date.getMonth() + (now.getFullYear() - date.getFullYear()) * 12;
+   const diffMonths =
+      now.getMonth() - date.getMonth() + (now.getFullYear() - date.getFullYear()) * 12;
 
    if (diffDays < 1) return 'Today';
    if (diffMonths < 1) return 'This month';
@@ -72,7 +73,9 @@ function getNotificationText(notification: Notification): React.ReactNode {
    const actorName = (
       <span style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
          {firstActor.username}
-         {isVerified && <MdVerified style={{ color: 'rgb(0, 149, 246)', fontSize: 14, flexShrink: 0 }} />}
+         {isVerified && (
+            <MdVerified style={{ color: 'rgb(0, 149, 246)', fontSize: 14, flexShrink: 0 }} />
+         )}
          {othersCount > 0 && ` and ${othersCount} other${othersCount > 1 ? 's' : ''}`}
       </span>
    );
@@ -120,14 +123,20 @@ function NotificationItem({ notification }: { notification: Notification }) {
             <UserAvatar src={firstActor.avatar_url} alt={firstActor.username} size={44} />
             {notification.actors.length > 1 && (
                <div {...stylex.props(styles.secondaryAvatar)}>
-                  <UserAvatar src={notification.actors[1].avatar_url} alt={notification.actors[1].username} size={20} />
+                  <UserAvatar
+                     src={notification.actors[1].avatar_url}
+                     alt={notification.actors[1].username}
+                     size={20}
+                  />
                </div>
             )}
          </div>
          <div {...stylex.props(styles.notificationBody)}>
             <div {...stylex.props(styles.notificationText)}>
                {getNotificationText(notification)}
-               <span {...stylex.props(styles.timeAgo)}>{formatTimeAgo(notification.createdAt)}</span>
+               <span {...stylex.props(styles.timeAgo)}>
+                  {formatTimeAgo(notification.createdAt)}
+               </span>
             </div>
          </div>
          {notification.type === 'follow' ? (
@@ -161,17 +170,23 @@ export default function NotificationsPortal() {
    const filteredNotifications = NOTIFICATIONS.filter(n => {
       if (!typeMatchesCategory(n.type, activeCategory)) return false;
 
-      const anyCategoryChecked = appliedFilter.tagsMentions || appliedFilter.comments || appliedFilter.follows;
+      const anyCategoryChecked =
+         appliedFilter.tagsMentions || appliedFilter.comments || appliedFilter.follows;
       if (anyCategoryChecked) {
          let matches = false;
-         if (appliedFilter.tagsMentions && (n.type === 'mention' || n.type === 'tag')) matches = true;
-         if (appliedFilter.comments && (n.type === 'comment' || n.type === 'mention' || n.type === 'tag'))
+         if (appliedFilter.tagsMentions && (n.type === 'mention' || n.type === 'tag'))
+            matches = true;
+         if (
+            appliedFilter.comments &&
+            (n.type === 'comment' || n.type === 'mention' || n.type === 'tag')
+         )
             matches = true;
          if (appliedFilter.follows && n.type === 'follow') matches = true;
          if (!matches) return false;
       }
 
-      if (appliedFilter.verified && !n.actors.some(a => VERIFIED_USERS.has(a.username))) return false;
+      if (appliedFilter.verified && !n.actors.some(a => VERIFIED_USERS.has(a.username)))
+         return false;
 
       return true;
    });
@@ -194,7 +209,9 @@ export default function NotificationsPortal() {
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} onClick={close} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
-               <Dialog.Description style={{ display: 'none' }}>Your recent notifications</Dialog.Description>
+               <Dialog.Description style={{ display: 'none' }}>
+                  Your recent notifications
+               </Dialog.Description>
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Notifications</Dialog.Title>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -217,7 +234,10 @@ export default function NotificationsPortal() {
                   {FILTER_CATEGORIES.map(cat => (
                      <button
                         key={cat.key}
-                        {...stylex.props(styles.chip, activeCategory === cat.key && styles.chipActive)}
+                        {...stylex.props(
+                           styles.chip,
+                           activeCategory === cat.key && styles.chipActive,
+                        )}
                         onClick={() => setActiveCategory(cat.key)}
                      >
                         {cat.label}
@@ -233,7 +253,9 @@ export default function NotificationsPortal() {
                         <input
                            type="checkbox"
                            checked={filterState.tagsMentions}
-                           onChange={e => setFilterState(s => ({ ...s, tagsMentions: e.target.checked }))}
+                           onChange={e =>
+                              setFilterState(s => ({ ...s, tagsMentions: e.target.checked }))
+                           }
                            {...stylex.props(styles.filterCheckbox)}
                         />
                      </label>
@@ -242,7 +264,9 @@ export default function NotificationsPortal() {
                         <input
                            type="checkbox"
                            checked={filterState.comments}
-                           onChange={e => setFilterState(s => ({ ...s, comments: e.target.checked }))}
+                           onChange={e =>
+                              setFilterState(s => ({ ...s, comments: e.target.checked }))
+                           }
                            {...stylex.props(styles.filterCheckbox)}
                         />
                      </label>
@@ -251,7 +275,9 @@ export default function NotificationsPortal() {
                         <input
                            type="checkbox"
                            checked={filterState.follows}
-                           onChange={e => setFilterState(s => ({ ...s, follows: e.target.checked }))}
+                           onChange={e =>
+                              setFilterState(s => ({ ...s, follows: e.target.checked }))
+                           }
                            {...stylex.props(styles.filterCheckbox)}
                         />
                      </label>
@@ -264,7 +290,9 @@ export default function NotificationsPortal() {
                         <input
                            type="checkbox"
                            checked={filterState.verified}
-                           onChange={e => setFilterState(s => ({ ...s, verified: e.target.checked }))}
+                           onChange={e =>
+                              setFilterState(s => ({ ...s, verified: e.target.checked }))
+                           }
                            {...stylex.props(styles.filterCheckbox)}
                         />
                      </label>
@@ -273,7 +301,9 @@ export default function NotificationsPortal() {
                         <input
                            type="checkbox"
                            checked={filterState.following}
-                           onChange={e => setFilterState(s => ({ ...s, following: e.target.checked }))}
+                           onChange={e =>
+                              setFilterState(s => ({ ...s, following: e.target.checked }))
+                           }
                            {...stylex.props(styles.filterCheckbox)}
                         />
                      </label>

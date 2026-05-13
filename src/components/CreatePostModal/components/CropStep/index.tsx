@@ -40,7 +40,12 @@ export default function CropStep({
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
-            <button type="button" {...stylex.props(styles.headerButton)} onClick={onBack} aria-label="Back">
+            <button
+               type="button"
+               {...stylex.props(styles.headerButton)}
+               onClick={onBack}
+               aria-label="Back"
+            >
                <IoArrowBack style={{ fontSize: 24 }} />
             </button>
             <span {...stylex.props(styles.headerTitle)}>Crop</span>

@@ -46,7 +46,14 @@ export default function CreatePostModal() {
          panY: 0,
          filterPreset: 'Original',
          filterStrength: 100,
-         adjustments: { brightness: 0, contrast: 0, fade: 0, saturation: 0, temperature: 0, vignette: 0 },
+         adjustments: {
+            brightness: 0,
+            contrast: 0,
+            fade: 0,
+            saturation: 0,
+            temperature: 0,
+            vignette: 0,
+         },
          tags: [],
       }));
       setFiles(prev => [...prev, ...newFiles].slice(0, MAX_FILES));
@@ -143,13 +150,21 @@ export default function CreatePostModal() {
                <input {...getInputProps()} style={{ display: 'none' }} />
                {step === 'upload' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>Upload a photo or video</Dialog.Description>
-                     <UploadStep getRootProps={getRootProps} open={open} isDragActive={isDragActive} />
+                     <Dialog.Description style={{ display: 'none' }}>
+                        Upload a photo or video
+                     </Dialog.Description>
+                     <UploadStep
+                        getRootProps={getRootProps}
+                        open={open}
+                        isDragActive={isDragActive}
+                     />
                   </>
                )}
                {step === 'crop' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>Crop your photo</Dialog.Description>
+                     <Dialog.Description style={{ display: 'none' }}>
+                        Crop your photo
+                     </Dialog.Description>
                      <CropStep
                         files={files}
                         currentIndex={currentIndex}
@@ -167,7 +182,9 @@ export default function CreatePostModal() {
                )}
                {step === 'edit' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>Edit your post</Dialog.Description>
+                     <Dialog.Description style={{ display: 'none' }}>
+                        Edit your post
+                     </Dialog.Description>
                      <EditStep
                         files={files}
                         currentIndex={currentIndex}
@@ -181,7 +198,9 @@ export default function CreatePostModal() {
                )}
                {step === 'caption' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>Add caption and details</Dialog.Description>
+                     <Dialog.Description style={{ display: 'none' }}>
+                        Add caption and details
+                     </Dialog.Description>
                      <CaptionStep
                         files={files}
                         currentIndex={currentIndex}
@@ -211,7 +230,9 @@ export default function CreatePostModal() {
                      />
                      <div {...stylex.props(styles.discardCard)}>
                         <h3 {...stylex.props(styles.discardTitle)}>Discard post?</h3>
-                        <p {...stylex.props(styles.discardSubtitle)}>If you leave, your edits won't be saved.</p>
+                        <p {...stylex.props(styles.discardSubtitle)}>
+                           If you leave, your edits won't be saved.
+                        </p>
                         <button
                            type="button"
                            {...stylex.props(styles.discardButton, styles.discardDanger)}

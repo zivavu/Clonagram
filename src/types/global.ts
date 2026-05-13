@@ -9,7 +9,8 @@ export type User = {
    created_at: string | null;
 };
 
-export type PartialUser = Pick<User, 'id' | 'username' | 'avatar_url'> & Partial<Pick<User, 'full_name'>>;
+export type PartialUser = Pick<User, 'id' | 'username' | 'avatar_url'> &
+   Partial<Pick<User, 'full_name'>>;
 
 export type Media = {
    id: string;

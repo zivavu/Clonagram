@@ -9,9 +9,18 @@ interface StoryNavigationButtonProps {
    isLeft?: boolean;
 }
 
-export default function StoryNavigationButton({ onClick, left, isMoving, isLeft = false }: StoryNavigationButtonProps) {
+export default function StoryNavigationButton({
+   onClick,
+   left,
+   isMoving,
+   isLeft = false,
+}: StoryNavigationButtonProps) {
    return (
-      <button onClick={onClick} {...stylex.props(styles.navBtn, isMoving && styles.navBtnHidden)} style={{ left }}>
+      <button
+         onClick={onClick}
+         {...stylex.props(styles.navBtn, isMoving && styles.navBtnHidden)}
+         style={{ left }}
+      >
          <svg
             aria-label="Story navigation button"
             xmlns="http://www.w3.org/2000/svg"

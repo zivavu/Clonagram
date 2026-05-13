@@ -90,7 +90,11 @@ export default function CaptionPanel({
                autoFocus
             />
          ) : (
-            <button type="button" {...stylex.props(styles.addRow)} onClick={() => setCollabOpen(true)}>
+            <button
+               type="button"
+               {...stylex.props(styles.addRow)}
+               onClick={() => setCollabOpen(true)}
+            >
                {collaborators.length > 0 ? (
                   <div {...stylex.props(styles.collabAvatars)}>
                      {collaborators.slice(0, 3).map(c => (
@@ -99,7 +103,9 @@ export default function CaptionPanel({
                         </div>
                      ))}
                      {collaborators.length > 3 && (
-                        <span {...stylex.props(styles.collabCount)}>+{collaborators.length - 3}</span>
+                        <span {...stylex.props(styles.collabCount)}>
+                           +{collaborators.length - 3}
+                        </span>
                      )}
                   </div>
                ) : (
@@ -110,7 +116,11 @@ export default function CaptionPanel({
          )}
 
          <div {...stylex.props(styles.divider)} />
-         <button type="button" {...stylex.props(styles.sectionHeader)} onClick={() => setShareToOpen(o => !o)}>
+         <button
+            type="button"
+            {...stylex.props(styles.sectionHeader)}
+            onClick={() => setShareToOpen(o => !o)}
+         >
             <span {...stylex.props(styles.sectionTitle)}>Share to</span>
             <MdExpandMore {...stylex.props(styles.chevron, shareToOpen && styles.chevronOpen)} />
          </button>
@@ -131,28 +141,46 @@ export default function CaptionPanel({
          )}
 
          <div {...stylex.props(styles.divider)} />
-         <button type="button" {...stylex.props(styles.sectionHeader)} onClick={() => setAccessibilityOpen(o => !o)}>
+         <button
+            type="button"
+            {...stylex.props(styles.sectionHeader)}
+            onClick={() => setAccessibilityOpen(o => !o)}
+         >
             <span {...stylex.props(styles.sectionTitle)}>Accessibility</span>
-            <MdExpandMore {...stylex.props(styles.chevron, accessibilityOpen && styles.chevronOpen)} />
+            <MdExpandMore
+               {...stylex.props(styles.chevron, accessibilityOpen && styles.chevronOpen)}
+            />
          </button>
          {accessibilityOpen && (
             <div {...stylex.props(styles.sectionContent)}>
                <p {...stylex.props(styles.accessibilityDesc)}>
-                  Alt text describes your photos for people with visual impairments. Alt text will be automatically
-                  created for your photos or you can choose to write your own.
+                  Alt text describes your photos for people with visual impairments. Alt text will
+                  be automatically created for your photos or you can choose to write your own.
                </p>
                {files.map((file, idx) => (
                   <div key={file.preview} {...stylex.props(styles.altRow)}>
                      {/* biome-ignore lint/performance/noImgElement: small fixed-size thumbnail */}
-                     <img src={file.preview} alt={`Thumbnail ${idx + 1}`} {...stylex.props(styles.altThumb)} />
-                     <input type="text" placeholder="Write alt text..." {...stylex.props(styles.altInput)} />
+                     <img
+                        src={file.preview}
+                        alt={`Thumbnail ${idx + 1}`}
+                        {...stylex.props(styles.altThumb)}
+                     />
+                     <input
+                        type="text"
+                        placeholder="Write alt text..."
+                        {...stylex.props(styles.altInput)}
+                     />
                   </div>
                ))}
             </div>
          )}
 
          <div {...stylex.props(styles.divider)} />
-         <button type="button" {...stylex.props(styles.sectionHeader)} onClick={() => setAdvancedOpen(o => !o)}>
+         <button
+            type="button"
+            {...stylex.props(styles.sectionHeader)}
+            onClick={() => setAdvancedOpen(o => !o)}
+         >
             <span {...stylex.props(styles.sectionTitle)}>Advanced settings</span>
             <MdExpandMore {...stylex.props(styles.chevron, advancedOpen && styles.chevronOpen)} />
          </button>
@@ -160,10 +188,12 @@ export default function CaptionPanel({
             <div {...stylex.props(styles.sectionContent)}>
                <div {...stylex.props(styles.settingRow)}>
                   <div {...stylex.props(styles.settingText)}>
-                     <span {...stylex.props(styles.settingTitle)}>Hide like and view counts on this post</span>
+                     <span {...stylex.props(styles.settingTitle)}>
+                        Hide like and view counts on this post
+                     </span>
                      <span {...stylex.props(styles.settingDesc)}>
-                        Only you will see the total number of likes and views on this post. You can change this later by
-                        going to the ··· menu at the top of the post.{' '}
+                        Only you will see the total number of likes and views on this post. You can
+                        change this later by going to the ··· menu at the top of the post.{' '}
                         <Link href="#" {...stylex.props(styles.settingLink)}>
                            Learn more
                         </Link>
@@ -188,9 +218,12 @@ export default function CaptionPanel({
                </div>
                <div {...stylex.props(styles.settingRow)}>
                   <div {...stylex.props(styles.settingText)}>
-                     <span {...stylex.props(styles.settingTitle)}>Automatically share to Threads</span>
+                     <span {...stylex.props(styles.settingTitle)}>
+                        Automatically share to Threads
+                     </span>
                      <span {...stylex.props(styles.settingDesc)}>
-                        Always share your posts to Threads. You can change your audience on Threads settings.{' '}
+                        Always share your posts to Threads. You can change your audience on Threads
+                        settings.{' '}
                         <Link href="#" {...stylex.props(styles.settingLink)}>
                            Learn more
                         </Link>
@@ -200,9 +233,12 @@ export default function CaptionPanel({
                </div>
                <div {...stylex.props(styles.settingRow)}>
                   <div {...stylex.props(styles.settingText)}>
-                     <span {...stylex.props(styles.settingTitle)}>Automatically share to Facebook</span>
+                     <span {...stylex.props(styles.settingTitle)}>
+                        Automatically share to Facebook
+                     </span>
                      <span {...stylex.props(styles.settingDesc)}>
-                        Always share your posts to Facebook. You can change your audience on Facebook settings.{' '}
+                        Always share your posts to Facebook. You can change your audience on
+                        Facebook settings.{' '}
                         <Link href="#" {...stylex.props(styles.settingLink)}>
                            Learn more
                         </Link>
@@ -212,9 +248,12 @@ export default function CaptionPanel({
                </div>
                <div {...stylex.props(styles.settingRow)}>
                   <div {...stylex.props(styles.settingText)}>
-                     <span {...stylex.props(styles.settingTitle)}>Automatically share to Clonedbook</span>
+                     <span {...stylex.props(styles.settingTitle)}>
+                        Automatically share to Clonedbook
+                     </span>
                      <span {...stylex.props(styles.settingDesc)}>
-                        Always share your posts to Clonedbook. You can change your audience on Clonedbook settings.
+                        Always share your posts to Clonedbook. You can change your audience on
+                        Clonedbook settings.
                      </span>
                   </div>
                   <Toggle checked={autoShareClonedbook} onChange={setAutoShareClonedbook} />

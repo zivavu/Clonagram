@@ -45,7 +45,9 @@ export default function RightSidebar() {
                      <span {...stylex.props(styles.suggestionUsername)}>{user.username}</span>
                      {user.full_name && (
                         <span {...stylex.props(styles.suggestionSubtext)}>
-                           {user.full_name.length > 22 ? `${user.full_name.slice(0, 22)}…` : user.full_name}
+                           {user.full_name.length > 22
+                              ? `${user.full_name.slice(0, 22)}…`
+                              : user.full_name}
                         </span>
                      )}
                   </div>
@@ -66,7 +68,9 @@ export default function RightSidebar() {
                </span>
             ))}
          </div>
-         <div {...stylex.props(styles.copyright)}>© {new Date().getFullYear()} Clonagram from Zeta</div>
+         <div {...stylex.props(styles.copyright)}>
+            © {new Date().getFullYear()} Clonagram from Zeta
+         </div>
       </aside>
    );
 }

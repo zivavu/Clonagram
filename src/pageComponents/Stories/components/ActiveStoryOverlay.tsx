@@ -67,7 +67,10 @@ export default function ActiveStoryOverlay({
                   if (i === currentStoryMediaIndex) {
                      if (!isVideo) {
                         return (
-                           <div key={storyMedia.id} {...stylex.props(styles.storyMediaActiveStoryBarContainer)}>
+                           <div
+                              key={storyMedia.id}
+                              {...stylex.props(styles.storyMediaActiveStoryBarContainer)}
+                           >
                               <div {...stylex.props(styles.storyPictureBarTrack)}>
                                  <div
                                     {...stylex.props(styles.storyPictureBarFill)}
@@ -82,9 +85,15 @@ export default function ActiveStoryOverlay({
                         );
                      }
                      return (
-                        <div key={storyMedia.id} {...stylex.props(styles.storyMediaActiveStoryBarContainer)}>
+                        <div
+                           key={storyMedia.id}
+                           {...stylex.props(styles.storyMediaActiveStoryBarContainer)}
+                        >
                            <div
-                              {...stylex.props(styles.storyMediaBarItem, styles.storyMediaBarItemActive)}
+                              {...stylex.props(
+                                 styles.storyMediaBarItem,
+                                 styles.storyMediaBarItemActive,
+                              )}
                               style={{ width: `${playedPct.toFixed(2)}%` }}
                            />
                            <div
@@ -123,7 +132,10 @@ export default function ActiveStoryOverlay({
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>
                   <Popover.Root open={volumePopperOpen} onOpenChange={setVolumePopperOpen}>
                      <Popover.Trigger asChild>
-                        <button type="button" {...stylex.props(styles.activeStoryTopNavigationRightButton)}>
+                        <button
+                           type="button"
+                           {...stylex.props(styles.activeStoryTopNavigationRightButton)}
+                        >
                            {volume === 0 ? (
                               <MdVolumeOff size={20} />
                            ) : volume < 0.5 ? (
@@ -159,7 +171,10 @@ export default function ActiveStoryOverlay({
                   >
                      {isPlaying ? <MdPause size={20} /> : <MdPlayArrow size={20} />}
                   </button>
-                  <button type="button" {...stylex.props(styles.activeStoryTopNavigationRightButton)}>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.activeStoryTopNavigationRightButton)}
+                  >
                      <MdMoreHoriz size={20} />
                   </button>
                </div>

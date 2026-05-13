@@ -1,14 +1,14 @@
 import { type CookieMethodsServer, type CookieOptions, createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export async function updateSession(request: NextRequest,) {
+export async function updateSession(request: NextRequest) {
    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
    const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
    if (!supabaseUrl || !supabasePublishableKey) {
       throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
    }
 
-   let supabaseResponse = NextResponse.next({ request });
+   const supabaseResponse = NextResponse.next({ request });
 
    const cookieMethods: CookieMethodsServer = {
       getAll() {
@@ -24,7 +24,9 @@ export async function updateSession(request: NextRequest,) {
       },
    };
 
-   const supabase = createServerClient(supabaseUrl, supabasePublishableKey, { cookies: cookieMethods });
+   const supabase = createServerClient(supabaseUrl, supabasePublishableKey, {
+      cookies: cookieMethods,
+   });
 
    // Refresh the session — do not add logic between createServerClient and
    // getUser(), as it may cause hard-to-debug session issues.
@@ -41,7 +43,10 @@ export async function updateSession(request: NextRequest,) {
       url.pathname = '/login';
       return NextResponse.redirect(url);
    }
-   if (user && request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/emailsignup')) {
+   if (
+      (user && request.nextUrl.pathname.startsWith('/login')) ||
+      request.nextUrl.pathname.startsWith('/emailsignup')
+   ) {
       const url = request.nextUrl.clone();
       url.pathname = '/';
       return NextResponse.redirect(url);

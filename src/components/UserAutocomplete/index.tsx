@@ -36,7 +36,9 @@ export default function UserAutocomplete({
       const q = query.toLowerCase();
       const all = q
          ? SUGGESTED_USERS.filter(
-              u => u.username.toLowerCase().includes(q) || (u.full_name?.toLowerCase().includes(q) ?? false),
+              u =>
+                 u.username.toLowerCase().includes(q) ||
+                 (u.full_name?.toLowerCase().includes(q) ?? false),
            )
          : SUGGESTED_USERS;
       return all.slice(0, 8);
@@ -63,7 +65,12 @@ export default function UserAutocomplete({
                subtitle={user.full_name ?? ''}
                rightElement={
                   multiSelect ? (
-                     <div {...stylex.props(styles.checkbox, isSelected(user) && styles.checkboxChecked)}>
+                     <div
+                        {...stylex.props(
+                           styles.checkbox,
+                           isSelected(user) && styles.checkboxChecked,
+                        )}
+                     >
                         {isSelected(user) && <IoCheckmark style={{ fontSize: 13 }} />}
                      </div>
                   ) : undefined

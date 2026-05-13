@@ -7,7 +7,9 @@
 }
 
 :root {
-   --font-body: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+   --font-body:
+      "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial,
+      sans-serif;
    --font-auth: "Chivo", var(--font-body);
    --main-sidebar-width: 72px;
 }

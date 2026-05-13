@@ -124,7 +124,14 @@ export default function EditStep({
       onUpdateFile(currentIndex, {
          filterPreset: name,
          filterStrength: 100,
-         adjustments: { brightness: 0, contrast: 0, fade: 0, saturation: 0, temperature: 0, vignette: 0 },
+         adjustments: {
+            brightness: 0,
+            contrast: 0,
+            fade: 0,
+            saturation: 0,
+            temperature: 0,
+            vignette: 0,
+         },
       });
    };
 
@@ -145,7 +152,12 @@ export default function EditStep({
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
-            <button type="button" {...stylex.props(styles.headerButton)} onClick={onBack} aria-label="Back">
+            <button
+               type="button"
+               {...stylex.props(styles.headerButton)}
+               onClick={onBack}
+               aria-label="Back"
+            >
                <IoArrowBack style={{ fontSize: 24 }} />
             </button>
             <span {...stylex.props(styles.headerTitle)}>Edit</span>
@@ -158,17 +170,27 @@ export default function EditStep({
             <div ref={previewRef} {...stylex.props(styles.previewSection)}>
                {hasMultiple && !isFirst && (
                   <div {...stylex.props(styles.mainArrowLeft)}>
-                     <CarouselArrow direction="left" onClick={() => onSelectIndex(currentIndex - 1)} />
+                     <CarouselArrow
+                        direction="left"
+                        onClick={() => onSelectIndex(currentIndex - 1)}
+                     />
                   </div>
                )}
                {hasMultiple && !isLast && (
                   <div {...stylex.props(styles.mainArrowRight)}>
-                     <CarouselArrow direction="right" onClick={() => onSelectIndex(currentIndex + 1)} />
+                     <CarouselArrow
+                        direction="right"
+                        onClick={() => onSelectIndex(currentIndex + 1)}
+                     />
                   </div>
                )}
                <div
                   {...stylex.props(styles.cropContainer)}
-                  style={cropBox ? { width: cropBox.width, height: cropBox.height } : { width: '100%', height: '100%' }}
+                  style={
+                     cropBox
+                        ? { width: cropBox.width, height: cropBox.height }
+                        : { width: '100%', height: '100%' }
+                  }
                >
                   <canvas
                      ref={canvasRef}
@@ -204,7 +226,10 @@ export default function EditStep({
                   </button>
                   <button
                      type="button"
-                     {...stylex.props(styles.tab, activeTab !== 'adjustments' && styles.tabInactive)}
+                     {...stylex.props(
+                        styles.tab,
+                        activeTab !== 'adjustments' && styles.tabInactive,
+                     )}
                      onClick={() => setActiveTab('adjustments')}
                   >
                      Adjustments
@@ -232,14 +257,19 @@ export default function EditStep({
                                  background: `linear-gradient(to right, rgb(255,255,255) 0%, rgb(255,255,255) ${currentFile.filterStrength}%, rgb(0,0,0) ${currentFile.filterStrength}%, rgb(0,0,0) 100%)`,
                               }}
                            />
-                           <span {...stylex.props(styles.strengthValue)}>{currentFile.filterStrength}</span>
+                           <span {...stylex.props(styles.strengthValue)}>
+                              {currentFile.filterStrength}
+                           </span>
                         </div>
                      )}
                   </>
                )}
 
                {activeTab === 'adjustments' && (
-                  <AdjustmentSliders adjustments={currentFile.adjustments} onChange={handleAdjustmentChange} />
+                  <AdjustmentSliders
+                     adjustments={currentFile.adjustments}
+                     onChange={handleAdjustmentChange}
+                  />
                )}
             </div>
          </div>

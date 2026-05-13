@@ -42,7 +42,10 @@ export default async function RecipientsSidebar({
                         <Link
                            key={folder.key}
                            href={folder.href}
-                           {...stylex.props(styles.messageFolderLink, isActive && styles.messageFolderActive)}
+                           {...stylex.props(
+                              styles.messageFolderLink,
+                              isActive && styles.messageFolderActive,
+                           )}
                         >
                            {folder.label}
                            <div
@@ -63,11 +66,19 @@ export default async function RecipientsSidebar({
                <>
                   <div {...stylex.props(styles.searchContainer)}>
                      <BsSearch {...stylex.props(styles.searchIcon)} />
-                     <input {...stylex.props(styles.searchInput)} type="text" placeholder="Search" />
+                     <input
+                        {...stylex.props(styles.searchInput)}
+                        type="text"
+                        placeholder="Search"
+                     />
                   </div>
 
                   <div {...stylex.props(styles.yourNoteSection)}>
-                     <UserAvatar src={CURRENT_USER.avatar_url} alt={CURRENT_USER.username} size={74} />
+                     <UserAvatar
+                        src={CURRENT_USER.avatar_url}
+                        alt={CURRENT_USER.username}
+                        size={74}
+                     />
                      <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
                      <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>
                   </div>
