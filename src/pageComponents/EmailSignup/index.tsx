@@ -12,7 +12,7 @@ import BirthdatePicker from '@/src/components/BirthdatePicker';
 import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import ZetaLogo from '@/src/components/ZetaLogo';
-import { createClient } from '@/src/lib/supabase/client';
+import { createBrowserClient } from '@/src/lib/supabase/client';
 import { styles } from './index.stylex';
 
 const birthdateSchema = z
@@ -50,7 +50,7 @@ export default function EmailSignUpPage() {
    });
 
    const onSubmit = async (data: EmailSignupFormData) => {
-      const supabase = createClient();
+      const supabase = createBrowserClient();
       const { error } = await supabase.auth.signUp({
          email: data.email,
          password: data.password,
