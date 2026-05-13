@@ -1,49 +1,11 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors, radius } from '../../../../styles/tokens.stylex';
+import { colors } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
-   },
-   header: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '4px 16px',
-      borderBottomWidth: '1px',
-      borderBottomStyle: 'solid',
-      borderBottomColor: colors.border,
-      backgroundColor: colors.bg,
-      flexShrink: 0,
-   },
-   headerButton: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '8px',
-      background: 'none',
-      border: 'none',
-      borderRadius: radius.full,
-      ':hover': {
-         backgroundColor: colors.buttonHover,
-      },
-   },
-   headerTitle: {
-      fontSize: '16px',
-      fontWeight: 700,
-   },
-   nextButton: {
-      padding: '8px 0',
-      background: 'none',
-      border: 'none',
-      color: colors.accentText,
-      fontSize: '14px',
-      fontWeight: 600,
-      ':hover': {
-         color: colors.accentTextHover,
-      },
    },
    body: {
       display: 'flex',
@@ -60,20 +22,6 @@ export const styles = stylex.create({
       overflow: 'hidden',
       userSelect: 'none',
       width: '700px',
-   },
-   mainArrowLeft: {
-      position: 'absolute',
-      left: '12px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      zIndex: 2,
-   },
-   mainArrowRight: {
-      position: 'absolute',
-      right: '12px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      zIndex: 2,
    },
    previewImage: {
       flexShrink: 0,
@@ -92,8 +40,6 @@ export const styles = stylex.create({
    videoOverlayBtn: {
       position: 'absolute',
       inset: 0,
-      background: 'none',
-      border: 'none',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -115,64 +61,5 @@ export const styles = stylex.create({
       borderLeftWidth: '1px',
       borderLeftStyle: 'solid',
       borderLeftColor: colors.border,
-   },
-   tabs: {
-      display: 'flex',
-      height: '40px',
-      flexShrink: 0,
-   },
-   tab: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flex: 1,
-      padding: '14px 0',
-      background: 'none',
-      border: 'none',
-      borderBottomWidth: '1px',
-      borderBottomStyle: 'solid',
-      borderBottomColor: colors.border,
-      color: colors.accentTextHover,
-      fontSize: '14px',
-      fontWeight: 600,
-      lineHeight: '24px',
-      textTransform: 'capitalize',
-   },
-   tabInactive: {
-      opacity: 0.3,
-   },
-   strengthRow: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: '16px',
-   },
-   strengthSlider: {
-      flex: 1,
-      height: '2px',
-      WebkitAppearance: 'none',
-      appearance: 'none',
-      outline: 'none',
-      '::-webkit-slider-thumb': {
-         WebkitAppearance: 'none',
-         width: '16px',
-         height: '16px',
-         borderRadius: '50%',
-         backgroundColor: 'white',
-      },
-      '::-moz-range-thumb': {
-         width: '16px',
-         height: '16px',
-         borderRadius: '50%',
-         backgroundColor: 'white',
-         border: 'none',
-      },
-   },
-   strengthValue: {
-      width: '24px',
-      marginLeft: '8px',
-      fontSize: '12px',
-      lineHeight: '16px',
-      color: colors.textSecondary,
-      textAlign: 'right',
    },
 });

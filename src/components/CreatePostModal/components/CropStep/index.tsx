@@ -1,8 +1,8 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { IoArrowBack } from 'react-icons/io5';
 import type { AspectRatio, PostMedia } from '../../types';
+import StepHeader, { StepHeaderAction } from '../StepHeader';
 import CropControls from './components/CropControls';
 import CropPreview from './components/CropPreview';
 import { styles } from './index.stylex';
@@ -39,21 +39,11 @@ export default function CropStep({
 
    return (
       <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.header)}>
-            <button
-               type="button"
-               {...stylex.props(styles.headerButton)}
-               onClick={onBack}
-               aria-label="Back"
-            >
-               <IoArrowBack style={{ fontSize: 24 }} />
-            </button>
-            <span {...stylex.props(styles.headerTitle)}>Crop</span>
-            <button type="button" {...stylex.props(styles.nextButton)} onClick={onNext}>
-               Next
-            </button>
-         </div>
-
+         <StepHeader
+            title="Crop"
+            onBack={onBack}
+            rightSlot={<StepHeaderAction label="Next" onClick={onNext} />}
+         />
          <CropPreview
             files={files}
             currentIndex={currentIndex}

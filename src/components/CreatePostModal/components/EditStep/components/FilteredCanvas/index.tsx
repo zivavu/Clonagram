@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
-import { useWebGLFilter } from '@/src/hooks/useWebGLFilter';
+import { useWebGLFilter } from '../../../../hooks/useWebGLFilter';
 import type { Adjustments } from '../../../../types';
 import { styles } from './index.stylex';
 

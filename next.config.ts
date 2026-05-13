@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       remotePatterns: [
          { hostname: 'picsum.photos' },
          { hostname: 'pggvzapkivjgsybyzjok.supabase.co' },
+         { hostname: 'lh3.googleusercontent.com' },
       ],
    },
    reactCompiler: true,

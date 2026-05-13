@@ -9,13 +9,16 @@ import CarouselArrow from '@/src/components/CarouselArrow';
 import type { AspectRatio, PostMedia } from '../../../../types';
 import { styles } from './index.stylex';
 
-const ASPECT_RATIOS: { key: AspectRatio; label: string }[] = [
-   { key: 'original', label: 'Original' },
-   { key: '1:1', label: '1:1' },
-   { key: '4:5', label: '4:5' },
-   { key: '16:9', label: '16:9' },
-   { key: '9:16', label: '9:16' },
+const ASPECT_RATIOS: { key: AspectRatio; label: string; icon: string }[] = [
+   { key: 'original', label: 'Original', icon: '3/2' },
+   { key: '1:1', label: '1:1', icon: '1/1' },
+   { key: '4:5', label: '4:5', icon: '4/5' },
+   { key: '16:9', label: '16:9', icon: '16/9' },
+   { key: '9:16', label: '9:16', icon: '9/16' },
 ];
+
+const MAX_FILES = 10;
+const SCROLL_DISTANCE = 200;
 
 interface CropControlsProps {
    files: PostMedia[];
@@ -49,17 +52,28 @@ export default function CropControls({
    const scrollThumbnails = useCallback((direction: 'left' | 'right') => {
       const el = thumbnailsRef.current;
       if (!el) return;
-      el.scrollBy({ left: direction === 'left' ? -200 : 200, behavior: 'smooth' });
+      el.scrollBy({
+         left: direction === 'left' ? -SCROLL_DISTANCE : SCROLL_DISTANCE,
+         behavior: 'smooth',
+      });
    }, []);
-
-   const handleZoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      onUpdateFile(currentIndex, { zoom: Number(e.target.value) });
-   };
 
    const handleRatioChange = (ratio: AspectRatio) => {
       onAspectRatioChange(ratio);
       onUpdateFile(currentIndex, { panX: 0, panY: 0 });
       setShowRatioMenu(false);
+   };
+
+   const handleDragStart = (e: React.DragEvent, idx: number) => {
+      e.dataTransfer.setData('text/plain', String(idx));
+      e.dataTransfer.effectAllowed = 'move';
+   };
+
+   const handleDrop = (e: React.DragEvent, idx: number) => {
+      e.preventDefault();
+      const sourceIdx = Number(e.dataTransfer.getData('text/plain'));
+      if (!Number.isNaN(sourceIdx) && sourceIdx !== idx) onReorderFiles(sourceIdx, idx);
+      setDragOverIndex(null);
    };
 
    return (
@@ -76,7 +90,7 @@ export default function CropControls({
                </button>
                {showRatioMenu && (
                   <div {...stylex.props(styles.ratioMenu)}>
-                     {ASPECT_RATIOS.map(({ key, label }) => (
+                     {ASPECT_RATIOS.map(({ key, label, icon }) => (
                         <button
                            key={key}
                            type="button"
@@ -87,21 +101,7 @@ export default function CropControls({
                            onClick={() => handleRatioChange(key)}
                         >
                            <span>{label}</span>
-                           <div
-                              {...stylex.props(styles.ratioIcon)}
-                              style={{
-                                 aspectRatio:
-                                    key === 'original'
-                                       ? '3/2'
-                                       : key === '1:1'
-                                         ? '1/1'
-                                         : key === '4:5'
-                                           ? '4/5'
-                                           : key === '16:9'
-                                             ? '16/9'
-                                             : '9/16',
-                              }}
-                           />
+                           <div {...stylex.props(styles.ratioIcon)} style={{ aspectRatio: icon }} />
                         </button>
                      ))}
                   </div>
@@ -125,7 +125,7 @@ export default function CropControls({
                         max={3}
                         step={0.05}
                         value={currentFile.zoom}
-                        onChange={handleZoomChange}
+                        onChange={e => onUpdateFile(currentIndex, { zoom: Number(e.target.value) })}
                         {...stylex.props(styles.zoomSlider)}
                      />
                   </div>
@@ -168,23 +168,13 @@ export default function CropControls({
                                  styles.popoverThumbWrapper,
                                  dragOverIndex === idx && styles.popoverThumbWrapperDragOver,
                               )}
-                              onDragStart={e => {
-                                 e.dataTransfer.setData('text/plain', String(idx));
-                                 e.dataTransfer.effectAllowed = 'move';
-                              }}
+                              onDragStart={e => handleDragStart(e, idx)}
                               onDragOver={e => {
                                  e.preventDefault();
                                  e.dataTransfer.dropEffect = 'move';
                                  setDragOverIndex(idx);
                               }}
-                              onDrop={e => {
-                                 e.preventDefault();
-                                 const sourceIdx = Number(e.dataTransfer.getData('text/plain'));
-                                 if (!Number.isNaN(sourceIdx) && sourceIdx !== idx) {
-                                    onReorderFiles(sourceIdx, idx);
-                                 }
-                                 setDragOverIndex(null);
-                              }}
+                              onDrop={e => handleDrop(e, idx)}
                               onDragLeave={() => setDragOverIndex(null)}
                               onDragEnd={() => setDragOverIndex(null)}
                            >
@@ -212,7 +202,7 @@ export default function CropControls({
                                     />
                                  )}
                                  {idx !== currentIndex && (
-                                    <div {...stylex.props(styles.thumbImageOverlay)}></div>
+                                    <div {...stylex.props(styles.thumbImageOverlay)} />
                                  )}
                               </button>
                               {files.length > 1 && idx === currentIndex && (
@@ -226,7 +216,7 @@ export default function CropControls({
                               )}
                            </li>
                         ))}
-                        {files.length < 10 && (
+                        {files.length < MAX_FILES && (
                            <li key="add" {...stylex.props(styles.popoverThumbWrapper)}>
                               <button
                                  type="button"

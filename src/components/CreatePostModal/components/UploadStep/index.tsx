@@ -1,7 +1,8 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { IoCloseOutline, IoImagesOutline } from 'react-icons/io5';
-import { styles } from './index.stylex';
+import StepHeader from '../StepHeader';
+import { stepHeaderStyles, styles } from './index.stylex';
 
 interface UploadStepProps {
    getRootProps: () => Record<string, unknown>;
@@ -15,15 +16,16 @@ export default function UploadStep({ getRootProps, open, isDragActive }: UploadS
          <Dialog.Description style={{ display: 'none' }}>
             Upload photos and videos to create a new post
          </Dialog.Description>
-         <div {...stylex.props(styles.header)}>
-            <div style={{ width: 30 }} />
-            <Dialog.Title {...stylex.props(styles.title)}>Create new post</Dialog.Title>
-            <Dialog.Close asChild>
-               <button {...stylex.props(styles.closeButton)} aria-label="Close">
-                  <IoCloseOutline style={{ fontSize: 30 }} />
-               </button>
-            </Dialog.Close>
-         </div>
+         <StepHeader
+            title={<Dialog.Title>Create new post</Dialog.Title>}
+            rightSlot={
+               <Dialog.Close asChild>
+                  <button {...stylex.props(stepHeaderStyles.closeButton)} aria-label="Close">
+                     <IoCloseOutline style={{ fontSize: 30 }} />
+                  </button>
+               </Dialog.Close>
+            }
+         />
          <div
             {...getRootProps()}
             {...stylex.props(styles.dropZone, isDragActive && styles.dropZoneActive)}

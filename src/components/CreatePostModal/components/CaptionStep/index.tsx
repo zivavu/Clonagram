@@ -1,17 +1,11 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { IoArrowBack } from 'react-icons/io5';
-import CarouselArrow from '@/src/components/CarouselArrow';
-import UserAutocomplete from '@/src/components/UserAutocomplete';
-import { useMediaNaturalSize } from '@/src/hooks/useMediaNaturalSize';
-import { useWebGLFilter } from '@/src/hooks/useWebGLFilter';
 import type { PartialUser } from '@/src/types/global';
 import type { AspectRatio, PostMedia, PostSettings } from '../../types';
-import { RATIO_NUMERIC } from '../../types';
+import StepHeader, { StepHeaderAction } from '../StepHeader';
 import CaptionPanel from './components/CaptionPanel';
-import TagPin from './components/TagPin';
+import CaptionPreview from './components/CaptionPreview';
 import { styles } from './index.stylex';
 
 interface CaptionStepProps {
@@ -32,34 +26,6 @@ interface CaptionStepProps {
    onPostSettingsChange: (settings: PostSettings) => void;
 }
 
-interface FilteredPreviewProps {
-   file: PostMedia;
-   imageDisplaySize: { w: number; h: number } | null;
-}
-
-function FilteredPreview({ file, imageDisplaySize }: FilteredPreviewProps) {
-   const { canvasRef } = useWebGLFilter({
-      src: file.preview,
-      width: imageDisplaySize?.w ?? 0,
-      height: imageDisplaySize?.h ?? 0,
-      adjustments: file.adjustments,
-      filterPreset: file.filterPreset,
-      filterStrength: file.filterStrength,
-   });
-   return (
-      <canvas
-         ref={canvasRef}
-         draggable={false}
-         {...stylex.props(styles.previewImage)}
-         style={{
-            width: imageDisplaySize ? imageDisplaySize.w : '100%',
-            height: imageDisplaySize ? imageDisplaySize.h : '100%',
-            transform: `translate(${file.panX}px, ${file.panY}px) scale(${file.zoom})`,
-         }}
-      />
-   );
-}
-
 export default function CaptionStep({
    files,
    currentIndex,
@@ -77,259 +43,21 @@ export default function CaptionStep({
    postSettings,
    onPostSettingsChange,
 }: CaptionStepProps) {
-   const currentFile = files[currentIndex];
-   const previewRef = useRef<HTMLDivElement>(null);
-   const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
-   const [tagPopper, setTagPopper] = useState<{ x: number; y: number } | null>(null);
-   const naturalSize = useMediaNaturalSize(currentFile.preview, currentFile.type);
-   const videoRef = useRef<HTMLVideoElement>(null);
-   const trimStartRef = useRef(currentFile.trimStart);
-   const trimEndRef = useRef(currentFile.trimEnd);
-
-   trimStartRef.current = currentFile.trimStart;
-   trimEndRef.current = currentFile.trimEnd;
-
-   const measureContainer = useCallback(() => {
-      const el = previewRef.current;
-      if (!el) return;
-      setContainerSize({ w: el.clientWidth, h: el.clientHeight });
-   }, []);
-
-   useEffect(() => {
-      measureContainer();
-      window.addEventListener('resize', measureContainer);
-      return () => window.removeEventListener('resize', measureContainer);
-   }, [measureContainer]);
-
-   useEffect(() => {
-      setTagPopper(null);
-      void currentFile.preview;
-   }, [currentFile.preview]);
-
-   const cropBox = (() => {
-      if (containerSize.w === 0) return null;
-      const ratio = RATIO_NUMERIC[aspectRatio];
-      const maxW = containerSize.w;
-      const maxH = containerSize.h;
-      if (!ratio) return { width: maxW, height: maxH };
-      let w: number;
-      let h: number;
-      if (ratio >= 1) {
-         w = Math.min(maxW, maxH * ratio);
-         h = w / ratio;
-      } else {
-         h = Math.min(maxH, maxW / ratio);
-         w = h * ratio;
-      }
-      return { width: Math.round(w), height: Math.round(h) };
-   })();
-
-   const imageDisplaySize = (() => {
-      if (!cropBox || naturalSize.w === 0 || naturalSize.h === 0) return null;
-      const imgRatio = naturalSize.w / naturalSize.h;
-      const cropRatio = cropBox.width / cropBox.height;
-      if (imgRatio >= cropRatio) {
-         const h = cropBox.height;
-         return { w: h * imgRatio, h };
-      }
-      const w = cropBox.width;
-      return { w, h: w / imgRatio };
-   })();
-
-   const handleImageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      setTagPopper({ x, y });
-   };
-
-   const handleTagSelect = (user: PartialUser) => {
-      if (!tagPopper || currentFile.tags.some(t => t.user.id === user.id)) {
-         setTagPopper(null);
-         return;
-      }
-      onUpdateFile(currentIndex, {
-         tags: [...currentFile.tags, { user, x: tagPopper.x, y: tagPopper.y }],
-      });
-      setTagPopper(null);
-   };
-
-   const handleRemoveTag = (userId: string) => {
-      onUpdateFile(currentIndex, {
-         tags: currentFile.tags.filter(t => t.user.id !== userId),
-      });
-   };
-
-   const handleMoveTag = (userId: string, x: number, y: number) => {
-      onUpdateFile(currentIndex, {
-         tags: currentFile.tags.map(t => (t.user.id === userId ? { ...t, x, y } : t)),
-      });
-   };
-
-   const getPopperStyle = (pos: { x: number; y: number }): React.CSSProperties => {
-      const style: React.CSSProperties = { position: 'absolute' };
-      if (pos.x > 55) {
-         style.right = `${100 - pos.x}%`;
-      } else {
-         style.left = `${pos.x}%`;
-      }
-      if (pos.y > 55) {
-         style.bottom = `${100 - pos.y}%`;
-      } else {
-         style.top = `${pos.y}%`;
-      }
-      return style;
-   };
-
-   const isFirst = currentIndex === 0;
-   const isLast = currentIndex === files.length - 1;
-   const hasMultiple = files.length > 1;
-
-   const isImage = currentFile.type === 'image';
-   const hasFilters =
-      currentFile.filterPreset !== 'Original' ||
-      Object.values(currentFile.adjustments).some(v => v !== 0);
-   const useCanvas = isImage && hasFilters;
-
-   const previewStyle = {
-      width: imageDisplaySize ? imageDisplaySize.w : '100%',
-      height: imageDisplaySize ? imageDisplaySize.h : '100%',
-      transform: `translate(${currentFile.panX}px, ${currentFile.panY}px) scale(${currentFile.zoom})`,
-   };
-
    return (
       <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.header)}>
-            <button
-               type="button"
-               {...stylex.props(styles.headerButton)}
-               onClick={onBack}
-               aria-label="Back"
-            >
-               <IoArrowBack style={{ fontSize: 24 }} />
-            </button>
-            <span {...stylex.props(styles.headerTitle)}>Create new post</span>
-            <button type="button" {...stylex.props(styles.shareButton)} onClick={onShare}>
-               Share
-            </button>
-         </div>
-
+         <StepHeader
+            title="Create new post"
+            onBack={onBack}
+            rightSlot={<StepHeaderAction label="Share" onClick={onShare} />}
+         />
          <div {...stylex.props(styles.body)}>
-            <div ref={previewRef} {...stylex.props(styles.previewSection)}>
-               {hasMultiple && !isFirst && (
-                  <div {...stylex.props(styles.arrowLeft)}>
-                     <CarouselArrow
-                        direction="left"
-                        onClick={() => onSelectIndex(currentIndex - 1)}
-                     />
-                  </div>
-               )}
-               {hasMultiple && !isLast && (
-                  <div {...stylex.props(styles.arrowRight)}>
-                     <CarouselArrow
-                        direction="right"
-                        onClick={() => onSelectIndex(currentIndex + 1)}
-                     />
-                  </div>
-               )}
-
-               {isImage ? (
-                  <button
-                     type="button"
-                     {...stylex.props(styles.cropContainer)}
-                     style={
-                        cropBox
-                           ? { width: cropBox.width, height: cropBox.height }
-                           : { width: '100%', height: '100%' }
-                     }
-                     onClick={handleImageClick}
-                  >
-                     {useCanvas ? (
-                        <FilteredPreview file={currentFile} imageDisplaySize={imageDisplaySize} />
-                     ) : (
-                        /* biome-ignore lint/performance/noImgElement: preview needs raw img for pan/zoom transform */
-                        <img
-                           key={currentFile.preview}
-                           src={currentFile.preview}
-                           alt="Preview"
-                           draggable={false}
-                           {...stylex.props(styles.previewImage)}
-                           style={previewStyle}
-                        />
-                     )}
-                  </button>
-               ) : (
-                  <div
-                     {...stylex.props(styles.cropContainer, styles.cropContainerVideo)}
-                     style={
-                        cropBox
-                           ? { width: cropBox.width, height: cropBox.height }
-                           : { width: '100%', height: '100%' }
-                     }
-                  >
-                     <video
-                        ref={videoRef}
-                        key={currentFile.preview}
-                        src={currentFile.preview}
-                        muted={currentFile.muted}
-                        playsInline
-                        poster={currentFile.poster ?? undefined}
-                        draggable={false}
-                        onLoadedData={() => {
-                           const video = videoRef.current;
-                           if (!video) return;
-                           video.currentTime = currentFile.trimStart;
-                           video.play().catch(() => {});
-                        }}
-                        onTimeUpdate={() => {
-                           const video = videoRef.current;
-                           if (!video || trimEndRef.current <= 0) return;
-                           if (video.currentTime >= trimEndRef.current) {
-                              video.currentTime = trimStartRef.current;
-                           }
-                        }}
-                        onEnded={() => {
-                           const video = videoRef.current;
-                           if (!video) return;
-                           video.currentTime = trimStartRef.current;
-                           video.play().catch(() => {});
-                        }}
-                        {...stylex.props(styles.previewImage)}
-                        style={previewStyle}
-                     />
-                  </div>
-               )}
-               {isImage &&
-                  currentFile.tags.map(tag => (
-                     <TagPin
-                        key={tag.user.id}
-                        tag={tag}
-                        onRemove={() => handleRemoveTag(tag.user.id)}
-                        onMove={(x, y) => handleMoveTag(tag.user.id, x, y)}
-                     />
-                  ))}
-               {isImage && tagPopper && (
-                  <div
-                     role="dialog"
-                     {...stylex.props(styles.tagPopper)}
-                     style={getPopperStyle(tagPopper)}
-                  >
-                     <UserAutocomplete
-                        onSelect={handleTagSelect}
-                        onDismiss={() => setTagPopper(null)}
-                        header={<span>Tag:</span>}
-                        placeholder="Search..."
-                        autoFocus
-                     />
-                  </div>
-               )}
-
-               {isImage && !tagPopper && currentFile.tags.length === 0 && (
-                  <div {...stylex.props(styles.tagHint)}>Click photo to tag people</div>
-               )}
-            </div>
-
+            <CaptionPreview
+               files={files}
+               currentIndex={currentIndex}
+               aspectRatio={aspectRatio}
+               onSelectIndex={onSelectIndex}
+               onUpdateFile={onUpdateFile}
+            />
             <CaptionPanel
                caption={caption}
                onCaptionChange={onCaptionChange}

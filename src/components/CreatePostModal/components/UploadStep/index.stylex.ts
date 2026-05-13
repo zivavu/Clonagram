@@ -2,35 +2,6 @@ import * as stylex from '@stylexjs/stylex';
 import { colors, radius } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
-   header: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '4px 16px',
-      backgroundColor: colors.bg,
-      borderBottomWidth: '1px',
-      borderBottomStyle: 'solid',
-      borderBottomColor: colors.border,
-   },
-   title: {
-      fontSize: '16px',
-      fontWeight: 600,
-      color: colors.textPrimary,
-      lineHeight: '24px',
-   },
-   closeButton: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '8px',
-      background: 'none',
-      border: 'none',
-      color: colors.textPrimary,
-      borderRadius: radius.full,
-      ':hover': {
-         backgroundColor: colors.buttonHover,
-      },
-   },
    dropZone: {
       display: 'flex',
       flexDirection: 'column',
@@ -58,9 +29,22 @@ export const styles = stylex.create({
       fontSize: '14px',
       fontWeight: 600,
       textAlign: 'center',
-      border: 'none',
       ':hover': {
          backgroundColor: '#4150f7',
+      },
+   },
+});
+
+export const stepHeaderStyles = stylex.create({
+   closeButton: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '8px',
+      color: colors.textPrimary,
+      borderRadius: radius.full,
+      ':hover': {
+         backgroundColor: colors.buttonHover,
       },
    },
 });
