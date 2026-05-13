@@ -172,9 +172,7 @@ export function useFilterThumbnails(src: string, presetNames: string[]): Record<
          prevUrlsRef.current = newUrls;
          setThumbnails(newThumbnails);
       };
-      img.onerror = () => {
-         console.error('Failed to load image for filter thumbnails:', src);
-      };
+      img.onerror = () => {};
       img.src = src;
 
       return () => {};

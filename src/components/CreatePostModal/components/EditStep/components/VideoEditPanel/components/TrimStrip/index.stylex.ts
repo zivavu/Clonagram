@@ -1,0 +1,106 @@
+import * as stylex from '@stylexjs/stylex';
+import { colors } from '../../../../../../../../styles/tokens.stylex';
+
+export const styles = stylex.create({
+   wrapper: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '6px',
+   },
+   container: {
+      position: 'relative',
+      width: '100%',
+      height: '100px',
+      overflow: 'hidden',
+      borderRadius: '4px',
+   },
+   strip: {
+      display: 'flex',
+      position: 'absolute',
+      inset: 0,
+   },
+   frame: {
+      height: '100%',
+      objectFit: 'cover',
+      flexShrink: 0,
+      pointerEvents: 'none',
+   },
+   dim: {
+      position: 'absolute',
+      top: 0,
+      height: '100%',
+      backgroundColor: 'rgba(0, 0, 0, 0.55)',
+      zIndex: 1,
+   },
+   selectedBorder: {
+      position: 'absolute',
+      top: 0,
+      height: '100%',
+      borderTop: '2px solid white',
+      borderBottom: '2px solid white',
+      boxSizing: 'border-box',
+      pointerEvents: 'none',
+      zIndex: 2,
+   },
+   handle: {
+      position: 'absolute',
+      top: 0,
+      height: '100%',
+      width: '20px',
+      transform: 'translateX(-50%)',
+      cursor: 'ew-resize',
+      zIndex: 3,
+      display: 'flex',
+      alignItems: 'stretch',
+      justifyContent: 'center',
+   },
+   handleThumb: {
+      width: '12px',
+      backgroundColor: 'rgba(10, 10, 20, 0.88)',
+      borderRadius: '3px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+   },
+   handleBar: {
+      width: '2px',
+      height: '32px',
+      backgroundColor: 'white',
+      borderRadius: '1px',
+   },
+   playhead: {
+      position: 'absolute',
+      top: 0,
+      height: '100%',
+      width: '2px',
+      backgroundColor: 'white',
+      transform: 'translateX(-50%)',
+      zIndex: 4,
+      pointerEvents: 'none',
+      left: '0%',
+   },
+   tickRow: {
+      display: 'flex',
+      width: '100%',
+   },
+   tickCell: {
+      flex: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      paddingTop: '2px',
+   },
+   tick: {
+      width: '4px',
+      height: '4px',
+      borderRadius: '50%',
+      backgroundColor: colors.textMuted,
+   },
+   labelsRow: {
+      display: 'flex',
+      justifyContent: 'space-between',
+   },
+   label: {
+      fontSize: '11px',
+      color: colors.textSecondary,
+   },
+});
