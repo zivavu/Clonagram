@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useContainerSize } from '../../../../hooks/useContainerSize';
 import { useCropDimensions } from '../../../../hooks/useCropDimensions';
 import type { AspectRatio, PostMedia } from '../../../../types';
@@ -43,7 +43,17 @@ export default function CropPreview({
    const [isDragging, setIsDragging] = useState(false);
    const { cropBox, imageDisplaySize } = useCropDimensions(containerSize, naturalSize, aspectRatio);
 
+   // biome-ignore lint/correctness/useExhaustiveDependencies: only sync when display size changes
+   useEffect(() => {
+      if (!imageDisplaySize) return;
+      onUpdateFile(currentIndex, {
+         imageDisplayW: imageDisplaySize.w,
+         imageDisplayH: imageDisplaySize.h,
+      });
+   }, [imageDisplaySize?.w, imageDisplaySize?.h]);
+
    const handlePointerDown = (e: React.PointerEvent) => {
+      if (currentFile.type === 'video') return;
       e.currentTarget.setPointerCapture(e.pointerId);
       dragRef.current = {
          startX: e.clientX,
@@ -55,6 +65,7 @@ export default function CropPreview({
    };
 
    const handlePointerMove = (e: React.PointerEvent) => {
+      if (currentFile.type === 'video') return;
       if (!dragRef.current || !cropBox || !imageDisplaySize) return;
       const dx = e.clientX - dragRef.current.startX;
       const dy = e.clientY - dragRef.current.startY;
@@ -67,6 +78,7 @@ export default function CropPreview({
    };
 
    const handlePointerUp = () => {
+      if (currentFile.type === 'video') return;
       dragRef.current = null;
       setIsDragging(false);
    };
