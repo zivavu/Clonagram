@@ -38,6 +38,8 @@ export interface PostMedia {
    zoom: number;
    panX: number;
    panY: number;
+   imageDisplayW: number;
+   imageDisplayH: number;
    filterPreset: string;
    filterStrength: number;
    adjustments: Adjustments;
@@ -59,10 +61,17 @@ export interface PostSettings {
 
 export interface PostData {
    media: PostMedia[];
+   aspectRatio: AspectRatio;
    caption: string | null;
    location: PostLocation | null;
    collaborators: PartialUser[] | [];
    postSettings: PostSettings;
+}
+
+export type MediaResult = { type: 'image'; path: string } | { type: 'video'; uploadId: string };
+
+export interface CreatePostParams extends Omit<PostData, 'media'> {
+   mediaResults: MediaResult[];
 }
 
 export type Step = 'upload' | 'crop' | 'edit' | 'caption' | 'sharing' | 'post-shared';
@@ -91,6 +100,8 @@ export function createPostMedia(file: File): PostMedia {
       zoom: 1,
       panX: 0,
       panY: 0,
+      imageDisplayW: 0,
+      imageDisplayH: 0,
       filterPreset: 'Original',
       filterStrength: 100,
       adjustments: { ...DEFAULT_ADJUSTMENTS },
