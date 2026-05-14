@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useRef, useState } from 'react';
+import { IoPlay } from 'react-icons/io5';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import type { PartialUser } from '@/src/types/global';
 import { useContainerSize } from '../../../../hooks/useContainerSize';
@@ -84,10 +85,22 @@ export default function CaptionPreview({
    } | null>(null);
    const activePopper = tagPopper?.previewKey === currentFile.preview ? tagPopper : null;
 
+   const [isPlaying, setIsPlaying] = useState(false);
+
    const trimStartRef = useRef(currentFile.trimStart);
    const trimEndRef = useRef(currentFile.trimEnd);
    trimStartRef.current = currentFile.trimStart;
    trimEndRef.current = currentFile.trimEnd;
+
+   const handleVideoClick = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      if (video.paused) {
+         video.play().catch(() => {});
+      } else {
+         video.pause();
+      }
+   };
 
    const isImage = currentFile.type === 'image';
    const hasFilters =
@@ -140,7 +153,7 @@ export default function CaptionPreview({
       <div ref={previewRef} {...stylex.props(styles.root)}>
          <PreviewArrows
             currentIndex={currentIndex}
-            total={files.length}
+            totalFiles={files.length}
             onSelectIndex={onSelectIndex}
          />
 
@@ -178,28 +191,33 @@ export default function CaptionPreview({
                   playsInline
                   poster={currentFile.poster ?? undefined}
                   draggable={false}
+                  onPlay={() => setIsPlaying(true)}
                   onLoadedData={() => {
                      const video = videoRef.current;
-                     if (!video) return;
-                     video.currentTime = currentFile.trimStart;
-                     video.play().catch(() => {});
+                     if (video) video.currentTime = trimStartRef.current;
                   }}
                   onTimeUpdate={() => {
                      const video = videoRef.current;
-                     if (!video || trimEndRef.current <= 0) return;
+                     if (!video || video.paused || trimEndRef.current <= 0) return;
                      if (video.currentTime >= trimEndRef.current) {
                         video.currentTime = trimStartRef.current;
                      }
                   }}
-                  onEnded={() => {
-                     const video = videoRef.current;
-                     if (!video) return;
-                     video.currentTime = trimStartRef.current;
-                     video.play().catch(() => {});
-                  }}
                   {...stylex.props(styles.previewImage)}
                   style={previewStyle}
                />
+               <button
+                  type="button"
+                  {...stylex.props(styles.videoOverlayBtn)}
+                  onClick={handleVideoClick}
+                  aria-label={isPlaying ? 'Pause video' : 'Play video'}
+               >
+                  {!isPlaying && (
+                     <div {...stylex.props(styles.playButton)}>
+                        <IoPlay fontSize={80} />
+                     </div>
+                  )}
+               </button>
             </div>
          )}
 

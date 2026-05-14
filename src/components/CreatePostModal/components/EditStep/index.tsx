@@ -125,7 +125,7 @@ export default function EditStep({
             <div ref={previewRef} {...stylex.props(styles.previewSection)}>
                <PreviewArrows
                   currentIndex={currentIndex}
-                  total={files.length}
+                  totalFiles={files.length}
                   onSelectIndex={onSelectIndex}
                />
                <div {...stylex.props(styles.cropContainer)} style={cropBoxStyle}>

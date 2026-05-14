@@ -4,12 +4,16 @@ import { styles } from './index.stylex';
 
 interface PreviewArrowsProps {
    currentIndex: number;
-   total: number;
+   totalFiles: number;
    onSelectIndex: (index: number) => void;
 }
 
-export default function PreviewArrows({ currentIndex, total, onSelectIndex }: PreviewArrowsProps) {
-   if (total <= 1) return null;
+export default function PreviewArrows({
+   currentIndex,
+   totalFiles,
+   onSelectIndex,
+}: PreviewArrowsProps) {
+   if (totalFiles <= 1) return null;
    return (
       <>
          {currentIndex > 0 && (
@@ -17,7 +21,7 @@ export default function PreviewArrows({ currentIndex, total, onSelectIndex }: Pr
                <CarouselArrow direction="left" onClick={() => onSelectIndex(currentIndex - 1)} />
             </div>
          )}
-         {currentIndex < total - 1 && (
+         {currentIndex < totalFiles - 1 && (
             <div {...stylex.props(styles.arrow, styles.right)}>
                <CarouselArrow direction="right" onClick={() => onSelectIndex(currentIndex + 1)} />
             </div>

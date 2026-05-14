@@ -11,6 +11,8 @@ import CaptionStep from './components/CaptionStep';
 import CropStep from './components/CropStep';
 import DiscardDialog from './components/DiscardDialog';
 import EditStep from './components/EditStep';
+import PostSharedStep from './components/PostSharedStep';
+import SharingStep from './components/SharingStep';
 import UploadStep from './components/UploadStep';
 import { styles } from './index.stylex';
 import {
@@ -117,7 +119,8 @@ export default function CreatePostModal() {
 
    const requestClose = () => {
       if (isDiscardOpen) setIsDiscardOpen(false);
-      else if (step === 'upload') performClose();
+      else if (step === 'upload' || step === 'post-shared') performClose();
+      else if (step === 'sharing') return;
       else setIsDiscardOpen(true);
    };
 
@@ -214,7 +217,7 @@ export default function CreatePostModal() {
                         onSelectIndex={setCurrentIndex}
                         onUpdateFile={handleUpdateFile}
                         onBack={() => setStep('edit')}
-                        onShare={performClose}
+                        onShare={() => setStep('sharing')}
                         aspectRatio={aspectRatio}
                         caption={caption}
                         onCaptionChange={setCaption}
@@ -225,6 +228,22 @@ export default function CreatePostModal() {
                         postSettings={postSettings}
                         onPostSettingsChange={setPostSettings}
                      />
+                  </>
+               )}
+               {step === 'sharing' && (
+                  <>
+                     <Dialog.Description style={{ display: 'none' }}>
+                        Sharing your post
+                     </Dialog.Description>
+                     <SharingStep onDone={() => setStep('post-shared')} />
+                  </>
+               )}
+               {step === 'post-shared' && (
+                  <>
+                     <Dialog.Description style={{ display: 'none' }}>
+                        Post shared
+                     </Dialog.Description>
+                     <PostSharedStep onDone={performClose} />
                   </>
                )}
                {isDiscardOpen && (
