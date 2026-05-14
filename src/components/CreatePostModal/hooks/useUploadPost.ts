@@ -25,11 +25,12 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
       muted: media.muted,
       aspectRatio: postData.aspectRatio,
    });
-   await fetch(uploadUrl, {
+   const res = await fetch(uploadUrl, {
       method: 'PUT',
       body: media.file,
       headers: { 'Content-Type': media.file.type },
    });
+   if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
    return { type: 'video', uploadId };
 }
 
@@ -40,7 +41,8 @@ export function useUploadPost({ postData, onDone }: UseUploadPostParams): void {
          const mediaResults = await Promise.all(
             postData.media.map(media => processMedia(media, postData)),
          );
-         await createPost({ ...postData, mediaResults });
+         const { media: _, ...postMeta } = postData;
+         await createPost({ ...postMeta, mediaResults });
          onDone();
       }
 
