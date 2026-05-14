@@ -1,10 +1,8 @@
 'use server';
+import 'server-only';
 
-import type { PostData } from '../components/CreatePostModal/types';
-import { createServerClient } from '../lib/supabase/server';
+import type { CreatePostParams } from '../components/CreatePostModal/types';
 
-export async function createPost(postData: PostData) {
-   const { media, caption, location, collaborators, postSettings } = postData;
-
-   const supabaseClient = createServerClient();
+export async function createPost(_params: CreatePostParams): Promise<void> {
+   throw new Error('Not implemented');
 }
