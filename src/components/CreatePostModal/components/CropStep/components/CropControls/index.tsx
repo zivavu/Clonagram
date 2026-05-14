@@ -108,29 +108,33 @@ export default function CropControls({
                )}
             </div>
 
-            <div {...stylex.props(styles.controlWrapper)}>
-               <button
-                  type="button"
-                  {...stylex.props(styles.controlButton)}
-                  onClick={() => setShowZoomSlider(prev => !prev)}
-                  aria-label="Zoom"
-               >
-                  <MdZoomIn style={{ fontSize: 20 }} />
-               </button>
-               {showZoomSlider && (
-                  <div {...stylex.props(styles.zoomPopup)}>
-                     <input
-                        type="range"
-                        min={1}
-                        max={3}
-                        step={0.05}
-                        value={currentFile.zoom}
-                        onChange={e => onUpdateFile(currentIndex, { zoom: Number(e.target.value) })}
-                        {...stylex.props(styles.zoomSlider)}
-                     />
-                  </div>
-               )}
-            </div>
+            {currentFile.type !== 'video' && (
+               <div {...stylex.props(styles.controlWrapper)}>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.controlButton)}
+                     onClick={() => setShowZoomSlider(prev => !prev)}
+                     aria-label="Zoom"
+                  >
+                     <MdZoomIn style={{ fontSize: 20 }} />
+                  </button>
+                  {showZoomSlider && (
+                     <div {...stylex.props(styles.zoomPopup)}>
+                        <input
+                           type="range"
+                           min={1}
+                           max={3}
+                           step={0.05}
+                           value={currentFile.zoom}
+                           onChange={e =>
+                              onUpdateFile(currentIndex, { zoom: Number(e.target.value) })
+                           }
+                           {...stylex.props(styles.zoomSlider)}
+                        />
+                     </div>
+                  )}
+               </div>
+            )}
          </div>
 
          <Popover.Root>
