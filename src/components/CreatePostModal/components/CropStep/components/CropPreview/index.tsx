@@ -86,7 +86,7 @@ export default function CropPreview({
       <div ref={previewRef} {...stylex.props(styles.root)}>
          <PreviewArrows
             currentIndex={currentIndex}
-            total={files.length}
+            totalFiles={files.length}
             onSelectIndex={onSelectIndex}
          />
          <div

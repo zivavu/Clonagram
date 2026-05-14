@@ -53,7 +53,7 @@ export interface PostSettings {
    shareToClonedbook: boolean;
 }
 
-export type Step = 'upload' | 'crop' | 'edit' | 'caption';
+export type Step = 'upload' | 'crop' | 'edit' | 'caption' | 'sharing' | 'post-shared';
 
 export const DEFAULT_ADJUSTMENTS: Adjustments = {
    brightness: 0,
