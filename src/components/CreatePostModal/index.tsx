@@ -19,6 +19,8 @@ import {
    type AspectRatio,
    createPostMedia,
    DEFAULT_POST_SETTINGS,
+   type PostData,
+   type PostLocation,
    type PostMedia,
    type PostSettings,
    revokeMediaUrls,
@@ -36,7 +38,7 @@ export default function CreatePostModal() {
    const [isDragActive, setIsDragActive] = useState(false);
    const [aspectRatio, setAspectRatio] = useState<AspectRatio>('original');
    const [caption, setCaption] = useState('');
-   const [location, setLocation] = useState<string | null>(null);
+   const [location, setLocation] = useState<PostLocation | null>(null);
    const [collaborators, setCollaborators] = useState<PartialUser[]>([]);
    const [postSettings, setPostSettings] = useState<PostSettings>(DEFAULT_POST_SETTINGS);
    const [isDiscardOpen, setIsDiscardOpen] = useState(false);
@@ -144,6 +146,14 @@ export default function CreatePostModal() {
          next.splice(toIndex, 0, moved);
          return next;
       });
+   };
+
+   const postData: PostData = {
+      media: files,
+      caption,
+      location,
+      collaborators,
+      postSettings,
    };
 
    return (

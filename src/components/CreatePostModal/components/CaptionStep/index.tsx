@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import type { PartialUser } from '@/src/types/global';
-import type { AspectRatio, PostMedia, PostSettings } from '../../types';
+import type { AspectRatio, PostLocation, PostMedia, PostSettings } from '../../types';
 import StepHeader, { StepHeaderAction } from '../StepHeader';
 import CaptionPanel from './components/CaptionPanel';
 import CaptionPreview from './components/CaptionPreview';
@@ -18,8 +18,8 @@ interface CaptionStepProps {
    aspectRatio: AspectRatio;
    caption: string;
    onCaptionChange: (caption: string) => void;
-   location: string | null;
-   onLocationChange: (location: string | null) => void;
+   location: PostLocation | null;
+   onLocationChange: (location: PostLocation | null) => void;
    collaborators: PartialUser[];
    onCollaboratorsChange: (collaborators: PartialUser[]) => void;
    postSettings: PostSettings;

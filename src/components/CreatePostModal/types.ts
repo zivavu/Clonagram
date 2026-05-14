@@ -1,5 +1,11 @@
 import type { PartialUser } from '@/src/types/global';
 
+export interface PostLocation {
+   lat: number;
+   lon: number;
+   name: string;
+}
+
 export type AspectRatio = 'original' | '1:1' | '4:5' | '16:9' | '9:16';
 
 export const RATIO_NUMERIC: Record<AspectRatio, number | null> = {
@@ -48,9 +54,15 @@ export interface PostMedia {
 export interface PostSettings {
    hideLikes: boolean;
    commentsOff: boolean;
-   shareToThreads: boolean;
-   shareToFacebook: boolean;
    shareToClonedbook: boolean;
+}
+
+export interface PostData {
+   media: PostMedia[];
+   caption: string | null;
+   location: PostLocation | null;
+   collaborators: PartialUser[] | [];
+   postSettings: PostSettings;
 }
 
 export type Step = 'upload' | 'crop' | 'edit' | 'caption' | 'sharing' | 'post-shared';
@@ -67,8 +79,6 @@ export const DEFAULT_ADJUSTMENTS: Adjustments = {
 export const DEFAULT_POST_SETTINGS: PostSettings = {
    hideLikes: false,
    commentsOff: false,
-   shareToThreads: false,
-   shareToFacebook: false,
    shareToClonedbook: false,
 };
 
