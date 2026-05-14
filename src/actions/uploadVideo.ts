@@ -1,20 +1,18 @@
 'use server';
 import 'server-only';
 
-import type { AspectRatio } from '../components/CreatePostModal/types';
+import { getMuxClient } from '../lib/mux';
 
-interface UploadVideoParams {
-   trimStart: number;
-   trimEnd: number;
-   muted: boolean;
-   aspectRatio: AspectRatio;
-}
+export async function uploadVideo() {
+   const muxClient = getMuxClient();
+   const upload = await muxClient.video.uploads.create({
+      cors_origin: process.env.NEXT_PUBLIC_HOSTNAME ?? 'https://localhost:3000',
+      new_asset_settings: {
+         playback_policy: ['public'],
+         video_quality: 'basic',
+      },
+   });
 
-interface UploadVideoResult {
-   uploadUrl: string;
-   uploadId: string;
-}
-
-export async function uploadVideo(_params: UploadVideoParams): Promise<UploadVideoResult> {
-   throw new Error('Not implemented');
+   if (!upload.url) throw new Error('Upload failed');
+   return { uploadUrl: upload.url, uploadId: upload.id };
 }

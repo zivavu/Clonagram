@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
+import { uuidv4 } from 'zod';
 import { createPost } from '@/src/actions/createPost';
 import { uploadImage } from '@/src/actions/uploadImage';
 import { uploadVideo } from '@/src/actions/uploadVideo';
 import { bakeImage } from '@/src/utils/bakeImage';
+import { processVideo } from '@/src/utils/processVideo';
 import type { MediaResult, PostData, PostMedia } from '../types';
 
 interface UseUploadPostParams {
@@ -13,22 +15,26 @@ interface UseUploadPostParams {
 async function processMedia(media: PostMedia, postData: PostData): Promise<MediaResult> {
    if (media.type === 'image') {
       const blob = await bakeImage(media, postData.aspectRatio);
-      const fileName = `${crypto.randomUUID()}.jpg`;
+      const fileName = `${uuidv4()}.jpg`;
       const file = new File([blob], fileName, { type: 'image/jpeg' });
       const data = await uploadImage({ file, bucket: 'posts', fileName });
       return { type: 'image', path: data.path };
    }
 
-   const { uploadUrl, uploadId } = await uploadVideo({
-      trimStart: media.trimStart,
-      trimEnd: media.trimEnd,
-      muted: media.muted,
-      aspectRatio: postData.aspectRatio,
-   });
+   const processedFile = await processVideo(
+      media.file,
+      media.trimStart,
+      media.trimEnd,
+      media.duration,
+      media.muted,
+      postData.aspectRatio,
+   );
+
+   const { uploadUrl, uploadId } = await uploadVideo();
    const res = await fetch(uploadUrl, {
       method: 'PUT',
-      body: media.file,
-      headers: { 'Content-Type': media.file.type },
+      body: processedFile,
+      headers: { 'Content-Type': processedFile.type },
    });
    if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
    return { type: 'video', uploadId };
