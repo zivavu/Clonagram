@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import * as stylex from "@stylexjs/stylex";
-import { useEffect } from "react";
-import { shared } from "../Spinner.stylex";
-import StepHeader from "../StepHeader";
+import * as stylex from '@stylexjs/stylex';
+import { useEffect } from 'react';
+import { shared } from '../Spinner.stylex';
+import StepHeader from '../StepHeader';
 
 const spin = stylex.keyframes({
-   from: { transform: "rotate(0deg)" },
-   to: { transform: "rotate(360deg)" },
+   from: { transform: 'rotate(0deg)' },
+   to: { transform: 'rotate(360deg)' },
 });
 
 const styles = stylex.create({
    spinningRing: {
       animationName: spin,
-      animationDuration: "0.5s",
-      animationTimingFunction: "linear",
-      animationIterationCount: "infinite",
+      animationDuration: '0.5s',
+      animationTimingFunction: 'linear',
+      animationIterationCount: 'infinite',
    },
 });
 

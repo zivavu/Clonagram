@@ -31,6 +31,7 @@
 # AI
 CLAUDE.md
 .claude
+.superpowers
 
 # debug
 npm-debug.log*

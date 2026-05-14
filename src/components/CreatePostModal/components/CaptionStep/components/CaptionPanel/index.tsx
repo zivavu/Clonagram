@@ -11,7 +11,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { CURRENT_USER } from '@/src/mocks/users';
 import type { PartialUser } from '@/src/types/global';
 import { useAuthUser } from '../../../../../../hooks/useAuthUser';
-import type { PostMedia, PostSettings } from '../../../../types';
+import type { PostLocation, PostMedia, PostSettings } from '../../../../types';
 import Toggle from '../Toggle';
 import { styles } from './index.stylex';
 
@@ -20,8 +20,8 @@ const MAX_CAPTION = 2200;
 interface CaptionPanelProps {
    caption: string;
    onCaptionChange: (caption: string) => void;
-   location: string | null;
-   onLocationChange: (location: string | null) => void;
+   location: PostLocation | null;
+   onLocationChange: (location: PostLocation | null) => void;
    collaborators: PartialUser[];
    onCollaboratorsChange: (collaborators: PartialUser[]) => void;
    postSettings: PostSettings;
@@ -194,40 +194,6 @@ export default function CaptionPanel({
                description="You can change this later by going to the ··· menu at the top of your post."
                checked={postSettings.commentsOff}
                onChange={v => updateSettings({ commentsOff: v })}
-            />
-            <SettingRow
-               title="Automatically share to Threads"
-               description={
-                  <>
-                     Always share your posts to Threads. You can change your audience on Threads
-                     settings.{' '}
-                     <Link href="#" {...stylex.props(styles.settingLink)}>
-                        Learn more
-                     </Link>
-                  </>
-               }
-               checked={postSettings.shareToThreads}
-               onChange={v => updateSettings({ shareToThreads: v })}
-            />
-            <SettingRow
-               title="Automatically share to Facebook"
-               description={
-                  <>
-                     Always share your posts to Facebook. You can change your audience on Facebook
-                     settings.{' '}
-                     <Link href="#" {...stylex.props(styles.settingLink)}>
-                        Learn more
-                     </Link>
-                  </>
-               }
-               checked={postSettings.shareToFacebook}
-               onChange={v => updateSettings({ shareToFacebook: v })}
-            />
-            <SettingRow
-               title="Automatically share to Clonedbook"
-               description="Always share your posts to Clonedbook. You can change your audience on Clonedbook settings."
-               checked={postSettings.shareToClonedbook}
-               onChange={v => updateSettings({ shareToClonedbook: v })}
             />
          </CollapsibleSection>
       </div>
