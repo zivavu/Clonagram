@@ -1,7 +1,8 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useEffect } from 'react';
+import { useUploadPost } from '../../hooks/useUploadPost';
+import type { PostData } from '../../types';
 import { shared } from '../Spinner.stylex';
 import StepHeader from '../StepHeader';
 
@@ -20,14 +21,12 @@ const styles = stylex.create({
 });
 
 interface SharingStepProps {
+   postData: PostData;
    onDone: () => void;
 }
 
-export default function SharingStep({ onDone }: SharingStepProps) {
-   useEffect(() => {
-      const timer = setTimeout(onDone, 3000);
-      return () => clearTimeout(timer);
-   }, [onDone]);
+export default function SharingStep({ postData, onDone }: SharingStepProps) {
+   useUploadPost({ postData, onDone });
 
    return (
       <div {...stylex.props(shared.root)}>
