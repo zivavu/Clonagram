@@ -150,6 +150,7 @@ export default function CreatePostModal() {
 
    const postData: PostData = {
       media: files,
+      aspectRatio,
       caption,
       location,
       collaborators,
@@ -245,7 +246,7 @@ export default function CreatePostModal() {
                      <Dialog.Description style={{ display: 'none' }}>
                         Sharing your post
                      </Dialog.Description>
-                     <SharingStep onDone={() => setStep('post-shared')} />
+                     <SharingStep postData={postData} onDone={() => setStep('post-shared')} />
                   </>
                )}
                {step === 'post-shared' && (
