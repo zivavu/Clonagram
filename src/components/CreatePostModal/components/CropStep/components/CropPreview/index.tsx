@@ -43,13 +43,14 @@ export default function CropPreview({
    const [isDragging, setIsDragging] = useState(false);
    const { cropBox, imageDisplaySize } = useCropDimensions(containerSize, naturalSize, aspectRatio);
 
+   // biome-ignore lint/correctness/useExhaustiveDependencies: onUpdateFile omitted — primitives in deps prevent loops
    useEffect(() => {
       if (!imageDisplaySize) return;
       onUpdateFile(currentIndex, {
          imageDisplayW: imageDisplaySize.w,
          imageDisplayH: imageDisplaySize.h,
       });
-   }, [imageDisplaySize, currentIndex, onUpdateFile]);
+   }, [imageDisplaySize?.w, imageDisplaySize?.h, currentIndex]);
 
    const handlePointerDown = (e: React.PointerEvent) => {
       if (currentFile.type === 'video') return;
