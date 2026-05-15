@@ -12,6 +12,7 @@ import CarouselArrow from '@/src/components/CarouselArrow';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
+import { useAuthUser } from '../../../../hooks/useAuthUser';
 import { styles } from './index.stylex';
 
 interface HomepagePostProps {
@@ -60,10 +61,13 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
 }
 
 export default function HomepagePost({ post }: HomepagePostProps) {
+   const { data: currentUser } = useAuthUser();
+
    const [currentImageIndex, setCurrentImageIndex] = useState(0);
    const media = mergeMedia(post);
    const hasMultipleMedia = media.length > 1;
    const height = containerHeight(post.aspect_ratio);
+   const isOwner = post.user.id === currentUser?.id;
 
    const handlePrevious = () => {
       setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev));
@@ -82,7 +86,15 @@ export default function HomepagePost({ post }: HomepagePostProps) {
             <span {...stylex.props(styles.createdAt)}>
                {post.created_at ? formatRelativeTimeShortUnit(post.created_at) : ''}
             </span>
-            <TbDots {...stylex.props(styles.actionsIcon)} />
+            {isOwner && (
+               <button
+                  type="button"
+                  aria-label="Open Actions Modal"
+                  {...stylex.props(styles.actionsIcon)}
+               >
+                  <TbDots {...stylex.props(styles.actionsIcon)} />
+               </button>
+            )}
          </div>
          <div {...stylex.props(styles.carouselContainer)} style={{ height: `${height}px` }}>
             <div
