@@ -27,25 +27,27 @@ function outputSize(
    return { w: Math.round(naturalW * scale), h: Math.round(naturalH * scale) };
 }
 
-function buildVertexBuffer(media: PostMedia, outW: number, outH: number): Float32Array {
+function buildVertexBuffer(
+   media: PostMedia,
+   outW: number,
+   outH: number,
+   naturalW: number,
+   naturalH: number,
+): Float32Array {
    const { zoom, panX, panY, imageDisplayW, imageDisplayH } = media;
+   const displayW = imageDisplayW || naturalW;
+   const displayH = imageDisplayH || naturalH;
 
-   if (!imageDisplayW || !imageDisplayH) {
-      return new Float32Array([
-         -1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, -1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1,
-      ]);
-   }
-
-   const imgRatio = imageDisplayW / imageDisplayH;
+   const imgRatio = displayW / displayH;
    const cropRatio = outW / outH;
 
-   const cropBoxW = imgRatio >= cropRatio ? imageDisplayH * cropRatio : imageDisplayW;
-   const cropBoxH = imgRatio >= cropRatio ? imageDisplayH : imageDisplayW / cropRatio;
+   const cropBoxW = imgRatio >= cropRatio ? displayH * cropRatio : displayW;
+   const cropBoxH = imgRatio >= cropRatio ? displayH : displayW / cropRatio;
 
-   const halfU = cropBoxW / (2 * zoom * imageDisplayW);
-   const halfV = cropBoxH / (2 * zoom * imageDisplayH);
-   const panU = panX / (zoom * imageDisplayW);
-   const panV = panY / (zoom * imageDisplayH);
+   const halfU = cropBoxW / (2 * zoom * displayW);
+   const halfV = cropBoxH / (2 * zoom * displayH);
+   const panU = panX / (zoom * displayW);
+   const panV = panY / (zoom * displayH);
 
    const u0 = 0.5 - halfU - panU;
    const u1 = 0.5 + halfU - panU;
@@ -120,7 +122,7 @@ export async function bakeImage(media: PostMedia, aspectRatio: AspectRatio): Pro
    // biome-ignore lint/correctness/useHookAtTopLevel: gl.useProgram is a WebGL API, not a React hook
    gl.useProgram(program);
 
-   const vertices = buildVertexBuffer(media, outW, outH);
+   const vertices = buildVertexBuffer(media, outW, outH, img.naturalWidth, img.naturalHeight);
    const buffer = gl.createBuffer();
    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);

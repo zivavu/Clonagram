@@ -6,7 +6,7 @@ export function postsWithMediaQuery(supabase: SupabaseClient<Database>) {
       .from('posts')
       .select(
          `
-         id, caption, created_at, like_count, comment_count,
+         id, caption, created_at, like_count, comment_count, aspect_ratio,
          user:profiles!user_id(id, username, avatar_url),
          images:post_images(id, url, position),
          videos:post_videos(id, mux_playback_id, duration, position)

@@ -26,6 +26,19 @@ interface UnifiedMedia {
    position: number;
 }
 
+function containerHeight(aspectRatio: string): number {
+   switch (aspectRatio) {
+      case '16:9':
+         return 263.25;
+      case '1:1':
+         return 468;
+      case '4:5':
+      case '9:16':
+      default:
+         return 585;
+   }
+}
+
 function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
    const images: UnifiedMedia[] =
       post.images?.map(img => ({
@@ -39,7 +52,7 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
       post.videos?.map(vid => ({
          id: vid.mux_playback_id ?? vid.id,
          type: 'video' as const,
-         url: vid.mux_playback_id ? `https://stream.mux.com/${vid.mux_playback_id}.m3u8` : '',
+         url: vid.mux_playback_id ?? '',
          position: vid.position,
       })) ?? [];
 
@@ -49,7 +62,8 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
 export default function HomepagePost({ post }: HomepagePostProps) {
    const [currentImageIndex, setCurrentImageIndex] = useState(0);
    const media = mergeMedia(post);
-   const hasMultipleImages = media.length > 1;
+   const hasMultipleMedia = media.length > 1;
+   const height = containerHeight(post.aspect_ratio);
 
    const handlePrevious = () => {
       setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev));
@@ -70,45 +84,48 @@ export default function HomepagePost({ post }: HomepagePostProps) {
             </span>
             <TbDots {...stylex.props(styles.actionsIcon)} />
          </div>
-         <div {...stylex.props(styles.carouselContainer)}>
+         <div {...stylex.props(styles.carouselContainer)} style={{ height: `${height}px` }}>
             <div
                {...stylex.props(styles.carouselTrack)}
                style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
             >
-               {media.map(item =>
-                  item.type === 'image' ? (
-                     <div key={item.id} {...stylex.props(styles.carouselSlide, styles.imageSlide)}>
+               {media.map(item => (
+                  <div key={item.id} {...stylex.props(styles.carouselSlide)}>
+                     {item.type === 'image' ? (
                         <Image
                            src={item.url}
-                           alt={item.type}
+                           alt="post"
                            fill
                            sizes="468px"
                            {...stylex.props(styles.postImage)}
                         />
-                     </div>
-                  ) : (
-                     <div key={item.id} {...stylex.props(styles.carouselSlide, styles.videoSlide)}>
+                     ) : (
                         <MuxPlayer
-                           style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
-                           playbackId={item.id}
+                           style={{
+                              width: '100%',
+                              height: '100%',
+                              '--bottom-controls': 'none',
+                              '--media-object-fit': 'cover',
+                           }}
+                           playbackId={item.url}
                         />
-                     </div>
-                  ),
-               )}
+                     )}
+                  </div>
+               ))}
             </div>
-            {hasMultipleImages && currentImageIndex > 0 && (
+            {hasMultipleMedia && currentImageIndex > 0 && (
                <CarouselArrow direction="left" onClick={handlePrevious} />
             )}
-            {hasMultipleImages && currentImageIndex < media.length - 1 && (
+            {hasMultipleMedia && currentImageIndex < media.length - 1 && (
                <CarouselArrow direction="right" onClick={handleNext} />
             )}
-            {hasMultipleImages && (
+            {hasMultipleMedia && (
                <div {...stylex.props(styles.dotsContainer)}>
                   {media.map((_, dotIndex) => (
                      <button
                         key={media[dotIndex].id}
                         type="button"
-                        aria-label={`Go to image ${dotIndex + 1}`}
+                        aria-label={`Go to slide ${dotIndex + 1}`}
                         onClick={() => setCurrentImageIndex(dotIndex)}
                         {...stylex.props(
                            styles.dot,
