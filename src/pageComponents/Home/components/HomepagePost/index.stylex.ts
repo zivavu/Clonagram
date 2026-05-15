@@ -46,21 +46,12 @@ export const styles = stylex.create({
    carouselSlide: {
       position: 'relative',
       flexShrink: 0,
-   },
-   imageSlide: {
       width: '468px',
-      height: '468px',
-   },
-   videoSlide: {
-      width: '468px',
-      height: '585px',
+      height: '100%',
    },
    postImage: {
       objectFit: 'cover',
-   },
-   postVideo: {
-      width: '468px',
-      height: '585px',
+      resize: 'none',
    },
    dotsContainer: {
       position: 'absolute',
