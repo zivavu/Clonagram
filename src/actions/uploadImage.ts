@@ -1,6 +1,5 @@
 'use server';
 import 'server-only';
-
 import { createServerClient } from '../lib/supabase/server';
 
 interface UploadImageProps {
@@ -11,13 +10,13 @@ interface UploadImageProps {
 
 export async function uploadImage({ file, bucket, fileName }: UploadImageProps) {
    const supabaseClient = await createServerClient();
-   const { data, error } = await supabaseClient.storage
-      .from(bucket)
-      .update(fileName ?? file.name, file);
+   const path = fileName ?? file.name;
+   const { data, error } = await supabaseClient.storage.from(bucket).upload(path, file);
 
    if (error) {
       throw error;
    }
 
-   return data;
+   const { data: publicUrlData } = supabaseClient.storage.from(bucket).getPublicUrl(data.path);
+   return { path: data.path, publicUrl: publicUrlData.publicUrl };
 }

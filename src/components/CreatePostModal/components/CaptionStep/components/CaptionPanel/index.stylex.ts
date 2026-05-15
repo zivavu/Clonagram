@@ -64,7 +64,6 @@ export const styles = stylex.create({
       color: colors.textPrimary,
    },
    collabAvatars: {
-      display: 'flex',
       alignItems: 'center',
       flex: 1,
    },
@@ -142,11 +141,9 @@ export const styles = stylex.create({
       height: '44px',
       objectFit: 'cover',
       borderRadius: radius.xs,
-      flexShrink: 0,
    },
    altInput: {
-      flex: 1,
-      border: 'none',
+      borderStyle: 'none',
       color: colors.textPrimary,
       fontSize: '13px',
       padding: '4px 0',

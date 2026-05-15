@@ -68,7 +68,9 @@ export interface PostData {
    postSettings: PostSettings;
 }
 
-export type MediaResult = { type: 'image'; path: string } | { type: 'video'; uploadId: string };
+export type MediaResult =
+   | { type: 'image'; path: string }
+   | { type: 'video'; assetId: string; playbackId: string; duration: number };
 
 export interface CreatePostParams extends Omit<PostData, 'media'> {
    mediaResults: MediaResult[];
