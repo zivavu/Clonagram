@@ -1,13 +1,7 @@
 import { create } from 'zustand';
+import type { ModalStore } from './types';
 
-interface NotificationsPortalStore {
-   isOpen: boolean;
-   open: () => void;
-   close: () => void;
-   toggle: () => void;
-}
-
-export const useNotificationsPortalStore = create<NotificationsPortalStore>(set => ({
+export const useNotificationsPortalStore = create<ModalStore>(set => ({
    isOpen: false,
    open: () => set({ isOpen: true }),
    close: () => set({ isOpen: false }),

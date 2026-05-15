@@ -51,7 +51,6 @@ export const styles = stylex.create({
    },
    postImage: {
       objectFit: 'cover',
-      resize: 'none',
    },
    dotsContainer: {
       position: 'absolute',
