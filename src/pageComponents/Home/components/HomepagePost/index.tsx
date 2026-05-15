@@ -37,7 +37,7 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
 
    const videos: UnifiedMedia[] =
       post.videos?.map(vid => ({
-         id: vid.id,
+         id: vid.mux_playback_id ?? vid.id,
          type: 'video' as const,
          url: vid.mux_playback_id ? `https://stream.mux.com/${vid.mux_playback_id}.m3u8` : '',
          position: vid.position,
@@ -75,9 +75,9 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                {...stylex.props(styles.carouselTrack)}
                style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
             >
-               {media.map(item => (
-                  <div key={item.id} {...stylex.props(styles.carouselSlide)}>
-                     {item.type === 'image' ? (
+               {media.map(item =>
+                  item.type === 'image' ? (
+                     <div key={item.id} {...stylex.props(styles.carouselSlide, styles.imageSlide)}>
                         <Image
                            src={item.url}
                            alt={item.type}
@@ -85,14 +85,16 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                            sizes="468px"
                            {...stylex.props(styles.postImage)}
                         />
-                     ) : (
+                     </div>
+                  ) : (
+                     <div key={item.id} {...stylex.props(styles.carouselSlide, styles.videoSlide)}>
                         <MuxPlayer
                            style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
-                           playbackId="HPbmwHABcTDuydWDsooCnkFRSGbCcr7OK00KJI5crh9g"
+                           playbackId={item.id}
                         />
-                     )}
-                  </div>
-               ))}
+                     </div>
+                  ),
+               )}
             </div>
             {hasMultipleImages && currentImageIndex > 0 && (
                <CarouselArrow direction="left" onClick={handlePrevious} />

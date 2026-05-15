@@ -106,7 +106,7 @@ export default function StoryCard({
                key={currentMedia.id}
                ref={muxPlayerRef}
                style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
-               playbackId="HPbmwHABcTDuydWDsooCnkFRSGbCcr7OK00KJI5crh9g"
+               playbackId={currentMedia.url ?? ''}
                autoPlay="always"
                onTimeUpdate={() => {
                   const time = muxPlayerRef.current?.media?.currentTime;

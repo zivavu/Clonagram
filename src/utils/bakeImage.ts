@@ -80,7 +80,10 @@ function buildVertexBuffer(media: PostMedia, outW: number, outH: number): Float3
    ]);
 }
 
-function loadBitmapTexture(gl: WebGL2RenderingContext, bitmap: ImageBitmap): WebGLTexture {
+function loadBitmapTexture(
+   gl: WebGL2RenderingContext,
+   image: HTMLImageElement | ImageBitmap,
+): WebGLTexture {
    const texture = gl.createTexture();
    if (!texture) throw new Error('Failed to create WebGL texture');
    gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -89,15 +92,24 @@ function loadBitmapTexture(gl: WebGL2RenderingContext, bitmap: ImageBitmap): Web
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bitmap);
+   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
    return texture;
 }
 
+async function loadImage(src: string): Promise<HTMLImageElement> {
+   return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+      img.src = src;
+   });
+}
+
 export async function bakeImage(media: PostMedia, aspectRatio: AspectRatio): Promise<Blob> {
-   const blob = await fetch(media.preview).then(r => r.blob());
-   const bitmap = await createImageBitmap(blob);
-   const { w: outW, h: outH } = outputSize(aspectRatio, bitmap.width, bitmap.height);
+   const img = await loadImage(media.preview);
+   const { w: outW, h: outH } = outputSize(aspectRatio, img.naturalWidth, img.naturalHeight);
 
    const canvas = new OffscreenCanvas(outW, outH);
    const gl = canvas.getContext('webgl2', { premultipliedAlpha: false });
@@ -121,8 +133,7 @@ export async function bakeImage(media: PostMedia, aspectRatio: AspectRatio): Pro
    gl.vertexAttribPointer(uvLoc, 2, gl.FLOAT, false, 16, 8);
    gl.viewport(0, 0, outW, outH);
 
-   const imageTexture = loadBitmapTexture(gl, bitmap);
-   bitmap.close();
+   const imageTexture = loadBitmapTexture(gl, img);
 
    const preset = getPreset(media.filterPreset);
    const curvesTexture = createCurveTexture(gl, preset.curves);
