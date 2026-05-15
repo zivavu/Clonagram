@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { uuidv4 } from 'zod';
 import { createPost } from '@/src/actions/createPost';
+import { getMuxUploadInfo } from '@/src/actions/getMuxUploadInfo';
 import { uploadImage } from '@/src/actions/uploadImage';
 import { uploadVideo } from '@/src/actions/uploadVideo';
 import { bakeImage } from '@/src/utils/bakeImage';
@@ -12,13 +12,41 @@ interface UseUploadPostParams {
    onDone: () => void;
 }
 
+const MUX_POLL_MAX_ATTEMPTS = 30;
+const MUX_POLL_INTERVAL_MS = 2000;
+
+async function pollMuxAsset(
+   uploadId: string,
+): Promise<{ assetId: string; playbackId: string; duration: number }> {
+   for (let attempt = 0; attempt < MUX_POLL_MAX_ATTEMPTS; attempt++) {
+      const info = await getMuxUploadInfo(uploadId);
+
+      if (
+         info.status === 'asset_created' &&
+         info.assetId &&
+         info.playbackId &&
+         info.duration !== null
+      ) {
+         return { assetId: info.assetId, playbackId: info.playbackId, duration: info.duration };
+      }
+
+      if (info.error) {
+         throw new Error(info.error);
+      }
+
+      await new Promise(r => setTimeout(r, MUX_POLL_INTERVAL_MS));
+   }
+
+   throw new Error('Mux asset creation timed out');
+}
+
 async function processMedia(media: PostMedia, postData: PostData): Promise<MediaResult> {
    if (media.type === 'image') {
       const blob = await bakeImage(media, postData.aspectRatio);
-      const fileName = `${uuidv4()}.jpg`;
+      const fileName = `${crypto.randomUUID()}.jpg`;
       const file = new File([blob], fileName, { type: 'image/jpeg' });
       const data = await uploadImage({ file, bucket: 'posts', fileName });
-      return { type: 'image', path: data.path };
+      return { type: 'image', path: data.publicUrl };
    }
 
    const processedFile = await processVideo(
@@ -37,7 +65,9 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
       headers: { 'Content-Type': processedFile.type },
    });
    if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
-   return { type: 'video', uploadId };
+
+   const { assetId, playbackId, duration } = await pollMuxAsset(uploadId);
+   return { type: 'video', assetId, playbackId, duration };
 }
 
 export function useUploadPost({ postData, onDone }: UseUploadPostParams): void {

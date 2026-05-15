@@ -1,12 +1,23 @@
 import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
+import { createServerClient } from '../../lib/supabase/server';
+import { postsWithMediaQuery } from '../../queries/posts';
 import Main from './components/Main';
 import RightSidebar from './components/RightSidebar';
 import { styles } from './index.stylex';
 
-export default function HomePage({ variant }: { variant: string | null }) {
+export default async function HomePage({ variant }: { variant: string | null }) {
    const isFollowingSelected = variant === 'following';
+
+   const supabase = await createServerClient();
+   const { data, error } = await postsWithMediaQuery(supabase);
+
+   if (error) {
+      throw new Error(`Failed to fetch posts: ${error.message}`);
+   }
+
+   const posts = data ?? [];
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -43,7 +54,7 @@ export default function HomePage({ variant }: { variant: string | null }) {
             </div>
             <Separator {...stylex.props(styles.separator)} />
             <div {...stylex.props(styles.mainContainer)}>
-               <Main />
+               <Main posts={posts} />
                <RightSidebar />
             </div>
          </div>

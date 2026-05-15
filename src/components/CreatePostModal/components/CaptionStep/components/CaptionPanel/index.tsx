@@ -153,21 +153,23 @@ export default function CaptionPanel({
                Alt text describes your photos for people with visual impairments. Alt text will be
                automatically created for your photos or you can choose to write your own.
             </p>
-            {files.map((file, idx) => (
-               <div key={file.preview} {...stylex.props(styles.altRow)}>
-                  {/* biome-ignore lint/performance/noImgElement: small fixed-size thumbnail */}
-                  <img
-                     src={file.preview}
-                     alt={`Thumbnail ${idx + 1}`}
-                     {...stylex.props(styles.altThumb)}
-                  />
-                  <input
-                     type="text"
-                     placeholder="Write alt text..."
-                     {...stylex.props(styles.altInput)}
-                  />
-               </div>
-            ))}
+            {files
+               .filter(file => file.type === 'image')
+               .map((file, idx) => (
+                  <div key={file.preview} {...stylex.props(styles.altRow)}>
+                     {/* biome-ignore lint/performance/noImgElement: small fixed-size thumbnail */}
+                     <img
+                        src={file.preview}
+                        alt={`Thumbnail ${idx + 1}`}
+                        {...stylex.props(styles.altThumb)}
+                     />
+                     <input
+                        type="text"
+                        placeholder="Write alt text..."
+                        {...stylex.props(styles.altInput)}
+                     />
+                  </div>
+               ))}
          </CollapsibleSection>
 
          <CollapsibleSection

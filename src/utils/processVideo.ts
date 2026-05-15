@@ -1,11 +1,12 @@
-import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile } from '@ffmpeg/util';
 import type { AspectRatio } from '../components/CreatePostModal/types';
 
-let ffmpegInstance: FFmpeg | null = null;
+type FFmpegType = InstanceType<typeof import('@ffmpeg/ffmpeg').FFmpeg>;
 
-async function getFFmpeg(): Promise<FFmpeg> {
+let ffmpegInstance: FFmpegType | null = null;
+
+async function getFFmpeg(): Promise<FFmpegType> {
    if (ffmpegInstance) return ffmpegInstance;
+   const { FFmpeg } = await import('@ffmpeg/ffmpeg');
    ffmpegInstance = new FFmpeg();
    await ffmpegInstance.load();
    return ffmpegInstance;
@@ -17,12 +18,12 @@ function getFileExtension(name: string): string {
 }
 
 const ASPECT_RATIO_FILTERS: Record<Exclude<AspectRatio, 'original'>, string> = {
-   '1:1': 'crop=min(iw\\,ih):min(iw\\,ih):(iw-min(iw\\,ih))/2:(ih-min(iw\\,ih))/2,scale=1080:1080:flags=lanczos',
-   '4:5': 'crop=min(iw\\,ih*4/5):min(iw*5/4\\,ih):(iw-min(iw\\,ih*4/5))/2:(ih-min(iw*5/4\\,ih))/2,scale=1080:1350:flags=lanczos',
+   '1:1': 'crop=min(iw,ih):min(iw,ih):(iw-min(iw,ih))/2:(ih-min(iw,ih))/2,scale=1080:1080:flags=lanczos',
+   '4:5': 'crop=min(iw,ih*4/5):min(iw*5/4,ih):(iw-min(iw,ih*4/5))/2:(ih-min(iw*5/4,ih))/2,scale=1080:1350:flags=lanczos',
    '16:9':
-      'crop=min(iw\\,ih*16/9):min(iw*9/16\\,ih):(iw-min(iw\\,ih*16/9))/2:(ih-min(iw*9/16\\,ih))/2,scale=1920:1080:flags=lanczos',
+      'crop=min(iw,ih*16/9):min(iw*9/16,ih):(iw-min(iw,ih*16/9))/2:(ih-min(iw*9/16,ih))/2,scale=1920:1080:flags=lanczos',
    '9:16':
-      'crop=min(iw\\,ih*9/16):min(iw*16/9\\,ih):(iw-min(iw\\,ih*9/16))/2:(ih-min(iw*16/9\\,ih))/2,scale=1080:1920:flags=lanczos',
+      'crop=min(iw,ih*9/16):min(iw*16/9,ih):(iw-min(iw,ih*9/16))/2:(ih-min(iw*16/9,ih))/2,scale=1080:1920:flags=lanczos',
 };
 
 export async function processVideo(
@@ -41,9 +42,11 @@ export async function processVideo(
    }
 
    const ffmpeg = await getFFmpeg();
+   const { fetchFile } = await import('@ffmpeg/util');
+   const suffix = crypto.randomUUID().slice(0, 8);
    const ext = getFileExtension(file.name);
-   const inputName = `input${ext}`;
-   const outputName = 'output.mp4';
+   const inputName = `input_${suffix}${ext}`;
+   const outputName = `output_${suffix}.mp4`;
 
    await ffmpeg.writeFile(inputName, await fetchFile(file));
 

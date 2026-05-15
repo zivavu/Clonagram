@@ -38,8 +38,6 @@ export const styles = stylex.create({
 export const stepHeaderStyles = stylex.create({
    closeButton: {
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
       padding: '8px',
       color: colors.textPrimary,
       borderRadius: radius.full,

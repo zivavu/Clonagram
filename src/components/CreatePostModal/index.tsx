@@ -122,7 +122,6 @@ export default function CreatePostModal() {
    const requestClose = () => {
       if (isDiscardOpen) setIsDiscardOpen(false);
       else if (step === 'upload' || step === 'post-shared') performClose();
-      else if (step === 'sharing') return;
       else setIsDiscardOpen(true);
    };
 
