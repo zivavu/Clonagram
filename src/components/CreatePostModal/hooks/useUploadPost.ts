@@ -1,11 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPost } from '@/src/actions/createPost';
 import { getMuxUploadInfo } from '@/src/actions/getMuxUploadInfo';
-import { uploadImage } from '@/src/actions/uploadImage';
 import { uploadVideo } from '@/src/actions/uploadVideo';
+import { createBrowserClient } from '@/src/lib/supabase/client';
 import { bakeImage } from '@/src/utils/bakeImage';
 import { processVideo } from '@/src/utils/processVideo';
 import type { MediaResult, PostData, PostMedia } from '../types';
+
+export type UploadStatus = 'idle' | 'uploading' | 'done' | 'error';
+
+export interface UseUploadPostResult {
+   status: UploadStatus;
+   error: string | null;
+}
 
 interface UseUploadPostParams {
    postData: PostData;
@@ -45,8 +52,13 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
       const blob = await bakeImage(media, postData.aspectRatio);
       const fileName = `${crypto.randomUUID()}.jpg`;
       const file = new File([blob], fileName, { type: 'image/jpeg' });
-      const data = await uploadImage({ file, bucket: 'posts', fileName });
-      return { type: 'image', path: data.publicUrl };
+      const supabase = createBrowserClient();
+      const { error: uploadError } = await supabase.storage.from('posts').upload(fileName, file);
+      if (uploadError) {
+         throw new Error(`Image upload failed: ${uploadError.message}`);
+      }
+      const { data: urlData } = supabase.storage.from('posts').getPublicUrl(fileName);
+      return { type: 'image', path: urlData.publicUrl };
    }
 
    const processedFile = await processVideo(
@@ -70,18 +82,36 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
    return { type: 'video', assetId, playbackId, duration };
 }
 
-export function useUploadPost({ postData, onDone }: UseUploadPostParams): void {
-   // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally runs once on mount
+export function useUploadPost({ postData, onDone }: UseUploadPostParams): UseUploadPostResult {
+   const [status, setStatus] = useState<UploadStatus>('idle');
+   const [error, setError] = useState<string | null>(null);
+   const postDataRef = useRef(postData);
+   const onDoneRef = useRef(onDone);
+   const hasRun = useRef(false);
+
+   postDataRef.current = postData;
+   onDoneRef.current = onDone;
+
    useEffect(() => {
+      if (hasRun.current) return;
+      hasRun.current = true;
+
       async function run() {
-         const mediaResults = await Promise.all(
-            postData.media.map(media => processMedia(media, postData)),
-         );
-         const { media: _, ...postMeta } = postData;
+         setStatus('uploading');
+         const data = postDataRef.current;
+         const mediaResults = await Promise.all(data.media.map(media => processMedia(media, data)));
+         const { media: _, ...postMeta } = data;
          await createPost({ ...postMeta, mediaResults });
-         onDone();
+         setStatus('done');
+         onDoneRef.current();
       }
 
-      run().catch(() => {});
+      run().catch(err => {
+         const message = err instanceof Error ? err.message : 'Upload failed';
+         setError(message);
+         setStatus('error');
+      });
    }, []);
+
+   return { status, error };
 }

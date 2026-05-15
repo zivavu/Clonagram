@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 
+import { revalidatePath } from 'next/cache';
 import type { CreatePostParams } from '../components/CreatePostModal/types';
 import { createServerClient } from '../lib/supabase/server';
 
@@ -132,4 +133,5 @@ export async function createPost(params: CreatePostParams): Promise<void> {
          }
       }
    }
+   revalidatePath('/');
 }

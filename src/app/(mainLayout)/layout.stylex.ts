@@ -5,5 +5,6 @@ export const styles = stylex.create({
    root: {
       display: 'flex',
       backgroundColor: colors.bg,
+      minHeight: '100dvh',
    },
 });

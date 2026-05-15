@@ -29,6 +29,23 @@ const styles = stylex.create({
          backgroundColor: colors.buttonHover,
       },
    },
+   errorText: {
+      color: colors.textPrimary,
+      fontSize: 14,
+      textAlign: 'center',
+      padding: '0 24px',
+      maxWidth: 320,
+   },
+   retryButton: {
+      marginTop: 16,
+      padding: '8px 24px',
+      borderRadius: radius.md,
+      backgroundColor: colors.textPrimary,
+      color: colors.bg,
+      fontSize: 14,
+      fontWeight: 600,
+      cursor: 'pointer',
+   },
 });
 
 interface SharingStepProps {
@@ -37,7 +54,9 @@ interface SharingStepProps {
 }
 
 export default function SharingStep({ postData, onDone }: SharingStepProps) {
-   useUploadPost({ postData, onDone });
+   const { status, error } = useUploadPost({ postData, onDone });
+
+   const isError = status === 'error';
 
    return (
       <div {...stylex.props(shared.root)}>
@@ -52,9 +71,20 @@ export default function SharingStep({ postData, onDone }: SharingStepProps) {
             }
          />
          <div {...stylex.props(shared.body)}>
-            <div {...stylex.props(shared.ring, styles.spinningRing)}>
-               <div {...stylex.props(shared.ringInner)} />
-            </div>
+            {isError ? (
+               <>
+                  <span {...stylex.props(styles.errorText)}>
+                     {error ?? 'Something went wrong while sharing your post.'}
+                  </span>
+                  <button type="button" {...stylex.props(styles.retryButton)} onClick={onDone}>
+                     Try again
+                  </button>
+               </>
+            ) : (
+               <div {...stylex.props(shared.ring, styles.spinningRing)}>
+                  <div {...stylex.props(shared.ringInner)} />
+               </div>
+            )}
          </div>
       </div>
    );
