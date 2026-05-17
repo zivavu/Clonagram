@@ -2,8 +2,8 @@
 import 'server-only';
 
 import { revalidatePath } from 'next/cache';
-import type { CreatePostParams } from '../components/CreatePostModal/types';
-import { createServerClient } from '../lib/supabase/server';
+import type { CreatePostParams } from '../../components/CreatePostModal/types';
+import { createServerClient } from '../../lib/supabase/server';
 
 function extractHashtags(caption: string | null): string[] {
    if (!caption) return [];

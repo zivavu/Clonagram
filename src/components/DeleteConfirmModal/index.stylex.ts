@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors } from '../../../../../styles/tokens.stylex';
+import { colors } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    overlay: {
@@ -8,7 +8,6 @@ export const styles = stylex.create({
       backgroundColor: 'rgba(12, 16, 20, 0.7)',
       zIndex: 50,
    },
-
    content: {
       position: 'fixed',
       top: '50%',
@@ -21,13 +20,29 @@ export const styles = stylex.create({
       borderRadius: '24px',
       zIndex: 51,
    },
-
-   actionButton: {
-      padding: '16px 16px',
+   header: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '24px 16px 16px',
+   },
+   title: {
+      fontSize: '1rem',
+      fontWeight: 700,
+      color: colors.textPrimary,
+   },
+   description: {
       fontSize: '0.875rem',
+      color: colors.textSecondary,
+      textAlign: 'center',
    },
    separator: {
       height: '1px',
       backgroundColor: colors.elevatedSeparator,
+   },
+   actionButton: {
+      padding: '16px',
+      fontSize: '0.875rem',
    },
 });

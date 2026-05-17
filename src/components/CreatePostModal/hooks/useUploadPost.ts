@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { createPost } from '@/src/actions/createPost';
 import { getMuxUploadInfo } from '@/src/actions/getMuxUploadInfo';
+import { createPost } from '@/src/actions/post/createPost';
 import { uploadVideo } from '@/src/actions/uploadVideo';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { bakeImage } from '@/src/utils/bakeImage';
