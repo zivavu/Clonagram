@@ -4,6 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import { BiNotificationOff } from 'react-icons/bi';
 import type { PostsWithMedia } from '../../../../queries/posts';
 import HomepagePost from '../HomepagePost';
+import OwnerActionsModal from '../HomepagePost/components/OwnerActionsModal';
 import StoriesRow from '../StoriesRow';
 import { styles } from './index.stylex';
 
@@ -14,6 +15,7 @@ interface MainProps {
 export default function Main({ posts }: MainProps) {
    return (
       <main {...stylex.props(styles.root)}>
+         <OwnerActionsModal />
          <StoriesRow />
          {posts.length === 0 ? (
             <div {...stylex.props(styles.emptyState)}>

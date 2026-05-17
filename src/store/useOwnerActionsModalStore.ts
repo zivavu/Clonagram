@@ -1,9 +1,17 @@
 import { create } from 'zustand';
-import type { ModalStore } from './types';
 
-export const useOwnerActionsModal = create<ModalStore>(set => ({
+interface OwnerActionsModalStore {
+   isOpen: boolean;
+   postId: string | null;
+   open: (postId: string) => void;
+   close: () => void;
+   toggle: () => void;
+}
+
+export const useOwnerActionsModal = create<OwnerActionsModalStore>(set => ({
    isOpen: false,
-   open: () => set({ isOpen: true }),
-   close: () => set({ isOpen: false }),
+   postId: null,
+   open: (postId: string) => set({ isOpen: true, postId }),
+   close: () => set({ isOpen: false, postId: null }),
    toggle: () => set(state => ({ isOpen: !state.isOpen })),
 }));
