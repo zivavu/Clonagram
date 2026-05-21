@@ -1,7 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
-import { CURRENT_USER, SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
+import { createServerClient } from '@/src/lib/supabase/server';
+import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import { styles } from './index.stylex';
 import LogoutButton from './LogoutButton';
 
@@ -18,14 +19,24 @@ const FOOTER_LINKS = [
    'Meta Verified',
 ];
 
-export default function RightSidebar() {
+export default async function RightSidebar() {
+   const supabase = await createServerClient();
+   const {
+      data: { user },
+   } = await supabase.auth.getUser();
+   const { data: profile } = await supabase
+      .from('profiles')
+      .select('username, full_name, avatar_url')
+      .eq('id', user!.id)
+      .single();
+
    return (
       <aside {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.profileCard)}>
-            <UserAvatar src={CURRENT_USER.avatar_url} alt={CURRENT_USER.username} size={44} />
+            <UserAvatar src={profile?.avatar_url ?? null} alt={profile?.username ?? ''} size={44} />
             <div {...stylex.props(styles.profileInfo)}>
-               <span {...stylex.props(styles.profileUsername)}>{CURRENT_USER.username}</span>
-               <span {...stylex.props(styles.profileName)}>{CURRENT_USER.full_name}</span>
+               <span {...stylex.props(styles.profileUsername)}>{profile?.username}</span>
+               <span {...stylex.props(styles.profileName)}>{profile?.full_name}</span>
             </div>
             <LogoutButton />
          </div>

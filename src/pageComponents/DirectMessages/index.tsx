@@ -8,8 +8,8 @@ import { RiUserReceived2Line } from 'react-icons/ri';
 import { TbPhoto } from 'react-icons/tb';
 import { VscSend } from 'react-icons/vsc';
 import UserAvatar from '@/src/components/UserAvatar';
+import { createServerClient } from '@/src/lib/supabase/server';
 import { MESSAGE_THREADS } from '@/src/pageComponents/mocks/messageThreads';
-import { CURRENT_USER } from '@/src/pageComponents/mocks/users';
 import { formatGroupSeparator } from '@/src/utils/formatters';
 import NewMessageModal from './components/NewMessageModal';
 import NewMessageTrigger from './components/NewMessageModal/NewMessageTrigger';
@@ -27,8 +27,13 @@ export default async function DirectMessagesPage({
    isRequestsPage = false,
    currentFolderHref = '/direct',
 }: DirectMessagesPageProps) {
+   const supabase = await createServerClient();
+   const {
+      data: { user: authUser },
+   } = await supabase.auth.getUser();
+   const currentUserId = authUser!.id;
    const chat = MESSAGE_THREADS.find(u => u.id === chatId);
-   const user = chat?.participants[0];
+   const participant = chat?.participants[0];
 
    const isChatSelected = !!chatId;
    const isRequestChat = currentFolderHref === '/direct/requests' && isChatSelected;
@@ -64,17 +69,21 @@ export default async function DirectMessagesPage({
                   </div>
                </div>
             )}
-            {isChatSelected && user && chat && (
+            {isChatSelected && participant && chat && (
                <>
                   <div {...stylex.props(styles.chatTopBar)}>
                      <div {...stylex.props(styles.chatTopBarRecipient)}>
-                        <UserAvatar src={user?.avatar_url} alt={user?.username || ''} size={44} />
+                        <UserAvatar
+                           src={participant?.avatar_url}
+                           alt={participant?.username || ''}
+                           size={44}
+                        />
                         <div>
                            <div {...stylex.props(styles.chatTopBarRecipientName)}>
-                              {user?.full_name}
+                              {participant?.full_name}
                            </div>
                            <div {...stylex.props(styles.chatTopBarRecipientUsername)}>
-                              {user?.username}
+                              {participant?.username}
                            </div>
                         </div>
                      </div>
@@ -89,14 +98,20 @@ export default async function DirectMessagesPage({
 
                   <div {...stylex.props(styles.messagesContainer)}>
                      <div {...stylex.props(styles.chatProfileHeader)}>
-                        <UserAvatar src={user.avatar_url} alt={user.username} size={96} />
-                        <div {...stylex.props(styles.chatProfileUsername)}>{user.username}</div>
+                        <UserAvatar
+                           src={participant.avatar_url}
+                           alt={participant.username}
+                           size={96}
+                        />
+                        <div {...stylex.props(styles.chatProfileUsername)}>
+                           {participant.username}
+                        </div>
                         <div {...stylex.props(styles.chatProfileSubtitle)}>Instagram</div>
                         <button {...stylex.props(styles.chatProfileButton)}>View profile</button>
                      </div>
 
                      {chat.messages.map((msg, idx) => {
-                        const isSent = msg.senderId === CURRENT_USER.id;
+                        const isSent = msg.senderId === currentUserId;
                         const prevMsg = idx > 0 ? chat.messages[idx - 1] : null;
                         const nextMsg =
                            idx < chat.messages.length - 1 ? chat.messages[idx + 1] : null;
@@ -127,8 +142,8 @@ export default async function DirectMessagesPage({
                                     <div {...stylex.props(styles.messageAvatarSlot)}>
                                        {isLastInGroup && (
                                           <UserAvatar
-                                             src={user.avatar_url}
-                                             alt={user.username}
+                                             src={participant.avatar_url}
+                                             alt={participant.username}
                                              size={28}
                                           />
                                        )}
@@ -156,10 +171,10 @@ export default async function DirectMessagesPage({
                            <div {...stylex.props(styles.requestInfoTitle)}>
                               Accept message request from{' '}
                               <span {...stylex.props(styles.requestInfoUsername)}>
-                                 {user.username}
+                                 {participant.username}
                               </span>{' '}
                               <span {...stylex.props(styles.requestInfoUsername)}>
-                                 ({user.username})
+                                 ({participant.username})
                               </span>
                               ?
                            </div>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
-import { CURRENT_USER } from '@/src/pageComponents/mocks/users';
+import { createServerClient } from '@/src/lib/supabase/server';
 import { hasUnreadMessages } from '@/src/utils/messages';
 import Username from '../../../../components/Username';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
@@ -20,6 +20,16 @@ export default async function RecipientsSidebar({
    currentFolderHref = '/direct',
    isRequestsPage = false,
 }: RecipientsSidebarProps) {
+   const supabase = await createServerClient();
+   const {
+      data: { user },
+   } = await supabase.auth.getUser();
+   const { data: profile } = await supabase
+      .from('profiles')
+      .select('id, username, avatar_url')
+      .eq('id', user?.id ?? '')
+      .single();
+   const currentUserId = profile?.id ?? user?.id ?? '';
    const currentFolderKey = messageFolders.find(folder => folder.href === currentFolderHref)?.key;
 
    return (
@@ -76,8 +86,8 @@ export default async function RecipientsSidebar({
 
                   <div {...stylex.props(styles.yourNoteSection)}>
                      <UserAvatar
-                        src={CURRENT_USER.avatar_url}
-                        alt={CURRENT_USER.username}
+                        src={profile?.avatar_url ?? null}
+                        alt={profile?.username ?? ''}
                         size={74}
                      />
                      <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
@@ -92,7 +102,8 @@ export default async function RecipientsSidebar({
                               key={thread.id}
                               thread={thread}
                               href={`${currentFolderHref}/${thread.id}`}
-                              unread={hasUnreadMessages(thread)}
+                              unread={hasUnreadMessages(thread, currentUserId)}
+                              currentUserId={currentUserId}
                            />
                         ))}
                   </div>

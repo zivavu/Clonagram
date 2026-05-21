@@ -62,11 +62,7 @@ export default function CaptionPanel({
       <div {...stylex.props(styles.panel)}>
          <div {...stylex.props(styles.captionSection)}>
             <div {...stylex.props(styles.userRow)}>
-               <UserAvatar
-                  alt="Your profile image"
-                  size={30}
-                  src={userData?.user_metadata?.avatar_url}
-               />
+               <UserAvatar alt="Your profile image" size={30} src={userData?.avatar_url ?? null} />
                <span>{}</span>
             </div>
             <textarea
@@ -132,14 +128,12 @@ export default function CaptionPanel({
          >
             <div {...stylex.props(styles.shareRow)}>
                <UserAvatar
-                  src={userData?.user_metadata.avatar_url}
-                  alt={userData?.user_metadata.username}
+                  src={userData?.avatar_url ?? null}
+                  alt={userData?.username ?? undefined}
                   size={36}
                />
                <div {...stylex.props(styles.shareInfo)}>
-                  <span {...stylex.props(styles.shareName)}>
-                     {userData?.user_metadata?.full_name}
-                  </span>
+                  <span {...stylex.props(styles.shareName)}>{userData?.full_name}</span>
                   <span {...stylex.props(styles.shareMeta)}>Clonedbook · Public</span>
                </div>
                <Toggle

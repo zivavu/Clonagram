@@ -10,10 +10,12 @@ export function ThreadItem({
    thread,
    href,
    unread,
+   currentUserId,
 }: {
    thread: MessageThread;
    href: string;
    unread?: boolean;
+   currentUserId: string;
 }) {
    const participant = thread.participants[0];
    const displayName = participant.full_name || participant.username;
@@ -27,7 +29,7 @@ export function ThreadItem({
             </span>
             <div {...stylex.props(styles.threadPreviewRow)}>
                <span {...stylex.props(styles.threadPreview, unread && styles.threadPreviewUnread)}>
-                  {getLastMessagePreview(thread)}
+                  {getLastMessagePreview(thread, currentUserId)}
                </span>
                <span {...stylex.props(styles.threadTimestamp)}>
                   {' · '}

@@ -5,13 +5,17 @@ export function useAuthUser() {
    return useQuery({
       queryKey: ['authUser'],
       queryFn: async () => {
-         const supabaseClient = createBrowserClient();
-         const { data: authData, error } = await supabaseClient.auth.getUser();
+         const supabase = createBrowserClient();
+         const { data: authData, error } = await supabase.auth.getUser();
          if (error) throw error;
-         if (!authData?.user?.identities?.length || !authData.user.identities[0].identity_data) {
-            throw new Error('No auth user');
-         }
-         return authData.user.identities[0].identity_data;
+         if (!authData?.user) throw new Error('No auth user');
+         const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', authData.user.id)
+            .single();
+         if (profileError) throw profileError;
+         return profile;
       },
       staleTime: Infinity,
    });
