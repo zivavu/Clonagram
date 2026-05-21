@@ -1,9 +1,9 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
-import { CURRENT_USER, SUGGESTED_USERS } from '@/src/mocks/users';
+import { CURRENT_USER, SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import { styles } from './index.stylex';
-import SwitchButton from './SwitchButton';
+import LogoutButton from './LogoutButton';
 
 const FOOTER_LINKS = [
    'About',
@@ -27,7 +27,7 @@ export default function RightSidebar() {
                <span {...stylex.props(styles.profileUsername)}>{CURRENT_USER.username}</span>
                <span {...stylex.props(styles.profileName)}>{CURRENT_USER.full_name}</span>
             </div>
-            <SwitchButton />
+            <LogoutButton />
          </div>
 
          <div {...stylex.props(styles.suggestionsHeader)}>

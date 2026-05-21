@@ -4,7 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { MdClose } from 'react-icons/md';
-import { STORIES } from '@/src/mocks/stories';
+import { STORIES } from '@/src/pageComponents/mocks/stories';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, SWIPE_THRESHOLD } from './constants';

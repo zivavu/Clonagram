@@ -1,4 +1,4 @@
-import { CURRENT_USER, SUGGESTED_USERS } from '@/src/mocks/users';
+import { CURRENT_USER, SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import type { PartialUser } from '@/src/types/global';
 
 export interface Message {

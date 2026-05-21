@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
-import { CURRENT_USER } from '@/src/mocks/users';
+import { CURRENT_USER } from '@/src/pageComponents/mocks/users';
 import { hasUnreadMessages } from '@/src/utils/messages';
+import Username from '../../../../components/Username';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
 import { messageFolders, sortedThreads, styles } from './index.stylex';
 import { RequestsContent } from './RequestsContent';
@@ -27,7 +28,7 @@ export default async function RecipientsSidebar({
             <>
                <div {...stylex.props(styles.topBar)}>
                   <button {...stylex.props(styles.changeAccountButton)}>
-                     zivavu
+                     <Username />
                      <BsChevronDown style={{ fontSize: '12px', strokeWidth: '0.4' }} />
                   </button>
                   <NewMessageTrigger>

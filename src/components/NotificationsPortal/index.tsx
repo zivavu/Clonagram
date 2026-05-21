@@ -7,8 +7,8 @@ import { useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
 import UserAvatar from '@/src/components/UserAvatar';
-import type { Notification, NotificationType } from '@/src/mocks/notifications';
-import { NOTIFICATIONS, VERIFIED_USERS } from '@/src/mocks/notifications';
+import type { Notification, NotificationType } from '@/src/pageComponents/mocks/notifications';
+import { NOTIFICATIONS, VERIFIED_USERS } from '@/src/pageComponents/mocks/notifications';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import { styles } from './index.stylex';
 

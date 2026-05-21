@@ -8,8 +8,10 @@ export function useAuthUser() {
          const supabaseClient = createBrowserClient();
          const { data: authData, error } = await supabaseClient.auth.getUser();
          if (error) throw error;
-         if (!authData.user) throw new Error('No auth user');
-         return authData.user;
+         if (!authData?.user?.identities?.length || !authData.user.identities[0].identity_data) {
+            throw new Error('No auth user');
+         }
+         return authData.user.identities[0].identity_data;
       },
       staleTime: Infinity,
    });

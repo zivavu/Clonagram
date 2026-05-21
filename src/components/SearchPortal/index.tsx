@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { FaCircleXmark } from 'react-icons/fa6';
 import { IoCloseOutline } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
-import { SUGGESTED_USERS } from '@/src/mocks/users';
+import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
 import { UserListItem, UserListSkeleton } from '../shared/UserListItem';
 import { styles } from './index.stylex';

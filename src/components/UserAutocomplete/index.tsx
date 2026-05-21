@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { IoCheckmark, IoClose } from 'react-icons/io5';
 import Autocomplete from '@/src/components/Autocomplete';
 import { UserListItem } from '@/src/components/shared/UserListItem';
-import { SUGGESTED_USERS } from '@/src/mocks/users';
+import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import type { PartialUser } from '@/src/types/global';
 import { styles } from './index.stylex';
 

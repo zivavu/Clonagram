@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { IoChevronForward, IoEyeOffOutline } from 'react-icons/io5';
-import { getRequestThreads } from '@/src/mocks/messageThreads';
+import { getRequestThreads } from '@/src/pageComponents/mocks/messageThreads';
 import { styles } from './index.stylex';
 import { ThreadItem } from './ThreadItem';
 

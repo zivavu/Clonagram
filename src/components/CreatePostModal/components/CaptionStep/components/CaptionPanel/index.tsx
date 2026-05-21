@@ -8,7 +8,6 @@ import { MdExpandMore, MdOutlineEmojiEmotions } from 'react-icons/md';
 import LocationAutocomplete from '@/src/components/LocationAutocomplete';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
-import { CURRENT_USER } from '@/src/mocks/users';
 import type { PartialUser } from '@/src/types/global';
 import { useAuthUser } from '../../../../../../hooks/useAuthUser';
 import type { PostLocation, PostMedia, PostSettings } from '../../../../types';
@@ -68,7 +67,7 @@ export default function CaptionPanel({
                   size={30}
                   src={userData?.user_metadata?.avatar_url}
                />
-               <span>zivavu</span>
+               <span>{}</span>
             </div>
             <textarea
                {...stylex.props(styles.textarea)}
@@ -132,9 +131,15 @@ export default function CaptionPanel({
             onToggle={() => setShareToOpen(o => !o)}
          >
             <div {...stylex.props(styles.shareRow)}>
-               <UserAvatar src={CURRENT_USER.avatar_url} alt={CURRENT_USER.username} size={36} />
+               <UserAvatar
+                  src={userData?.user_metadata.avatar_url}
+                  alt={userData?.user_metadata.username}
+                  size={36}
+               />
                <div {...stylex.props(styles.shareInfo)}>
-                  <span {...stylex.props(styles.shareName)}>{CURRENT_USER.username}</span>
+                  <span {...stylex.props(styles.shareName)}>
+                     {userData?.user_metadata?.full_name}
+                  </span>
                   <span {...stylex.props(styles.shareMeta)}>Clonedbook · Public</span>
                </div>
                <Toggle
