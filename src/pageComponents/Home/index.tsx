@@ -3,7 +3,10 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import Main from './components/Main';
+import MainSkeleton from './components/Main/MainSkeleton';
 import RightSidebar from './components/RightSidebar';
+import RightSidebarSkeleton from './components/RightSidebar/RightSidebarSkeleton';
+import SidebarFooter from './components/SidebarFooter';
 import { styles } from './index.stylex';
 
 export default async function HomePage({ variant }: { variant: 'following' | 'home' | null }) {
@@ -44,12 +47,15 @@ export default async function HomePage({ variant }: { variant: 'following' | 'ho
             </div>
             <Separator {...stylex.props(styles.separator)} />
             <div {...stylex.props(styles.mainContainer)}>
-               <Suspense fallback={<div>Posts are loading...</div>}>
+               <Suspense fallback={<MainSkeleton />}>
                   <Main />
                </Suspense>
-               <Suspense fallback={<div>Right sidebar is loading...</div>}>
-                  <RightSidebar />
-               </Suspense>
+               <div {...stylex.props(styles.sidebarSlot)}>
+                  <Suspense fallback={<RightSidebarSkeleton />}>
+                     <RightSidebar />
+                  </Suspense>
+                  <SidebarFooter />
+               </div>
             </div>
          </div>
       </div>

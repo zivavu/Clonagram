@@ -46,4 +46,9 @@ export const styles = stylex.create({
       flexDirection: 'row',
       gap: '12px',
    },
+   sidebarSlot: {
+      width: '350px',
+      marginLeft: '80px',
+      flexShrink: 0,
+   },
 });

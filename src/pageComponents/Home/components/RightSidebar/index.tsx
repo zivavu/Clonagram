@@ -6,19 +6,6 @@ import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import { styles } from './index.stylex';
 import LogoutButton from './LogoutButton';
 
-const FOOTER_LINKS = [
-   'About',
-   'Help',
-   'Press',
-   'API',
-   'Jobs',
-   'Privacy',
-   'Terms',
-   'Locations',
-   'Language',
-   'Meta Verified',
-];
-
 export default async function RightSidebar() {
    const profile = await getAuthProfile();
 
@@ -59,20 +46,6 @@ export default async function RightSidebar() {
                   </button>
                </div>
             ))}
-         </div>
-
-         <div {...stylex.props(styles.footerLinksContainer)}>
-            {FOOTER_LINKS.map((link, i) => (
-               <span key={link}>
-                  <Link href="/" {...stylex.props(styles.footerLink)}>
-                     {link}
-                  </Link>
-                  {i < FOOTER_LINKS.length - 1 && <span> </span>}
-               </span>
-            ))}
-         </div>
-         <div {...stylex.props(styles.copyright)}>
-            © {new Date().getFullYear()} Clonagram from Zeta
          </div>
       </aside>
    );

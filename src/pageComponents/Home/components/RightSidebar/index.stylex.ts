@@ -3,12 +3,9 @@ import { colors } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
-      width: '350px',
-      marginLeft: '32px',
       display: 'flex',
       flexDirection: 'column',
       gap: '12px',
-      paddingLeft: '48px',
    },
    profileCard: {
       display: 'flex',
@@ -108,25 +105,5 @@ export const styles = stylex.create({
       ':hover': {
          color: colors.accentHover,
       },
-   },
-   footerLinksContainer: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: '0 6px',
-      marginTop: '18px',
-   },
-   footerLink: {
-      fontSize: '0.75rem',
-      color: colors.textSecondary,
-      textDecoration: 'none',
-      ':hover': {
-         textDecoration: 'underline',
-      },
-   },
-   copyright: {
-      fontSize: '0.75rem',
-      color: colors.textSecondary,
-      marginTop: '6px',
-      textTransform: 'uppercase',
    },
 });
