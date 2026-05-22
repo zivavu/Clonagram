@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import { styles } from './index.stylex';
 import LogoutButton from './LogoutButton';
@@ -20,15 +20,7 @@ const FOOTER_LINKS = [
 ];
 
 export default async function RightSidebar() {
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
-   const { data: profile } = await supabase
-      .from('profiles')
-      .select('username, full_name, avatar_url')
-      .eq('id', user!.id)
-      .single();
+   const profile = await getAuthProfile();
 
    return (
       <aside {...stylex.props(styles.root)}>

@@ -8,7 +8,7 @@ import { RiUserReceived2Line } from 'react-icons/ri';
 import { TbPhoto } from 'react-icons/tb';
 import { VscSend } from 'react-icons/vsc';
 import UserAvatar from '@/src/components/UserAvatar';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { MESSAGE_THREADS } from '@/src/pageComponents/mocks/messageThreads';
 import { formatGroupSeparator } from '@/src/utils/formatters';
 import NewMessageModal from './components/NewMessageModal';
@@ -27,11 +27,8 @@ export default async function DirectMessagesPage({
    isRequestsPage = false,
    currentFolderHref = '/direct',
 }: DirectMessagesPageProps) {
-   const supabase = await createServerClient();
-   const {
-      data: { user: authUser },
-   } = await supabase.auth.getUser();
-   const currentUserId = authUser!.id;
+   const profile = await getAuthProfile();
+   const currentUserId = profile?.id ?? '';
    const chat = MESSAGE_THREADS.find(u => u.id === chatId);
    const participant = chat?.participants[0];
 

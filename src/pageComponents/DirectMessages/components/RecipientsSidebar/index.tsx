@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { hasUnreadMessages } from '@/src/utils/messages';
 import Username from '../../../../components/Username';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
@@ -20,16 +20,8 @@ export default async function RecipientsSidebar({
    currentFolderHref = '/direct',
    isRequestsPage = false,
 }: RecipientsSidebarProps) {
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
-   const { data: profile } = await supabase
-      .from('profiles')
-      .select('id, username, avatar_url')
-      .eq('id', user?.id ?? '')
-      .single();
-   const currentUserId = profile?.id ?? user?.id ?? '';
+   const profile = await getAuthProfile();
+   const currentUserId = profile?.id ?? '';
    const currentFolderKey = messageFolders.find(folder => folder.href === currentFolderHref)?.key;
 
    return (

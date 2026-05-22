@@ -12,8 +12,8 @@ import CarouselArrow from '@/src/components/CarouselArrow';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { useAuthUser } from '../../../../hooks/useAuthUser';
-import { useOwnerActionsModal } from '../../../../store/useOwnerActionsModalStore';
+import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
+import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
 import { styles } from './index.stylex';
 
 interface HomepagePostProps {

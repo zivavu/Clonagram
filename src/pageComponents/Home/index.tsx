@@ -1,23 +1,13 @@
 import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
-import { createServerClient } from '../../lib/supabase/server';
-import { postsWithMediaQuery } from '../../queries/posts';
+import { Suspense } from 'react';
 import Main from './components/Main';
 import RightSidebar from './components/RightSidebar';
 import { styles } from './index.stylex';
 
-export default async function HomePage({ variant }: { variant: string | null }) {
+export default async function HomePage({ variant }: { variant: 'following' | 'home' | null }) {
    const isFollowingSelected = variant === 'following';
-
-   const supabase = await createServerClient();
-   const { data, error } = await postsWithMediaQuery(supabase);
-
-   if (error) {
-      throw new Error(`Failed to fetch posts: ${error.message}`);
-   }
-
-   const posts = data ?? [];
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -54,8 +44,12 @@ export default async function HomePage({ variant }: { variant: string | null }) 
             </div>
             <Separator {...stylex.props(styles.separator)} />
             <div {...stylex.props(styles.mainContainer)}>
-               <Main posts={posts} />
-               <RightSidebar />
+               <Suspense fallback={<div>Posts are loading...</div>}>
+                  <Main />
+               </Suspense>
+               <Suspense fallback={<div>Right sidebar is loading...</div>}>
+                  <RightSidebar />
+               </Suspense>
             </div>
          </div>
       </div>

@@ -5,10 +5,10 @@ import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
-import { deletePost } from '../../../../../actions/post/deletePost';
-import { toast } from '../../../../../components/AppToast';
-import DeleteConfirmModal from '../../../../../components/DeleteConfirmModal';
-import { useOwnerActionsModal } from '../../../../../store/useOwnerActionsModalStore';
+import { deletePost } from '../../../../../../../../actions/post/deletePost';
+import { toast } from '../../../../../../../../components/AppToast';
+import DeleteConfirmModal from '../../../../../../../../components/DeleteConfirmModal';
+import { useOwnerActionsModal } from '../../../../../../../../store/useOwnerActionsModalStore';
 import { styles } from './OwnerActionsModal.stylex';
 
 interface Action {

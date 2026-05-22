@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { MdExpandCircleDown } from 'react-icons/md';
 import { STORIES } from '@/src/pageComponents/mocks/stories';
-import { colors } from '../../../../styles/tokens.stylex';
+import { colors } from '../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
 // avatar width (74px) + ring padding (3px * 2) + ring inner padding (3px * 2) = 86, plus gap

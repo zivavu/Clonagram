@@ -129,7 +129,7 @@ export default function CaptionPanel({
             <div {...stylex.props(styles.shareRow)}>
                <UserAvatar
                   src={userData?.avatar_url ?? null}
-                  alt={userData?.username ?? undefined}
+                  alt={userData?.username ?? 'User profile image'}
                   size={36}
                />
                <div {...stylex.props(styles.shareInfo)}>
