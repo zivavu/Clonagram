@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
@@ -9,10 +10,13 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
    return (
-      <html lang="en" suppressHydrationWarning>
-         <body style={{ colorScheme: 'light dark' }}>
-            <Providers>{children}</Providers>
-         </body>
-      </html>
+      <>
+         <SpeedInsights />
+         <html lang="en" suppressHydrationWarning>
+            <body style={{ colorScheme: 'light dark' }}>
+               <Providers>{children}</Providers>
+            </body>
+         </html>
+      </>
    );
 }
