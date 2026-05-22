@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { IoChevronForward, IoEyeOffOutline } from 'react-icons/io5';
 import { getRequestThreads } from '@/src/pageComponents/mocks/messageThreads';
+import { CURRENT_USER } from '../../../mocks/users';
 import { styles } from './index.stylex';
 import { ThreadItem } from './ThreadItem';
 
@@ -43,7 +44,12 @@ export function RequestsContent() {
             </button>
 
             {requestThreads.map(thread => (
-               <ThreadItem key={thread.id} thread={thread} href={`/direct/requests/${thread.id}`} />
+               <ThreadItem
+                  key={thread.id}
+                  currentUserId={CURRENT_USER.id}
+                  thread={thread}
+                  href={`/direct/requests/${thread.id}`}
+               />
             ))}
          </div>
 
