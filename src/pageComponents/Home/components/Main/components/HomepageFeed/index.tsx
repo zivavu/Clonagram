@@ -1,10 +1,10 @@
 import * as stylex from '@stylexjs/stylex';
 import { BiNotificationOff } from 'react-icons/bi';
+import OwnerActionsModal from '../../../../../../components/OwnerActionsModal/OwnerActionsModal';
 import PostFullViewModal from '../../../../../../components/PostViewModal';
 import { createServerClient } from '../../../../../../lib/supabase/server';
 import { postsWithMediaQuery } from '../../../../../../queries/posts';
 import HomepagePost from './HomepagePost';
-import OwnerActionsModal from './HomepagePost/components/OwnerActionsModal';
 import { styles } from './index.stylex';
 
 export default async function HomepageFeed() {

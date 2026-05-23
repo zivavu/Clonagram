@@ -10,9 +10,7 @@ export const styles = stylex.create({
    },
    content: {
       position: 'fixed',
-      top: 0,
-      left: 0,
-      bottom: 0,
+      inset: 0,
       width: '460px',
       display: 'flex',
       flexDirection: 'column',

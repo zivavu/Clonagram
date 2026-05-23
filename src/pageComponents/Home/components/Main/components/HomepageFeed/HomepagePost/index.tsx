@@ -1,17 +1,14 @@
 'use client';
 
-import MuxPlayer from '@mux/mux-player-react';
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
-import { useState } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
-import CarouselArrow from '@/src/components/CarouselArrow';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
+import PostMediaCarousel from '../../../../../../../components/PostMediaCarousel/PostMediaCarousel';
 import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
 import { usePostViewModal } from '../../../../../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
@@ -22,7 +19,7 @@ interface HomepagePostProps {
    index: number;
 }
 
-interface UnifiedMedia {
+export interface UnifiedMedia {
    id: string;
    type: 'image' | 'video';
    url: string;
@@ -40,45 +37,13 @@ function containerHeight(aspectRatio: string): number {
    }
 }
 
-function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
-   const images: UnifiedMedia[] =
-      post.images?.map(img => ({
-         id: img.id,
-         type: 'image' as const,
-         url: img.url,
-         position: img.position,
-      })) ?? [];
-
-   const videos: UnifiedMedia[] =
-      post.videos?.map(vid => ({
-         id: vid.mux_playback_id ?? vid.id,
-         type: 'video' as const,
-         url: vid.mux_playback_id ?? '',
-         position: vid.position,
-      })) ?? [];
-
-   return [...images, ...videos].sort((a, b) => a.position - b.position);
-}
-
 export default function HomepagePost({ post }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
    const { open: openPostFullViewModal } = usePostViewModal();
 
-   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-   const media = mergeMedia(post);
-   const hasMultipleMedia = media.length > 1;
-   const height = containerHeight(post.aspect_ratio);
    const isOwner = post.user.id === currentUser?.id;
-
-   const handlePrevious = () => {
-      setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev));
-   };
-
-   const handleNext = () => {
-      setCurrentImageIndex(prev => (prev < media.length - 1 ? prev + 1 : prev));
-   };
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -102,62 +67,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                </button>
             )}
          </div>
-         <div {...stylex.props(styles.carouselContainer)} style={{ height: `${height}px` }}>
-            <div
-               {...stylex.props(styles.carouselTrack)}
-               style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
-            >
-               {media.map(item => (
-                  <button
-                     onClick={() => openPostFullViewModal(post)}
-                     key={item.id}
-                     {...stylex.props(styles.carouselSlide)}
-                  >
-                     {item.type === 'image' ? (
-                        <Image
-                           src={item.url}
-                           alt="post"
-                           fill
-                           sizes="468px"
-                           {...stylex.props(styles.postImage)}
-                        />
-                     ) : (
-                        <MuxPlayer
-                           style={{
-                              width: '100%',
-                              height: '100%',
-                              '--bottom-controls': 'none',
-                              '--media-object-fit': 'cover',
-                           }}
-                           playbackId={item.url}
-                        />
-                     )}
-                  </button>
-               ))}
-            </div>
-            {hasMultipleMedia && currentImageIndex > 0 && (
-               <CarouselArrow direction="left" onClick={handlePrevious} />
-            )}
-            {hasMultipleMedia && currentImageIndex < media.length - 1 && (
-               <CarouselArrow direction="right" onClick={handleNext} />
-            )}
-            {hasMultipleMedia && (
-               <div {...stylex.props(styles.dotsContainer)}>
-                  {media.map((_, dotIndex) => (
-                     <button
-                        key={media[dotIndex].id}
-                        type="button"
-                        aria-label={`Go to slide ${dotIndex + 1}`}
-                        onClick={() => setCurrentImageIndex(dotIndex)}
-                        {...stylex.props(
-                           styles.dot,
-                           dotIndex === currentImageIndex && styles.dotActive,
-                        )}
-                     />
-                  ))}
-               </div>
-            )}
-         </div>
+         <PostMediaCarousel post={post} width={468} height={containerHeight(post.aspect_ratio)} />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Like">

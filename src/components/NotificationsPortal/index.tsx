@@ -10,6 +10,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import type { Notification, NotificationType } from '@/src/pageComponents/mocks/notifications';
 import { NOTIFICATIONS, VERIFIED_USERS } from '@/src/pageComponents/mocks/notifications';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
+import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 
 type FilterCategory = 'all' | 'people_you_follow' | 'comments' | 'follows';
@@ -207,7 +208,7 @@ export default function NotificationsPortal() {
    return (
       <Dialog.Root open={isOpen} onOpenChange={close}>
          <Dialog.Portal>
-            <Dialog.Overlay {...stylex.props(styles.overlay)} onClick={close} />
+            <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
                <Dialog.Description style={{ display: 'none' }}>
                   Your recent notifications
