@@ -26,14 +26,14 @@ export interface UnifiedMedia {
    position: number;
 }
 
-function containerHeight(aspectRatio: string): number {
+function containerHeight(aspectRatio: string) {
    switch (aspectRatio) {
       case '16:9':
-         return 263.25;
+         return '263.25px';
       case '1:1':
-         return 468;
+         return '468px';
       default:
-         return 585;
+         return '585px';
    }
 }
 
@@ -67,7 +67,11 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                </button>
             )}
          </div>
-         <PostMediaCarousel post={post} width={468} height={containerHeight(post.aspect_ratio)} />
+         <PostMediaCarousel
+            post={post}
+            width={'468px'}
+            height={containerHeight(post.aspect_ratio)}
+         />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Like">

@@ -37,10 +37,11 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
 }
 
 export interface PostMediaCarouselProps {
-   height: number;
-   width: number;
+   height: HTMLButtonElement['style']['height'];
+   width: HTMLButtonElement['style']['width'];
    initialImageIndex?: number;
    post: PostWithMedia;
+   aspectRatio?: string;
 }
 
 export default function PostMediaCarousel({
@@ -48,6 +49,7 @@ export default function PostMediaCarousel({
    width,
    initialImageIndex,
    post,
+   aspectRatio,
 }: PostMediaCarouselProps) {
    const { open: openPostFullViewModal } = usePostViewModal();
 
@@ -63,8 +65,10 @@ export default function PostMediaCarousel({
       setCurrentImageIndex(prev => (prev < media.length - 1 ? prev + 1 : prev));
    };
 
+   const slideStyles = { width: `${width}`, height: `${height}`, aspectRatio };
+
    return (
-      <div {...stylex.props(styles.root)} style={{ height: `${height}px`, width: `${width}px` }}>
+      <div {...stylex.props(styles.root)} style={{ height: `${height}`, aspectRatio }}>
          <div
             {...stylex.props(styles.carouselTrack)}
             style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
@@ -74,6 +78,7 @@ export default function PostMediaCarousel({
                   onClick={() => openPostFullViewModal(post)}
                   key={item.id}
                   {...stylex.props(styles.carouselSlide)}
+                  style={slideStyles}
                >
                   {item.type === 'image' ? (
                      <Image

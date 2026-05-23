@@ -4,6 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import DialogOverlay from '../DialogOverlay';
+import PostMediaCarousel from '../PostMediaCarousel/PostMediaCarousel';
 import { styles } from './index.stylex';
 
 export default function PostFullViewModal() {
@@ -19,6 +20,13 @@ export default function PostFullViewModal() {
                <Dialog.Title style={{ display: 'none' }}>
                   Full view {post.user.username} post
                </Dialog.Title>
+               <PostMediaCarousel
+                  post={post}
+                  initialImageIndex={0}
+                  height={'1000px'}
+                  width={'auto'}
+                  aspectRatio={post.aspect_ratio.split(':').join(' / ')}
+               />
             </Dialog.Content>
          </Dialog.Portal>
       </Dialog.Root>

@@ -3,12 +3,15 @@ import * as stylex from '@stylexjs/stylex';
 export const styles = stylex.create({
    content: {
       position: 'fixed',
-      inset: 0,
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      height: '100dvh',
-      width: '100vw',
+      justifyContent: 'center',
+      height: '95dvh',
+      width: '84dvw',
       zIndex: 4,
    },
 });

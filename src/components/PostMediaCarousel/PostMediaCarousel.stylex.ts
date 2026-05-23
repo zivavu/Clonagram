@@ -15,8 +15,6 @@ export const styles = stylex.create({
    carouselSlide: {
       position: 'relative',
       flexShrink: 0,
-      width: '468px',
-      height: '100%',
    },
    postImage: {
       objectFit: 'cover',
