@@ -1,15 +1,16 @@
+import { cache } from 'react';
 import { createServerClient } from './server';
 
-export async function getAuthProfile() {
+export const getAuthProfile = cache(async () => {
    const supabase = await createServerClient();
    const {
-      data: { user },
-   } = await supabase.auth.getUser();
-   if (!user) return null;
+      data: { session },
+   } = await supabase.auth.getSession();
+   if (!session?.user) return null;
    const { data: profile } = await supabase
       .from('profiles')
       .select('id, username, full_name, avatar_url')
-      .eq('id', user.id)
+      .eq('id', session.user.id)
       .single();
    return profile;
-}
+});
