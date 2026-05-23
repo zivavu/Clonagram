@@ -7,6 +7,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ALWAYS read docs before coding.
 Before any Next.js work, find and read the relevant doc in `node_modules/next/dist/docs/`. Your training data is outdated — the docs are the source of truth.
 
+## Key breaking changes from your training data
+
+- **Middleware is now called Proxy.** The file is `proxy.ts` (not `middleware.ts`), located at `src/proxy.ts`. The exported function must be named `proxy` (or a default export). Do NOT create or reference `middleware.ts` — it will be ignored.
+
 <!-- END:nextjs-agent-rules -->
 
 <!-- BEGIN:stylex-agent-rules -->

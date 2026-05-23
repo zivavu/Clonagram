@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import { BiNotificationOff } from 'react-icons/bi';
+import PostFullViewModal from '../../../../../../components/PostViewModal';
 import { createServerClient } from '../../../../../../lib/supabase/server';
 import { postsWithMediaQuery } from '../../../../../../queries/posts';
 import HomepagePost from './HomepagePost';
@@ -15,6 +16,7 @@ export default async function HomepageFeed() {
    }
    return (
       <>
+         <PostFullViewModal />
          <OwnerActionsModal />
          {posts.length === 0 ? (
             <div {...stylex.props(styles.emptyState)}>

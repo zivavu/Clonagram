@@ -12,7 +12,8 @@ export function postsWithMediaQuery(supabase: SupabaseClient<Database>) {
          videos:post_videos(id, mux_playback_id, duration, position)
       `,
       )
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(10);
 }
 
 export type PostsWithMedia = QueryData<ReturnType<typeof postsWithMediaQuery>>;

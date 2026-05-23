@@ -13,6 +13,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
+import { usePostViewModal } from '../../../../../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
 import { styles } from './index.stylex';
 
@@ -63,6 +64,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
+   const { open: openPostFullViewModal } = usePostViewModal();
 
    const [currentImageIndex, setCurrentImageIndex] = useState(0);
    const media = mergeMedia(post);
@@ -106,7 +108,11 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
             >
                {media.map(item => (
-                  <div key={item.id} {...stylex.props(styles.carouselSlide)}>
+                  <button
+                     onClick={() => openPostFullViewModal(post)}
+                     key={item.id}
+                     {...stylex.props(styles.carouselSlide)}
+                  >
                      {item.type === 'image' ? (
                         <Image
                            src={item.url}
@@ -126,7 +132,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                            playbackId={item.url}
                         />
                      )}
-                  </div>
+                  </button>
                ))}
             </div>
             {hasMultipleMedia && currentImageIndex > 0 && (
@@ -160,7 +166,11 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                {post.like_count > 0 && <span>{post.like_count}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
-               <button type="button" aria-label="Comment">
+               <button
+                  type="button"
+                  aria-label="Comment"
+                  onClick={() => openPostFullViewModal(post)}
+               >
                   <FiMessageCircle size={24} />
                </button>
                {post.comment_count > 0 && <span>{post.comment_count}</span>}
