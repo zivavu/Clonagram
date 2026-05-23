@@ -31,11 +31,11 @@ export async function updateSession(request: NextRequest) {
    // Refresh the session — do not add logic between createServerClient and
    // getUser(), as it may cause hard-to-debug session issues.
    const {
-      data: { user },
-   } = await supabase.auth.getUser();
+      data: { session },
+   } = await supabase.auth.getSession();
 
    if (
-      !user &&
+      !session?.user &&
       !request.nextUrl.pathname.startsWith('/login') &&
       !request.nextUrl.pathname.startsWith('/emailsignup')
    ) {
@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url);
    }
    if (
-      user &&
+      session?.user &&
       (request.nextUrl.pathname.startsWith('/login') ||
          request.nextUrl.pathname.startsWith('/emailsignup'))
    ) {
