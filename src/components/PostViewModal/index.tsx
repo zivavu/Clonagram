@@ -12,6 +12,14 @@ export default function PostFullViewModal() {
 
    if (!post) return null;
 
+   const aspectRatio = (() => {
+      if (post.aspect_ratio === 'original') {
+         const media = post.images?.[0] ?? post.videos?.[0];
+         return media?.width && media?.height ? `${media.width} / ${media.height}` : undefined;
+      }
+      return post.aspect_ratio.split(':').join(' / ');
+   })();
+
    return (
       <Dialog.Root open={isOpen} onOpenChange={close}>
          <Dialog.Portal>
@@ -23,9 +31,9 @@ export default function PostFullViewModal() {
                <PostMediaCarousel
                   post={post}
                   initialImageIndex={0}
-                  height={'1000px'}
+                  height={'100%'}
                   width={'auto'}
-                  aspectRatio={post.aspect_ratio.split(':').join(' / ')}
+                  aspectRatio={aspectRatio}
                />
             </Dialog.Content>
          </Dialog.Portal>

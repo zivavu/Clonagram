@@ -66,41 +66,42 @@ export default function PostMediaCarousel({
    };
 
    const slideStyles = { width: `${width}`, height: `${height}`, aspectRatio };
-
    return (
       <div {...stylex.props(styles.root)} style={{ height: `${height}`, aspectRatio }}>
          <div
             {...stylex.props(styles.carouselTrack)}
             style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
          >
-            {media.map(item => (
-               <button
-                  onClick={() => openPostFullViewModal(post)}
-                  key={item.id}
-                  {...stylex.props(styles.carouselSlide)}
-                  style={slideStyles}
-               >
-                  {item.type === 'image' ? (
-                     <Image
-                        src={item.url}
-                        alt="post"
-                        fill
-                        sizes="468px"
-                        {...stylex.props(styles.postImage)}
-                     />
-                  ) : (
-                     <MuxPlayer
-                        style={{
-                           width: '100%',
-                           height: '100%',
-                           '--bottom-controls': 'none',
-                           '--media-object-fit': 'cover',
-                        }}
-                        playbackId={item.url}
-                     />
-                  )}
-               </button>
-            ))}
+            {media.map(item => {
+               return (
+                  <button
+                     onClick={() => openPostFullViewModal(post)}
+                     key={item.id}
+                     {...stylex.props(styles.carouselSlide)}
+                     style={slideStyles}
+                  >
+                     {item.type === 'image' ? (
+                        <Image
+                           src={item.url}
+                           alt="post"
+                           fill
+                           sizes="468px"
+                           {...stylex.props(styles.postImage)}
+                        />
+                     ) : (
+                        <MuxPlayer
+                           style={{
+                              width: '100%',
+                              height: '100%',
+                              '--bottom-controls': 'none',
+                              '--media-object-fit': 'cover',
+                           }}
+                           playbackId={item.url}
+                        />
+                     )}
+                  </button>
+               );
+            })}
          </div>
          {hasMultipleMedia && currentImageIndex > 0 && (
             <CarouselArrow direction="left" onClick={handlePrevious} />

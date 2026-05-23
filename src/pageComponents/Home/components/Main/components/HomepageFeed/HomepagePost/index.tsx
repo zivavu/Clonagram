@@ -19,19 +19,19 @@ interface HomepagePostProps {
    index: number;
 }
 
-export interface UnifiedMedia {
-   id: string;
-   type: 'image' | 'video';
-   url: string;
-   position: number;
-}
-
-function containerHeight(aspectRatio: string) {
-   switch (aspectRatio) {
+function containerHeight(post: PostWithMedia): string {
+   switch (post.aspect_ratio) {
       case '16:9':
          return '263.25px';
       case '1:1':
          return '468px';
+      case 'original': {
+         const media = post.images?.[0] ?? post.videos?.[0];
+         if (media?.width && media?.height) {
+            return `${Math.min(585, Math.round(468 * media.height / media.width))}px`;
+         }
+         return '468px';
+      }
       default:
          return '585px';
    }
@@ -70,7 +70,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
          <PostMediaCarousel
             post={post}
             width={'468px'}
-            height={containerHeight(post.aspect_ratio)}
+            height={containerHeight(post)}
          />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>

@@ -109,7 +109,10 @@ async function loadImage(src: string): Promise<HTMLImageElement> {
    });
 }
 
-export async function bakeImage(media: PostMedia, aspectRatio: AspectRatio): Promise<Blob> {
+export async function bakeImage(
+   media: PostMedia,
+   aspectRatio: AspectRatio,
+): Promise<{ blob: Blob; width: number; height: number }> {
    const img = await loadImage(media.preview);
    const { w: outW, h: outH } = outputSize(aspectRatio, img.naturalWidth, img.naturalHeight);
 
@@ -173,5 +176,6 @@ export async function bakeImage(media: PostMedia, aspectRatio: AspectRatio): Pro
    gl.deleteTexture(curvesTexture);
    gl.deleteProgram(program);
 
-   return canvas.convertToBlob({ type: 'image/jpeg', quality: 0.92 });
+   const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.92 });
+   return { blob, width: outW, height: outH };
 }

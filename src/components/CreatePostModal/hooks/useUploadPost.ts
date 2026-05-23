@@ -47,9 +47,18 @@ async function pollMuxAsset(
    throw new Error('Mux asset creation timed out');
 }
 
+function getVideoNaturalDimensions(src: string): Promise<{ width: number; height: number }> {
+   return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.onloadedmetadata = () => resolve({ width: video.videoWidth, height: video.videoHeight });
+      video.onerror = reject;
+      video.src = src;
+   });
+}
+
 async function processMedia(media: PostMedia, postData: PostData): Promise<MediaResult> {
    if (media.type === 'image') {
-      const blob = await bakeImage(media, postData.aspectRatio);
+      const { blob, width, height } = await bakeImage(media, postData.aspectRatio);
       const fileName = `${crypto.randomUUID()}.jpg`;
       const file = new File([blob], fileName, { type: 'image/jpeg' });
       const supabase = createBrowserClient();
@@ -58,17 +67,13 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
          throw new Error(`Image upload failed: ${uploadError.message}`);
       }
       const { data: urlData } = supabase.storage.from('posts').getPublicUrl(fileName);
-      return { type: 'image', path: urlData.publicUrl };
+      return { type: 'image', path: urlData.publicUrl, width, height };
    }
 
-   const processedFile = await processVideo(
-      media.file,
-      media.trimStart,
-      media.trimEnd,
-      media.duration,
-      media.muted,
-      postData.aspectRatio,
-   );
+   const [processedFile, { width, height }] = await Promise.all([
+      processVideo(media.file, media.trimStart, media.trimEnd, media.duration, media.muted, postData.aspectRatio),
+      getVideoNaturalDimensions(media.preview),
+   ]);
 
    const { uploadUrl, uploadId } = await uploadVideo();
    const res = await fetch(uploadUrl, {
@@ -79,7 +84,7 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
    if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
 
    const { assetId, playbackId, duration } = await pollMuxAsset(uploadId);
-   return { type: 'video', assetId, playbackId, duration };
+   return { type: 'video', assetId, playbackId, duration, width, height };
 }
 
 export function useUploadPost({ postData, onDone }: UseUploadPostParams): UseUploadPostResult {

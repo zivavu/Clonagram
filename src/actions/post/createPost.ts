@@ -51,7 +51,7 @@ export async function createPost(params: CreatePostParams): Promise<void> {
    for (let i = 0; i < params.mediaResults.length; i++) {
       const result = params.mediaResults[i];
       if (result.type === 'image') {
-         imageInserts.push({ post_id: postId, position: i, url: result.path });
+         imageInserts.push({ post_id: postId, position: i, url: result.path, width: result.width, height: result.height });
       } else {
          videoInserts.push({
             post_id: postId,
@@ -60,6 +60,8 @@ export async function createPost(params: CreatePostParams): Promise<void> {
             mux_playback_id: result.playbackId,
             mux_status: 'ready',
             duration: result.duration,
+            width: result.width,
+            height: result.height,
          });
       }
    }

@@ -597,6 +597,8 @@ export type Database = {
             Row: {
                created_at: string | null;
                id: string;
+               width: number | null;
+               height: number | null;
                position: number;
                post_id: string;
                url: string;
@@ -604,6 +606,8 @@ export type Database = {
             Insert: {
                created_at?: string | null;
                id?: string;
+               width?: number | null;
+               height?: number | null;
                position?: number;
                post_id: string;
                url: string;
@@ -611,6 +615,8 @@ export type Database = {
             Update: {
                created_at?: string | null;
                id?: string;
+               width?: number | null;
+               height?: number | null;
                position?: number;
                post_id?: string;
                url?: string;
@@ -675,32 +681,38 @@ export type Database = {
             Row: {
                created_at: string | null;
                duration: number | null;
+               height: number | null;
                id: string;
                mux_asset_id: string | null;
                mux_playback_id: string | null;
                mux_status: string;
                position: number;
                post_id: string;
+               width: number | null;
             };
             Insert: {
                created_at?: string | null;
                duration?: number | null;
+               height?: number | null;
                id?: string;
                mux_asset_id?: string | null;
                mux_playback_id?: string | null;
                mux_status?: string;
                position?: number;
                post_id: string;
+               width?: number | null;
             };
             Update: {
                created_at?: string | null;
                duration?: number | null;
+               height?: number | null;
                id?: string;
                mux_asset_id?: string | null;
                mux_playback_id?: string | null;
                mux_status?: string;
                position?: number;
                post_id?: string;
+               width?: number | null;
             };
             Relationships: [
                {
