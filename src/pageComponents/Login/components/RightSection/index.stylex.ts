@@ -18,7 +18,7 @@ export const styles = stylex.create({
          minWidth: 'unset',
          width: '100%',
          borderLeftWidth: '0',
-         padding: '52px 24px',
+         padding: '52px 16px',
       },
    },
    titleContainer: {

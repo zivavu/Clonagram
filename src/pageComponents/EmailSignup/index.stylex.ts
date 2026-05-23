@@ -9,6 +9,10 @@ export const styles = stylex.create({
       padding: '32px 28px',
       display: 'flex',
       flexDirection: 'column',
+      '@media (max-width: 1024px)': {
+         borderLeftWidth: '0',
+         padding: '52px 16px',
+      },
    },
    backButton: {
       borderRadius: radius.full,
@@ -19,11 +23,15 @@ export const styles = stylex.create({
       ':hover': {
          backgroundColor: colors.buttonHover,
       },
+      marginBottom: '8px'
    },
    contentContainer: {
       display: 'flex',
       flexDirection: 'column',
       padding: '0 20px',
+      '@media (max-width: 1024px)': {
+         padding: '0',
+      },
    },
    title: {
       fontSize: '1.5rem',
