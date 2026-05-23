@@ -4,12 +4,19 @@ import { colors, radius } from '../../../../styles/tokens.stylex';
 export const styles = stylex.create({
    root: {
       position: 'relative',
-      width: '100%',
       backgroundColor: colors.bg,
-      margin: '58px',
-      padding: '28px',
-      marginTop: '54px',
-      paddingTop: '92px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      '@media (max-width: 1024px)': {
+         display: 'none',
+      },
+   },
+   topSection: {
+      margin: '56px 52px 0px',
+      padding: '92px 0px 0px',
+      textAlign: 'center',
+      position: 'relative',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -21,25 +28,33 @@ export const styles = stylex.create({
    },
    description: {
       fontSize: '2.65vw',
-      marginLeft: '48px',
       fontWeight: '350',
-      letterSpacing: '-0.03em',
-      width: '80%',
-      lineHeight: '64.8px',
+      width: 'min(90%, 700px)',
+      display: 'block',
+      lineHeight: '1.35',
       color: colors.textPrimary,
       textAlign: 'center',
    },
    imagesContainer: {
       display: 'flex',
       gap: '12px',
-      marginTop: '64px',
+      margin: '64px 0px 64px'
    },
 });
 
 export const imageCardStyles = stylex.create({
    imageCard: {
+      position: 'relative',
+      width: '16vw',
+      aspectRatio: '13 / 24',
       borderRadius: radius.xxl,
       overflow: 'hidden',
+      ':first-child': {
+         marginLeft: '-11.9vw',
+      },
+      ':last-child': {
+         marginRight: '-11.9vw',
+      },
    },
    imagePlayBarContainer: {
       position: 'absolute',

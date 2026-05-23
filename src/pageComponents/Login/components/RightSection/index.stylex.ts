@@ -3,8 +3,7 @@ import { colors } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
-      minWidth: '652px',
-      maxWidth: '750px',
+      minWidth: '650px',
       backgroundColor: colors.bgElevated,
       borderLeftWidth: '2px',
       borderLeftStyle: 'solid',
@@ -15,6 +14,12 @@ export const styles = stylex.create({
       justifyContent: 'center',
       alignItems: 'center',
       gap: '1rem',
+      '@media (max-width: 1024px)': {
+         minWidth: 'unset',
+         width: '100%',
+         borderLeftWidth: '0',
+         padding: '52px 24px',
+      },
    },
    titleContainer: {
       fontSize: '1.125rem',

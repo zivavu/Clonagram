@@ -1,16 +1,7 @@
-@font-face {
-   font-family: "Chivo";
-   src: url("/Chivo/Chivo-VariableFont_wght.ttf") format("truetype");
-   font-weight: 100 900;
-   font-style: normal;
-   font-display: swap;
-}
-
 :root {
    --font-body:
       "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial,
       sans-serif;
-   --font-auth: "Chivo", var(--font-body);
    --main-sidebar-width: 72px;
 }
 
@@ -67,11 +58,7 @@
    }
 
    [data-auth-font],
-   [data-auth-font] span,
-   [data-auth-font] button,
-   [data-auth-font] input,
-   [data-auth-font] textarea,
-   [data-auth-font] select {
+   [data-auth-font] * {
       font-family: var(--font-auth);
    }
 }

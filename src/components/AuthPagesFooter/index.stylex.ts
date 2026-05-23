@@ -3,7 +3,6 @@ import { colors } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
-      width: '100%',
       minHeight: '135px',
       paddingTop: '22px',
       paddingBottom: '20px',

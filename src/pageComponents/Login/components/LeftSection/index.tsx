@@ -25,9 +25,9 @@ function getServerSnapshot(): readonly LoginCardPerson[] {
 }
 
 const cardTransforms = [
-   { rotation: -5, scale: 0.7, translateX: 190, translateY: 0, zIndex: 2 },
-   { rotation: 0, scale: 1, translateX: 0, translateY: -15, zIndex: 3 },
-   { rotation: 4, scale: 0.7, translateX: -190, translateY: 0, zIndex: 2 },
+   { rotation: -5, scale: 0.7, translateX: '13.15vw', translateY: '0px', zIndex: 2 },
+   { rotation: 0, scale: 1, translateX: '0px', translateY: '-1.04vw', zIndex: 3 },
+   { rotation: 4, scale: 0.7, translateX: '-13.15vw', translateY: '0px', zIndex: 2 },
 ] as const;
 
 export default function LeftSection() {
@@ -35,16 +35,18 @@ export default function LeftSection() {
 
    return (
       <div {...stylex.props(styles.root)}>
+         <div {...stylex.props(styles.topSection)}>
          <Image
             src="/clonagram.png"
             alt="Clonagram"
             {...stylex.props(styles.clonagramLogo)}
-            width={78}
-            height={78}
+            width={76}
+            height={76}
          />
          <span {...stylex.props(styles.description)}>
             See everyday moments from your close friends.
          </span>
+         </div>
 
          <div {...stylex.props(styles.imagesContainer)}>
             {images.map((image, index) => (
@@ -59,8 +61,8 @@ interface ImageCardProps {
    image: LoginCardPerson;
    rotation: number;
    scale: number;
-   translateX: number;
-   translateY: number;
+   translateX: string;
+   translateY: string;
    zIndex: number;
 }
 
@@ -69,7 +71,7 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
       <div
          {...stylex.props(imageCardStyles.imageCard)}
          style={{
-            transform: `rotate(${rotation}deg) scale(${scale}) translateX(${translateX}px) translateY(${translateY}px)`,
+            transform: `rotate(${rotation}deg) scale(${scale}) translateX(${translateX}) translateY(${translateY})`,
             zIndex,
          }}
       >
@@ -84,8 +86,9 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
          <Image
             src={`/loginPageCardsPeople/${image.src}`}
             alt={image.alt}
-            width={260}
-            height={460}
+            fill
+            sizes="18vw"
+            style={{ objectFit: 'cover',zIndex: '-1' }}
             preload
          />
       </div>
