@@ -21,18 +21,20 @@ export default function OwnerActionsModal() {
    const { isOpen, postId, close } = useOwnerActionsModal();
    const [isLoading, setIsLoading] = useState(false);
    const [showConfirm, setShowConfirm] = useState(false);
+   const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
 
    async function handleDelete() {
+      if (!deletingPostId) return;
       setIsLoading(true);
-      if (!postId) throw new Error('The post ID was not provided');
       try {
-         await deletePost({ postId });
+         await deletePost({ postId: deletingPostId });
          toast('Post deleted.');
       } catch (error) {
-         toast(error instanceof Error ? error.message : 'Could not delete post');
+         toast(error instanceof Error ? error.message : 'Could not delete post. Try again.');
       } finally {
          setIsLoading(false);
          setShowConfirm(false);
+         setDeletingPostId(null);
       }
    }
 
@@ -41,6 +43,7 @@ export default function OwnerActionsModal() {
          label: 'Delete',
          buttonStyle: { color: '#ed4956', fontWeight: 700 },
          action: () => {
+            setDeletingPostId(postId);
             close();
             setShowConfirm(true);
          },

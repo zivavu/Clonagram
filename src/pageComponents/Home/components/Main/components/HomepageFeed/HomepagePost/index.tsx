@@ -28,7 +28,7 @@ function containerHeight(post: PostWithMedia): string {
       case 'original': {
          const media = post.images?.[0] ?? post.videos?.[0];
          if (media?.width && media?.height) {
-            return `${Math.min(585, Math.round(468 * media.height / media.width))}px`;
+            return `${Math.min(585, Math.round((468 * media.height) / media.width))}px`;
          }
          return '468px';
       }
@@ -44,6 +44,8 @@ export default function HomepagePost({ post }: HomepagePostProps) {
    const { open: openPostFullViewModal } = usePostViewModal();
 
    const isOwner = post.user.id === currentUser?.id;
+
+   if (!post) return null;
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -67,11 +69,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                </button>
             )}
          </div>
-         <PostMediaCarousel
-            post={post}
-            width={'468px'}
-            height={containerHeight(post)}
-         />
+         <PostMediaCarousel post={post} width={'468px'} height={containerHeight(post)} />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Like">
