@@ -7,6 +7,7 @@ import { useDropzone } from 'react-dropzone';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import type { PartialUser } from '@/src/types/global';
 import { extractVideoFrames } from '@/src/utils/extractVideoFrames';
+import DialogOverlay from '../DialogOverlay';
 import CaptionStep from './components/CaptionStep';
 import CropStep from './components/CropStep';
 import DiscardDialog from './components/DiscardDialog';
@@ -159,7 +160,7 @@ export default function CreatePostModal() {
    return (
       <Dialog.Root open={isOpen} onOpenChange={open => !open && requestClose()}>
          <Dialog.Portal>
-            <Dialog.Overlay {...stylex.props(styles.overlay)} />
+            <DialogOverlay />
             <Dialog.Content
                {...stylex.props(styles.content)}
                onEscapeKeyDown={e => {

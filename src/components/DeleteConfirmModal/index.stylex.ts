@@ -2,12 +2,6 @@ import * as stylex from '@stylexjs/stylex';
 import { colors } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
-   overlay: {
-      position: 'fixed',
-      inset: 0,
-      backgroundColor: 'rgba(12, 16, 20, 0.7)',
-      zIndex: 50,
-   },
    content: {
       position: 'fixed',
       top: '50%',

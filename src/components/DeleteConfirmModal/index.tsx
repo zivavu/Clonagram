@@ -3,6 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
+import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 
 interface DeleteConfirmModalProps {
@@ -21,7 +22,7 @@ export default function DeleteConfirmModal({
    return (
       <Dialog.Root open={open} onOpenChange={onOpenChange}>
          <Dialog.Portal>
-            <Dialog.Overlay {...stylex.props(styles.overlay)} />
+            <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)}>
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Delete post?</Dialog.Title>

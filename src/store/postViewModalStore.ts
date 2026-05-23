@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface PostModal {
+interface PostViewModal {
    isOpen: boolean;
    postId: string | null;
    open: (postId: string) => void;
@@ -8,7 +8,7 @@ interface PostModal {
    toggle: () => void;
 }
 
-export const usePostModal = create<PostModal>(set => ({
+export const usePostViewModal = create<PostViewModal>(set => ({
    isOpen: false,
    postId: null,
    open: (postId: string) => set({ isOpen: true, postId }),
