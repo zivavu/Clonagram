@@ -21,7 +21,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <>
          <SpeedInsights />
          <html lang="en" suppressHydrationWarning className={chivo.variable}>
-            <body style={{ colorScheme: 'light dark'}}>
+            <body style={{ colorScheme: 'light dark' }}>
                <Providers>{children}</Providers>
             </body>
          </html>

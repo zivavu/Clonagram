@@ -5,6 +5,7 @@ import * as stylex from '@stylexjs/stylex';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import DialogOverlay from '../DialogOverlay';
 import PostMediaCarousel from '../PostMediaCarousel/PostMediaCarousel';
+import PostModalComments from './compoents/PostModalComments';
 import { styles } from './index.stylex';
 
 export default function PostFullViewModal() {
@@ -28,7 +29,9 @@ export default function PostFullViewModal() {
                <Dialog.Title style={{ display: 'none' }}>
                   Full view of {post.user.username} post
                </Dialog.Title>
-               <Dialog.Description>{post.caption}</Dialog.Description>
+               <Dialog.Description style={{ display: 'none' }}>
+                  {post.caption ?? 'Post has no caption'}
+               </Dialog.Description>
                <PostMediaCarousel
                   post={post}
                   initialImageIndex={0}
@@ -36,7 +39,9 @@ export default function PostFullViewModal() {
                   width={'auto'}
                   aspectRatio={aspectRatio}
                   sizes="70vw"
+                  omitRightBorderRadius={true}
                />
+               <PostModalComments post={post} />
             </Dialog.Content>
          </Dialog.Portal>
       </Dialog.Root>

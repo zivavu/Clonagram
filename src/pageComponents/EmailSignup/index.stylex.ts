@@ -23,7 +23,7 @@ export const styles = stylex.create({
       ':hover': {
          backgroundColor: colors.buttonHover,
       },
-      marginBottom: '8px'
+      marginBottom: '8px',
    },
    contentContainer: {
       display: 'flex',

@@ -7,6 +7,10 @@ export const styles = stylex.create({
       overflow: 'hidden',
       borderRadius: radius.xs,
    },
+   omitRightBorderRadius: {
+      borderTopRightRadius: 'unset',
+      borderBottomRightRadius: 'unset',
+   },
    carouselTrack: {
       display: 'flex',
       height: '100%',

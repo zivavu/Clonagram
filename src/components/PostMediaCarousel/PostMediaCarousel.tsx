@@ -45,6 +45,7 @@ export interface PostMediaCarouselProps {
    post: PostWithMedia;
    sizes: string;
    aspectRatio?: string;
+   omitRightBorderRadius?: boolean;
 }
 
 export default function PostMediaCarousel({
@@ -54,6 +55,7 @@ export default function PostMediaCarousel({
    post,
    sizes,
    aspectRatio,
+   omitRightBorderRadius,
 }: PostMediaCarouselProps) {
    const { open: openPostFullViewModal } = usePostViewModal();
 
@@ -69,9 +71,14 @@ export default function PostMediaCarousel({
       setCurrentImageIndex(prev => (prev < media.length - 1 ? prev + 1 : prev));
    };
 
-   const slideStyles = { width: `${width}`, height: `${height}`, aspectRatio };
    return (
-      <div {...stylex.props(styles.root)} style={{ height: `${height}`, aspectRatio }}>
+      <div
+         {...stylex.props(styles.root, omitRightBorderRadius && styles.omitRightBorderRadius)}
+         style={{
+            height: `${height}`,
+            aspectRatio,
+         }}
+      >
          <div
             {...stylex.props(styles.carouselTrack)}
             style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
@@ -82,7 +89,7 @@ export default function PostMediaCarousel({
                      onClick={() => openPostFullViewModal(post)}
                      key={item.id}
                      {...stylex.props(styles.carouselSlide)}
-                     style={slideStyles}
+                     style={{ width: `${width}`, height: `${height}`, aspectRatio }}
                   >
                      {item.type === 'image' ? (
                         <Image

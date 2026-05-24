@@ -38,7 +38,7 @@ export const styles = stylex.create({
    imagesContainer: {
       display: 'flex',
       gap: '12px',
-      margin: '64px 0px 64px'
+      margin: '64px 0px 64px',
    },
 });
 

@@ -36,16 +36,16 @@ export default function LeftSection() {
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.topSection)}>
-         <Image
-            src="/clonagram.png"
-            alt="Clonagram"
-            {...stylex.props(styles.clonagramLogo)}
-            width={76}
-            height={76}
-         />
-         <span {...stylex.props(styles.description)}>
-            See everyday moments from your close friends.
-         </span>
+            <Image
+               src="/clonagram.png"
+               alt="Clonagram"
+               {...stylex.props(styles.clonagramLogo)}
+               width={76}
+               height={76}
+            />
+            <span {...stylex.props(styles.description)}>
+               See everyday moments from your close friends.
+            </span>
          </div>
 
          <div {...stylex.props(styles.imagesContainer)}>
@@ -88,7 +88,7 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
             alt={image.alt}
             fill
             sizes="18vw"
-            style={{ objectFit: 'cover',zIndex: '-1' }}
+            style={{ objectFit: 'cover', zIndex: '-1' }}
             preload
          />
       </div>

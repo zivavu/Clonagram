@@ -50,7 +50,8 @@ async function pollMuxAsset(
 function getVideoNaturalDimensions(src: string): Promise<{ width: number; height: number }> {
    return new Promise((resolve, reject) => {
       const video = document.createElement('video');
-      video.onloadedmetadata = () => resolve({ width: video.videoWidth, height: video.videoHeight });
+      video.onloadedmetadata = () =>
+         resolve({ width: video.videoWidth, height: video.videoHeight });
       video.onerror = reject;
       video.src = src;
    });
@@ -71,7 +72,14 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
    }
 
    const [processedFile, { width, height }] = await Promise.all([
-      processVideo(media.file, media.trimStart, media.trimEnd, media.duration, media.muted, postData.aspectRatio),
+      processVideo(
+         media.file,
+         media.trimStart,
+         media.trimEnd,
+         media.duration,
+         media.muted,
+         postData.aspectRatio,
+      ),
       getVideoNaturalDimensions(media.preview),
    ]);
 
