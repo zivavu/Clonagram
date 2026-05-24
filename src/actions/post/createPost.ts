@@ -51,7 +51,7 @@ export async function createPost(params: CreatePostParams): Promise<void> {
    for (let i = 0; i < params.mediaResults.length; i++) {
       const result = params.mediaResults[i];
       if (result.type === 'image') {
-         imageInserts.push({ post_id: postId, position: i, url: result.path, width: result.width, height: result.height });
+         imageInserts.push({ post_id: postId, position: i, url: result.path, width: result.width, height: result.height, blur_data_url: result.blurDataURL });
       } else {
          videoInserts.push({
             post_id: postId,

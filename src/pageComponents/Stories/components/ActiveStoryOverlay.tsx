@@ -125,7 +125,7 @@ export default function ActiveStoryOverlay({
                      {...stylex.props(styles.avatarImage)}
                   />
                   <span {...stylex.props(styles.activeStoryUsername)}>{story.username}</span>
-                  <span {...stylex.props(styles.activeStoryUploadTimestamp)}>
+                  <span {...stylex.props(styles.activeStoryUploadTimestamp)} suppressHydrationWarning>
                      {formatRelativeTimeShortUnit(story.timestamp)}
                   </span>
                </div>

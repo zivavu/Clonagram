@@ -42,10 +42,6 @@ export async function processVideo(
    }
 
    const ffmpeg = await getFFmpeg();
-   ffmpeg.on('log', ({ message }) => {
-      // eslint-disable-next-line no-console
-      console.log('[FFmpeg]', message);
-   });
    const { fetchFile } = await import('@ffmpeg/util');
    const suffix = crypto.randomUUID().slice(0, 8);
    const ext = getFileExtension(file.name);
@@ -94,8 +90,6 @@ export async function processVideo(
       outputName,
    );
 
-   // eslint-disable-next-line no-console
-   console.log('[FFmpeg] args:', args.join(' '));
    const exitCode = await ffmpeg.exec(args);
    if (exitCode !== 0) {
       throw new Error(`FFmpeg processing failed with exit code ${exitCode}`);

@@ -595,6 +595,7 @@ export type Database = {
          };
          post_images: {
             Row: {
+               blur_data_url: string | null;
                created_at: string | null;
                id: string;
                width: number | null;
@@ -604,6 +605,7 @@ export type Database = {
                url: string;
             };
             Insert: {
+               blur_data_url?: string | null;
                created_at?: string | null;
                id?: string;
                width?: number | null;
@@ -613,6 +615,7 @@ export type Database = {
                url: string;
             };
             Update: {
+               blur_data_url?: string | null;
                created_at?: string | null;
                id?: string;
                width?: number | null;

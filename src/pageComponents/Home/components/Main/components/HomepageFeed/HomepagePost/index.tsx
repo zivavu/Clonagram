@@ -53,7 +53,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
             <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
             <span {...stylex.props(styles.topUsername)}>{post.user.username}</span>
             <span {...stylex.props(styles.separator)}>•</span>
-            <span {...stylex.props(styles.createdAt)}>
+            <span {...stylex.props(styles.createdAt)} suppressHydrationWarning>
                {post.created_at ? formatRelativeTimeShortUnit(post.created_at) : ''}
             </span>
             {isOwner && (
@@ -69,7 +69,12 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                </button>
             )}
          </div>
-         <PostMediaCarousel post={post} width={'468px'} height={containerHeight(post)} />
+         <PostMediaCarousel
+            post={post}
+            width={'468px'}
+            sizes="468px"
+            height={containerHeight(post)}
+         />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Like">

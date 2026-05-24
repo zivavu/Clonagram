@@ -8,7 +8,7 @@ export function postsWithMediaQuery(supabase: SupabaseClient<Database>) {
          `
          id, caption, created_at, like_count, comment_count, aspect_ratio,
          user:profiles!user_id(id, username, avatar_url),
-         images:post_images(id, url, position, width, height),
+         images:post_images(id, url, position, width, height, blur_data_url),
          videos:post_videos(id, mux_playback_id, duration, position, width, height)
       `,
       )

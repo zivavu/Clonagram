@@ -51,8 +51,8 @@ function buildVertexBuffer(
 
    const u0 = 0.5 - halfU - panU;
    const u1 = 0.5 + halfU - panU;
-   const v0 = 0.5 - halfV - panV;
-   const v1 = 0.5 + halfV - panV;
+   const v0 = 0.5 - halfV + panV;
+   const v1 = 0.5 + halfV + panV;
 
    return new Float32Array([
       -1,
@@ -112,7 +112,7 @@ async function loadImage(src: string): Promise<HTMLImageElement> {
 export async function bakeImage(
    media: PostMedia,
    aspectRatio: AspectRatio,
-): Promise<{ blob: Blob; width: number; height: number }> {
+): Promise<{ blob: Blob; width: number; height: number; blurDataURL?: string }> {
    const img = await loadImage(media.preview);
    const { w: outW, h: outH } = outputSize(aspectRatio, img.naturalWidth, img.naturalHeight);
 
@@ -176,6 +176,22 @@ export async function bakeImage(
    gl.deleteTexture(curvesTexture);
    gl.deleteProgram(program);
 
-   const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.92 });
-   return { blob, width: outW, height: outH };
+   const blob = await canvas.convertToBlob({ type: 'image/webp', quality: 0.75 });
+
+   const blurW = outW >= outH ? 16 : Math.max(1, Math.round((16 * outW) / outH));
+   const blurH = outH >= outW ? 16 : Math.max(1, Math.round((16 * outH) / outW));
+   const blurCanvas = new OffscreenCanvas(blurW, blurH);
+   const blurCtx = blurCanvas.getContext('2d');
+   if (!blurCtx) throw new Error('Failed to create 2D context for blur');
+   const fullBitmap = await createImageBitmap(canvas);
+   blurCtx.drawImage(fullBitmap, 0, 0, blurW, blurH);
+   fullBitmap.close();
+   const blurBlob = await blurCanvas.convertToBlob({ type: 'image/jpeg', quality: 0.5 });
+   const blurBuffer = await blurBlob.arrayBuffer();
+   const bytes = new Uint8Array(blurBuffer);
+   let binary = '';
+   for (const byte of bytes) binary += String.fromCharCode(byte);
+   const blurDataURL = `data:image/jpeg;base64,${btoa(binary)}`;
+
+   return { blob, blurDataURL, width: outW, height: outH };
 }

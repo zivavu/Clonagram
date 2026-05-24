@@ -58,7 +58,7 @@ function getVideoNaturalDimensions(src: string): Promise<{ width: number; height
 
 async function processMedia(media: PostMedia, postData: PostData): Promise<MediaResult> {
    if (media.type === 'image') {
-      const { blob, width, height } = await bakeImage(media, postData.aspectRatio);
+      const { blob, blurDataURL, width, height } = await bakeImage(media, postData.aspectRatio);
       const fileName = `${crypto.randomUUID()}.jpg`;
       const file = new File([blob], fileName, { type: 'image/jpeg' });
       const supabase = createBrowserClient();
@@ -67,7 +67,7 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
          throw new Error(`Image upload failed: ${uploadError.message}`);
       }
       const { data: urlData } = supabase.storage.from('posts').getPublicUrl(fileName);
-      return { type: 'image', path: urlData.publicUrl, width, height };
+      return { type: 'image', path: urlData.publicUrl, width, height, blurDataURL };
    }
 
    const [processedFile, { width, height }] = await Promise.all([

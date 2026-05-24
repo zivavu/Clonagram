@@ -14,6 +14,7 @@ interface UnifiedMedia {
    type: 'image' | 'video';
    url: string;
    position: number;
+   blurDataURL?: string;
 }
 
 function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
@@ -23,6 +24,7 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
          type: 'image' as const,
          url: img.url,
          position: img.position,
+         blurDataURL: img.blur_data_url ?? undefined,
       })) ?? [];
 
    const videos: UnifiedMedia[] =
@@ -41,6 +43,7 @@ export interface PostMediaCarouselProps {
    width: HTMLButtonElement['style']['width'];
    initialImageIndex?: number;
    post: PostWithMedia;
+   sizes: string;
    aspectRatio?: string;
 }
 
@@ -49,6 +52,7 @@ export default function PostMediaCarousel({
    width,
    initialImageIndex,
    post,
+   sizes,
    aspectRatio,
 }: PostMediaCarouselProps) {
    const { open: openPostFullViewModal } = usePostViewModal();
@@ -85,7 +89,9 @@ export default function PostMediaCarousel({
                            src={item.url}
                            alt="post"
                            fill
-                           sizes="468px"
+                           sizes={sizes}
+                           placeholder={item.blurDataURL ? 'blur' : 'empty'}
+                           blurDataURL={item.blurDataURL}
                            {...stylex.props(styles.postImage)}
                         />
                      ) : (

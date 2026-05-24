@@ -26,14 +26,16 @@ export default function PostFullViewModal() {
             <DialogOverlay />
             <Dialog.Content onEscapeKeyDown={close} {...stylex.props(styles.content)}>
                <Dialog.Title style={{ display: 'none' }}>
-                  Full view {post.user.username} post
+                  Full view of {post.user.username} post
                </Dialog.Title>
+               <Dialog.Description>{post.caption}</Dialog.Description>
                <PostMediaCarousel
                   post={post}
                   initialImageIndex={0}
                   height={'100%'}
                   width={'auto'}
                   aspectRatio={aspectRatio}
+                  sizes="70vw"
                />
             </Dialog.Content>
          </Dialog.Portal>
