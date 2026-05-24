@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import { radius } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    content: {
@@ -10,6 +11,7 @@ export const styles = stylex.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
+      borderRadius: radius.xs,
       height: '95dvh',
       width: '84dvw',
       zIndex: 4,

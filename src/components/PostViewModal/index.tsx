@@ -5,8 +5,8 @@ import * as stylex from '@stylexjs/stylex';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import DialogOverlay from '../DialogOverlay';
 import PostMediaCarousel from '../PostMediaCarousel/PostMediaCarousel';
-import PostModalComments from './compoents/PostModalComments';
 import { styles } from './index.stylex';
+import PostModalComments from './PostModalComments';
 
 export default function PostFullViewModal() {
    const { isOpen, post, close } = usePostViewModal();

@@ -18,10 +18,10 @@ export const styles = stylex.create({
    },
    carouselSlide: {
       position: 'relative',
-      flexShrink: 0,
+      flexShrink: 1,
    },
    postImage: {
-      objectFit: 'cover',
+      objectFit: 'contain',
    },
    dotsContainer: {
       position: 'absolute',

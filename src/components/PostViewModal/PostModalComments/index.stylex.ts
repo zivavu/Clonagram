@@ -1,14 +1,14 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors, spacing } from '../../../../styles/tokens.stylex';
+
+import { colors, spacing } from '../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
       display: 'flex',
       flexDirection: 'column',
-      width: '400px',
-      minWidth: '400px',
+      width: '500px',
       height: '100%',
-      backgroundColor: colors.bg,
+      backgroundColor: colors.bgBubble,
       borderLeft: `1px solid ${colors.separator}`,
    },
    scrollArea: {
@@ -129,12 +129,13 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       gap: spacing.sm,
-      padding: spacing.md,
+      padding: `${spacing.md} 0`,
       borderTop: `1px solid ${colors.separator}`,
    },
    actionsBar: {
       display: 'flex',
       alignItems: 'center',
+      padding: `0 ${spacing.md}`,
       justifyContent: 'space-between',
    },
    actionsLeft: {
@@ -146,19 +147,23 @@ export const styles = stylex.create({
    likedByText: {
       fontSize: '14px',
       color: colors.textPrimary,
+      padding: `0 ${spacing.md}`,
    },
    postTime: {
       fontSize: '10px',
       color: colors.textSecondary,
       textTransform: 'uppercase',
       letterSpacing: '0.2px',
+      padding: `0 ${spacing.md}`,
    },
    commentInputRow: {
       display: 'flex',
       alignItems: 'center',
       gap: spacing.sm,
-      paddingTop: spacing.sm,
-      borderTop: `1px solid ${colors.separator}`,
+      padding: `${spacing.md} ${spacing.md} 0`,
+      borderTopStyle: 'solid',
+      borderTopColor: colors.elevatedSeparator,
+      borderTopWidth: '1px',
    },
    emojiButton: {
       color: colors.textPrimary,
@@ -167,8 +172,6 @@ export const styles = stylex.create({
    commentInput: {
       flex: 1,
       backgroundColor: 'transparent',
-      border: 'none',
-      outline: 'none',
       fontSize: '14px',
       color: colors.textPrimary,
       '::placeholder': {

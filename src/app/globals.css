@@ -36,12 +36,13 @@
    select {
       font-family: var(--font-body);
       background-color: unset;
+      border-style: none;
    }
 
    button {
       font-family: var(--font-body);
       cursor: pointer;
-      border: none;
+      border-style: none;
       background: none;
    }
 

@@ -24,6 +24,13 @@ interface MockComment {
    isLiked: boolean;
 }
 
+const ACTION_BUTTONS = [
+   { label: 'Like', icon: <MdFavoriteBorder size={24} /> },
+   { label: 'Comment', icon: <FiMessageCircle size={24} /> },
+   { label: 'Share', icon: <LuSend size={22} /> },
+   { label: 'Repost', icon: <TbRepeat size={24} /> },
+] as const;
+
 const MOCK_COMMENTS: MockComment[] = [
    {
       id: '1',
@@ -168,18 +175,11 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
          <div {...stylex.props(styles.bottomSection)}>
             <div {...stylex.props(styles.actionsBar)}>
                <div {...stylex.props(styles.actionsLeft)}>
-                  <button type="button" aria-label="Like">
-                     <MdFavoriteBorder size={24} />
-                  </button>
-                  <button type="button" aria-label="Comment">
-                     <FiMessageCircle size={24} />
-                  </button>
-                  <button type="button" aria-label="Share">
-                     <LuSend size={22} />
-                  </button>
-                  <button type="button" aria-label="Repost">
-                     <TbRepeat size={24} />
-                  </button>
+                  {ACTION_BUTTONS.map(({ label, icon }) => (
+                     <button key={label} type="button" aria-label={label}>
+                        {icon}
+                     </button>
+                  ))}
                </div>
                <button type="button" aria-label="Bookmark">
                   <MdBookmarkBorder size={24} />
