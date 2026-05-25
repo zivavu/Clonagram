@@ -2,15 +2,10 @@
 import 'server-only';
 import { revalidatePath } from 'next/cache';
 import { getMuxClient } from '../../lib/mux';
-import { createServerClient } from '../../lib/supabase/server';
+import { getAuthUser } from '../getAuthUser';
 
 export async function deletePost(params: { postId: string }): Promise<void> {
-   const supabase = await createServerClient();
-
-   const { data: userData, error: userError } = await supabase.auth.getUser();
-   if (userError || !userData.user) {
-      throw new Error('Unauthorized');
-   }
+   const { supabase } = await getAuthUser();
 
    const { data: videos } = await supabase
       .from('post_videos')

@@ -3,7 +3,7 @@ import 'server-only';
 
 import { revalidatePath } from 'next/cache';
 import type { CreatePostParams } from '../../components/CreatePostModal/types';
-import { createServerClient } from '../../lib/supabase/server';
+import { getAuthUser } from '../getAuthUser';
 
 function extractHashtags(caption: string | null): string[] {
    if (!caption) return [];
@@ -13,14 +13,8 @@ function extractHashtags(caption: string | null): string[] {
 }
 
 export async function createPost(params: CreatePostParams): Promise<void> {
-   const supabase = await createServerClient();
-
-   const { data: userData, error: userError } = await supabase.auth.getUser();
-   if (userError || !userData.user) {
-      throw new Error('Unauthorized');
-   }
-
-   const userId = userData.user.id;
+   const { supabase, user } = await getAuthUser();
+   const userId = user.id;
    const hasVideo = params.mediaResults.some(media => media.type === 'video');
 
    const { data: post, error: postError } = await supabase

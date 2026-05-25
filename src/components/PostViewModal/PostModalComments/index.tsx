@@ -1,13 +1,16 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
+import { createComment } from '@/src/actions/comments/createComment';
 import UserAvatar from '@/src/components/UserAvatar';
+import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type PostComment, postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
@@ -63,8 +66,14 @@ function CommentItem({ comment }: { comment: PostComment }) {
 export default function PostModalComments({ post }: PostModalCommentsProps) {
    const { open: openOwnerActions } = useOwnerActionsModal();
    const { close: closePostViewModal } = usePostViewModal();
+   const { data: authUser } = useAuthUser();
+   const queryClient = useQueryClient();
+   const commentsKey = ['comments', post.id];
+
+   const [inputValue, setInputValue] = useState('');
+
    const { data: comments = [] } = useQuery({
-      queryKey: ['comments', post.id],
+      queryKey: commentsKey,
       queryFn: async () => {
          const supabase = createBrowserClient();
          const { data, error } = await postCommentsQuery(supabase, post.id);
@@ -72,6 +81,53 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
          return data;
       },
    });
+
+   const { mutate: submitComment } = useMutation({
+      mutationFn: (content: string) => createComment({ postId: post.id, content }),
+      onMutate: async content => {
+         await queryClient.cancelQueries({ queryKey: commentsKey });
+         const previous = queryClient.getQueryData<PostComment[]>(commentsKey);
+
+         if (authUser) {
+            const optimistic: PostComment = {
+               id: `optimistic-${Date.now()}`,
+               content,
+               created_at: new Date().toISOString(),
+               like_count: 0,
+               parent_id: null,
+               user: {
+                  id: authUser.id,
+                  username: authUser.username,
+                  avatar_url: authUser.avatar_url,
+               },
+            };
+            queryClient.setQueryData<PostComment[]>(commentsKey, prev => [
+               ...(prev ?? []),
+               optimistic,
+            ]);
+         }
+
+         return { previous };
+      },
+      onError: (_err, _content, context) => {
+         if (context?.previous) {
+            queryClient.setQueryData(commentsKey, context.previous);
+         }
+      },
+      onSuccess: newComment => {
+         queryClient.setQueryData<PostComment[]>(commentsKey, prev =>
+            (prev ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
+         );
+      },
+   });
+
+   function handleSubmit(e: React.FormEvent) {
+      e.preventDefault();
+      const content = inputValue.trim();
+      if (!content) return;
+      setInputValue('');
+      submitComment(content);
+   }
 
    return (
       <>
@@ -134,19 +190,21 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
                <div {...stylex.props(styles.postTime)}>
                   {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
                </div>
-               <div {...stylex.props(styles.commentInputRow)}>
+               <form onSubmit={handleSubmit} {...stylex.props(styles.commentInputRow)}>
                   <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
                      <BsEmojiSmile size={24} />
                   </button>
                   <input
                      type="text"
                      placeholder="Add a comment..."
+                     value={inputValue}
+                     onChange={e => setInputValue(e.target.value)}
                      {...stylex.props(styles.commentInput)}
                   />
-                  <button type="button" {...stylex.props(styles.postButton)}>
+                  <button type="submit" {...stylex.props(styles.postButton)}>
                      Post
                   </button>
-               </div>
+               </form>
             </div>
          </div>
       </>
