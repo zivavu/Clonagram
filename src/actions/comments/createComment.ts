@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import type { PostComment } from '@/src/queries/comments';
 import { getAuthUser } from '../getAuthUser';
 
-export async function createComment(params: {
+export async function createCommentAction(params: {
    postId: string;
    content: string;
 }): Promise<PostComment> {

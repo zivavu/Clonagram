@@ -12,7 +12,7 @@ function extractHashtags(caption: string | null): string[] {
    return [...new Set(matches.map(tag => tag.slice(1).toLowerCase()))];
 }
 
-export async function createPost(params: CreatePostParams): Promise<void> {
+export async function createPostAction(params: CreatePostParams): Promise<void> {
    const { supabase, user } = await getAuthUser();
    const userId = user.id;
    const hasVideo = params.mediaResults.some(media => media.type === 'video');

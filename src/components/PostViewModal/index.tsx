@@ -41,7 +41,7 @@ export default function PostFullViewModal() {
                   sizes="70vw"
                   omitRightBorderRadius={true}
                />
-               <PostModalComments post={post} />
+               <PostModalComments initialPost={post} />
             </Dialog.Content>
          </Dialog.Portal>
       </Dialog.Root>

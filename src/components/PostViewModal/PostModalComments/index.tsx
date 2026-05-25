@@ -8,37 +8,33 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
-import { createComment } from '@/src/actions/comments/createComment';
+import { createCommentAction } from '@/src/actions/comments/createComment';
+import Skeleton from '@/src/components/Skeleton';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { createBrowserClient } from '@/src/lib/supabase/client';
-import { type PostComment, postCommentsQuery } from '@/src/queries/comments';
+import { type PostComment, type PostComments, postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
+import { likePostAction } from '../../../actions/likes/likePost';
+import { getPostAction } from '../../../actions/post/getPost';
 import { usePostViewModal } from '../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../store/useOwnerActionsModalStore';
 import OwnerActionsModal from '../../OwnerActionsModal/OwnerActionsModal';
 import { styles } from './index.stylex';
 
 interface PostModalCommentsProps {
-   post: PostWithMedia;
+   initialPost: PostWithMedia;
 }
-
-const ACTION_BUTTONS = [
-   { label: 'Like', icon: <MdFavoriteBorder size={24} /> },
-   { label: 'Comment', icon: <FiMessageCircle size={24} /> },
-   { label: 'Share', icon: <LuSend size={22} /> },
-   { label: 'Repost', icon: <TbRepeat size={24} /> },
-] as const;
 
 function CommentSkeleton() {
    return (
       <div {...stylex.props(styles.commentItem)}>
-         <div {...stylex.props(styles.commentAvatar, styles.skeletonBase, styles.skeletonAvatar)} />
+         <Skeleton width={32} height={32} rounded />
          <div {...stylex.props(styles.commentContent)}>
-            <div {...stylex.props(styles.skeletonBase, styles.skeletonLineShort)} />
-            <div {...stylex.props(styles.skeletonBase, styles.skeletonLineLong)} />
-            <div {...stylex.props(styles.skeletonBase, styles.skeletonMeta)} />
+            <Skeleton width="40%" height={12} />
+            <Skeleton width="75%" height={12} />
+            <Skeleton width="25%" height={10} />
          </div>
       </div>
    );
@@ -76,14 +72,21 @@ function CommentItem({ comment }: { comment: PostComment }) {
    );
 }
 
-export default function PostModalComments({ post }: PostModalCommentsProps) {
+export default function PostModalComments({ initialPost }: PostModalCommentsProps) {
    const { open: openOwnerActions } = useOwnerActionsModal();
    const { close: closePostViewModal } = usePostViewModal();
    const { data: authUser } = useAuthUser();
    const queryClient = useQueryClient();
-   const commentsKey = ['comments', post.id];
+   const postKey = ['post', initialPost.id];
+   const commentsKey = ['comments', initialPost.id];
 
-   const [inputValue, setInputValue] = useState('');
+   const [commentInputValue, setCommentInputValue] = useState('');
+
+   const { data: post } = useQuery({
+      initialData: initialPost,
+      queryKey: postKey,
+      queryFn: () => getPostAction(initialPost.id),
+   });
 
    const { data: comments = [], isLoading: commentsLoading } = useQuery({
       queryKey: commentsKey,
@@ -95,11 +98,25 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
       },
    });
 
+   const { mutate: likePost } = useMutation({
+      mutationFn: () => likePostAction({ postId: post.id }),
+      onSuccess: () => {
+         queryClient.invalidateQueries({ queryKey: postKey });
+      },
+   });
+
+   const ACTION_BUTTONS = [
+      { label: 'Like', icon: <MdFavoriteBorder size={24} />, onClick: likePost },
+      { label: 'Comment', icon: <FiMessageCircle size={24} />, onClick: () => {} },
+      { label: 'Share', icon: <LuSend size={22} />, onClick: () => {} },
+      { label: 'Repost', icon: <TbRepeat size={24} />, onClick: () => {} },
+   ] as const;
+
    const { mutate: submitComment } = useMutation({
-      mutationFn: (content: string) => createComment({ postId: post.id, content }),
+      mutationFn: (content: string) => createCommentAction({ postId: post.id, content }),
       onMutate: async content => {
          await queryClient.cancelQueries({ queryKey: commentsKey });
-         const previous = queryClient.getQueryData<PostComment[]>(commentsKey);
+         const previous = queryClient.getQueryData<PostComments>(commentsKey);
 
          if (authUser) {
             const optimistic: PostComment = {
@@ -136,9 +153,9 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
 
    function handleSubmit(e: React.FormEvent) {
       e.preventDefault();
-      const content = inputValue.trim();
+      const content = commentInputValue.trim();
       if (!content) return;
-      setInputValue('');
+      setCommentInputValue('');
       submitComment(content);
    }
 
@@ -187,8 +204,13 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
             <div {...stylex.props(styles.bottomSection)}>
                <div {...stylex.props(styles.actionsBar)}>
                   <div {...stylex.props(styles.actionsLeft)}>
-                     {ACTION_BUTTONS.map(({ label, icon }) => (
-                        <button key={label} type="button" aria-label={label}>
+                     {ACTION_BUTTONS.map(({ label, icon, onClick }) => (
+                        <button
+                           key={label}
+                           type="button"
+                           aria-label={label}
+                           onClick={() => onClick()}
+                        >
                            {icon}
                         </button>
                      ))}
@@ -210,8 +232,8 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
                   <input
                      type="text"
                      placeholder="Add a comment..."
-                     value={inputValue}
-                     onChange={e => setInputValue(e.target.value)}
+                     value={commentInputValue}
+                     onChange={e => setCommentInputValue(e.target.value)}
                      {...stylex.props(styles.commentInput)}
                   />
                   <button type="submit" {...stylex.props(styles.postButton)}>

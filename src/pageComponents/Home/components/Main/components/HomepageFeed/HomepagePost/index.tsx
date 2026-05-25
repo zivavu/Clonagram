@@ -49,8 +49,6 @@ export default function HomepagePost({ post }: HomepagePostProps) {
 
    if (!post) return null;
 
-   console.log(post);
-
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
