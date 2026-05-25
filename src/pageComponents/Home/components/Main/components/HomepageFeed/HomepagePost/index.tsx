@@ -49,6 +49,8 @@ export default function HomepagePost({ post }: HomepagePostProps) {
 
    if (!post) return null;
 
+   console.log(post);
+
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
@@ -95,7 +97,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                >
                   <FiMessageCircle size={24} />
                </button>
-               {post.comment_count > 0 && <span>{post.comment_count}</span>}
+               {(post.comments[0]?.count ?? 0) > 0 && <span>{post.comments[0]?.count}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Repost">

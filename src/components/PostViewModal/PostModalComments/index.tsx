@@ -31,6 +31,19 @@ const ACTION_BUTTONS = [
    { label: 'Repost', icon: <TbRepeat size={24} /> },
 ] as const;
 
+function CommentSkeleton() {
+   return (
+      <div {...stylex.props(styles.commentItem)}>
+         <div {...stylex.props(styles.commentAvatar, styles.skeletonBase, styles.skeletonAvatar)} />
+         <div {...stylex.props(styles.commentContent)}>
+            <div {...stylex.props(styles.skeletonBase, styles.skeletonLineShort)} />
+            <div {...stylex.props(styles.skeletonBase, styles.skeletonLineLong)} />
+            <div {...stylex.props(styles.skeletonBase, styles.skeletonMeta)} />
+         </div>
+      </div>
+   );
+}
+
 function CommentItem({ comment }: { comment: PostComment }) {
    return (
       <div {...stylex.props(styles.commentItem)}>
@@ -72,7 +85,7 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
 
    const [inputValue, setInputValue] = useState('');
 
-   const { data: comments = [] } = useQuery({
+   const { data: comments = [], isLoading: commentsLoading } = useQuery({
       queryKey: commentsKey,
       queryFn: async () => {
          const supabase = createBrowserClient();
@@ -166,9 +179,9 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
                   </div>
                )}
                <div {...stylex.props(styles.commentsList)}>
-                  {comments.map(comment => (
-                     <CommentItem key={comment.id} comment={comment} />
-                  ))}
+                  {commentsLoading
+                     ? ['a', 'b', 'c', 'd'].map(k => <CommentSkeleton key={k} />)
+                     : comments.map(comment => <CommentItem key={comment.id} comment={comment} />)}
                </div>
             </div>
             <div {...stylex.props(styles.bottomSection)}>

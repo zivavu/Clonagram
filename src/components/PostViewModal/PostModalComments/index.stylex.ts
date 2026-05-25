@@ -2,6 +2,11 @@ import * as stylex from '@stylexjs/stylex';
 
 import { colors, spacing } from '../../../styles/tokens.stylex';
 
+const shimmer = stylex.keyframes({
+   '0%': { backgroundPosition: '-400px 0' },
+   '100%': { backgroundPosition: '400px 0' },
+});
+
 export const styles = stylex.create({
    root: {
       display: 'flex',
@@ -178,5 +183,32 @@ export const styles = stylex.create({
       fontWeight: 600,
       fontSize: '14px',
       flexShrink: 0,
+   },
+   skeletonBase: {
+      borderRadius: '4px',
+      backgroundImage: `linear-gradient(90deg, ${colors.bgElevated} 25%, ${colors.separator} 50%, ${colors.bgElevated} 75%)`,
+      backgroundSize: '800px 100%',
+      animationName: shimmer,
+      animationDuration: '1.4s',
+      animationTimingFunction: 'linear',
+      animationIterationCount: 'infinite',
+   },
+   skeletonAvatar: {
+      width: '32px',
+      height: '32px',
+      borderRadius: '50%',
+      flexShrink: 0,
+   },
+   skeletonLineShort: {
+      height: '12px',
+      width: '40%',
+   },
+   skeletonLineLong: {
+      height: '12px',
+      width: '75%',
+   },
+   skeletonMeta: {
+      height: '10px',
+      width: '25%',
    },
 });
