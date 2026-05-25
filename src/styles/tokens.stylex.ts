@@ -21,6 +21,9 @@ export const colors = stylex.defineVars({
    danger: 'rgb(237, 73, 86)',
    storyGradientStart: 'rgb(240, 148, 51)',
    storyGradientEnd: 'rgb(188, 24, 136)',
+   black: 'rgb(0, 0, 0)',
+   white: 'rgb(255, 255, 255)',
+   blackWhite: 'light-dark(rgb(255, 255, 255), rgb(0, 0, 0))',
 });
 
 export const spacing = stylex.defineVars({

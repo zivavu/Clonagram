@@ -69,7 +69,7 @@ export interface PostData {
 }
 
 export type MediaResult =
-   | { type: 'image'; path: string; width: number; height: number; blurDataURL: string }
+   | { type: 'image'; path: string; width: number; height: number; blurDataURL?: string }
    | {
         type: 'video';
         assetId: string;

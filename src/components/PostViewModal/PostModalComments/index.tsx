@@ -7,7 +7,7 @@ import { TbDots, TbRepeat } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
 import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import type { PostWithMedia } from '@/src/queries/posts';
-import { formatRelativeTimeShortUnit } from '@/src/utils/time';
+import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from './index.stylex';
 
 interface PostModalCommentsProps {
@@ -189,7 +189,7 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
                Liked by <strong>volt_mz</strong> and others
             </div>
             <div {...stylex.props(styles.postTime)}>
-               {post.created_at ? formatRelativeTimeShortUnit(post.created_at) : ''}
+               {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
             </div>
             <div {...stylex.props(styles.commentInputRow)}>
                <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>

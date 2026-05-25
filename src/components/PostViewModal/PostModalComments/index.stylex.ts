@@ -7,6 +7,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       width: '500px',
+      flexShrink: 0,
       height: '100%',
       backgroundColor: colors.bgBubble,
       borderLeft: `1px solid ${colors.separator}`,
@@ -150,9 +151,8 @@ export const styles = stylex.create({
       padding: `0 ${spacing.md}`,
    },
    postTime: {
-      fontSize: '10px',
+      fontSize: '12px',
       color: colors.textSecondary,
-      textTransform: 'uppercase',
       letterSpacing: '0.2px',
       padding: `0 ${spacing.md}`,
    },
