@@ -15,10 +15,11 @@ export const styles = stylex.create({
       display: 'flex',
       height: '100%',
       transition: 'transform 350ms cubic-bezier(0.4, 0, 0.2, 1)',
-      backgroundColor: colors.blackWhite,
    },
    carouselSlide: {
       position: 'relative',
+      maxWidth: '100%',
+      backgroundColor: colors.blackWhite,
       flexShrink: 0,
    },
 
