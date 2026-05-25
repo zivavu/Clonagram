@@ -76,7 +76,9 @@ export default function HomepagePost({ post }: HomepagePostProps) {
             width="468px"
             sizes="468px"
             height={containerHeight(post)}
-            onImageChange={index => { currentImageIndex.current = index; }}
+            onImageChange={index => {
+               currentImageIndex.current = index;
+            }}
          />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>

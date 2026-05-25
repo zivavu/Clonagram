@@ -13,7 +13,8 @@ interface PostViewModal {
 export const usePostViewModal = create<PostViewModal>(set => ({
    isOpen: false,
    post: null,
-   open: (post: PostWithMedia, initialImageIndex = 0) => set({ isOpen: true, post, initialImageIndex }),
+   open: (post: PostWithMedia, initialImageIndex = 0) =>
+      set({ isOpen: true, post, initialImageIndex }),
    close: () => set({ isOpen: false, post: null, initialImageIndex: 0 }),
    toggle: () => set(state => ({ isOpen: !state.isOpen })),
    initialImageIndex: 0,

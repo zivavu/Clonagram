@@ -1,13 +1,15 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
+import { useQuery } from '@tanstack/react-query';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
-import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
+import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
-import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
+import { createBrowserClient } from '@/src/lib/supabase/client';
+import { type PostComment, postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { usePostViewModal } from '../../../store/postViewModalStore';
@@ -19,16 +21,6 @@ interface PostModalCommentsProps {
    post: PostWithMedia;
 }
 
-interface MockComment {
-   id: string;
-   username: string;
-   avatarUrl: string | null;
-   text: string;
-   createdAt: string;
-   likeCount: number;
-   isLiked: boolean;
-}
-
 const ACTION_BUTTONS = [
    { label: 'Like', icon: <MdFavoriteBorder size={24} /> },
    { label: 'Comment', icon: <FiMessageCircle size={24} /> },
@@ -36,97 +28,24 @@ const ACTION_BUTTONS = [
    { label: 'Repost', icon: <TbRepeat size={24} /> },
 ] as const;
 
-const MOCK_COMMENTS: MockComment[] = [
-   {
-      id: '1',
-      username: SUGGESTED_USERS[0].username,
-      avatarUrl: SUGGESTED_USERS[0].avatar_url,
-      text: 'This is such a creative way to spend time on a trip. I really admire it 👏',
-      createdAt: new Date(Date.now() - 19 * 60 * 60 * 1000).toISOString(),
-      likeCount: 0,
-      isLiked: false,
-   },
-   {
-      id: '2',
-      username: SUGGESTED_USERS[1].username,
-      avatarUrl: SUGGESTED_USERS[1].avatar_url,
-      text: 'Mom how many likes to send me a little duckling 🐥',
-      createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-      likeCount: 1,
-      isLiked: true,
-   },
-   {
-      id: '3',
-      username: SUGGESTED_USERS[2].username,
-      avatarUrl: SUGGESTED_USERS[2].avatar_url,
-      text: 'These ducklings are absolutely beautiful 😍❤️',
-      createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
-      likeCount: 42,
-      isLiked: false,
-   },
-   {
-      id: '4',
-      username: SUGGESTED_USERS[3].username,
-      avatarUrl: SUGGESTED_USERS[3].avatar_url,
-      text: 'So gorgeous, I also have motion sickness and admire that you managed to do anything because I can barely function 😅😅',
-      createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
-      likeCount: 8,
-      isLiked: false,
-   },
-   {
-      id: '5',
-      username: SUGGESTED_USERS[4].username,
-      avatarUrl: SUGGESTED_USERS[4].avatar_url,
-      text: 'What adorable little duckies 💕🦆',
-      createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
-      likeCount: 6,
-      isLiked: false,
-   },
-   {
-      id: '6',
-      username: SUGGESTED_USERS[5].username,
-      avatarUrl: SUGGESTED_USERS[5].avatar_url,
-      text: 'Omg these are so beautiful ❤️',
-      createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
-      likeCount: 3,
-      isLiked: false,
-   },
-   {
-      id: '7',
-      username: SUGGESTED_USERS[6].username,
-      avatarUrl: SUGGESTED_USERS[6].avatar_url,
-      text: 'I LOVE CROCHETING DUCKS THIS IS THE BEST HOBBY EVER',
-      createdAt: new Date(Date.now() - 19 * 60 * 60 * 1000).toISOString(),
-      likeCount: 2,
-      isLiked: false,
-   },
-   {
-      id: '8',
-      username: SUGGESTED_USERS[7].username,
-      avatarUrl: SUGGESTED_USERS[7].avatar_url,
-      text: 'Mom I want grilled cheese sandwiches 🥪✨',
-      createdAt: new Date(Date.now() - 21 * 60 * 60 * 1000).toISOString(),
-      likeCount: 0,
-      isLiked: false,
-   },
-];
-
-function CommentItem({ comment }: { comment: MockComment }) {
+function CommentItem({ comment }: { comment: PostComment }) {
    return (
       <div {...stylex.props(styles.commentItem)}>
          <div {...stylex.props(styles.commentAvatar)}>
-            <UserAvatar src={comment.avatarUrl} alt={comment.username} size={32} />
+            <UserAvatar src={comment.user.avatar_url} alt={comment.user.username} size={32} />
          </div>
          <div {...stylex.props(styles.commentContent)}>
             <div {...stylex.props(styles.commentTextRow)}>
-               <span {...stylex.props(styles.commentUsername)}>{comment.username}</span>{' '}
-               <span {...stylex.props(styles.commentText)}>{comment.text}</span>
+               <span {...stylex.props(styles.commentUsername)}>{comment.user.username}</span>{' '}
+               <span {...stylex.props(styles.commentText)}>{comment.content}</span>
             </div>
             <div {...stylex.props(styles.commentMeta)}>
-               <span>{formatRelativeTimeShortUnit(comment.createdAt)}</span>
-               {comment.likeCount > 0 && (
+               <span>
+                  {comment.created_at ? formatRelativeTimeShortUnit(comment.created_at) : ''}
+               </span>
+               {comment.like_count > 0 && (
                   <span>
-                     {comment.likeCount} {comment.likeCount === 1 ? 'like' : 'likes'}
+                     {comment.like_count} {comment.like_count === 1 ? 'like' : 'likes'}
                   </span>
                )}
                <button type="button" {...stylex.props(styles.commentReplyButton)}>
@@ -135,11 +54,7 @@ function CommentItem({ comment }: { comment: MockComment }) {
             </div>
          </div>
          <button type="button" aria-label="Like comment" {...stylex.props(styles.commentHeart)}>
-            {comment.isLiked ? (
-               <MdFavorite size={12} {...stylex.props(styles.commentHeartLiked)} />
-            ) : (
-               <MdFavoriteBorder size={12} />
-            )}
+            <MdFavoriteBorder size={12} />
          </button>
       </div>
    );
@@ -148,6 +63,15 @@ function CommentItem({ comment }: { comment: MockComment }) {
 export default function PostModalComments({ post }: PostModalCommentsProps) {
    const { open: openOwnerActions } = useOwnerActionsModal();
    const { close: closePostViewModal } = usePostViewModal();
+   const { data: comments = [] } = useQuery({
+      queryKey: ['comments', post.id],
+      queryFn: async () => {
+         const supabase = createBrowserClient();
+         const { data, error } = await postCommentsQuery(supabase, post.id);
+         if (error) throw error;
+         return data;
+      },
+   });
 
    return (
       <>
@@ -186,7 +110,7 @@ export default function PostModalComments({ post }: PostModalCommentsProps) {
                   </div>
                )}
                <div {...stylex.props(styles.commentsList)}>
-                  {MOCK_COMMENTS.map(comment => (
+                  {comments.map(comment => (
                      <CommentItem key={comment.id} comment={comment} />
                   ))}
                </div>
