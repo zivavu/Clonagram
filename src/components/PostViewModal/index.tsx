@@ -9,7 +9,7 @@ import { styles } from './index.stylex';
 import PostModalComments from './PostModalComments';
 
 export default function PostFullViewModal() {
-   const { isOpen, post, close } = usePostViewModal();
+   const { isOpen, post, close, initialImageIndex } = usePostViewModal();
 
    if (!post) return null;
 
@@ -34,7 +34,7 @@ export default function PostFullViewModal() {
                </Dialog.Description>
                <PostMediaCarousel
                   post={post}
-                  initialImageIndex={0}
+                  initialImageIndex={initialImageIndex}
                   height={'100%'}
                   width={'auto'}
                   aspectRatio={aspectRatio}

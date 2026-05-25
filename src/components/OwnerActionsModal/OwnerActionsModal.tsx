@@ -17,7 +17,11 @@ interface Action {
    action: () => Promise<void> | void;
 }
 
-export default function OwnerActionsModal() {
+interface OwnerActionsModalProps {
+   onFinish?: () => void;
+}
+
+export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) {
    const { isOpen, postId, close } = useOwnerActionsModal();
    const [isLoading, setIsLoading] = useState(false);
    const [showConfirm, setShowConfirm] = useState(false);
@@ -35,6 +39,7 @@ export default function OwnerActionsModal() {
          setIsLoading(false);
          setShowConfirm(false);
          setDeletingPostId(null);
+         if (onFinish) onFinish();
       }
    }
 

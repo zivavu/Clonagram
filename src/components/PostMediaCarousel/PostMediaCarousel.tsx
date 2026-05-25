@@ -46,6 +46,7 @@ export interface PostMediaCarouselProps {
    sizes: string;
    aspectRatio?: string;
    omitRightBorderRadius?: boolean;
+   onImageChange?: (index: number) => void;
 }
 
 export default function PostMediaCarousel({
@@ -56,6 +57,7 @@ export default function PostMediaCarousel({
    sizes,
    aspectRatio,
    omitRightBorderRadius,
+   onImageChange,
 }: PostMediaCarouselProps) {
    const { open: openPostFullViewModal } = usePostViewModal();
 
@@ -64,11 +66,16 @@ export default function PostMediaCarousel({
    const hasMultipleMedia = media.length > 1;
 
    const handlePrevious = () => {
-      setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev));
+      const newImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : currentImageIndex;
+      setCurrentImageIndex(newImageIndex);
+      onImageChange?.(newImageIndex);
    };
 
    const handleNext = () => {
-      setCurrentImageIndex(prev => (prev < media.length - 1 ? prev + 1 : prev));
+      const newImageIndex =
+         currentImageIndex < media.length - 1 ? currentImageIndex + 1 : currentImageIndex;
+      setCurrentImageIndex(newImageIndex);
+      onImageChange?.(newImageIndex);
    };
 
    return (
@@ -86,7 +93,7 @@ export default function PostMediaCarousel({
             {media.map(item => {
                return (
                   <button
-                     onClick={() => openPostFullViewModal(post)}
+                     onClick={() => openPostFullViewModal(post, currentImageIndex)}
                      key={item.id}
                      {...stylex.props(styles.carouselSlide)}
                      style={{ width: `${width}`, height: `${height}`, aspectRatio }}
@@ -99,7 +106,6 @@ export default function PostMediaCarousel({
                            sizes={sizes}
                            placeholder={item.blurDataURL ? 'blur' : 'empty'}
                            blurDataURL={item.blurDataURL}
-                           {...stylex.props(styles.postImage)}
                         />
                      ) : (
                         <MuxPlayer

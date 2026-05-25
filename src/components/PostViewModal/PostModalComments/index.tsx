@@ -1,3 +1,5 @@
+'use client';
+
 import * as stylex from '@stylexjs/stylex';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { FiMessageCircle } from 'react-icons/fi';
@@ -8,6 +10,9 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
+import { usePostViewModal } from '../../../store/postViewModalStore';
+import { useOwnerActionsModal } from '../../../store/useOwnerActionsModalStore';
+import OwnerActionsModal from '../../OwnerActionsModal/OwnerActionsModal';
 import { styles } from './index.stylex';
 
 interface PostModalCommentsProps {
@@ -118,11 +123,11 @@ function CommentItem({ comment }: { comment: MockComment }) {
                <span {...stylex.props(styles.commentText)}>{comment.text}</span>
             </div>
             <div {...stylex.props(styles.commentMeta)}>
-               <span {...stylex.props(styles.commentTime)}>
-                  {formatRelativeTimeShortUnit(comment.createdAt)}
-               </span>
+               <span>{formatRelativeTimeShortUnit(comment.createdAt)}</span>
                {comment.likeCount > 0 && (
-                  <span {...stylex.props(styles.commentLikes)}>{comment.likeCount} likes</span>
+                  <span>
+                     {comment.likeCount} {comment.likeCount === 1 ? 'like' : 'likes'}
+                  </span>
                )}
                <button type="button" {...stylex.props(styles.commentReplyButton)}>
                   Reply
@@ -141,70 +146,85 @@ function CommentItem({ comment }: { comment: MockComment }) {
 }
 
 export default function PostModalComments({ post }: PostModalCommentsProps) {
+   const { open: openOwnerActions } = useOwnerActionsModal();
+   const { close: closePostViewModal } = usePostViewModal();
+
    return (
-      <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.scrollArea)}>
-            <div {...stylex.props(styles.postHeader)}>
-               <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
-               <span {...stylex.props(styles.postHeaderUsername)}>{post.user.username}</span>
-               <span {...stylex.props(styles.followButton)}>Follow</span>
-               <button type="button" aria-label="More options" {...stylex.props(styles.moreButton)}>
-                  <TbDots size={20} />
-               </button>
-            </div>
-            {post.caption && (
-               <div {...stylex.props(styles.captionRow)}>
+      <>
+         <OwnerActionsModal onFinish={() => closePostViewModal()} />
+
+         <div {...stylex.props(styles.root)}>
+            <div {...stylex.props(styles.scrollArea)}>
+               <div {...stylex.props(styles.postHeader)}>
                   <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
-                  <div {...stylex.props(styles.captionContent)}>
-                     <div {...stylex.props(styles.captionTextRow)}>
-                        <span {...stylex.props(styles.captionUsername)}>{post.user.username}</span>{' '}
-                        <span {...stylex.props(styles.captionText)}>{post.caption}</span>
-                     </div>
-                     <span {...stylex.props(styles.captionTime)}>
-                        {post.created_at ? formatRelativeTimeShortUnit(post.created_at) : ''}
-                     </span>
-                  </div>
+                  <span {...stylex.props(styles.postHeaderUsername)}>{post.user.username}</span>
+                  <span>•</span>
+                  <span {...stylex.props(styles.followButton)}>Follow</span>
+                  <button
+                     type="button"
+                     aria-label="Post owner actions"
+                     onClick={() => openOwnerActions(post.id)}
+                     {...stylex.props(styles.moreButton)}
+                  >
+                     <TbDots size={20} />
+                  </button>
                </div>
-            )}
-            <div {...stylex.props(styles.commentsList)}>
-               {MOCK_COMMENTS.map(comment => (
-                  <CommentItem key={comment.id} comment={comment} />
-               ))}
-            </div>
-         </div>
-         <div {...stylex.props(styles.bottomSection)}>
-            <div {...stylex.props(styles.actionsBar)}>
-               <div {...stylex.props(styles.actionsLeft)}>
-                  {ACTION_BUTTONS.map(({ label, icon }) => (
-                     <button key={label} type="button" aria-label={label}>
-                        {icon}
-                     </button>
+               {post.caption && (
+                  <div {...stylex.props(styles.captionRow)}>
+                     <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
+                     <div {...stylex.props(styles.captionContent)}>
+                        <div {...stylex.props(styles.captionTextRow)}>
+                           <span {...stylex.props(styles.captionUsername)}>
+                              {post.user.username}
+                           </span>{' '}
+                           <span {...stylex.props(styles.captionText)}>{post.caption}</span>
+                        </div>
+                        <span {...stylex.props(styles.captionTime)}>
+                           {post.created_at ? formatRelativeTimeShortUnit(post.created_at) : ''}
+                        </span>
+                     </div>
+                  </div>
+               )}
+               <div {...stylex.props(styles.commentsList)}>
+                  {MOCK_COMMENTS.map(comment => (
+                     <CommentItem key={comment.id} comment={comment} />
                   ))}
                </div>
-               <button type="button" aria-label="Bookmark">
-                  <MdBookmarkBorder size={24} />
-               </button>
             </div>
-            <div {...stylex.props(styles.likedByText)}>
-               Liked by <strong>volt_mz</strong> and others
-            </div>
-            <div {...stylex.props(styles.postTime)}>
-               {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
-            </div>
-            <div {...stylex.props(styles.commentInputRow)}>
-               <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
-                  <BsEmojiSmile size={24} />
-               </button>
-               <input
-                  type="text"
-                  placeholder="Add a comment..."
-                  {...stylex.props(styles.commentInput)}
-               />
-               <button type="button" {...stylex.props(styles.postButton)}>
-                  Post
-               </button>
+            <div {...stylex.props(styles.bottomSection)}>
+               <div {...stylex.props(styles.actionsBar)}>
+                  <div {...stylex.props(styles.actionsLeft)}>
+                     {ACTION_BUTTONS.map(({ label, icon }) => (
+                        <button key={label} type="button" aria-label={label}>
+                           {icon}
+                        </button>
+                     ))}
+                  </div>
+                  <button type="button" aria-label="Bookmark">
+                     <MdBookmarkBorder size={24} />
+                  </button>
+               </div>
+               <div {...stylex.props(styles.likedByText)}>
+                  Liked by <strong>volt_mz</strong> and others
+               </div>
+               <div {...stylex.props(styles.postTime)}>
+                  {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
+               </div>
+               <div {...stylex.props(styles.commentInputRow)}>
+                  <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
+                     <BsEmojiSmile size={24} />
+                  </button>
+                  <input
+                     type="text"
+                     placeholder="Add a comment..."
+                     {...stylex.props(styles.commentInput)}
+                  />
+                  <button type="button" {...stylex.props(styles.postButton)}>
+                     Post
+                  </button>
+               </div>
             </div>
          </div>
-      </div>
+      </>
    );
 }

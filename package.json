@@ -51,6 +51,7 @@
    },
    "devDependencies": {
       "@biomejs/biome": "^2.4.15",
+      "@faker-js/faker": "^10.4.0",
       "@next/bundle-analyzer": "^16.2.6",
       "@stylexjs/babel-plugin": "^0.18.3",
       "@stylexjs/postcss-plugin": "^0.18.3",

@@ -70,7 +70,7 @@ export const styles = stylex.create({
    commentsList: {
       display: 'flex',
       flexDirection: 'column',
-      gap: spacing.md,
+      gap: '16px',
       paddingTop: spacing.md,
    },
    commentItem: {
@@ -102,21 +102,16 @@ export const styles = stylex.create({
    },
    commentMeta: {
       display: 'flex',
-      gap: spacing.sm,
+      gap: '12px',
       alignItems: 'center',
-   },
-   commentTime: {
-      fontSize: '12px',
-      color: colors.textSecondary,
-   },
-   commentLikes: {
-      fontSize: '12px',
-      color: colors.textSecondary,
-   },
-   commentReplyButton: {
       fontSize: '12px',
       color: colors.textSecondary,
       fontWeight: 600,
+   },
+   commentReplyButton: {
+      fontWeight: 600,
+      fontSize: '12px',
+      color: colors.textSecondary,
    },
    commentHeart: {
       color: colors.textSecondary,

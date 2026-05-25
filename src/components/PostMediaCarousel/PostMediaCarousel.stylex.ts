@@ -19,11 +19,9 @@ export const styles = stylex.create({
    },
    carouselSlide: {
       position: 'relative',
-      maxWidth: '100%',
+      flexShrink: 0,
    },
-   postImage: {
-      objectFit: 'contain',
-   },
+
    dotsContainer: {
       position: 'absolute',
       bottom: '12px',

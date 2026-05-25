@@ -1,6 +1,7 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
+import { useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
@@ -42,6 +43,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
    const { open: openPostFullViewModal } = usePostViewModal();
+   const currentImageIndex = useRef(0);
 
    const isOwner = post.user.id === currentUser?.id;
 
@@ -71,9 +73,10 @@ export default function HomepagePost({ post }: HomepagePostProps) {
          </div>
          <PostMediaCarousel
             post={post}
-            width={'468px'}
+            width="468px"
             sizes="468px"
             height={containerHeight(post)}
+            onImageChange={index => { currentImageIndex.current = index; }}
          />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
@@ -86,7 +89,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                <button
                   type="button"
                   aria-label="Comment"
-                  onClick={() => openPostFullViewModal(post)}
+                  onClick={() => openPostFullViewModal(post, currentImageIndex.current)}
                >
                   <FiMessageCircle size={24} />
                </button>
