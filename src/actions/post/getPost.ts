@@ -10,7 +10,8 @@ export async function getPostAction(postId: string): Promise<PostWithMedia> {
       .from('posts')
       .select(
          `
-         id, caption, created_at, like_count, aspect_ratio,
+         id, caption, created_at, aspect_ratio, hide_likes,
+         likes(user_id),
          comments(count),
          user:profiles!user_id(id, username, avatar_url),
          images:post_images(id, url, position, width, height, blur_data_url),

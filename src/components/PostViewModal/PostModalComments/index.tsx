@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
-import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
+import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { createCommentAction } from '@/src/actions/comments/createComment';
 import Skeleton from '@/src/components/Skeleton';
@@ -16,6 +16,7 @@ import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type PostComment, type PostComments, postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
+import { dislikePostAction } from '../../../actions/likes/dislikePost';
 import { likePostAction } from '../../../actions/likes/likePost';
 import { getPostAction } from '../../../actions/post/getPost';
 import { usePostViewModal } from '../../../store/postViewModalStore';
@@ -72,6 +73,14 @@ function CommentItem({ comment }: { comment: PostComment }) {
    );
 }
 
+interface ActionButton {
+   label: string;
+   icon: React.ReactNode;
+   activeIcon?: React.ReactNode;
+   isActive?: boolean;
+   onClick: () => void;
+}
+
 export default function PostModalComments({ initialPost }: PostModalCommentsProps) {
    const { open: openOwnerActions } = useOwnerActionsModal();
    const { close: closePostViewModal } = usePostViewModal();
@@ -98,15 +107,46 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
       },
    });
 
-   const { mutate: likePost } = useMutation({
-      mutationFn: () => likePostAction({ postId: post.id }),
-      onSuccess: () => {
+   const { mutate: togglePostLike } = useMutation({
+      mutationFn: () => {
+         const isLiked = post.likes.some(l => l.user_id === authUser?.id);
+         return isLiked
+            ? dislikePostAction({ postId: post.id })
+            : likePostAction({ postId: post.id });
+      },
+      onMutate: async () => {
+         await queryClient.cancelQueries({ queryKey: postKey });
+         const previous = queryClient.getQueryData<PostWithMedia>(postKey);
+         const isLiked = post.likes.some(l => l.user_id === authUser?.id);
+
+         queryClient.setQueryData<PostWithMedia>(postKey, old => {
+            if (!old || !authUser) return old;
+            return {
+               ...old,
+               likes: isLiked
+                  ? old.likes.filter(l => l.user_id !== authUser.id)
+                  : [...old.likes, { user_id: authUser.id }],
+            };
+         });
+
+         return { previous };
+      },
+      onError: (_err, _vars, context) => {
+         if (context?.previous) queryClient.setQueryData(postKey, context.previous);
+      },
+      onSettled: () => {
          queryClient.invalidateQueries({ queryKey: postKey });
       },
    });
 
-   const ACTION_BUTTONS = [
-      { label: 'Like', icon: <MdFavoriteBorder size={24} />, onClick: likePost },
+   const ACTION_BUTTONS: readonly ActionButton[] = [
+      {
+         label: 'Like',
+         icon: <MdFavoriteBorder size={24} />,
+         activeIcon: <MdFavorite size={24} />,
+         isActive: post.likes.find(like => like.user_id === authUser?.id) !== undefined,
+         onClick: togglePostLike,
+      },
       { label: 'Comment', icon: <FiMessageCircle size={24} />, onClick: () => {} },
       { label: 'Share', icon: <LuSend size={22} />, onClick: () => {} },
       { label: 'Repost', icon: <TbRepeat size={24} />, onClick: () => {} },
@@ -151,7 +191,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
       },
    });
 
-   function handleSubmit(e: React.FormEvent) {
+   function handleCommentSubmit(e: React.SubmitEvent) {
       e.preventDefault();
       const content = commentInputValue.trim();
       if (!content) return;
@@ -204,14 +244,14 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
             <div {...stylex.props(styles.bottomSection)}>
                <div {...stylex.props(styles.actionsBar)}>
                   <div {...stylex.props(styles.actionsLeft)}>
-                     {ACTION_BUTTONS.map(({ label, icon, onClick }) => (
+                     {ACTION_BUTTONS.map(({ label, icon, onClick, ...action }) => (
                         <button
                            key={label}
                            type="button"
                            aria-label={label}
                            onClick={() => onClick()}
                         >
-                           {icon}
+                           {action.isActive ? action.activeIcon : icon}
                         </button>
                      ))}
                   </div>
@@ -220,12 +260,14 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                   </button>
                </div>
                <div {...stylex.props(styles.likedByText)}>
-                  Liked by <strong>volt_mz</strong> and others
+                  {post.likes.length === 1
+                     ? `${post.likes.length} like`
+                     : `${post.likes.length} likes`}
                </div>
                <div {...stylex.props(styles.postTime)}>
                   {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
                </div>
-               <form onSubmit={handleSubmit} {...stylex.props(styles.commentInputRow)}>
+               <form onSubmit={handleCommentSubmit} {...stylex.props(styles.commentInputRow)}>
                   <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
                      <BsEmojiSmile size={24} />
                   </button>

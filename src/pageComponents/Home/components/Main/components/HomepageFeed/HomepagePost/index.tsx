@@ -85,7 +85,7 @@ export default function HomepagePost({ post }: HomepagePostProps) {
                <button type="button" aria-label="Like">
                   <MdFavoriteBorder size={24} />
                </button>
-               {post.like_count > 0 && <span>{post.like_count}</span>}
+               {!post.hide_likes && post.likes.length > 0 && <span>{post.likes.length}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
                <button
