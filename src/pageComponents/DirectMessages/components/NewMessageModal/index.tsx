@@ -4,7 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
-import { UserListItem, UserListSkeleton } from '@/src/components/shared/UserListItem';
+import { UserListItem, UserListSkeleton } from '@/src/components/UserListItem';
 import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import { useNewMessageModalStore } from '../../../../store/useNewMessageModalStore';
 import { styles } from './index.stylex';

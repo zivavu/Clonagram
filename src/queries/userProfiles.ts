@@ -4,18 +4,25 @@ import type { Database } from '@/src/types/database';
 interface UserProfilesQueryOptions {
    limit?: number;
    order?: 'asc' | 'desc';
+   search?: string;
 }
 
 export function userProfilesQuery(
    supabase: SupabaseClient<Database>,
-   { limit, order }: UserProfilesQueryOptions,
+   { limit, order, search }: UserProfilesQueryOptions,
 ) {
-   return supabase
+   let q = supabase
       .from('profiles')
       .select(`id, username, full_name, avatar_url`)
       .order('created_at', { ascending: order === 'asc' })
       .limit(limit ?? 10);
+
+   if (search) {
+      q = q.or(`username.ilike.%${search}%,full_name.ilike.%${search}%`);
+   }
+
+   return q;
 }
 
-export type PostComments = QueryData<ReturnType<typeof userProfilesQuery>>;
-export type PostComment = PostComments[number];
+export type UserProfiles = QueryData<ReturnType<typeof userProfilesQuery>>;
+export type UserProfile = UserProfiles[number];

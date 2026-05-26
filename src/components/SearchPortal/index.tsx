@@ -2,13 +2,15 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FaCircleXmark } from 'react-icons/fa6';
 import { IoCloseOutline } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
-import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
 import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
-import { UserListItem, UserListSkeleton } from '../shared/UserListItem';
+import { createBrowserClient } from '../../lib/supabase/client';
+import { userProfilesQuery } from '../../queries/userProfiles';
+import { UserListItem, UserListSkeleton } from '../UserListItem';
 import { styles } from './index.stylex';
 
 const VERIFIED_USERS = new Set(['crumbling.concrete']);
@@ -17,13 +19,16 @@ export default function SearchPortal() {
    const { isOpen, close } = useSearchPortalStore();
    const [query, setQuery] = useState('');
 
-   const filteredUsers = SUGGESTED_USERS.filter(
-      u =>
-         (u.full_name?.toLowerCase() ?? '').includes(query.toLowerCase()) ||
-         u.username.toLowerCase().includes(query.toLowerCase()),
-   );
-
-   const skeletonCount = filteredUsers.length ? 0 : 7;
+   const { data: filteredUsers } = useQuery({
+      queryKey: ['profiles', 'search', query],
+      queryFn: async () => {
+         const { data, error } = await userProfilesQuery(createBrowserClient(), { search: query });
+         if (error) throw error;
+         return data;
+      },
+      enabled: !!query,
+   });
+   const skeletonCount = filteredUsers?.length ?? 7;
 
    return (
       <Dialog.Root open={isOpen} onOpenChange={close}>
@@ -65,7 +70,7 @@ export default function SearchPortal() {
                </div>
 
                <div {...stylex.props(styles.list)} role="listbox">
-                  {filteredUsers.map(user => {
+                  {filteredUsers?.map(user => {
                      const isVerified = VERIFIED_USERS.has(user.username);
                      return (
                         <UserListItem
