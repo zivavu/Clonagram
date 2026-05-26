@@ -1,16 +1,19 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
+import { useQuery } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
-import { MdBookmarkBorder, MdFavoriteBorder } from 'react-icons/md';
+import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
+import { getPostAction } from '../../../../../../../actions/post/getPost';
 import PostMediaCarousel from '../../../../../../../components/PostMediaCarousel/PostMediaCarousel';
 import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
+import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike';
 import { usePostViewModal } from '../../../../../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
 import { styles } from './index.stylex';
@@ -38,12 +41,21 @@ function containerHeight(post: PostWithMedia): string {
    }
 }
 
-export default function HomepagePost({ post }: HomepagePostProps) {
+export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
    const { open: openPostFullViewModal } = usePostViewModal();
    const currentImageIndex = useRef(0);
+
+   const { data: post } = useQuery({
+      initialData: initialPost,
+      queryKey: ['post', initialPost.id],
+      queryFn: () => getPostAction(initialPost.id),
+   });
+
+   const { mutate: togglePostLike } = useTogglePostLike(post);
+   const isLiked = post.likes.some(l => l.user_id === currentUser?.id);
 
    const isOwner = post.user.id === currentUser?.id;
 
@@ -82,10 +94,15 @@ export default function HomepagePost({ post }: HomepagePostProps) {
          />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
-               <button type="button" aria-label="Like">
-                  <MdFavoriteBorder size={24} />
+               <button
+                  type="button"
+                  aria-label="Like"
+                  title="Like"
+                  onClick={() => togglePostLike()}
+               >
+                  {isLiked ? <MdFavorite size={24} /> : <MdFavoriteBorder size={24} />}
                </button>
-               {!post.hide_likes && post.likes.length > 0 && <span>{post.likes.length}</span>}
+               {(post.likes.length ?? 0) > 0 && <span>{post.likes.length}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
                <button

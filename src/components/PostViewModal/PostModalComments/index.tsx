@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
@@ -16,8 +16,7 @@ import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type PostComment, type PostComments, postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { dislikePostAction } from '../../../actions/likes/dislikePost';
-import { likePostAction } from '../../../actions/likes/likePost';
+import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
 import { getPostAction } from '../../../actions/post/getPost';
 import { usePostViewModal } from '../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../store/useOwnerActionsModalStore';
@@ -89,6 +88,8 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const postKey = ['post', initialPost.id];
    const commentsKey = ['comments', initialPost.id];
 
+   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
    const [commentInputValue, setCommentInputValue] = useState('');
    const commentInputRef = useRef<HTMLInputElement>(null);
 
@@ -104,68 +105,18 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
          const supabase = createBrowserClient();
          const { data, error } = await postCommentsQuery(supabase, post.id);
          if (error) throw error;
+
          return data;
       },
    });
 
-   const { mutate: togglePostLike } = useMutation({
-      mutationFn: () => {
-         const isLiked = post.likes.some(l => l.user_id === authUser?.id);
-         return isLiked
-            ? dislikePostAction({ postId: post.id })
-            : likePostAction({ postId: post.id });
-      },
-      onMutate: async () => {
-         await queryClient.cancelQueries({ queryKey: postKey });
-         const previous = queryClient.getQueryData<PostWithMedia>(postKey);
-         const isLiked = post.likes.some(l => l.user_id === authUser?.id);
+   useEffect(() => {
+      if (scrollAreaRef.current && comments.length > 0) {
+         scrollAreaRef.current.scrollTo(0, scrollAreaRef.current.scrollHeight);
+      }
+   }, [comments]);
 
-         queryClient.setQueryData<PostWithMedia>(postKey, old => {
-            if (!old || !authUser) return old;
-            return {
-               ...old,
-               likes: isLiked
-                  ? old.likes.filter(l => l.user_id !== authUser.id)
-                  : [...old.likes, { user_id: authUser.id }],
-            };
-         });
-
-         return { previous };
-      },
-      onError: (_err, _vars, context) => {
-         if (context?.previous) queryClient.setQueryData(postKey, context.previous);
-      },
-      onSettled: () => {
-         queryClient.invalidateQueries({ queryKey: postKey });
-      },
-   });
-
-   const ACTION_BUTTONS: readonly ActionButton[] = [
-      {
-         label: 'Like',
-         icon: <MdFavoriteBorder size={24} />,
-         activeIcon: <MdFavorite size={24} />,
-         isActive: post.likes.find(like => like.user_id === authUser?.id) !== undefined,
-         onClick: togglePostLike,
-      },
-      {
-         label: 'Comment',
-         icon: <FiMessageCircle size={24} />,
-         onClick: () => {
-            commentInputRef.current?.focus();
-         },
-      },
-      {
-         label: 'Repost',
-         icon: <TbRepeat size={24} />,
-         onClick: () => {},
-      },
-      {
-         label: 'Share',
-         icon: <LuSend size={22} />,
-         onClick: () => {},
-      },
-   ] as const;
+   const { mutate: togglePostLike } = useTogglePostLike(post);
 
    const { mutate: submitComment } = useMutation({
       mutationFn: (content: string) => createCommentAction({ postId: post.id, content }),
@@ -206,6 +157,33 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
       },
    });
 
+   const ACTION_BUTTONS: readonly ActionButton[] = [
+      {
+         label: 'Like',
+         icon: <MdFavoriteBorder size={24} />,
+         activeIcon: <MdFavorite size={24} />,
+         isActive: post.likes.find(like => like.user_id === authUser?.id) !== undefined,
+         onClick: togglePostLike,
+      },
+      {
+         label: 'Comment',
+         icon: <FiMessageCircle size={24} />,
+         onClick: () => {
+            commentInputRef.current?.focus();
+         },
+      },
+      {
+         label: 'Repost',
+         icon: <TbRepeat size={24} />,
+         onClick: () => {},
+      },
+      {
+         label: 'Share',
+         icon: <LuSend size={22} />,
+         onClick: () => {},
+      },
+   ] as const;
+
    function handleCommentSubmit(e: React.SubmitEvent) {
       e.preventDefault();
       const content = commentInputValue.trim();
@@ -219,7 +197,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
          <OwnerActionsModal onFinish={() => closePostViewModal()} />
 
          <div {...stylex.props(styles.root)}>
-            <div {...stylex.props(styles.scrollArea)}>
+            <div {...stylex.props(styles.scrollArea)} ref={scrollAreaRef}>
                <div {...stylex.props(styles.postHeader)}>
                   <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
                   <span {...stylex.props(styles.postHeaderUsername)}>{post.user.username}</span>
