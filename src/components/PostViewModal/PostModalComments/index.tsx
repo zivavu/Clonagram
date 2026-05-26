@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
@@ -90,6 +90,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const commentsKey = ['comments', initialPost.id];
 
    const [commentInputValue, setCommentInputValue] = useState('');
+   const commentInputRef = useRef<HTMLInputElement>(null);
 
    const { data: post } = useQuery({
       initialData: initialPost,
@@ -147,9 +148,23 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
          isActive: post.likes.find(like => like.user_id === authUser?.id) !== undefined,
          onClick: togglePostLike,
       },
-      { label: 'Comment', icon: <FiMessageCircle size={24} />, onClick: () => {} },
-      { label: 'Share', icon: <LuSend size={22} />, onClick: () => {} },
-      { label: 'Repost', icon: <TbRepeat size={24} />, onClick: () => {} },
+      {
+         label: 'Comment',
+         icon: <FiMessageCircle size={24} />,
+         onClick: () => {
+            commentInputRef.current?.focus();
+         },
+      },
+      {
+         label: 'Repost',
+         icon: <TbRepeat size={24} />,
+         onClick: () => {},
+      },
+      {
+         label: 'Share',
+         icon: <LuSend size={22} />,
+         onClick: () => {},
+      },
    ] as const;
 
    const { mutate: submitComment } = useMutation({
@@ -244,14 +259,16 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
             <div {...stylex.props(styles.bottomSection)}>
                <div {...stylex.props(styles.actionsBar)}>
                   <div {...stylex.props(styles.actionsLeft)}>
-                     {ACTION_BUTTONS.map(({ label, icon, onClick, ...action }) => (
+                     {ACTION_BUTTONS.map(({ label, icon, onClick, activeIcon, isActive }) => (
                         <button
                            key={label}
+                           name={label}
+                           title={label}
                            type="button"
-                           aria-label={label}
                            onClick={() => onClick()}
+                           {...stylex.props(styles.actionButton)}
                         >
-                           {action.isActive ? action.activeIcon : icon}
+                           {isActive ? activeIcon : icon}
                         </button>
                      ))}
                   </div>
@@ -272,6 +289,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                      <BsEmojiSmile size={24} />
                   </button>
                   <input
+                     ref={commentInputRef}
                      type="text"
                      placeholder="Add a comment..."
                      value={commentInputValue}

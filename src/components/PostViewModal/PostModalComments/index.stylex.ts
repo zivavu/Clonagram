@@ -140,6 +140,13 @@ export const styles = stylex.create({
       alignItems: 'center',
       color: colors.textPrimary,
    },
+   actionButton: {
+      transition: 'scale 0.1s ease-in-out',
+
+      ':hover': {
+         scale: 1.05,
+      },
+   },
    likedByText: {
       fontSize: '14px',
       color: colors.textPrimary,
