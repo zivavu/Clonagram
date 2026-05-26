@@ -1,13 +1,23 @@
+import 'server-only';
+
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
+import { createServerClient } from '../../../../lib/supabase/server';
+import { userProfilesQuery } from '../../../../queries/userProfiles';
 import { styles } from './index.stylex';
 import LogoutButton from './LogoutButton';
 
 export default async function RightSidebar() {
    const profile = await getAuthProfile();
+
+   const supabase = await createServerClient();
+   const { data: suggestedUsers, error } = await userProfilesQuery(supabase, { limit: 6 });
+
+   if (error) {
+      return 'Failed to load suggested users';
+   }
 
    return (
       <aside {...stylex.props(styles.root)}>
@@ -28,7 +38,7 @@ export default async function RightSidebar() {
          </div>
 
          <div {...stylex.props(styles.suggestionsList)}>
-            {SUGGESTED_USERS.slice(0, 5).map(user => (
+            {suggestedUsers.map(user => (
                <div key={user.id} {...stylex.props(styles.suggestionItem)}>
                   <UserAvatar src={user.avatar_url} alt={user.username} size={44} />
                   <div {...stylex.props(styles.suggestionInfo)}>
