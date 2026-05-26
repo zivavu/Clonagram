@@ -4,13 +4,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover
 import * as stylex from '@stylexjs/stylex';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { RiMenuFill } from 'react-icons/ri';
 import { TbLogout, TbTrash } from 'react-icons/tb';
 import { deleteAccountAction } from '@/src/actions/auth/deleteAccount';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { useSettingsPopoverStore } from '@/src/store/useSettingsPopoverStore';
+import { useThemeStore } from '@/src/store/useThemeStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
 import { styles as buttonStyles } from '../MainSidebar/index.stylex';
@@ -18,22 +19,12 @@ import { styles } from './index.stylex';
 
 export function SettingsPopoverButton() {
    const { isOpen, toggle, close } = useSettingsPopoverStore();
+   const { isDark, toggle: toggleTheme } = useThemeStore();
    const router = useRouter();
    const queryClient = useQueryClient();
 
-   const [isDark, setIsDark] = useState(false);
    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
-
-   useEffect(() => {
-      setIsDark(document.documentElement.style.colorScheme === 'dark');
-   }, []);
-
-   function toggleAppearance() {
-      const next = isDark ? 'light' : 'dark';
-      document.documentElement.style.colorScheme = next;
-      setIsDark(!isDark);
-   }
 
    async function handleLogout() {
       const supabase = createBrowserClient();
@@ -76,7 +67,7 @@ export function SettingsPopoverButton() {
                   <button
                      type="button"
                      aria-label="Toggle appearance"
-                     onClick={toggleAppearance}
+                     onClick={toggleTheme}
                      {...stylex.props(styles.toggle, isDark ? styles.toggleOn : styles.toggleOff)}
                   >
                      <span
@@ -92,10 +83,7 @@ export function SettingsPopoverButton() {
 
                <button
                   type="button"
-                  onClick={() => {
-                     handleLogout();
-                     close();
-                  }}
+                  onClick={() => { handleLogout(); close(); }}
                   {...stylex.props(styles.item)}
                >
                   <TbLogout size={18} />
@@ -106,10 +94,7 @@ export function SettingsPopoverButton() {
 
                <button
                   type="button"
-                  onClick={() => {
-                     close();
-                     setShowDeleteConfirm(true);
-                  }}
+                  onClick={() => { close(); setShowDeleteConfirm(true); }}
                   {...stylex.props(styles.item, styles.itemDanger)}
                >
                   <TbTrash size={18} />

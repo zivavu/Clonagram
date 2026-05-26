@@ -1,18 +1,18 @@
 import * as stylex from '@stylexjs/stylex';
 
 export const colors = stylex.defineVars({
-   bg: 'light-dark(rgb(255, 255, 255), rgb(12, 16, 20))',
-   bgSecondary: 'light-dark(rgb(250, 250, 250), rgb(37, 41, 46))',
-   bgElevated: 'light-dark(rgb(255, 255, 255), rgb(28, 28, 28))',
-   bgBubble: 'light-dark(rgb(255, 255, 255), rgb(33, 35, 40))',
-   border: 'light-dark(rgb(219, 219, 219), rgb(73, 77, 83))',
-   separator: 'light-dark(rgb(224, 224, 224), rgb(38, 38, 38))',
-   elevatedSeparator: 'light-dark(rgb(224, 224, 224), rgb(43, 48, 54))',
-   textPrimary: 'light-dark(rgb(0, 0, 0), rgb(242, 244, 246))',
-   textSecondary: 'light-dark(rgb(115, 115, 115), rgb(168, 168, 168))',
-   textMuted: 'light-dark(rgb(199, 199, 199), rgb(85, 85, 85))',
-   buttonHover: 'light-dark(rgb(242, 244, 246), rgb(53, 53, 56))',
-   threadHover: 'light-dark(rgb(245, 245, 245), rgb(37, 41, 46))',
+   bg: 'rgb(255, 255, 255)',
+   bgSecondary: 'rgb(250, 250, 250)',
+   bgElevated: 'rgb(255, 255, 255)',
+   bgBubble: 'rgb(255, 255, 255)',
+   border: 'rgb(219, 219, 219)',
+   separator: 'rgb(224, 224, 224)',
+   elevatedSeparator: 'rgb(224, 224, 224)',
+   textPrimary: 'rgb(0, 0, 0)',
+   textSecondary: 'rgb(115, 115, 115)',
+   textMuted: 'rgb(199, 199, 199)',
+   buttonHover: 'rgb(242, 244, 246)',
+   threadHover: 'rgb(245, 245, 245)',
    accent: 'rgb(74, 93, 249)',
    accentHover: 'rgb(24, 119, 242)',
    accentText: 'rgb(75, 169, 254)',
@@ -23,7 +23,7 @@ export const colors = stylex.defineVars({
    storyGradientEnd: 'rgb(188, 24, 136)',
    black: 'rgb(0, 0, 0)',
    white: 'rgb(255, 255, 255)',
-   blackWhite: 'light-dark(rgb(255, 255, 255), rgb(0, 0, 0))',
+   blackWhite: 'rgb(255, 255, 255)',
 });
 
 export const spacing = stylex.defineVars({
