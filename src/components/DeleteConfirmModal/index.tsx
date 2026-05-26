@@ -11,6 +11,9 @@ interface DeleteConfirmModalProps {
    onOpenChange: (open: boolean) => void;
    onConfirm: () => void | Promise<void>;
    isLoading?: boolean;
+   title?: string;
+   description?: string;
+   confirmLabel?: string;
 }
 
 export default function DeleteConfirmModal({
@@ -18,6 +21,9 @@ export default function DeleteConfirmModal({
    onOpenChange,
    onConfirm,
    isLoading = false,
+   title = 'Delete post?',
+   description = 'Are you sure you want to delete this post?',
+   confirmLabel = 'Delete',
 }: DeleteConfirmModalProps) {
    return (
       <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -25,9 +31,9 @@ export default function DeleteConfirmModal({
             <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)}>
                <div {...stylex.props(styles.header)}>
-                  <Dialog.Title {...stylex.props(styles.title)}>Delete post?</Dialog.Title>
+                  <Dialog.Title {...stylex.props(styles.title)}>{title}</Dialog.Title>
                   <Dialog.Description {...stylex.props(styles.description)}>
-                     Are you sure you want to delete this post?
+                     {description}
                   </Dialog.Description>
                </div>
                <Separator orientation="horizontal" {...stylex.props(styles.separator)} />
@@ -38,7 +44,7 @@ export default function DeleteConfirmModal({
                   onClick={onConfirm}
                   {...stylex.props(styles.actionButton)}
                >
-                  Delete
+                  {confirmLabel}
                </button>
                <Separator orientation="horizontal" {...stylex.props(styles.separator)} />
                <button
