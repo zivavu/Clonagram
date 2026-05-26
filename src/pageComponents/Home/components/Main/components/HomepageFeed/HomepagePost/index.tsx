@@ -51,8 +51,10 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
 
    const { data: post } = useQuery({
       initialData: initialPost,
+      initialDataUpdatedAt: Date.now(),
       queryKey: ['post', initialPost.id],
       queryFn: () => getPostAction(initialPost.id),
+      staleTime: 360 * 1000,
    });
 
    const { mutate: togglePostLike } = useTogglePostLike(post);
