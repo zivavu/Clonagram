@@ -33,7 +33,7 @@ export default async function RightSidebar() {
          <div {...stylex.props(styles.suggestionsHeader)}>
             <span {...stylex.props(styles.suggestionsLabel)}>Suggested for you</span>
             <Link href="/explore/people" {...stylex.props(styles.seeAllLink)}>
-               See All
+               See all
             </Link>
          </div>
 

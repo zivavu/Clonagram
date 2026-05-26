@@ -53,9 +53,10 @@ export const styles = stylex.create({
    suggestionsLabel: {
       fontSize: '0.875rem',
       fontWeight: 600,
+      color: colors.textPrimary,
    },
    seeAllLink: {
-      fontSize: '0.8rem',
+      fontSize: '0.75rem',
       fontWeight: 600,
       color: colors.textPrimary,
       textDecoration: 'none',

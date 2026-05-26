@@ -16,6 +16,7 @@ import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
 import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike';
 import { usePostViewModal } from '../../../../../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
+import { colors } from '../../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
 interface HomepagePostProps {
@@ -100,7 +101,11 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   title="Like"
                   onClick={() => togglePostLike()}
                >
-                  {isLiked ? <MdFavorite size={24} /> : <MdFavoriteBorder size={24} />}
+                  {isLiked ? (
+                     <MdFavorite size={24} color={colors.textPrimary} />
+                  ) : (
+                     <MdFavoriteBorder size={24} color={colors.textPrimary} />
+                  )}
                </button>
                {(post.likes.length ?? 0) > 0 && <span>{post.likes.length}</span>}
             </div>
@@ -110,20 +115,20 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   aria-label="Comment"
                   onClick={() => openPostFullViewModal(post, currentImageIndex.current)}
                >
-                  <FiMessageCircle size={24} />
+                  <FiMessageCircle size={24} color={colors.textPrimary} />
                </button>
                {(post.comments[0]?.count ?? 0) > 0 && <span>{post.comments[0]?.count}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Repost">
-                  <TbRepeat size={24} />
+                  <TbRepeat size={24} color={colors.textPrimary} />
                </button>
             </div>
             <button type="button" aria-label="Share">
-               <LuSend size={20} />
+               <LuSend size={20} color={colors.textPrimary} />
             </button>
             <button type="button" aria-label="Bookmark" style={{ marginLeft: 'auto' }}>
-               <MdBookmarkBorder size={24} />
+               <MdBookmarkBorder size={24} color={colors.textPrimary} />
             </button>
          </div>
          <div {...stylex.props(styles.descriptionContainer)}>

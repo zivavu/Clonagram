@@ -83,7 +83,10 @@ export function SettingsPopoverButton() {
 
                <button
                   type="button"
-                  onClick={() => { handleLogout(); close(); }}
+                  onClick={() => {
+                     handleLogout();
+                     close();
+                  }}
                   {...stylex.props(styles.item)}
                >
                   <TbLogout size={18} />
@@ -94,7 +97,10 @@ export function SettingsPopoverButton() {
 
                <button
                   type="button"
-                  onClick={() => { close(); setShowDeleteConfirm(true); }}
+                  onClick={() => {
+                     close();
+                     setShowDeleteConfirm(true);
+                  }}
                   {...stylex.props(styles.item, styles.itemDanger)}
                >
                   <TbTrash size={18} />

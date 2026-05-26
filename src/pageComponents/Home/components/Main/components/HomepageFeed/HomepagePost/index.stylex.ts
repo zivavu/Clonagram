@@ -23,6 +23,7 @@ export const styles = stylex.create({
       fontSize: '0.9rem',
       fontWeight: 600,
       marginLeft: '8px',
+      color: colors.textPrimary,
    },
    separator: {
       fontSize: '0.9rem',
@@ -39,6 +40,7 @@ export const styles = stylex.create({
       width: '100%',
       marginTop: '12px',
       padding: '0 16px',
+      color: colors.textPrimary,
    },
    iconBarItem: {
       display: 'flex',
@@ -56,6 +58,7 @@ export const styles = stylex.create({
       fontSize: '0.9rem',
       fontWeight: 600,
       marginLeft: '8px',
+      color: colors.textPrimary,
    },
    description: {
       fontSize: '0.9rem',

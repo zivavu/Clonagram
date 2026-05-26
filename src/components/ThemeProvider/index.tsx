@@ -1,29 +1,22 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useEffect } from 'react';
-import { darkTheme } from '@/src/styles/themes.stylex';
+import { useLayoutEffect } from 'react';
 import { useThemeStore } from '@/src/store/useThemeStore';
+import { darkTheme } from '@/src/styles/tokens.stylex';
 
-const styles = stylex.create({
-   root: {
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-   },
-});
+export const darkClass = (stylex.props(darkTheme) as unknown as { className: string }).className;
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-   const { isDark, setIsDark } = useThemeStore();
+   const { isDark } = useThemeStore();
 
-   useEffect(() => {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDark(prefersDark);
-   }, [setIsDark]);
+   useLayoutEffect(() => {
+      darkClass.split(' ').forEach(cls => {
+         document.documentElement.classList.toggle(cls, isDark);
+      });
+      // biome-ignore lint/suspicious/noDocumentCookie: Required for SSR theme cookie sync
+      document.cookie = `theme=${isDark ? 'dark' : 'light'}; path=/; max-age=31536000; SameSite=Lax`;
+   }, [isDark]);
 
-   return (
-      <div {...stylex.props(styles.root, isDark && darkTheme)}>
-         {children}
-      </div>
-   );
+   return <>{children}</>;
 }
