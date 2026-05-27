@@ -113,7 +113,7 @@ export const styles = stylex.create({
       fontSize: '0.7rem',
       lineHeight: '0.8rem',
       textAlign: 'center',
-      boxShadow: `0 0 12px 2px #eeeeee`,
+      boxShadow: `0 0 12px 2px ${colors.shadowColor}`,
 
       '::after': {
          content: '',

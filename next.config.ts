@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
          { hostname: 'picsum.photos' },
          { hostname: 'pggvzapkivjgsybyzjok.supabase.co' },
          { hostname: 'lh3.googleusercontent.com' },
+         { hostname: 'image.mux.com' },
       ],
    },
    reactCompiler: true,

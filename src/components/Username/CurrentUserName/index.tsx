@@ -1,3 +1,5 @@
+'use client';
+
 import type { StyleXStyles } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 import { useAuthUser } from '../../../hooks/useAuthUser';

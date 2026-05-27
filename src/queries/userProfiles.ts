@@ -26,3 +26,13 @@ export function userProfilesQuery(
 
 export type UserProfiles = QueryData<ReturnType<typeof userProfilesQuery>>;
 export type UserProfile = UserProfiles[number];
+
+export function userProfileCardQuery(supabase: SupabaseClient<Database>, username: string) {
+   return supabase
+      .from('profiles')
+      .select('id, username, full_name, avatar_url, followers_count, following_count, posts_count')
+      .eq('username', username)
+      .single();
+}
+
+export type UserProfileCard = QueryData<ReturnType<typeof userProfileCardQuery>>;
