@@ -12,6 +12,7 @@ import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type UserRecentPost, userRecentPostsQuery } from '@/src/queries/posts';
 import { userProfileCardQuery } from '@/src/queries/userProfiles';
 import { colors } from '../../styles/tokens.stylex';
+import ProfileHoverCardSkeleton from './ProfileHoverCardSkeleton';
 import { styles } from './index.stylex';
 
 interface ProfileHoverCardProps {
@@ -73,23 +74,7 @@ export default function ProfileHoverCard({ username, children }: ProfileHoverCar
                {...stylex.props(styles.content)}
             >
                {!profile ? (
-                  <div {...stylex.props(styles.skeletonRow)}>
-                     <div {...stylex.props(styles.skeletonAvatar, styles.skeleton)} />
-                     <div {...stylex.props(styles.skeletonLines)}>
-                        <div
-                           {...stylex.props(styles.skeleton)}
-                           style={{ height: 12, width: '60%' }}
-                        />
-                        <div
-                           {...stylex.props(styles.skeleton)}
-                           style={{ height: 12, width: '40%' }}
-                        />
-                        <div
-                           {...stylex.props(styles.skeleton)}
-                           style={{ height: 10, width: '50%' }}
-                        />
-                     </div>
-                  </div>
+                  <ProfileHoverCardSkeleton />
                ) : (
                   <>
                      <div {...stylex.props(styles.header)}>
