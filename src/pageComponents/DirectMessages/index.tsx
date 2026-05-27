@@ -7,6 +7,7 @@ import { LuSticker } from 'react-icons/lu';
 import { RiUserReceived2Line } from 'react-icons/ri';
 import { TbPhoto } from 'react-icons/tb';
 import { VscSend } from 'react-icons/vsc';
+import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import UserAvatar from '@/src/components/UserAvatar';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { MESSAGE_THREADS } from '@/src/pageComponents/mocks/messageThreads';
@@ -79,9 +80,7 @@ export default async function DirectMessagesPage({
                            <div {...stylex.props(styles.chatTopBarRecipientName)}>
                               {participant?.full_name}
                            </div>
-                           <div {...stylex.props(styles.chatTopBarRecipientUsername)}>
-                              {participant?.username}
-                           </div>
+                           <OtherUserUsername style={styles.chatTopBarRecipientUsername} userProfile={participant} />
                         </div>
                      </div>
                      <div {...stylex.props(styles.chatTopBarActions)}>
@@ -100,9 +99,7 @@ export default async function DirectMessagesPage({
                            alt={participant.username}
                            size={96}
                         />
-                        <div {...stylex.props(styles.chatProfileUsername)}>
-                           {participant.username}
-                        </div>
+                        <OtherUserUsername style={styles.chatProfileUsername} userProfile={participant} />
                         <div {...stylex.props(styles.chatProfileSubtitle)}>Instagram</div>
                         <button {...stylex.props(styles.chatProfileButton)}>View profile</button>
                      </div>
@@ -167,9 +164,7 @@ export default async function DirectMessagesPage({
                         <div {...stylex.props(styles.requestInfoSection)}>
                            <div {...stylex.props(styles.requestInfoTitle)}>
                               Accept message request from{' '}
-                              <span {...stylex.props(styles.requestInfoUsername)}>
-                                 {participant.username}
-                              </span>{' '}
+                              <OtherUserUsername style={styles.requestInfoUsername} userProfile={participant} />{' '}
                               <span {...stylex.props(styles.requestInfoUsername)}>
                                  ({participant.username})
                               </span>

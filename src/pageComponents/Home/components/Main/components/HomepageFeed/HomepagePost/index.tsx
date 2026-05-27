@@ -7,6 +7,7 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
+import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
@@ -68,7 +69,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
             <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
-            <span {...stylex.props(styles.topUsername)}>{post.user.username}</span>
+            <OtherUserUsername style={styles.topUsername} userProfile={post.user} />
             <span {...stylex.props(styles.separator)}>•</span>
             <span {...stylex.props(styles.createdAt)} suppressHydrationWarning>
                {post.created_at ? formatRelativeTimeShortUnit(post.created_at) : ''}
@@ -136,7 +137,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
          <div {...stylex.props(styles.descriptionContainer)}>
             {post.caption && (
                <>
-                  <span {...stylex.props(styles.bottomUsername)}>{post.user.username}</span>
+                  <OtherUserUsername style={styles.bottomUsername} userProfile={post.user} />
                   <span {...stylex.props(styles.description)}>{post.caption}</span>
                </>
             )}

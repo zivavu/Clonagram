@@ -9,6 +9,7 @@ import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { createCommentAction } from '@/src/actions/comments/createComment';
+import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import Skeleton from '@/src/components/Skeleton';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
@@ -48,7 +49,7 @@ function CommentItem({ comment }: { comment: PostComment }) {
          </div>
          <div {...stylex.props(styles.commentContent)}>
             <div {...stylex.props(styles.commentTextRow)}>
-               <span {...stylex.props(styles.commentUsername)}>{comment.user.username}</span>{' '}
+               <OtherUserUsername style={styles.commentUsername} userProfile={comment.user} />{' '}
                <span {...stylex.props(styles.commentText)}>{comment.content}</span>
             </div>
             <div {...stylex.props(styles.commentMeta)}>
@@ -200,7 +201,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
             <div {...stylex.props(styles.scrollArea)} ref={scrollAreaRef}>
                <div {...stylex.props(styles.postHeader)}>
                   <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
-                  <span {...stylex.props(styles.postHeaderUsername)}>{post.user.username}</span>
+                  <OtherUserUsername style={styles.postHeaderUsername} userProfile={post.user} />
                   <span>•</span>
                   <span {...stylex.props(styles.followButton)}>Follow</span>
                   <button
@@ -217,9 +218,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                      <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
                      <div {...stylex.props(styles.captionContent)}>
                         <div {...stylex.props(styles.captionTextRow)}>
-                           <span {...stylex.props(styles.captionUsername)}>
-                              {post.user.username}
-                           </span>{' '}
+                           <OtherUserUsername style={styles.captionUsername} userProfile={post.user} />{' '}
                            <span {...stylex.props(styles.captionText)}>{post.caption}</span>
                         </div>
                         <span {...stylex.props(styles.captionTime)}>

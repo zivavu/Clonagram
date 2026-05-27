@@ -5,7 +5,7 @@ import { TbEdit } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { hasUnreadMessages } from '@/src/utils/messages';
-import Username from '../../../../components/Username';
+import CurrentUserName from '../../../../components/Username/CurrentUserName';
 import { colors } from '../../../../styles/tokens.stylex';
 import { MESSAGE_THREADS } from '../../../mocks/messageThreads';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
@@ -42,7 +42,7 @@ export default async function RecipientsSidebar({
             <>
                <div {...stylex.props(styles.topBar)}>
                   <button {...stylex.props(styles.changeAccountButton)}>
-                     <Username />
+                     <CurrentUserName />
                      <BsChevronDown style={{ fontSize: '12px', strokeWidth: '0.4' }} />
                   </button>
                   <NewMessageTrigger>

@@ -2,6 +2,7 @@ import 'server-only';
 
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
+import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import UserAvatar from '@/src/components/UserAvatar';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '../../../../lib/supabase/server';
@@ -24,7 +25,7 @@ export default async function RightSidebar() {
          <div {...stylex.props(styles.profileCard)}>
             <UserAvatar src={profile?.avatar_url ?? null} alt={profile?.username ?? ''} size={44} />
             <div {...stylex.props(styles.profileInfo)}>
-               <span {...stylex.props(styles.profileUsername)}>{profile?.username}</span>
+               <OtherUserUsername style={styles.profileUsername} userProfile={profile!} />
                <span {...stylex.props(styles.profileName)}>{profile?.full_name}</span>
             </div>
             <LogoutButton />
@@ -42,7 +43,7 @@ export default async function RightSidebar() {
                <div key={user.id} {...stylex.props(styles.suggestionItem)}>
                   <UserAvatar src={user.avatar_url} alt={user.username} size={44} />
                   <div {...stylex.props(styles.suggestionInfo)}>
-                     <span {...stylex.props(styles.suggestionUsername)}>{user.username}</span>
+                     <OtherUserUsername style={styles.suggestionUsername} userProfile={user} />
                      {user.full_name && (
                         <span {...stylex.props(styles.suggestionSubtext)}>
                            {user.full_name.length > 22
