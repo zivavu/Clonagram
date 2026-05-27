@@ -59,7 +59,8 @@ export default function PostMediaCarousel({
    omitRightBorderRadius,
    onImageChange,
 }: PostMediaCarouselProps) {
-   const { open: openPostFullViewModal } = usePostViewModal();
+   const { open: openPostFullViewModal, isOpen: isPostFullViewModalOpen } = usePostViewModal();
+   const [isPlaying, setIsPlaying] = useState(false);
 
    const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex ?? 0);
    const media = mergeMedia(post);
@@ -69,6 +70,7 @@ export default function PostMediaCarousel({
       const newImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : currentImageIndex;
       setCurrentImageIndex(newImageIndex);
       onImageChange?.(newImageIndex);
+      setIsPlaying(false);
    };
 
    const handleNext = () => {
@@ -76,6 +78,7 @@ export default function PostMediaCarousel({
          currentImageIndex < media.length - 1 ? currentImageIndex + 1 : currentImageIndex;
       setCurrentImageIndex(newImageIndex);
       onImageChange?.(newImageIndex);
+      setIsPlaying(false);
    };
 
    return (
@@ -98,7 +101,12 @@ export default function PostMediaCarousel({
                      }
                      key={item.id}
                      {...stylex.props(styles.carouselSlide)}
-                     style={{ width: `${width}`, height: `${height}`, aspectRatio }}
+                     style={{
+                        width: `${width}`,
+                        height: `${height}`,
+                        aspectRatio,
+                        cursor: isPostFullViewModalOpen ? 'default' : 'pointer',
+                     }}
                   >
                      {item.type === 'image' ? (
                         <Image
@@ -119,6 +127,7 @@ export default function PostMediaCarousel({
                               '--media-object-fit': 'cover',
                            }}
                            playbackId={item.url}
+                           paused={!isPlaying}
                         />
                      )}
                   </button>

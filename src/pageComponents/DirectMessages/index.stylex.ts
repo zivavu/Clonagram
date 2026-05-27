@@ -49,7 +49,7 @@ export const styles = stylex.create({
    sendMessageButton: {
       fontSize: '0.875rem',
       fontWeight: '600',
-      color: colors.textPrimary,
+      color: colors.white,
       backgroundColor: colors.accent,
       borderRadius: radius.sm,
       padding: '6px 16px',
@@ -58,6 +58,7 @@ export const styles = stylex.create({
    messageIcon: {
       fontSize: '50px',
       transform: 'translateY(-3px) translateX(3px) rotate(-35deg)',
+      color: colors.textPrimary,
    },
    requestsIcon: {
       fontSize: '50px',

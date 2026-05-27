@@ -1,5 +1,4 @@
 import * as stylex from '@stylexjs/stylex';
-import { MESSAGE_THREADS } from '@/src/pageComponents/mocks/messageThreads';
 import { colors, radius } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
@@ -18,6 +17,7 @@ export const styles = stylex.create({
       gap: 8,
       fontSize: '1.2rem',
       fontWeight: '700',
+      color: colors.textPrimary,
    },
    topBar: {
       padding: '38px 26px 8px',
@@ -113,6 +113,8 @@ export const styles = stylex.create({
       fontSize: '0.7rem',
       lineHeight: '0.8rem',
       textAlign: 'center',
+      boxShadow: `0 0 12px 2px #eeeeee`,
+
       '::after': {
          content: '',
          position: 'absolute',
@@ -290,13 +292,3 @@ export const styles = stylex.create({
       color: colors.textSecondary,
    },
 });
-
-export const messageFolders = [
-   { key: 'primary', label: 'Primary', href: '/direct' },
-   { key: 'general', label: 'General', href: '/direct/general' },
-   { key: 'requests', label: 'Requests', href: '/direct/requests' },
-] as const;
-
-export const sortedThreads = [...MESSAGE_THREADS].sort(
-   (a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime(),
-);

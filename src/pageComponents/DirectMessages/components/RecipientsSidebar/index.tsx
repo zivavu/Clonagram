@@ -6,10 +6,22 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { hasUnreadMessages } from '@/src/utils/messages';
 import Username from '../../../../components/Username';
+import { colors } from '../../../../styles/tokens.stylex';
+import { MESSAGE_THREADS } from '../../../mocks/messageThreads';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
-import { messageFolders, sortedThreads, styles } from './index.stylex';
+import { styles } from './index.stylex';
 import { RequestsContent } from './RequestsContent';
 import { ThreadItem } from './ThreadItem';
+
+export const messageFolders = [
+   { key: 'primary', label: 'Primary', href: '/direct' },
+   { key: 'general', label: 'General', href: '/direct/general' },
+   { key: 'requests', label: 'Requests', href: '/direct/requests' },
+] as const;
+
+export const sortedThreads = MESSAGE_THREADS.sort(
+   (a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime(),
+);
 
 interface RecipientsSidebarProps {
    currentFolderHref?: string;
@@ -34,7 +46,7 @@ export default async function RecipientsSidebar({
                      <BsChevronDown style={{ fontSize: '12px', strokeWidth: '0.4' }} />
                   </button>
                   <NewMessageTrigger>
-                     <TbEdit style={{ fontSize: '24px' }} />
+                     <TbEdit style={{ fontSize: '24px', color: colors.textPrimary }} />
                   </NewMessageTrigger>
                </div>
 
@@ -87,17 +99,23 @@ export default async function RecipientsSidebar({
                   </div>
 
                   <div {...stylex.props(styles.messagesList)}>
-                     {sortedThreads
-                        .filter(e => e.folder === currentFolderKey)
-                        .map(thread => (
-                           <ThreadItem
-                              key={thread.id}
-                              thread={thread}
-                              href={`${currentFolderHref}/${thread.id}`}
-                              unread={hasUnreadMessages(thread, currentUserId)}
-                              currentUserId={currentUserId}
-                           />
-                        ))}
+                     {sortedThreads.length > 0 ? (
+                        sortedThreads
+                           .filter(e => e.folder === currentFolderKey)
+                           .map(thread => (
+                              <ThreadItem
+                                 key={thread.id}
+                                 thread={thread}
+                                 href={`${currentFolderHref}/${thread.id}`}
+                                 unread={hasUnreadMessages(thread, currentUserId)}
+                                 currentUserId={currentUserId}
+                              />
+                           ))
+                     ) : (
+                        <span style={{ color: colors.textSecondary, padding: '16px 32px' }}>
+                           Chats will appear here after you send or receive a message
+                        </span>
+                     )}
                   </div>
                </>
             )}

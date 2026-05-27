@@ -30,7 +30,7 @@ export const styles = stylex.create({
    },
    forYouFollowingSwitchButtonLabel: {
       fontSize: '1rem',
-      fontWeight: 600,
+      fontWeight: 700,
       color: colors.textSecondary,
    },
    forYouFollowingTextActive: {
