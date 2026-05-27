@@ -19,7 +19,7 @@ export const styles = stylex.create({
    carouselSlide: {
       position: 'relative',
       maxWidth: '100%',
-      backgroundColor: colors.blackWhite,
+      backgroundColor: colors.black,
       flexShrink: 0,
    },
 
@@ -43,6 +43,6 @@ export const styles = stylex.create({
       transition: 'background-color 0.15s ease',
    },
    dotActive: {
-      backgroundColor: colors.textPrimary,
+      backgroundColor: colors.accent,
    },
 });

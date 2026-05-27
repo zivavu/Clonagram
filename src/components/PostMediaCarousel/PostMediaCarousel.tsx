@@ -93,7 +93,9 @@ export default function PostMediaCarousel({
             {media.map(item => {
                return (
                   <button
-                     onClick={() => openPostFullViewModal(post, currentImageIndex)}
+                     onClick={() =>
+                        item.type === 'image' && openPostFullViewModal(post, currentImageIndex)
+                     }
                      key={item.id}
                      {...stylex.props(styles.carouselSlide)}
                      style={{ width: `${width}`, height: `${height}`, aspectRatio }}

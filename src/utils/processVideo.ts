@@ -50,45 +50,39 @@ export async function processVideo(
 
    await ffmpeg.writeFile(inputName, await fetchFile(file));
 
-   const args: string[] = ['-i', inputName];
+   const needsReencode = aspectRatio !== 'original';
+
+   const args: string[] = [];
 
    if (trimStart > 0) {
       args.push('-ss', String(trimStart));
    }
+
+   args.push('-i', inputName);
+
    if (trimEnd > 0 && trimEnd < duration) {
-      args.push('-to', String(trimEnd));
+      args.push('-to', String(trimEnd - trimStart));
    }
 
-   const videoFilters: string[] = [];
-   if (aspectRatio !== 'original') {
-      videoFilters.push(ASPECT_RATIO_FILTERS[aspectRatio]);
-   }
-
-   if (videoFilters.length > 0) {
-      args.push('-vf', videoFilters.join(','));
-   }
-
-   args.push('-map', '0:v:0');
-
-   if (muted) {
-      args.push('-an');
+   if (needsReencode) {
+      args.push('-vf', ASPECT_RATIO_FILTERS[aspectRatio]);
+      args.push('-map', '0:v:0');
+      if (muted) {
+         args.push('-an');
+      } else {
+         args.push('-map', '0:a?', '-c:a', 'aac');
+      }
+      args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p');
    } else {
-      args.push('-map', '0:a?', '-c:a', 'aac');
+      args.push('-map', '0:v:0', '-c:v', 'copy');
+      if (muted) {
+         args.push('-an');
+      } else {
+         args.push('-map', '0:a?', '-c:a', 'copy');
+      }
    }
 
-   args.push(
-      '-c:v',
-      'libx264',
-      '-preset',
-      'fast',
-      '-crf',
-      '23',
-      '-pix_fmt',
-      'yuv420p',
-      '-movflags',
-      '+faststart',
-      outputName,
-   );
+   args.push('-movflags', '+faststart', outputName);
 
    const exitCode = await ffmpeg.exec(args);
    if (exitCode !== 0) {

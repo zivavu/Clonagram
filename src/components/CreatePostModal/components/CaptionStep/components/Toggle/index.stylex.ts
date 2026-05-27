@@ -6,14 +6,14 @@ export const styles = stylex.create({
       width: '40px',
       height: '24px',
       borderRadius: radius.full,
-      backgroundColor: 'light-dark(rgb(209, 209, 214), rgb(58, 58, 60))',
+      backgroundColor: '#d1d1d6',
       border: 'none',
       position: 'relative',
       flexShrink: 0,
       transition: 'background-color 0.2s',
    },
    toggleOn: {
-      backgroundColor: 'light-dark(rgb(0, 0, 0), rgb(255, 255, 255))',
+      backgroundColor: colors.black,
    },
    thumb: {
       position: 'absolute',

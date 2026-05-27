@@ -20,7 +20,7 @@ interface UseUploadPostParams {
 }
 
 const MUX_POLL_MAX_ATTEMPTS = 30;
-const MUX_POLL_INTERVAL_MS = 2000;
+const MUX_POLL_INTERVAL_MS = 5000;
 
 async function pollMuxAsset(
    uploadId: string,
@@ -44,7 +44,7 @@ async function pollMuxAsset(
       await new Promise(r => setTimeout(r, MUX_POLL_INTERVAL_MS));
    }
 
-   throw new Error('Mux asset creation timed out');
+   throw new Error('Asset creation timed out');
 }
 
 function getVideoNaturalDimensions(src: string): Promise<{ width: number; height: number }> {
