@@ -2,6 +2,8 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
+import { useQuery } from '@tanstack/react-query';
+import { getPostAction } from '../../actions/post/getPost';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import DialogOverlay from '../DialogOverlay';
 import PostMediaCarousel from '../PostMediaCarousel/PostMediaCarousel';
@@ -9,7 +11,16 @@ import { styles } from './index.stylex';
 import PostModalComments from './PostModalComments';
 
 export default function PostFullViewModal() {
-   const { isOpen, post, close, initialImageIndex } = usePostViewModal();
+   const { isOpen, post: postOrPostId, close, initialImageIndex } = usePostViewModal();
+
+   const postId = typeof postOrPostId === 'string' ? postOrPostId : postOrPostId?.id;
+
+   const { data: post } = useQuery({
+      queryKey: ['post', postId],
+      queryFn: () => getPostAction(postId ?? ''),
+      enabled: !!postId,
+      initialData: typeof postOrPostId !== 'string' ? postOrPostId : undefined,
+   });
 
    if (!post) return null;
 

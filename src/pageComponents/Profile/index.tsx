@@ -13,16 +13,16 @@ interface ProfilePageProps extends ProfileWithPosts {
 export default function ProfilePage({ userProfile, posts, isOwnProfile }: ProfilePageProps) {
    return (
       <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.container)}>
+         <div {...stylex.props(styles.topSection)}>
             <ProfileHeader
                userProfile={userProfile}
                postsCount={posts.length}
                isOwnProfile={isOwnProfile}
             />
             <ProfileStoryHighlights isOwnProfile={isOwnProfile} />
-            <ProfileTabs isOwnProfile={isOwnProfile} />
-            <ProfilePostGrid posts={posts} />
          </div>
+         <ProfileTabs isOwnProfile={isOwnProfile} />
+         <ProfilePostGrid posts={posts} />
       </div>
    );
 }

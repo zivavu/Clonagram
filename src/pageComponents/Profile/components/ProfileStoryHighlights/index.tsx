@@ -16,7 +16,8 @@ export default function ProfileStoryHighlights({ isOwnProfile }: ProfileStoryHig
          {isOwnProfile && (
             <div {...stylex.props(styles.highlightItem)}>
                <button type="button" {...stylex.props(styles.newHighlightButton)}>
-                  <MdAdd size={32} color={colors.textSecondary} />
+                  <MdAdd size={48} color={colors.textMuted} />
+                  <div {...stylex.props(styles.newHighlightInner)}></div>
                </button>
                <span {...stylex.props(styles.highlightLabel)}>New</span>
             </div>

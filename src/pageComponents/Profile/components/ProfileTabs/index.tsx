@@ -12,7 +12,6 @@ interface ProfileTabsProps {
 
 interface Tab {
    id: string;
-   label: string;
    icon: React.ReactNode;
 }
 
@@ -20,18 +19,18 @@ export default function ProfileTabs({ isOwnProfile }: ProfileTabsProps) {
    const [activeTab, setActiveTab] = useState('posts');
 
    const commonTabs: Tab[] = [
-      { id: 'posts', label: 'POSTS', icon: <MdGridOn size={24} /> },
-      { id: 'reels', label: 'REELS', icon: <MdOutlinePlayCircle size={24} /> },
-      { id: 'reposts', label: 'REPOSTS', icon: <TbRepeat size={24} /> },
-      { id: 'tagged', label: 'TAGGED', icon: <MdPersonOutline size={24} /> },
+      { id: 'posts', icon: <MdGridOn size={24} /> },
+      { id: 'reels', icon: <MdOutlinePlayCircle size={24} /> },
+      { id: 'reposts', icon: <TbRepeat size={24} /> },
+      { id: 'tagged', icon: <MdPersonOutline size={24} /> },
    ];
 
    const ownTabs: Tab[] = [
-      { id: 'posts', label: 'POSTS', icon: <MdGridOn size={24} /> },
-      { id: 'reels', label: 'REELS', icon: <MdOutlinePlayCircle size={24} /> },
-      { id: 'saved', label: 'SAVED', icon: <MdBookmarkBorder size={24} /> },
-      { id: 'reposts', label: 'REPOSTS', icon: <TbRepeat size={24} /> },
-      { id: 'tagged', label: 'TAGGED', icon: <MdPersonOutline size={24} /> },
+      { id: 'posts', icon: <MdGridOn size={24} /> },
+      { id: 'reels', icon: <MdOutlinePlayCircle size={24} /> },
+      { id: 'saved', icon: <MdBookmarkBorder size={24} /> },
+      { id: 'reposts', icon: <TbRepeat size={24} /> },
+      { id: 'tagged', icon: <MdPersonOutline size={24} /> },
    ];
 
    const tabs = isOwnProfile ? ownTabs : commonTabs;
@@ -46,7 +45,6 @@ export default function ProfileTabs({ isOwnProfile }: ProfileTabsProps) {
                {...stylex.props(styles.tab, activeTab === tab.id && styles.tabActive)}
             >
                <span {...stylex.props(styles.tabIcon)}>{tab.icon}</span>
-               <span {...stylex.props(styles.tabLabel)}>{tab.label}</span>
             </button>
          ))}
       </div>

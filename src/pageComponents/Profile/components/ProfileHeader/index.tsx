@@ -24,76 +24,82 @@ export default function ProfileHeader({
 
    return (
       <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.avatarSection)}>
-            <UserAvatar src={userProfile.avatar_url} alt={userProfile.username} size={150} />
-         </div>
-         <div {...stylex.props(styles.infoSection)}>
-            <div {...stylex.props(styles.usernameRow)}>
-               <h2 {...stylex.props(styles.username)}>{userProfile.username}</h2>
-               {userProfile.is_verified && <MdVerified size={20} color={colors.accentText} />}
+         <div {...stylex.props(styles.mainRow)}>
+            <div {...stylex.props(styles.avatarSection)}>
+               <UserAvatar src={userProfile.avatar_url} alt={userProfile.username} size={150} />
             </div>
-            {(userProfile.full_name || userProfile.bio) && (
-               <div {...stylex.props(styles.bioRow)}>
-                  {userProfile.full_name && (
-                     <span {...stylex.props(styles.fullName)}>{userProfile.full_name}</span>
-                  )}
-                  {userProfile.bio && (
-                     <span {...stylex.props(styles.bioText)}>{userProfile.bio}</span>
-                  )}
+            <div {...stylex.props(styles.infoSection)}>
+               <div {...stylex.props(styles.usernameRow)}>
+                  <h2 {...stylex.props(styles.username)}>{userProfile.username}</h2>
+                  {userProfile.is_verified && <MdVerified size={20} color={colors.accentText} />}
                </div>
-            )}
-            <div {...stylex.props(styles.statsRow)}>
-               <span {...stylex.props(styles.stat)}>
-                  <strong>{postsCount}</strong> posts
-               </span>
-               <span {...stylex.props(styles.stat)}>
-                  <strong>{followersCount}</strong> followers
-               </span>
-               <span {...stylex.props(styles.stat)}>
-                  <strong>{followingCount}</strong> following
-               </span>
-            </div>
-            <div {...stylex.props(styles.buttonsRow)}>
-               {isOwnProfile ? (
-                  <>
-                     <Link
-                        href="/accounts/edit"
-                        {...stylex.props(styles.button, styles.buttonSecondary)}
-                     >
-                        Edit profile
-                     </Link>
-                     <Link href="/archive" {...stylex.props(styles.button, styles.buttonSecondary)}>
-                        View archive
-                     </Link>
-                  </>
-               ) : (
-                  <>
-                     <button type="button" {...stylex.props(styles.button, styles.buttonPrimary)}>
-                        Follow
-                     </button>
-                     <Link
-                        href={`/direct/t/${userProfile.id}`}
-                        {...stylex.props(styles.button, styles.buttonSecondary)}
-                     >
-                        Message
-                     </Link>
-                     <button type="button" {...stylex.props(styles.button, styles.buttonIcon)}>
-                        <MdPersonAdd size={16} />
-                     </button>
-                  </>
+               {(userProfile.full_name || userProfile.bio) && (
+                  <div {...stylex.props(styles.bioRow)}>
+                     {userProfile.full_name && (
+                        <span {...stylex.props(styles.fullName)}>{userProfile.full_name}</span>
+                     )}
+                     {userProfile.bio && (
+                        <span {...stylex.props(styles.bioText)}>{userProfile.bio}</span>
+                     )}
+                  </div>
                )}
+               <div {...stylex.props(styles.statsRow)}>
+                  <span {...stylex.props(styles.stat)}>
+                     <strong>{postsCount}</strong> posts
+                  </span>
+                  <span {...stylex.props(styles.stat)}>
+                     <strong>{followersCount}</strong> followers
+                  </span>
+                  <span {...stylex.props(styles.stat)}>
+                     <strong>{followingCount}</strong> following
+                  </span>
+               </div>
             </div>
-            {userProfile.website && (
-               <Link
-                  href={userProfile.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  {...stylex.props(styles.websiteLink)}
-               >
-                  {userProfile.website}
-               </Link>
+         </div>
+         <div {...stylex.props(styles.buttonsRow)}>
+            {isOwnProfile ? (
+               <>
+                  <Link
+                     href="/accounts/edit"
+                     {...stylex.props(styles.button, styles.buttonSecondary)}
+                  >
+                     Edit profile
+                  </Link>
+                  <Link href="/archive" {...stylex.props(styles.button, styles.buttonSecondary)}>
+                     View archive
+                  </Link>
+               </>
+            ) : (
+               <>
+                  <button type="button" {...stylex.props(styles.button, styles.buttonPrimary)}>
+                     Follow
+                  </button>
+                  <Link
+                     href={`/direct/t/${userProfile.id}`}
+                     {...stylex.props(styles.button, styles.buttonSecondary)}
+                  >
+                     Message
+                  </Link>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.button, styles.buttonIcon)}
+                     style={{ width: 'fit-content' }}
+                  >
+                     <MdPersonAdd size={16} />
+                  </button>
+               </>
             )}
          </div>
+         {userProfile.website && (
+            <Link
+               href={userProfile.website}
+               target="_blank"
+               rel="noopener noreferrer"
+               {...stylex.props(styles.websiteLink)}
+            >
+               {userProfile.website}
+            </Link>
+         )}
       </div>
    );
 }

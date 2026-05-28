@@ -4,6 +4,7 @@ import { colors, radius, spacing } from '../../../../../../styles/tokens.stylex'
 export const styles = stylex.create({
    root: {
       position: 'relative',
+      maxWidth: 630,
    },
    storiesRow: {
       display: 'flex',

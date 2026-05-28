@@ -4,11 +4,15 @@ import { colors, spacing } from '../../../../styles/tokens.stylex';
 export const styles = stylex.create({
    root: {
       display: 'flex',
-      flexDirection: 'row',
-      gap: spacing.xl,
-      paddingBottom: spacing.xl,
+      flexDirection: 'column',
+      gap: spacing.lg,
+      paddingBottom: spacing.lg,
       borderBottom: `1px solid ${colors.separator}`,
-      width: '100%',
+   },
+   mainRow: {
+      display: 'flex',
+      flexDirection: 'row',
+      gap: spacing.lg,
    },
    avatarSection: {
       display: 'flex',
@@ -20,19 +24,18 @@ export const styles = stylex.create({
    infoSection: {
       display: 'flex',
       flexDirection: 'column',
-      gap: spacing.md,
+      marginTop: spacing.lg,
+      gap: spacing.sm,
       flex: 1,
    },
    usernameRow: {
       display: 'flex',
-      alignItems: 'center',
       gap: spacing.sm,
    },
    username: {
-      fontSize: '20px',
-      fontWeight: 400,
+      fontSize: '22px',
+      fontWeight: 800,
       color: colors.textPrimary,
-      margin: 0,
    },
    bioRow: {
       display: 'flex',
@@ -41,7 +44,7 @@ export const styles = stylex.create({
    },
    fullName: {
       fontSize: '14px',
-      fontWeight: 600,
+      fontWeight: 500,
       color: colors.textPrimary,
    },
    bioText: {
@@ -51,12 +54,12 @@ export const styles = stylex.create({
    },
    statsRow: {
       display: 'flex',
-      gap: spacing.xl,
+      gap: spacing.lg,
       fontSize: '16px',
       color: colors.textPrimary,
    },
    stat: {
-      fontSize: '16px',
+      fontSize: '14px',
       color: colors.textPrimary,
    },
    buttonsRow: {
@@ -67,7 +70,8 @@ export const styles = stylex.create({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '7px 16px',
+      height: '44px',
+      width: '100%',
       borderRadius: '8px',
       fontSize: '14px',
       fontWeight: 600,
@@ -84,7 +88,7 @@ export const styles = stylex.create({
    buttonIcon: {
       backgroundColor: colors.bgSecondary,
       color: colors.textPrimary,
-      padding: '7px',
+      padding: '14px',
    },
    websiteLink: {
       fontSize: '14px',
