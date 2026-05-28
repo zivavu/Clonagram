@@ -53,14 +53,14 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
    });
 
    const { data: posts = [] } = useQuery({
-      queryKey: ['profile-recent-posts', profile?.id],
+      queryKey: ['profile-recent-posts', userId],
       queryFn: async () => {
          const supabase = createBrowserClient();
-         const { data, error } = await userRecentPostsQuery(supabase, profile?.id ?? '');
+         const { data, error } = await userRecentPostsQuery(supabase, userId);
          if (error) throw error;
          return data ?? [];
       },
-      enabled: !!profile?.id,
+      enabled: open,
       staleTime: 5 * 60 * 1000,
    });
 
@@ -75,7 +75,9 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
                {...stylex.props(styles.content)}
             >
                {!profile ? (
-                  <ProfileHoverCardSkeleton />
+                  <div {...stylex.props(styles.skeletonWrapper)}>
+                     <ProfileHoverCardSkeleton />
+                  </div>
                ) : (
                   <>
                      <div {...stylex.props(styles.header)}>

@@ -31,3 +31,5 @@ export async function getUserProfileWithPosts(params: { username: string }) {
 
    return { userProfile, posts: postsData };
 }
+
+export type ProfileWithPosts = Awaited<ReturnType<typeof getUserProfileWithPosts>>;

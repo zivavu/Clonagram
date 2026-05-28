@@ -34,7 +34,7 @@ export function userProfileCardQuery(supabase: SupabaseClient<Database>, userId:
          `id, username, full_name, avatar_url,
          followers:follows!following_id(count),
          following:follows!follower_id(count),
-         posts(count)`,
+         posts!posts_user_id_fkey(count)`,
       )
       .eq('id', userId)
       .single();

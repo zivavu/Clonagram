@@ -149,6 +149,9 @@ export const styles = stylex.create({
       textAlign: 'center',
       cursor: 'pointer',
    },
+   skeletonWrapper: {
+      margin: '16px',
+   },
    skeleton: {
       borderRadius: radius.xs,
       backgroundColor: colors.buttonHover,

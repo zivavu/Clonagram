@@ -1,13 +1,13 @@
-import * as stylex from '@stylexjs/stylex';
-import { MdPerson } from 'react-icons/md';
-import { styles } from './page.stylex';
+import { getUserProfileWithPosts } from '../../../actions/profile/getUserProfileWithPosts';
+import { getAuthProfile } from '../../../lib/supabase/getAuthProfile';
+import ProfilePage from '../../../pageComponents/Profile';
 
-export default function ProfilePage() {
-   return (
-      <div {...stylex.props(styles.container)}>
-         <MdPerson style={{ fontSize: 48 }} />
-         <h1 {...stylex.props(styles.title)}>Profile</h1>
-         <p {...stylex.props(styles.subtitle)}>Coming soon</p>
-      </div>
-   );
+export default async function Profile() {
+   const profile = await getAuthProfile();
+
+   if (!profile) throw new Error('Profile not found');
+
+   const { userProfile, posts } = await getUserProfileWithPosts({ username: profile?.username });
+
+   return <ProfilePage userProfile={userProfile} posts={posts} />;
 }
