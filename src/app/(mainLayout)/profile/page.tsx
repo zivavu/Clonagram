@@ -9,5 +9,5 @@ export default async function Profile() {
 
    const { userProfile, posts } = await getUserProfileWithPosts({ username: profile?.username });
 
-   return <ProfilePage userProfile={userProfile} posts={posts} />;
+   return <ProfilePage userProfile={userProfile} posts={posts} isOwnProfile />;
 }

@@ -23,8 +23,15 @@ export async function getUserProfileWithPosts(params: { username: string }) {
 
    const { data: postsData, error: postsError } = await supabase
       .from('posts')
-      .select('*')
-      .eq('user_id', userProfile.id);
+      .select(
+         `
+         id, caption, created_at, aspect_ratio, hide_likes, like_count, comment_count,
+         images:post_images(id, url, position, width, height),
+         videos:post_videos(id, mux_playback_id, duration, position, width, height)
+      `,
+      )
+      .eq('user_id', userProfile.id)
+      .order('created_at', { ascending: false });
 
    if (postsError)
       throw new Error(`Failed to fetch posts: ${postsError?.message ?? 'unknown error'}`);
