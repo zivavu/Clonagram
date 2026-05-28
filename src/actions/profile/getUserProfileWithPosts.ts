@@ -9,7 +9,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
    const { data: userProfile, error: userProfileError } = await supabase
       .from('profiles')
       .select(
-         `id, username, full_name, bio, avatar_url, website,
+         `id, username, full_name, bio, avatar_url, website, is_verified, is_private,
          followers:follows!following_id(count),
          following:follows!follower_id(count)`,
       )
