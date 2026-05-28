@@ -2,8 +2,8 @@ import 'server-only';
 
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
-import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import UserAvatar from '@/src/components/UserAvatar';
+import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '../../../../lib/supabase/server';
 import { userProfilesQuery } from '../../../../queries/userProfiles';

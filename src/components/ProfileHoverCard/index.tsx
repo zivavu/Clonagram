@@ -12,11 +12,12 @@ import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type UserRecentPost, userRecentPostsQuery } from '@/src/queries/posts';
 import { userProfileCardQuery } from '@/src/queries/userProfiles';
 import { colors } from '../../styles/tokens.stylex';
-import ProfileHoverCardSkeleton from './ProfileHoverCardSkeleton';
 import { styles } from './index.stylex';
+import ProfileHoverCardSkeleton from './ProfileHoverCardSkeleton';
 
 interface ProfileHoverCardProps {
-   username: string;
+   userName: string;
+   userId: string;
    children: React.ReactNode;
 }
 
@@ -36,14 +37,14 @@ function getPostThumbnail(post: UserRecentPost): string | null {
    return null;
 }
 
-export default function ProfileHoverCard({ username, children }: ProfileHoverCardProps) {
+export default function ProfileHoverCard({ userId, children }: ProfileHoverCardProps) {
    const [open, setOpen] = useState(false);
 
    const { data: profile } = useQuery({
-      queryKey: ['profile-card', username],
+      queryKey: ['profile-card', userId],
       queryFn: async () => {
          const supabase = createBrowserClient();
-         const { data, error } = await userProfileCardQuery(supabase, username);
+         const { data, error } = await userProfileCardQuery(supabase, userId);
          if (error) throw error;
          return data;
       },
@@ -92,13 +93,11 @@ export default function ProfileHoverCard({ username, children }: ProfileHoverCar
                      </div>
 
                      <div {...stylex.props(styles.statsRow)}>
-                        {(
-                           [
-                              { value: profile.posts_count, label: 'posts' },
-                              { value: profile.followers_count, label: 'followers' },
-                              { value: profile.following_count, label: 'following' },
-                           ] as const
-                        ).map(({ value, label }) => (
+                        {[
+                           { value: profile.posts[0]?.count ?? 0, label: 'posts' },
+                           { value: profile.followers[0]?.count ?? 0, label: 'followers' },
+                           { value: profile.following[0]?.count ?? 0, label: 'following' },
+                        ].map(({ value, label }) => (
                            <div key={label} {...stylex.props(styles.statItem)}>
                               <span {...stylex.props(styles.statValue)}>{formatStat(value)}</span>
                               <span {...stylex.props(styles.statLabel)}>{label}</span>
@@ -114,7 +113,7 @@ export default function ProfileHoverCard({ username, children }: ProfileHoverCar
                                  <Image
                                     key={post.id}
                                     src={thumb}
-                                    alt={`${username} post`}
+                                    alt={`${userId} post`}
                                     width={120}
                                     height={120}
                                     {...stylex.props(styles.postThumb)}

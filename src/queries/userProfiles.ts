@@ -27,11 +27,16 @@ export function userProfilesQuery(
 export type UserProfiles = QueryData<ReturnType<typeof userProfilesQuery>>;
 export type UserProfile = UserProfiles[number];
 
-export function userProfileCardQuery(supabase: SupabaseClient<Database>, username: string) {
+export function userProfileCardQuery(supabase: SupabaseClient<Database>, userId: string) {
    return supabase
       .from('profiles')
-      .select('id, username, full_name, avatar_url, followers_count, following_count, posts_count')
-      .eq('username', username)
+      .select(
+         `id, username, full_name, avatar_url,
+         followers:follows!following_id(count),
+         following:follows!follower_id(count),
+         posts(count)`,
+      )
+      .eq('id', userId)
       .single();
 }
 

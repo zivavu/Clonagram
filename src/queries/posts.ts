@@ -24,7 +24,9 @@ export type PostWithMedia = PostsWithMedia[number];
 export function userRecentPostsQuery(supabase: SupabaseClient<Database>, userId: string) {
    return supabase
       .from('posts')
-      .select('id, images:post_images(url, position), videos:post_videos(mux_playback_id, position)')
+      .select(
+         'id, images:post_images(url, position), videos:post_videos(mux_playback_id, position)',
+      )
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .limit(3);

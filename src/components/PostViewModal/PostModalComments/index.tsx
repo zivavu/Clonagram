@@ -9,9 +9,9 @@ import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { createCommentAction } from '@/src/actions/comments/createComment';
-import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import Skeleton from '@/src/components/Skeleton';
 import UserAvatar from '@/src/components/UserAvatar';
+import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
 import { createBrowserClient } from '@/src/lib/supabase/client';
@@ -218,7 +218,10 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                      <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
                      <div {...stylex.props(styles.captionContent)}>
                         <div {...stylex.props(styles.captionTextRow)}>
-                           <OtherUserUsername style={styles.captionUsername} userProfile={post.user} />{' '}
+                           <OtherUserUsername
+                              style={styles.captionUsername}
+                              userProfile={post.user}
+                           />{' '}
                            <span {...stylex.props(styles.captionText)}>{post.caption}</span>
                         </div>
                         <span {...stylex.props(styles.captionTime)}>

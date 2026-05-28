@@ -7,8 +7,8 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
-import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import UserAvatar from '@/src/components/UserAvatar';
+import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { getPostAction } from '../../../../../../../actions/post/getPost';
@@ -55,7 +55,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
       initialDataUpdatedAt: Date.now(),
       queryKey: ['post', initialPost.id],
       queryFn: () => getPostAction(initialPost.id),
-      staleTime: 360 * 1000,
+      staleTime: 5 * 60 * 1000,
    });
 
    const { mutate: togglePostLike } = useTogglePostLike(post);

@@ -597,32 +597,32 @@ export type Database = {
             Row: {
                blur_data_url: string | null;
                created_at: string | null;
-               id: string;
-               width: number | null;
                height: number | null;
+               id: string;
                position: number;
                post_id: string;
                url: string;
+               width: number | null;
             };
             Insert: {
                blur_data_url?: string | null;
                created_at?: string | null;
-               id?: string;
-               width?: number | null;
                height?: number | null;
+               id?: string;
                position?: number;
                post_id: string;
                url: string;
+               width?: number | null;
             };
             Update: {
                blur_data_url?: string | null;
                created_at?: string | null;
-               id?: string;
-               width?: number | null;
                height?: number | null;
+               id?: string;
                position?: number;
                post_id?: string;
                url?: string;
+               width?: number | null;
             };
             Relationships: [
                {
@@ -797,13 +797,10 @@ export type Database = {
                avatar_url: string | null;
                bio: string | null;
                created_at: string | null;
-               followers_count: number;
-               following_count: number;
                full_name: string | null;
                id: string;
                is_private: boolean;
                is_verified: boolean;
-               posts_count: number;
                updated_at: string | null;
                username: string;
                website: string | null;
@@ -812,13 +809,10 @@ export type Database = {
                avatar_url?: string | null;
                bio?: string | null;
                created_at?: string | null;
-               followers_count?: number;
-               following_count?: number;
                full_name?: string | null;
                id: string;
                is_private?: boolean;
                is_verified?: boolean;
-               posts_count?: number;
                updated_at?: string | null;
                username: string;
                website?: string | null;
@@ -827,13 +821,10 @@ export type Database = {
                avatar_url?: string | null;
                bio?: string | null;
                created_at?: string | null;
-               followers_count?: number;
-               following_count?: number;
                full_name?: string | null;
                id?: string;
                is_private?: boolean;
                is_verified?: boolean;
-               posts_count?: number;
                updated_at?: string | null;
                username?: string;
                website?: string | null;
@@ -1303,10 +1294,7 @@ export type Database = {
          [_ in never]: never;
       };
       Functions: {
-         delete_user: {
-            Args: Record<PropertyKey, never>;
-            Returns: undefined;
-         };
+         delete_user: { Args: never; Returns: undefined };
       };
       Enums: {
          [_ in never]: never;
