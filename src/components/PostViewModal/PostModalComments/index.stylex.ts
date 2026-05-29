@@ -73,54 +73,6 @@ export const styles = stylex.create({
       gap: '16px',
       paddingTop: spacing.md,
    },
-   commentItem: {
-      display: 'flex',
-      gap: spacing.sm,
-      alignItems: 'flex-start',
-   },
-   commentAvatar: {
-      flexShrink: 0,
-   },
-   commentContent: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '4px',
-      flex: 1,
-      minWidth: 0,
-   },
-   commentTextRow: {
-      fontSize: '14px',
-      lineHeight: '18px',
-      color: colors.textPrimary,
-      wordBreak: 'break-word',
-   },
-   commentUsername: {
-      fontWeight: 600,
-   },
-   commentText: {
-      fontWeight: 400,
-   },
-   commentMeta: {
-      display: 'flex',
-      gap: '12px',
-      alignItems: 'center',
-      fontSize: '12px',
-      color: colors.textSecondary,
-      fontWeight: 600,
-   },
-   commentReplyButton: {
-      fontWeight: 600,
-      fontSize: '12px',
-      color: colors.textSecondary,
-   },
-   commentHeart: {
-      color: colors.textSecondary,
-      flexShrink: 0,
-      paddingTop: '2px',
-   },
-   commentHeartLiked: {
-      color: colors.danger,
-   },
    bottomSection: {
       display: 'flex',
       flexDirection: 'column',
@@ -157,6 +109,23 @@ export const styles = stylex.create({
       color: colors.textSecondary,
       letterSpacing: '0.2px',
       padding: `0 ${spacing.md}`,
+   },
+   replyingToBar: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: `0 ${spacing.md}`,
+   },
+   replyingToText: {
+      fontSize: '12px',
+      color: colors.textSecondary,
+   },
+   replyingToUsername: {
+      color: colors.accentText,
+   },
+   cancelReplyButton: {
+      fontSize: '12px',
+      color: colors.textSecondary,
    },
    commentInputRow: {
       display: 'flex',

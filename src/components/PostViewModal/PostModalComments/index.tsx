@@ -9,7 +9,6 @@ import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { createCommentAction } from '@/src/actions/comments/createComment';
-import Skeleton from '@/src/components/Skeleton';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
@@ -22,55 +21,11 @@ import { getPostAction } from '../../../actions/post/getPost';
 import { usePostViewModal } from '../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../store/useOwnerActionsModalStore';
 import OwnerActionsModal from '../../OwnerActionsModal/OwnerActionsModal';
+import CommentItem, { CommentSkeleton, type OnReplyParams } from './CommentItem';
 import { styles } from './index.stylex';
 
 interface PostModalCommentsProps {
    initialPost: PostWithMedia;
-}
-
-function CommentSkeleton() {
-   return (
-      <div {...stylex.props(styles.commentItem)}>
-         <Skeleton width={32} height={32} rounded />
-         <div {...stylex.props(styles.commentContent)}>
-            <Skeleton width="40%" height={12} />
-            <Skeleton width="75%" height={12} />
-            <Skeleton width="25%" height={10} />
-         </div>
-      </div>
-   );
-}
-
-function CommentItem({ comment }: { comment: PostComment }) {
-   return (
-      <div {...stylex.props(styles.commentItem)}>
-         <div {...stylex.props(styles.commentAvatar)}>
-            <UserAvatar src={comment.user.avatar_url} alt={comment.user.username} size={32} />
-         </div>
-         <div {...stylex.props(styles.commentContent)}>
-            <div {...stylex.props(styles.commentTextRow)}>
-               <OtherUserUsername style={styles.commentUsername} userProfile={comment.user} />{' '}
-               <span {...stylex.props(styles.commentText)}>{comment.content}</span>
-            </div>
-            <div {...stylex.props(styles.commentMeta)}>
-               <span>
-                  {comment.created_at ? formatRelativeTimeShortUnit(comment.created_at) : ''}
-               </span>
-               {comment.like_count > 0 && (
-                  <span>
-                     {comment.like_count} {comment.like_count === 1 ? 'like' : 'likes'}
-                  </span>
-               )}
-               <button type="button" {...stylex.props(styles.commentReplyButton)}>
-                  Reply
-               </button>
-            </div>
-         </div>
-         <button type="button" aria-label="Like comment" {...stylex.props(styles.commentHeart)}>
-            <MdFavoriteBorder size={12} />
-         </button>
-      </div>
-   );
 }
 
 interface ActionButton {
@@ -90,9 +45,10 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const commentsKey = ['comments', initialPost.id];
 
    const scrollAreaRef = useRef<HTMLDivElement>(null);
+   const commentInputRef = useRef<HTMLInputElement>(null);
 
    const [commentInputValue, setCommentInputValue] = useState('');
-   const commentInputRef = useRef<HTMLInputElement>(null);
+   const [replyingTo, setReplyingTo] = useState<OnReplyParams | null>(null);
 
    const { data: post } = useQuery({
       initialData: initialPost,
@@ -106,7 +62,6 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
          const supabase = createBrowserClient();
          const { data, error } = await postCommentsQuery(supabase, post.id);
          if (error) throw error;
-
          return data;
       },
    });
@@ -120,41 +75,68 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const { mutate: togglePostLike } = useTogglePostLike(post);
 
    const { mutate: submitComment } = useMutation({
-      mutationFn: (content: string) => createCommentAction({ postId: post.id, content }),
-      onMutate: async content => {
-         await queryClient.cancelQueries({ queryKey: commentsKey });
-         const previous = queryClient.getQueryData<PostComments>(commentsKey);
+      mutationFn: ({ content, parentId }: { content: string; parentId?: string }) =>
+         createCommentAction({ postId: post.id, content, parentId }),
+      onMutate: async ({ content, parentId }) => {
+         if (!authUser) return {};
 
-         if (authUser) {
-            const optimistic: PostComment = {
-               id: `optimistic-${Date.now()}`,
-               content,
-               created_at: new Date().toISOString(),
-               like_count: 0,
-               parent_id: null,
-               user: {
-                  id: authUser.id,
-                  username: authUser.username,
-                  avatar_url: authUser.avatar_url,
-               },
-            };
-            queryClient.setQueryData<PostComment[]>(commentsKey, prev => [
+         const optimistic: PostComment = {
+            id: `optimistic-${Date.now()}`,
+            content,
+            created_at: new Date().toISOString(),
+            like_count: 0,
+            reply_count: 0,
+            parent_id: parentId ?? null,
+            comment_likes: [],
+            user: { id: authUser.id, username: authUser.username, avatar_url: authUser.avatar_url },
+         };
+
+         if (parentId) {
+            const repliesKey = ['replies', parentId];
+            await queryClient.cancelQueries({ queryKey: repliesKey });
+            const previousReplies = queryClient.getQueryData<PostComments>(repliesKey);
+            queryClient.setQueryData<PostComments>(repliesKey, prev => [
                ...(prev ?? []),
                optimistic,
             ]);
+            queryClient.setQueryData<PostComments>(commentsKey, prev =>
+               (prev ?? []).map(c =>
+                  c.id === parentId ? { ...c, reply_count: c.reply_count + 1 } : c,
+               ),
+            );
+            return { previousReplies, repliesKey };
          }
 
-         return { previous };
+         await queryClient.cancelQueries({ queryKey: commentsKey });
+         const previousComments = queryClient.getQueryData<PostComments>(commentsKey);
+         queryClient.setQueryData<PostComments>(commentsKey, prev => [...(prev ?? []), optimistic]);
+         return { previousComments };
       },
-      onError: (_err, _content, context) => {
-         if (context?.previous) {
-            queryClient.setQueryData(commentsKey, context.previous);
+      onError: (_err, { parentId }, context) => {
+         if (!context) return;
+         if (parentId && 'previousReplies' in context && context.repliesKey) {
+            queryClient.setQueryData(context.repliesKey, context.previousReplies);
+            queryClient.setQueryData<PostComments>(commentsKey, prev =>
+               (prev ?? []).map(c =>
+                  c.id === parentId ? { ...c, reply_count: Math.max(c.reply_count - 1, 0) } : c,
+               ),
+            );
+         } else if ('previousComments' in context) {
+            queryClient.setQueryData(commentsKey, context.previousComments);
          }
       },
-      onSuccess: newComment => {
-         queryClient.setQueryData<PostComment[]>(commentsKey, prev =>
-            (prev ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
-         );
+      onSuccess: (newComment, { parentId }) => {
+         if (parentId) {
+            const repliesKey = ['replies', parentId];
+            queryClient.setQueryData<PostComments>(repliesKey, prev =>
+               (prev ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
+            );
+            queryClient.invalidateQueries({ queryKey: commentsKey });
+         } else {
+            queryClient.setQueryData<PostComments>(commentsKey, prev =>
+               (prev ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
+            );
+         }
       },
    });
 
@@ -185,12 +167,18 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
       },
    ] as const;
 
-   function handleCommentSubmit(e: React.SubmitEvent) {
+   function handleReply(params: OnReplyParams) {
+      setReplyingTo(params);
+      commentInputRef.current?.focus();
+   }
+
+   function handleCommentSubmit(e: React.FormEvent) {
       e.preventDefault();
       const content = commentInputValue.trim();
       if (!content) return;
       setCommentInputValue('');
-      submitComment(content);
+      submitComment({ content, parentId: replyingTo?.commentId });
+      setReplyingTo(null);
    }
 
    return (
@@ -233,7 +221,14 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                <div {...stylex.props(styles.commentsList)}>
                   {commentsLoading
                      ? ['a', 'b', 'c', 'd'].map(k => <CommentSkeleton key={k} />)
-                     : comments.map(comment => <CommentItem key={comment.id} comment={comment} />)}
+                     : comments.map(comment => (
+                          <CommentItem
+                             key={comment.id}
+                             comment={comment}
+                             commentsKey={commentsKey}
+                             onReply={handleReply}
+                          />
+                       ))}
                </div>
             </div>
             <div {...stylex.props(styles.bottomSection)}>
@@ -264,6 +259,24 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                <div {...stylex.props(styles.postTime)}>
                   {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
                </div>
+               {replyingTo && (
+                  <div {...stylex.props(styles.replyingToBar)}>
+                     <span {...stylex.props(styles.replyingToText)}>
+                        Replying to{' '}
+                        <span {...stylex.props(styles.replyingToUsername)}>
+                           @{replyingTo.username}
+                        </span>
+                     </span>
+                     <button
+                        type="button"
+                        aria-label="Cancel reply"
+                        onClick={() => setReplyingTo(null)}
+                        {...stylex.props(styles.cancelReplyButton)}
+                     >
+                        ✕
+                     </button>
+                  </div>
+               )}
                <form onSubmit={handleCommentSubmit} {...stylex.props(styles.commentInputRow)}>
                   <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
                      <BsEmojiSmile size={24} />
