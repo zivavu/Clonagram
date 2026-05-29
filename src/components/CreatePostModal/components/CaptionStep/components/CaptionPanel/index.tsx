@@ -62,7 +62,12 @@ export default function CaptionPanel({
       <div {...stylex.props(styles.panel)}>
          <div {...stylex.props(styles.captionSection)}>
             <div {...stylex.props(styles.userRow)}>
-               <UserAvatar alt="Your profile image" size={30} src={userData?.avatar_url ?? null} />
+               <UserAvatar
+                  alt="Your profile image"
+                  size={30}
+                  src={userData?.avatar_url ?? null}
+                  userId={userData?.id}
+               />
                <span>{}</span>
             </div>
             <textarea
@@ -105,7 +110,12 @@ export default function CaptionPanel({
                   <div {...stylex.props(styles.collabAvatars)}>
                      {collaborators.slice(0, 3).map(c => (
                         <div key={c.id} {...stylex.props(styles.collabAvatarWrap)}>
-                           <UserAvatar src={c.avatar_url} alt={c.username} size={28} />
+                           <UserAvatar
+                              src={c.avatar_url}
+                              alt={c.username}
+                              size={28}
+                              userId={c.id}
+                           />
                         </div>
                      ))}
                      {collaborators.length > 3 && (
@@ -131,6 +141,7 @@ export default function CaptionPanel({
                   src={userData?.avatar_url ?? null}
                   alt={userData?.username ?? 'User profile image'}
                   size={36}
+                  userId={userData?.id}
                />
                <div {...stylex.props(styles.shareInfo)}>
                   <span {...stylex.props(styles.shareName)}>{userData?.full_name}</span>

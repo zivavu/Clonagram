@@ -26,7 +26,12 @@ export default function ProfileHeader({
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.mainRow)}>
             <div {...stylex.props(styles.avatarSection)}>
-               <UserAvatar src={userProfile.avatar_url} alt={userProfile.username} size={150} />
+               <UserAvatar
+                  src={userProfile.avatar_url}
+                  alt={userProfile.username}
+                  size={150}
+                  userId={userProfile.id}
+               />
             </div>
             <div {...stylex.props(styles.infoSection)}>
                <div {...stylex.props(styles.usernameRow)}>

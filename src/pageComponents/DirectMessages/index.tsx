@@ -75,6 +75,7 @@ export default async function DirectMessagesPage({
                            src={participant?.avatar_url}
                            alt={participant?.username || ''}
                            size={44}
+                           userId={participant?.id}
                         />
                         <div>
                            <div {...stylex.props(styles.chatTopBarRecipientName)}>
@@ -101,6 +102,7 @@ export default async function DirectMessagesPage({
                            src={participant.avatar_url}
                            alt={participant.username}
                            size={96}
+                           userId={participant.id}
                         />
                         <OtherUserUsername
                            style={styles.chatProfileUsername}
@@ -145,6 +147,7 @@ export default async function DirectMessagesPage({
                                              src={participant.avatar_url}
                                              alt={participant.username}
                                              size={28}
+                                             userId={participant.id}
                                           />
                                        )}
                                     </div>

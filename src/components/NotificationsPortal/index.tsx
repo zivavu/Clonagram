@@ -121,13 +121,19 @@ function NotificationItem({ notification }: { notification: Notification }) {
    return (
       <div {...stylex.props(styles.notificationItem)}>
          <div {...stylex.props(styles.notificationAvatarWrapper)}>
-            <UserAvatar src={firstActor.avatar_url} alt={firstActor.username} size={44} />
+            <UserAvatar
+               src={firstActor.avatar_url}
+               alt={firstActor.username}
+               size={44}
+               userId={firstActor.id}
+            />
             {notification.actors.length > 1 && (
                <div {...stylex.props(styles.secondaryAvatar)}>
                   <UserAvatar
                      src={notification.actors[1].avatar_url}
                      alt={notification.actors[1].username}
                      size={20}
+                     userId={notification.actors[1].id}
                   />
                </div>
             )}

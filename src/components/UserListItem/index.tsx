@@ -7,6 +7,7 @@ import { styles } from './index.stylex';
 interface UserListItemProps {
    avatarUrl: string | null;
    avatarAlt?: string;
+   userId?: string;
    name: React.ReactNode;
    subtitle: React.ReactNode;
    rightElement?: React.ReactNode;
@@ -18,6 +19,7 @@ interface UserListItemProps {
 export function UserListItem({
    avatarUrl,
    avatarAlt = 'User',
+   userId,
    name,
    subtitle,
    rightElement,
@@ -27,7 +29,7 @@ export function UserListItem({
    return (
       <button type="button" {...stylex.props(styles.row)} onClick={onClick} role={role}>
          <div {...stylex.props(styles.info)}>
-            <UserAvatar src={avatarUrl} alt={avatarAlt} size={44} />
+            <UserAvatar src={avatarUrl} alt={avatarAlt} size={44} userId={userId} />
             <div {...stylex.props(styles.names)}>
                <div {...stylex.props(styles.name)}>{name}</div>
                <div {...stylex.props(styles.subtitle)}>{subtitle}</div>

@@ -22,7 +22,12 @@ export function ThreadItem({
 
    return (
       <Link href={href} {...stylex.props(styles.threadItem)}>
-         <UserAvatar src={participant.avatar_url} alt={displayName} size={56} />
+         <UserAvatar
+            src={participant.avatar_url}
+            alt={displayName}
+            size={56}
+            userId={participant.id}
+         />
          <div {...stylex.props(styles.threadContent)}>
             <span {...stylex.props(styles.threadName, unread && styles.threadNameUnread)}>
                {displayName}

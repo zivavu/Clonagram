@@ -23,7 +23,12 @@ export default async function RightSidebar() {
    return (
       <aside {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.profileCard)}>
-            <UserAvatar src={profile?.avatar_url ?? null} alt={profile?.username ?? ''} size={44} />
+            <UserAvatar
+               src={profile?.avatar_url ?? null}
+               alt={profile?.username ?? ''}
+               size={44}
+               userId={profile?.id}
+            />
             <div {...stylex.props(styles.profileInfo)}>
                {profile && (
                   <OtherUserUsername style={styles.profileUsername} userProfile={profile} />
@@ -43,7 +48,12 @@ export default async function RightSidebar() {
          <div {...stylex.props(styles.suggestionsList)}>
             {suggestedUsers.map(user => (
                <div key={user.id} {...stylex.props(styles.suggestionItem)}>
-                  <UserAvatar src={user.avatar_url} alt={user.username} size={44} />
+                  <UserAvatar
+                     src={user.avatar_url}
+                     alt={user.username}
+                     size={44}
+                     userId={user.id}
+                  />
                   <div {...stylex.props(styles.suggestionInfo)}>
                      <OtherUserUsername style={styles.suggestionUsername} userProfile={user} />
                      {user.full_name && (

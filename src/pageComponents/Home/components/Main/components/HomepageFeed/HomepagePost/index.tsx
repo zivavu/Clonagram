@@ -79,7 +79,12 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>
-            <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
+            <UserAvatar
+               src={post.user.avatar_url}
+               alt={post.user.username}
+               size={32}
+               userId={post.user.id}
+            />
             <OtherUserUsername style={styles.topUsername} userProfile={post.user} />
             <span {...stylex.props(styles.separator)}>•</span>
             <span {...stylex.props(styles.createdAt)} suppressHydrationWarning>

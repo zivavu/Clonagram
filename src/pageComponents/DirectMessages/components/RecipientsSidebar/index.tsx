@@ -93,6 +93,7 @@ export default async function RecipientsSidebar({
                         src={profile?.avatar_url ?? null}
                         alt={profile?.username ?? ''}
                         size={74}
+                        userId={profile?.id}
                      />
                      <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
                      <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>

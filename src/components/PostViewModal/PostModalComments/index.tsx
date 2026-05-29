@@ -200,7 +200,12 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
          <div {...stylex.props(styles.root)}>
             <div {...stylex.props(styles.scrollArea)} ref={scrollAreaRef}>
                <div {...stylex.props(styles.postHeader)}>
-                  <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
+                  <UserAvatar
+                     src={post.user.avatar_url}
+                     alt={post.user.username}
+                     size={32}
+                     userId={post.user.id}
+                  />
                   <OtherUserUsername style={styles.postHeaderUsername} userProfile={post.user} />
                   <span>•</span>
                   <span {...stylex.props(styles.followButton)}>Follow</span>
@@ -215,7 +220,12 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                </div>
                {post.caption && (
                   <div {...stylex.props(styles.captionRow)}>
-                     <UserAvatar src={post.user.avatar_url} alt={post.user.username} size={32} />
+                     <UserAvatar
+                        src={post.user.avatar_url}
+                        alt={post.user.username}
+                        size={32}
+                        userId={post.user.id}
+                     />
                      <div {...stylex.props(styles.captionContent)}>
                         <div {...stylex.props(styles.captionTextRow)}>
                            <OtherUserUsername

@@ -55,7 +55,12 @@ export default function CommentItem({
       <div {...stylex.props(styles.wrapper)}>
          <div {...stylex.props(styles.commentItem)}>
             <div {...stylex.props(styles.commentAvatar)}>
-               <UserAvatar src={comment.user.avatar_url} alt={comment.user.username} size={32} />
+               <UserAvatar
+                  src={comment.user.avatar_url}
+                  alt={comment.user.username}
+                  size={32}
+                  userId={comment.user.id}
+               />
             </div>
             <div {...stylex.props(styles.commentContent)}>
                <div {...stylex.props(styles.commentTextRow)}>

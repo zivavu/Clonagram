@@ -8,9 +8,14 @@ import ProfileHoverCard from '@/src/components/ProfileHoverCard';
 export type OtherUserUsernameProps = {
    style?: StyleXStyles;
    userProfile: { username: string | null | undefined; id: string };
+   useHoverCard?: boolean;
 };
 
-export default function OtherUserUsername({ style, userProfile }: OtherUserUsernameProps) {
+export default function OtherUserUsername({
+   style,
+   userProfile,
+   useHoverCard = true,
+}: OtherUserUsernameProps) {
    const username = userProfile?.username;
 
    const link = (
@@ -21,9 +26,7 @@ export default function OtherUserUsername({ style, userProfile }: OtherUserUsern
 
    if (!username) return link;
 
-   return (
-      <ProfileHoverCard userId={userProfile.id} userName={username}>
-         {link}
-      </ProfileHoverCard>
-   );
+   if (!useHoverCard) return link;
+
+   return <ProfileHoverCard userId={userProfile.id}>{link}</ProfileHoverCard>;
 }
