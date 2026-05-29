@@ -24,4 +24,8 @@ export const styles = stylex.create({
       width: '84dvw',
       zIndex: 4,
    },
+   noAnimation: {
+      animationName: 'none',
+      animationDuration: '0s',
+   },
 });
