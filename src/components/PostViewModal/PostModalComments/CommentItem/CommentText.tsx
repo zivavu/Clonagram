@@ -8,27 +8,29 @@ interface CommentTextProps {
 }
 
 export default function CommentText({ content }: CommentTextProps) {
-   const parts = content.split(/(@\w+)/g);
+   const parts: Array<{ text: string; offset: number }> = [];
    let offset = 0;
+   for (const part of content.split(/(@\w+)/g)) {
+      if (part) parts.push({ text: part, offset });
+      offset += part.length;
+   }
 
    return (
       <span {...stylex.props(styles.commentText)}>
-         {parts.map(part => {
-            const key = offset;
-            offset += part.length;
-            if (part.startsWith('@')) {
-               const username = part.slice(1);
+         {parts.map(({ text, offset: key }) => {
+            if (text.startsWith('@')) {
+               const username = text.slice(1);
                return (
                   <Link
                      key={key}
                      href={`/profile/${username}`}
                      {...stylex.props(styles.mentionLink)}
                   >
-                     {part}
+                     {text}
                   </Link>
                );
             }
-            return <Fragment key={key}>{part}</Fragment>;
+            return <Fragment key={key}>{text}</Fragment>;
          })}
       </span>
    );
