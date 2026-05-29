@@ -1,3 +1,4 @@
+import { getPostAction } from '../../../../../actions/post/getPost';
 import { getUserProfileWithPosts } from '../../../../../actions/profile/getUserProfileWithPosts';
 import { getAuthProfile } from '../../../../../lib/supabase/getAuthProfile';
 import ProfilePage from '../../../../../pageComponents/Profile';
@@ -12,9 +13,10 @@ interface ProfilePostPageProps {
 export default async function ProfilePostPage({ params }: ProfilePostPageProps) {
    const { username, postId } = await params;
 
-   const [authProfile, { userProfile, posts }] = await Promise.all([
+   const [authProfile, { userProfile, posts }, post] = await Promise.all([
       getAuthProfile(),
       getUserProfileWithPosts({ username }),
+      getPostAction(postId),
    ]);
 
    const isOwnProfile = authProfile?.username === username;
@@ -24,7 +26,7 @@ export default async function ProfilePostPage({ params }: ProfilePostPageProps) 
          userProfile={userProfile}
          posts={posts}
          isOwnProfile={isOwnProfile}
-         initialPostId={postId}
+         initialPost={post}
       />
    );
 }

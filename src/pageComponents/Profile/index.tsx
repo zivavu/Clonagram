@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import type { ProfileWithPosts } from '../../actions/profile/getUserProfileWithPosts';
+import type { PostWithMedia } from '../../queries/posts';
 import OpenPostOnMount from './components/OpenPostOnMount';
 import ProfileHeader from './components/ProfileHeader';
 import ProfilePostGrid from './components/ProfilePostGrid';
@@ -9,18 +10,18 @@ import { styles } from './index.stylex';
 
 interface ProfilePageProps extends ProfileWithPosts {
    isOwnProfile: boolean;
-   initialPostId?: string;
+   initialPost?: PostWithMedia | string;
 }
 
 export default function ProfilePage({
    userProfile,
    posts,
    isOwnProfile,
-   initialPostId,
+   initialPost,
 }: ProfilePageProps) {
    return (
       <div {...stylex.props(styles.root)}>
-         {initialPostId && <OpenPostOnMount postId={initialPostId} />}
+         {initialPost && <OpenPostOnMount post={initialPost} />}
          <div {...stylex.props(styles.topSection)}>
             <ProfileHeader
                userProfile={userProfile}
