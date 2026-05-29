@@ -2,9 +2,6 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MdGridView } from 'react-icons/md';
-import CreatePostModal from '@/src/components/CreatePostModal';
-import NotificationsPortal from '@/src/components/NotificationsPortal';
-import SearchPortal from '@/src/components/SearchPortal';
 import { SettingsPopoverButton } from '../SttingsPopover';
 import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
@@ -38,10 +35,6 @@ export default async function MainSidebar() {
                <span {...stylex.props(styles.navItemLabel)}>Also from Zeta</span>
             </button>
          </div>
-
-         <SearchPortal />
-         <NotificationsPortal />
-         <CreatePostModal />
       </div>
    );
 }

@@ -25,7 +25,9 @@ export default async function RightSidebar() {
          <div {...stylex.props(styles.profileCard)}>
             <UserAvatar src={profile?.avatar_url ?? null} alt={profile?.username ?? ''} size={44} />
             <div {...stylex.props(styles.profileInfo)}>
-               <OtherUserUsername style={styles.profileUsername} userProfile={profile!} />
+               {profile && (
+                  <OtherUserUsername style={styles.profileUsername} userProfile={profile} />
+               )}
                <span {...stylex.props(styles.profileName)}>{profile?.full_name}</span>
             </div>
             <LogoutButton />
