@@ -47,7 +47,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
-   const { open: openPostFullViewModal } = usePostViewModal();
+   const { openWithUrl: openPostFullViewModal } = usePostViewModal();
    const currentImageIndex = useRef(0);
 
    const { data: post } = useQuery({
@@ -116,7 +116,14 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                <button
                   type="button"
                   aria-label="Comment"
-                  onClick={() => openPostFullViewModal(post, currentImageIndex.current)}
+                  onClick={() =>
+                     openPostFullViewModal(
+                        post,
+                        `/profile/${post.user.username}/${post.id}`,
+                        window.location.pathname,
+                        currentImageIndex.current,
+                     )
+                  }
                >
                   <FiMessageCircle size={24} color={colors.textPrimary} />
                </button>

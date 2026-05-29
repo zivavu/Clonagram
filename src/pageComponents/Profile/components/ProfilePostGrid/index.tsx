@@ -12,6 +12,7 @@ import { styles } from './index.stylex';
 
 interface ProfilePostGridProps {
    posts: ProfileWithPosts['posts'];
+   username: string;
 }
 
 type ProfilePost = ProfileWithPosts['posts'][number];
@@ -26,8 +27,8 @@ function getPostThumbnail(post: ProfilePost): string | null {
    return null;
 }
 
-export default function ProfilePostGrid({ posts }: ProfilePostGridProps) {
-   const { open: openModal } = usePostViewModal();
+export default function ProfilePostGrid({ posts, username }: ProfilePostGridProps) {
+   const { openWithUrl } = usePostViewModal();
 
    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -56,7 +57,9 @@ export default function ProfilePostGrid({ posts }: ProfilePostGridProps) {
                   {...stylex.props(styles.postContainer)}
                   onMouseEnter={() => setHoveredId(post.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  onClick={() => openModal(post.id, 0)}
+                  onClick={() =>
+                     openWithUrl(post.id, `/profile/${username}/${post.id}`, `/profile/${username}`)
+                  }
                >
                   <Image
                      src={thumbnail}
