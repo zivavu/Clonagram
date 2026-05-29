@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
@@ -15,7 +16,6 @@ import { getPostAction } from '../../../../../../../actions/post/getPost';
 import PostMediaCarousel from '../../../../../../../components/PostMediaCarousel/PostMediaCarousel';
 import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
 import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike';
-import { usePostViewModal } from '../../../../../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
 import { colors } from '../../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
@@ -47,7 +47,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
-   const { openWithUrl: openPostFullViewModal } = usePostViewModal();
+   const router = useRouter();
    const currentImageIndex = useRef(0);
 
    const { data: post } = useQuery({
@@ -116,14 +116,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                <button
                   type="button"
                   aria-label="Comment"
-                  onClick={() =>
-                     openPostFullViewModal(
-                        post,
-                        `/profile/${post.user.username}/${post.id}`,
-                        window.location.pathname,
-                        currentImageIndex.current,
-                     )
-                  }
+                  onClick={() => router.push(`/profile/${post.user.username}/${post.id}`)}
                >
                   <FiMessageCircle size={24} color={colors.textPrimary} />
                </button>

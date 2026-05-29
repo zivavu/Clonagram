@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { FiMessageCircle } from 'react-icons/fi';
@@ -38,7 +39,8 @@ interface ActionButton {
 
 export default function PostModalComments({ initialPost }: PostModalCommentsProps) {
    const { open: openOwnerActions } = useOwnerActionsModal();
-   const { closeAndRestoreUrl: closePostViewModal } = usePostViewModal();
+   const { close: closePostViewModalStore } = usePostViewModal();
+   const router = useRouter();
    const { data: authUser } = useAuthUser();
    const queryClient = useQueryClient();
    const postKey = ['post', initialPost.id];
@@ -184,7 +186,13 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
 
    return (
       <>
-         <OwnerActionsModal onFinish={() => closePostViewModal()} />
+         <OwnerActionsModal
+            onFinish={() => {
+               closePostViewModalStore();
+               if (window.history.length > 1) router.back();
+               else router.replace('/');
+            }}
+         />
 
          <div {...stylex.props(styles.root)}>
             <div {...stylex.props(styles.scrollArea)} ref={scrollAreaRef}>

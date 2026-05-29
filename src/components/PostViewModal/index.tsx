@@ -3,6 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { getPostAction } from '../../actions/post/getPost';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import DialogOverlay from '../DialogOverlay';
@@ -11,8 +12,8 @@ import { styles } from './index.stylex';
 import PostModalComments from './PostModalComments';
 
 export default function PostFullViewModal() {
-   const { isOpen, post: postOrPostId, closeAndRestoreUrl, initialImageIndex } = usePostViewModal();
-   const close = closeAndRestoreUrl;
+   const { isOpen, post: postOrPostId, close, initialImageIndex } = usePostViewModal();
+   const router = useRouter();
 
    const postId = typeof postOrPostId === 'string' ? postOrPostId : postOrPostId?.id;
 
@@ -25,6 +26,15 @@ export default function PostFullViewModal() {
 
    if (!post) return null;
 
+   function handleClose() {
+      close();
+      if (window.history.length > 1) {
+         router.back();
+      } else {
+         router.replace(`/profile/${post?.user.username}`);
+      }
+   }
+
    const aspectRatio = (() => {
       if (post.aspect_ratio === 'original') {
          const media = post.images?.[0] ?? post.videos?.[0];
@@ -34,10 +44,10 @@ export default function PostFullViewModal() {
    })();
 
    return (
-      <Dialog.Root open={isOpen} onOpenChange={close}>
+      <Dialog.Root open={isOpen} onOpenChange={() => handleClose()}>
          <Dialog.Portal>
             <DialogOverlay />
-            <Dialog.Content onEscapeKeyDown={close} {...stylex.props(styles.content)}>
+            <Dialog.Content onEscapeKeyDown={handleClose} {...stylex.props(styles.content)}>
                <Dialog.Title style={{ display: 'none' }}>
                   Full view of {post.user.username} post
                </Dialog.Title>

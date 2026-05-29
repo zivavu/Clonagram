@@ -2,11 +2,11 @@
 
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
 import type { ProfileWithPosts } from '../../../../actions/profile/getUserProfileWithPosts';
-import { usePostViewModal } from '../../../../store/postViewModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
@@ -28,7 +28,7 @@ function getPostThumbnail(post: ProfilePost): string | null {
 }
 
 export default function ProfilePostGrid({ posts, username }: ProfilePostGridProps) {
-   const { openWithUrl } = usePostViewModal();
+   const router = useRouter();
 
    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -57,13 +57,7 @@ export default function ProfilePostGrid({ posts, username }: ProfilePostGridProp
                   {...stylex.props(styles.postContainer)}
                   onMouseEnter={() => setHoveredId(post.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  onClick={() =>
-                     openWithUrl(
-                        post.id,
-                        `/profile/${username}/${post.id}`,
-                        window.location.pathname,
-                     )
-                  }
+                  onClick={() => router.push(`/profile/${username}/${post.id}`)}
                >
                   <Image
                      src={thumbnail}

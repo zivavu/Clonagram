@@ -20,12 +20,7 @@ export default function ProfilePage({
 }: ProfilePageProps) {
    return (
       <div {...stylex.props(styles.root)}>
-         {initialPostId && (
-            <OpenPostOnMount
-               postId={initialPostId}
-               returnPath={`/profile/${userProfile.username}`}
-            />
-         )}
+         {initialPostId && <OpenPostOnMount postId={initialPostId} />}
          <div {...stylex.props(styles.topSection)}>
             <ProfileHeader
                userProfile={userProfile}
