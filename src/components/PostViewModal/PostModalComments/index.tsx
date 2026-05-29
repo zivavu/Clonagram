@@ -38,7 +38,7 @@ interface ActionButton {
 
 export default function PostModalComments({ initialPost }: PostModalCommentsProps) {
    const { open: openOwnerActions } = useOwnerActionsModal();
-   const { close: closePostViewModal } = usePostViewModal();
+   const { closeAndRestoreUrl: closePostViewModal } = usePostViewModal();
    const { data: authUser } = useAuthUser();
    const queryClient = useQueryClient();
    const postKey = ['post', initialPost.id];

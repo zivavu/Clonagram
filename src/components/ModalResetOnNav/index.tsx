@@ -5,13 +5,15 @@ import { useEffect } from 'react';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../store/useOwnerActionsModalStore';
 
+const POST_URL_PATTERN = /^\/profile\/[^/]+\/[^/]+$/;
+
 export default function ModalResetOnNav() {
    const pathname = usePathname();
    const closePostViewModal = usePostViewModal(state => state.close);
    const closeOwnerActionsModal = useOwnerActionsModal(state => state.close);
 
-   // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is an intentional trigger
    useEffect(() => {
+      if (POST_URL_PATTERN.test(pathname)) return;
       closePostViewModal();
       closeOwnerActionsModal();
    }, [pathname, closePostViewModal, closeOwnerActionsModal]);

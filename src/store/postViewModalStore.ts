@@ -14,6 +14,7 @@ interface PostViewModal {
       initialImageIndex?: number,
    ) => void;
    close: () => void;
+   closeAndRestoreUrl: () => void;
    toggle: () => void;
 }
 
@@ -27,7 +28,8 @@ export const usePostViewModal = create<PostViewModal>((set, get) => ({
       window.history.pushState(null, '', urlPath);
       set({ isOpen: true, post, initialImageIndex, returnPath });
    },
-   close: () => {
+   close: () => set({ isOpen: false, post: null, initialImageIndex: 0, returnPath: '' }),
+   closeAndRestoreUrl: () => {
       const { returnPath } = get();
       if (returnPath) window.history.pushState(null, '', returnPath);
       set({ isOpen: false, post: null, initialImageIndex: 0, returnPath: '' });

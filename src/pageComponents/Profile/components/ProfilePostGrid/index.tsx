@@ -58,7 +58,11 @@ export default function ProfilePostGrid({ posts, username }: ProfilePostGridProp
                   onMouseEnter={() => setHoveredId(post.id)}
                   onMouseLeave={() => setHoveredId(null)}
                   onClick={() =>
-                     openWithUrl(post.id, `/profile/${username}/${post.id}`, `/profile/${username}`)
+                     openWithUrl(
+                        post.id,
+                        `/profile/${username}/${post.id}`,
+                        window.location.pathname,
+                     )
                   }
                >
                   <Image

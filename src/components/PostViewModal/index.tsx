@@ -11,7 +11,8 @@ import { styles } from './index.stylex';
 import PostModalComments from './PostModalComments';
 
 export default function PostFullViewModal() {
-   const { isOpen, post: postOrPostId, close, initialImageIndex } = usePostViewModal();
+   const { isOpen, post: postOrPostId, closeAndRestoreUrl, initialImageIndex } = usePostViewModal();
+   const close = closeAndRestoreUrl;
 
    const postId = typeof postOrPostId === 'string' ? postOrPostId : postOrPostId?.id;
 
