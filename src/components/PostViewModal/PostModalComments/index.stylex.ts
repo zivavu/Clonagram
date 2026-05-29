@@ -110,23 +110,6 @@ export const styles = stylex.create({
       letterSpacing: '0.2px',
       padding: `0 ${spacing.md}`,
    },
-   replyingToBar: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: `0 ${spacing.md}`,
-   },
-   replyingToText: {
-      fontSize: '12px',
-      color: colors.textSecondary,
-   },
-   replyingToUsername: {
-      color: colors.accentText,
-   },
-   cancelReplyButton: {
-      fontSize: '12px',
-      color: colors.textSecondary,
-   },
    commentInputRow: {
       display: 'flex',
       alignItems: 'center',

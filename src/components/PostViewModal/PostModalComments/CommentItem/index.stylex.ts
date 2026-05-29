@@ -35,6 +35,10 @@ export const styles = stylex.create({
    commentText: {
       fontWeight: 400,
    },
+   mentionLink: {
+      color: colors.accentText,
+      fontWeight: 600,
+   },
    commentMeta: {
       display: 'flex',
       gap: '12px',

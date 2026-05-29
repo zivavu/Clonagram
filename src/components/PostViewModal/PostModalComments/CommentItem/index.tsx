@@ -11,6 +11,7 @@ import { useToggleCommentLike } from '@/src/hooks/useToggleCommentLike';
 import type { PostComment } from '@/src/queries/comments';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import CommentReplies from '../CommentReplies';
+import CommentText from './CommentText';
 import { styles } from './index.stylex';
 
 export interface OnReplyParams {
@@ -59,7 +60,7 @@ export default function CommentItem({
             <div {...stylex.props(styles.commentContent)}>
                <div {...stylex.props(styles.commentTextRow)}>
                   <OtherUserUsername style={styles.commentUsername} userProfile={comment.user} />{' '}
-                  <span {...stylex.props(styles.commentText)}>{comment.content}</span>
+                  <CommentText content={comment.content} />
                </div>
                <div {...stylex.props(styles.commentMeta)}>
                   <span>

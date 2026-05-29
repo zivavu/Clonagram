@@ -169,6 +169,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
 
    function handleReply(params: OnReplyParams) {
       setReplyingTo(params);
+      setCommentInputValue(`@${params.username} `);
       commentInputRef.current?.focus();
    }
 
@@ -259,24 +260,6 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                <div {...stylex.props(styles.postTime)}>
                   {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
                </div>
-               {replyingTo && (
-                  <div {...stylex.props(styles.replyingToBar)}>
-                     <span {...stylex.props(styles.replyingToText)}>
-                        Replying to{' '}
-                        <span {...stylex.props(styles.replyingToUsername)}>
-                           @{replyingTo.username}
-                        </span>
-                     </span>
-                     <button
-                        type="button"
-                        aria-label="Cancel reply"
-                        onClick={() => setReplyingTo(null)}
-                        {...stylex.props(styles.cancelReplyButton)}
-                     >
-                        ✕
-                     </button>
-                  </div>
-               )}
                <form onSubmit={handleCommentSubmit} {...stylex.props(styles.commentInputRow)}>
                   <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
                      <BsEmojiSmile size={24} />
