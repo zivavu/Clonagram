@@ -18,5 +18,17 @@ export default function ModalResetOnNav() {
       closeOwnerActionsModal();
    }, [pathname, closePostViewModal, closeOwnerActionsModal]);
 
+   useEffect(() => {
+      function onPopState() {
+         const isPostUrl = POST_URL_PATTERN.test(window.location.pathname);
+         const isOpen = usePostViewModal.getState().isOpen;
+         if (!isPostUrl && isOpen) {
+            closePostViewModal();
+         }
+      }
+      window.addEventListener('popstate', onPopState);
+      return () => window.removeEventListener('popstate', onPopState);
+   }, [closePostViewModal]);
+
    return null;
 }

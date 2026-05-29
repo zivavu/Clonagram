@@ -47,6 +47,7 @@ export interface PostMediaCarouselProps {
    aspectRatio?: string;
    omitRightBorderRadius?: boolean;
    onImageChange?: (index: number) => void;
+   onImageClick?: (post: PostWithMedia, index: number) => void;
 }
 
 export default function PostMediaCarousel({
@@ -58,6 +59,7 @@ export default function PostMediaCarousel({
    aspectRatio,
    omitRightBorderRadius,
    onImageChange,
+   onImageClick,
 }: PostMediaCarouselProps) {
    const { open: openPostFullViewModal, isOpen: isPostFullViewModalOpen } = usePostViewModal();
    const [isPlaying, setIsPlaying] = useState(false);
@@ -96,9 +98,15 @@ export default function PostMediaCarousel({
             {media.map(item => {
                return (
                   <button
-                     onClick={() =>
-                        item.type === 'image' && openPostFullViewModal(post, currentImageIndex)
-                     }
+                     onClick={() => {
+                        if (item.type === 'image') {
+                           if (onImageClick) {
+                              onImageClick(post, currentImageIndex);
+                           } else {
+                              openPostFullViewModal(post, { initialImageIndex: currentImageIndex });
+                           }
+                        }
+                     }}
                      key={item.id}
                      {...stylex.props(styles.carouselSlide)}
                      style={{

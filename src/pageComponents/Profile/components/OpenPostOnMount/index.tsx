@@ -8,10 +8,14 @@ interface OpenPostOnMountProps {
 }
 
 export default function OpenPostOnMount({ postId }: OpenPostOnMountProps) {
-   const { open } = usePostViewModal();
+   const open = usePostViewModal(state => state.open);
 
    useEffect(() => {
-      open(postId);
+      const state = usePostViewModal.getState();
+      const currentPostId = typeof state.post === 'string' ? state.post : state.post?.id;
+      if (!state.isOpen || currentPostId !== postId) {
+         open(postId);
+      }
    }, [open, postId]);
 
    return null;

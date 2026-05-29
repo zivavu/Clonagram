@@ -12,7 +12,7 @@ import { styles } from './index.stylex';
 import PostModalComments from './PostModalComments';
 
 export default function PostFullViewModal() {
-   const { isOpen, post: postOrPostId, close, initialImageIndex } = usePostViewModal();
+   const { isOpen, post: postOrPostId, close, initialImageIndex, returnPath } = usePostViewModal();
    const router = useRouter();
 
    const postId = typeof postOrPostId === 'string' ? postOrPostId : postOrPostId?.id;
@@ -28,10 +28,10 @@ export default function PostFullViewModal() {
 
    function handleClose() {
       close();
-      if (window.history.length > 1) {
-         router.back();
-      } else {
-         router.replace(`/profile/${post?.user.username}`);
+      if (returnPath) {
+         window.history.back();
+      } else if (post) {
+         router.replace(`/profile/${post.user.username}`);
       }
    }
 
@@ -47,7 +47,7 @@ export default function PostFullViewModal() {
       <Dialog.Root open={isOpen} onOpenChange={() => handleClose()}>
          <Dialog.Portal>
             <DialogOverlay />
-            <Dialog.Content onEscapeKeyDown={handleClose} {...stylex.props(styles.content)}>
+            <Dialog.Content {...stylex.props(styles.content)}>
                <Dialog.Title style={{ display: 'none' }}>
                   Full view of {post.user.username} post
                </Dialog.Title>

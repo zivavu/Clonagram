@@ -39,7 +39,7 @@ interface ActionButton {
 
 export default function PostModalComments({ initialPost }: PostModalCommentsProps) {
    const { open: openOwnerActions } = useOwnerActionsModal();
-   const { close: closePostViewModalStore } = usePostViewModal();
+   const { close: closePostViewModalStore, returnPath } = usePostViewModal();
    const router = useRouter();
    const { data: authUser } = useAuthUser();
    const queryClient = useQueryClient();
@@ -189,8 +189,11 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
          <OwnerActionsModal
             onFinish={() => {
                closePostViewModalStore();
-               if (window.history.length > 1) router.back();
-               else router.replace('/');
+               if (returnPath) {
+                  window.history.back();
+               } else {
+                  router.replace(`/profile/${initialPost.user.username}`);
+               }
             }}
          />
 

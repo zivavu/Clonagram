@@ -43,6 +43,6 @@ export const styles = stylex.create({
       transition: 'background-color 0.15s ease',
    },
    dotActive: {
-      backgroundColor: colors.accent,
+      backgroundColor: colors.white,
    },
 });

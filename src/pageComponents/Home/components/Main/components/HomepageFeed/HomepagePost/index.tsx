@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
@@ -16,6 +16,7 @@ import { getPostAction } from '../../../../../../../actions/post/getPost';
 import PostMediaCarousel from '../../../../../../../components/PostMediaCarousel/PostMediaCarousel';
 import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
 import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike';
+import { usePostViewModal } from '../../../../../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
 import { colors } from '../../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
@@ -47,8 +48,18 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
-   const router = useRouter();
+   const { open: openPostModal } = usePostViewModal();
+   const pathname = usePathname();
    const currentImageIndex = useRef(0);
+
+   function handleOpenPostModal(post: PostWithMedia, index = 0) {
+      openPostModal(post, { initialImageIndex: index, returnPath: pathname });
+      window.history.pushState(
+         { postModal: true },
+         '',
+         `/profile/${post.user.username}/${post.id}`,
+      );
+   }
 
    const { data: post } = useQuery({
       initialData: initialPost,
@@ -95,6 +106,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
             onImageChange={index => {
                currentImageIndex.current = index;
             }}
+            onImageClick={(clickedPost, index) => handleOpenPostModal(clickedPost, index)}
          />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
@@ -116,7 +128,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                <button
                   type="button"
                   aria-label="Comment"
-                  onClick={() => router.push(`/profile/${post.user.username}/${post.id}`)}
+                  onClick={() => handleOpenPostModal(post, currentImageIndex.current)}
                >
                   <FiMessageCircle size={24} color={colors.textPrimary} />
                </button>

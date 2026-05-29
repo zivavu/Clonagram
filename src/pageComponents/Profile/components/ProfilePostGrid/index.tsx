@@ -2,11 +2,12 @@
 
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
 import type { ProfileWithPosts } from '../../../../actions/profile/getUserProfileWithPosts';
+import { usePostViewModal } from '../../../../store/postViewModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
@@ -28,7 +29,8 @@ function getPostThumbnail(post: ProfilePost): string | null {
 }
 
 export default function ProfilePostGrid({ posts, username }: ProfilePostGridProps) {
-   const router = useRouter();
+   const pathname = usePathname();
+   const { open } = usePostViewModal();
 
    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -57,7 +59,14 @@ export default function ProfilePostGrid({ posts, username }: ProfilePostGridProp
                   {...stylex.props(styles.postContainer)}
                   onMouseEnter={() => setHoveredId(post.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  onClick={() => router.push(`/profile/${username}/${post.id}`)}
+                  onClick={() => {
+                     open(post.id, { returnPath: pathname });
+                     window.history.pushState(
+                        { postModal: true },
+                        '',
+                        `/profile/${username}/${post.id}`,
+                     );
+                  }}
                >
                   <Image
                      src={thumbnail}
