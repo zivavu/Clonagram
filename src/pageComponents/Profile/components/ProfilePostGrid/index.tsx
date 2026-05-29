@@ -9,23 +9,12 @@ import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
 import type { ProfileWithPosts } from '../../../../actions/profile/getUserProfileWithPosts';
 import { usePostViewModal } from '../../../../store/postViewModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
+import { getPostThumbnail } from '../../../../utils/posts';
 import { styles } from './index.stylex';
 
 interface ProfilePostGridProps {
    posts: ProfileWithPosts['posts'];
    username: string;
-}
-
-type ProfilePost = ProfileWithPosts['posts'][number];
-
-function getPostThumbnail(post: ProfilePost): string | null {
-   const firstImage = [...post.images].sort((a, b) => a.position - b.position)[0];
-   if (firstImage) return firstImage.url;
-   const firstVideo = [...post.videos].sort((a, b) => a.position - b.position)[0];
-   if (firstVideo?.mux_playback_id) {
-      return `https://image.mux.com/${firstVideo.mux_playback_id}/thumbnail.jpg`;
-   }
-   return null;
 }
 
 export default function ProfilePostGrid({ posts, username }: ProfilePostGridProps) {

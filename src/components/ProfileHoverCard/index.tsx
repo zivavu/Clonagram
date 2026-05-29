@@ -4,12 +4,14 @@ import * as HoverCard from '@radix-ui/react-hover-card';
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { FiUser } from 'react-icons/fi';
 import { TbCamera } from 'react-icons/tb';
 import { createBrowserClient } from '@/src/lib/supabase/client';
-import { type UserRecentPost, userRecentPostsQuery } from '@/src/queries/posts';
+import { userRecentPostsQuery } from '@/src/queries/posts';
 import { userProfileCardQuery } from '@/src/queries/userProfiles';
+import { getPostThumbnail } from '@/src/utils/posts';
 import { colors } from '../../styles/tokens.stylex';
 import OtherUserUsername from '../Username/OtherUserUsername';
 import { styles } from './index.stylex';
@@ -20,20 +22,10 @@ interface ProfileHoverCardProps {
    children: React.ReactNode;
 }
 
-function formatStat(n: number): string {
+function formatStat(n: number) {
    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
    if (n >= 10_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}K`;
    return n.toLocaleString();
-}
-
-function getPostThumbnail(post: UserRecentPost): string | null {
-   const firstImage = [...post.images].sort((a, b) => a.position - b.position)[0];
-   if (firstImage) return firstImage.url;
-   const firstVideo = [...post.videos].sort((a, b) => a.position - b.position)[0];
-   if (firstVideo?.mux_playback_id) {
-      return `https://image.mux.com/${firstVideo.mux_playback_id}/thumbnail.jpg`;
-   }
-   return null;
 }
 
 export default function ProfileHoverCard({ userId, children }: ProfileHoverCardProps) {
@@ -126,14 +118,18 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
                            {posts.map(post => {
                               const thumb = getPostThumbnail(post);
                               return thumb ? (
-                                 <Image
+                                 <Link
                                     key={post.id}
-                                    src={thumb}
-                                    alt={`${userId} post`}
-                                    width={120}
-                                    height={120}
-                                    {...stylex.props(styles.postThumb)}
-                                 />
+                                    href={`/profile/${profile.username}/${post.id}`}
+                                 >
+                                    <Image
+                                       src={thumb}
+                                       alt={`${userId} post`}
+                                       width={120}
+                                       height={120}
+                                       {...stylex.props(styles.postThumb)}
+                                    />
+                                 </Link>
                               ) : null;
                            })}
                         </div>
