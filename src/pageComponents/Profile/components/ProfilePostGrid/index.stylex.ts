@@ -5,8 +5,9 @@ export const styles = stylex.create({
    grid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(3, 1fr)',
-      gap: '4px',
+      gap: 1,
       width: '100%',
+
       '@media (min-width: 1386px)': {
          gridTemplateColumns: 'repeat(4, 1fr)',
       },
@@ -14,7 +15,7 @@ export const styles = stylex.create({
    postContainer: {
       position: 'relative',
       overflow: 'hidden',
-      aspectRatio: '1 / 1',
+      aspectRatio: '3 / 4',
       backgroundColor: colors.bgSecondary,
    },
    overlay: {

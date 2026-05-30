@@ -124,10 +124,9 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
                                  >
                                     <Image
                                        src={thumb}
-                                       alt={`${userId} post`}
+                                       alt={`${profile.username} post`}
                                        width={120}
                                        height={120}
-                                       {...stylex.props(styles.postThumb)}
                                     />
                                  </Link>
                               ) : null;

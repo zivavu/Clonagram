@@ -1,5 +1,4 @@
 import * as stylex from '@stylexjs/stylex';
-import { radius } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
@@ -11,7 +10,6 @@ export const styles = stylex.create({
       maxWidth: '1255px',
       padding: '58px 0',
       margin: '0 auto',
-      gap: radius.md,
    },
    topSection: {
       width: 'min(680px, 90dvw)',

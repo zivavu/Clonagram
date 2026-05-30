@@ -1,3 +1,5 @@
+'use client';
+
 import * as stylex from '@stylexjs/stylex';
 import Image, { type ImageProps } from 'next/image';
 import ProfileHoverCard from '@/src/components/ProfileHoverCard';
