@@ -13,7 +13,7 @@ interface ProfilePostPageProps {
 export default async function ProfilePostPage({ params }: ProfilePostPageProps) {
    const { username, postId } = await params;
 
-   const [authProfile, { userProfile, posts }, post] = await Promise.all([
+   const [authProfile, { userProfile, posts, followStatus }, post] = await Promise.all([
       getAuthProfile(),
       getUserProfileWithPosts({ username }),
       getPostAction(postId),
@@ -25,6 +25,7 @@ export default async function ProfilePostPage({ params }: ProfilePostPageProps) 
       <ProfilePage
          userProfile={userProfile}
          posts={posts}
+         followStatus={followStatus}
          isOwnProfile={isOwnProfile}
          initialPost={post}
       />

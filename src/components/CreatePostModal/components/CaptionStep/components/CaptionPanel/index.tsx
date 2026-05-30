@@ -53,10 +53,11 @@ export default function CaptionPanel({
    };
 
    const handleCollabToggle = (user: PartialUser) => {
-      if (collaborators.some(c => c.id === user.id)) {
-         onCollaboratorsChange(collaborators.filter(c => c.id !== user.id));
+      const current = collaborators ?? [];
+      if (current.some(c => c.id === user.id)) {
+         onCollaboratorsChange?.(current.filter(c => c.id !== user.id));
       } else {
-         onCollaboratorsChange([...collaborators, user]);
+         onCollaboratorsChange?.([...current, user]);
       }
    };
 
