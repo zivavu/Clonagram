@@ -1,14 +1,51 @@
+'use client';
+
 import * as stylex from '@stylexjs/stylex';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useEffect, useMemo } from 'react';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { IoChevronForward, IoEyeOffOutline } from 'react-icons/io5';
-import { getRequestThreads } from '@/src/pageComponents/mocks/messageThreads';
-import { CURRENT_USER } from '../../../mocks/users';
+import UserAvatar from '@/src/components/UserAvatar';
+import { createBrowserClient } from '@/src/lib/supabase/client';
+import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
+import { getConversationAvatars, getConversationDisplayName } from '@/src/utils/conversations';
+import { formatTimestamp } from '@/src/utils/formatters';
 import { styles } from './index.stylex';
-import { ThreadItem } from './ThreadItem';
 
-export function RequestsContent() {
-   const requestThreads = getRequestThreads();
+interface RequestsContentProps {
+   authUserId: string;
+   initialData: ConversationSummaries;
+}
+
+export function RequestsContent({ authUserId, initialData }: RequestsContentProps) {
+   const queryClient = useQueryClient();
+   const queryKey = useMemo(() => ['conversations', 'requests', authUserId], [authUserId]);
+
+   const { data: requests = initialData } = useQuery({
+      queryKey,
+      queryFn: async () => {
+         const supabase = createBrowserClient();
+         const { data, error } = await getConversationsQuery(supabase, authUserId, 'requests');
+         if (error) throw error;
+         return data ?? [];
+      },
+      initialData,
+      staleTime: 30_000,
+   });
+
+   useEffect(() => {
+      const supabase = createBrowserClient();
+      const channel = supabase
+         .channel(`requests-list-${authUserId}`)
+         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {
+            queryClient.invalidateQueries({ queryKey });
+         })
+         .subscribe();
+      return () => {
+         supabase.removeChannel(channel);
+      };
+   }, [authUserId, queryClient, queryKey]);
 
    return (
       <>
@@ -43,20 +80,48 @@ export function RequestsContent() {
                <IoChevronForward size={16} />
             </button>
 
-            {requestThreads.map(thread => (
-               <ThreadItem
-                  key={thread.id}
-                  currentUserId={CURRENT_USER.id}
-                  thread={thread}
-                  href={`/direct/requests/${thread.id}`}
-               />
-            ))}
+            {requests.map(summary => {
+               const conv = summary.conversation;
+               const displayName = getConversationDisplayName(
+                  conv.participants,
+                  authUserId,
+                  conv.title,
+               );
+               const avatars = getConversationAvatars(conv.participants, authUserId);
+
+               return (
+                  <Link
+                     key={conv.id}
+                     href={`/direct/requests/${conv.id}`}
+                     {...stylex.props(styles.threadItem)}
+                  >
+                     <UserAvatar
+                        src={avatars[0]?.avatar_url ?? null}
+                        alt={displayName}
+                        size={56}
+                        userId={avatars[0]?.id}
+                     />
+                     <div {...stylex.props(styles.threadContent)}>
+                        <span {...stylex.props(styles.threadName)}>{displayName}</span>
+                        <div {...stylex.props(styles.threadPreviewRow)}>
+                           <span {...stylex.props(styles.threadPreview)}>
+                              {conv.last_message_preview ?? ''}
+                           </span>
+                           {conv.last_message_at && (
+                              <span {...stylex.props(styles.threadTimestamp)}>
+                                 {' · '}
+                                 {formatTimestamp(conv.last_message_at)}
+                              </span>
+                           )}
+                        </div>
+                     </div>
+                  </Link>
+               );
+            })}
          </div>
 
          <div {...stylex.props(styles.bottomSection)}>
-            <button {...stylex.props(styles.deleteAllButton)}>
-               Delete all {requestThreads.length}
-            </button>
+            <button {...stylex.props(styles.deleteAllButton)}>Delete all {requests.length}</button>
          </div>
       </>
    );

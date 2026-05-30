@@ -2,10 +2,14 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
+import { createConversation } from '@/src/actions/dm/createConversation';
+import { toast } from '@/src/components/AppToast';
 import { UserListItem, UserListSkeleton } from '@/src/components/UserListItem';
-import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
+import { createBrowserClient } from '@/src/lib/supabase/client';
 import { useNewMessageModalStore } from '../../../../store/useNewMessageModalStore';
 import { styles } from './index.stylex';
 
@@ -13,6 +17,25 @@ export default function NewMessageModal() {
    const { isOpen, close } = useNewMessageModalStore();
    const [query, setQuery] = useState('');
    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+   const [creating, setCreating] = useState(false);
+   const router = useRouter();
+
+   const { data: followedUsers = [] } = useQuery({
+      queryKey: ['followed-users'],
+      queryFn: async () => {
+         const supabase = createBrowserClient();
+         const {
+            data: { user },
+         } = await supabase.auth.getUser();
+         if (!user) return [];
+         const { data } = await supabase
+            .from('follows')
+            .select('user:profiles!following_id(id, username, full_name, avatar_url)')
+            .eq('follower_id', user.id);
+         return (data ?? []).map(r => r.user).filter(Boolean);
+      },
+      staleTime: 60_000,
+   });
 
    const toggleUser = (id: string) => {
       setSelectedIds(prev => {
@@ -34,17 +57,31 @@ export default function NewMessageModal() {
       });
    };
 
-   const filteredUsers = SUGGESTED_USERS.filter(
+   const filteredUsers = followedUsers.filter(
       u =>
          (u.full_name?.toLowerCase() ?? '').includes(query.toLowerCase()) ||
          u.username.toLowerCase().includes(query.toLowerCase()),
    );
 
-   const selectedUsers = SUGGESTED_USERS.filter(u => selectedIds.has(u.id));
+   const selectedUsers = followedUsers.filter(u => selectedIds.has(u.id));
    const hasSelection = selectedIds.size > 0;
 
    const MIN_VISIBLE_ROWS = 7;
    const skeletonCount = Math.max(0, MIN_VISIBLE_ROWS - filteredUsers.length);
+
+   async function handleChat() {
+      if (!hasSelection || creating) return;
+      setCreating(true);
+      try {
+         const conversationId = await createConversation([...selectedIds]);
+         close();
+         router.push(`/direct/${conversationId}`);
+      } catch (e) {
+         toast(e instanceof Error ? e.message : 'Could not start conversation.');
+      } finally {
+         setCreating(false);
+      }
+   }
 
    return (
       <Dialog.Root open={isOpen} onOpenChange={close}>
@@ -133,13 +170,10 @@ export default function NewMessageModal() {
                      type="button"
                      {...stylex.props(
                         styles.chatButton,
-                        !hasSelection && styles.chatButtonDisabled,
+                        (!hasSelection || creating) && styles.chatButtonDisabled,
                      )}
-                     disabled={!hasSelection}
-                     onClick={() => {
-                        // TODO: create or navigate to thread
-                        close();
-                     }}
+                     disabled={!hasSelection || creating}
+                     onClick={handleChat}
                   >
                      Chat
                   </button>
