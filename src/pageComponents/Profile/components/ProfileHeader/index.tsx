@@ -2,7 +2,9 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { MdPersonAdd, MdVerified } from 'react-icons/md';
 import type { ProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
+import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
+import type { FollowState } from '@/src/queries/followStatus';
 import { colors } from '../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
@@ -10,12 +12,14 @@ interface ProfileHeaderProps {
    userProfile: ProfileWithPosts['userProfile'];
    postsCount: number;
    isOwnProfile: boolean;
+   followStatus: FollowState;
 }
 
 export default function ProfileHeader({
    userProfile,
    postsCount,
    isOwnProfile,
+   followStatus,
 }: ProfileHeaderProps) {
    const followersCount =
       (userProfile.followers as unknown as [{ count: number }])?.[0]?.count ?? 0;
@@ -76,9 +80,12 @@ export default function ProfileHeader({
                </>
             ) : (
                <>
-                  <button type="button" {...stylex.props(styles.button, styles.buttonPrimary)}>
-                     Follow
-                  </button>
+                  <FollowButton
+                     targetUserId={userProfile.id}
+                     targetIsPrivate={userProfile.is_private}
+                     initialState={followStatus}
+                     variant="profile"
+                  />
                   <Link
                      href={`/direct/t/${userProfile.id}`}
                      {...stylex.props(styles.button, styles.buttonSecondary)}

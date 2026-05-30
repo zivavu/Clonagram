@@ -13,7 +13,7 @@ export function userProfilesQuery(
 ) {
    let q = supabase
       .from('profiles')
-      .select(`id, username, full_name, avatar_url`)
+      .select(`id, username, full_name, avatar_url, is_private`)
       .order('created_at', { ascending: order === 'asc' })
       .limit(limit ?? 10);
 
@@ -31,7 +31,7 @@ export function userProfileCardQuery(supabase: SupabaseClient<Database>, userId:
    return supabase
       .from('profiles')
       .select(
-         `id, username, full_name, avatar_url,
+         `id, username, full_name, avatar_url, is_private,
          followers:follows!following_id(count),
          following:follows!follower_id(count),
          posts!posts_user_id_fkey(count)`,

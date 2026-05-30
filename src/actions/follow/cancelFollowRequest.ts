@@ -1,0 +1,18 @@
+'use server';
+import 'server-only';
+import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
+import { createServerClient } from '@/src/lib/supabase/server';
+
+export async function cancelFollowRequest(targetUserId: string): Promise<void> {
+   const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
+
+   if (!authProfile) throw new Error('Not authenticated');
+
+   const { error } = await supabase
+      .from('follow_requests')
+      .delete()
+      .eq('requester_id', authProfile.id)
+      .eq('target_id', targetUserId);
+
+   if (error) throw error;
+}

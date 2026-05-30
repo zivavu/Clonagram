@@ -2,23 +2,32 @@ import 'server-only';
 
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
+import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '../../../../lib/supabase/server';
+import { getBatchFollowStatuses } from '../../../../queries/followStatus';
 import { userProfilesQuery } from '../../../../queries/userProfiles';
 import { styles } from './index.stylex';
 import LogoutButton from './LogoutButton';
 
 export default async function RightSidebar() {
-   const profile = await getAuthProfile();
+   const [profile, supabase] = await Promise.all([getAuthProfile(), createServerClient()]);
 
-   const supabase = await createServerClient();
    const { data: suggestedUsers, error } = await userProfilesQuery(supabase, { limit: 6 });
 
    if (error) {
       return 'Failed to load suggested users';
    }
+
+   const followStatuses = profile
+      ? await getBatchFollowStatuses(
+           supabase,
+           profile.id,
+           suggestedUsers.map(u => u.id),
+        )
+      : {};
 
    return (
       <aside {...stylex.props(styles.root)}>
@@ -64,9 +73,12 @@ export default async function RightSidebar() {
                         </span>
                      )}
                   </div>
-                  <button type="button" {...stylex.props(styles.followButton)}>
-                     Follow
-                  </button>
+                  <FollowButton
+                     targetUserId={user.id}
+                     targetIsPrivate={user.is_private}
+                     initialState={followStatuses[user.id] ?? 'none'}
+                     variant="sidebar"
+                  />
                </div>
             ))}
          </div>

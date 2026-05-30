@@ -267,6 +267,42 @@ export type Database = {
                },
             ];
          };
+         follow_requests: {
+            Row: {
+               created_at: string | null;
+               id: string;
+               requester_id: string;
+               target_id: string;
+            };
+            Insert: {
+               created_at?: string | null;
+               id?: string;
+               requester_id: string;
+               target_id: string;
+            };
+            Update: {
+               created_at?: string | null;
+               id?: string;
+               requester_id?: string;
+               target_id?: string;
+            };
+            Relationships: [
+               {
+                  foreignKeyName: 'follow_requests_requester_id_fkey';
+                  columns: ['requester_id'];
+                  isOneToOne: false;
+                  referencedRelation: 'profiles';
+                  referencedColumns: ['id'];
+               },
+               {
+                  foreignKeyName: 'follow_requests_target_id_fkey';
+                  columns: ['target_id'];
+                  isOneToOne: false;
+                  referencedRelation: 'profiles';
+                  referencedColumns: ['id'];
+               },
+            ];
+         };
          hashtags: {
             Row: {
                id: string;

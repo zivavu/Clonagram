@@ -13,6 +13,7 @@ import { userRecentPostsQuery } from '@/src/queries/posts';
 import { userProfileCardQuery } from '@/src/queries/userProfiles';
 import { getPostThumbnail } from '@/src/utils/posts';
 import { colors } from '../../styles/tokens.stylex';
+import FollowButton from '../FollowButton';
 import OtherUserUsername from '../Username/OtherUserUsername';
 import { styles } from './index.stylex';
 import ProfileHoverCardSkeleton from './ProfileHoverCardSkeleton';
@@ -148,9 +149,11 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
                      )}
 
                      <div {...stylex.props(styles.followButtonContainer)}>
-                        <button type="button" {...stylex.props(styles.followButton)}>
-                           Follow
-                        </button>
+                        <FollowButton
+                           targetUserId={profile.id}
+                           targetIsPrivate={profile.is_private}
+                           variant="card"
+                        />
                      </div>
                   </>
                )}

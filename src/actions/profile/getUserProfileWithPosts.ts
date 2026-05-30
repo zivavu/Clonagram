@@ -1,10 +1,12 @@
 'use server';
 import 'server-only';
+import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
 import { createServerClient } from '../../lib/supabase/server';
+import { getFollowStatusServer } from '../../queries/followStatus';
 
 export async function getUserProfileWithPosts(params: { username: string }) {
    const { username } = params;
-   const supabase = await createServerClient();
+   const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
 
    const { data, error } = await supabase
       .from('profiles')
@@ -25,7 +27,12 @@ export async function getUserProfileWithPosts(params: { username: string }) {
    if (error || !data)
       throw new Error(`Failed to fetch profile with posts: ${error?.message ?? 'unknown error'}`);
 
-   return { userProfile: data, posts: data.posts ?? [] };
+   const followStatus =
+      authProfile && authProfile.id !== data.id
+         ? await getFollowStatusServer(supabase, authProfile.id, data.id)
+         : 'none';
+
+   return { userProfile: data, posts: data.posts ?? [], followStatus };
 }
 
 export type ProfileWithPosts = Awaited<ReturnType<typeof getUserProfileWithPosts>>;

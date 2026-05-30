@@ -11,12 +11,12 @@ interface ProfilePageProps {
 export default async function Profile({ params }: ProfilePageProps) {
    const { username } = await params;
 
-   const [authProfile, { userProfile, posts }] = await Promise.all([
+   const [authProfile, { userProfile, posts, followStatus }] = await Promise.all([
       getAuthProfile(),
       getUserProfileWithPosts({ username }),
    ]);
 
    const isOwnProfile = authProfile?.username === username;
 
-   return <ProfilePage userProfile={userProfile} posts={posts} isOwnProfile={isOwnProfile} />;
+   return <ProfilePage userProfile={userProfile} posts={posts} followStatus={followStatus} isOwnProfile={isOwnProfile} />;
 }

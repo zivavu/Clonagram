@@ -16,6 +16,7 @@ interface ProfilePageProps extends ProfileWithPosts {
 export default function ProfilePage({
    userProfile,
    posts,
+   followStatus,
    isOwnProfile,
    initialPost,
 }: ProfilePageProps) {
@@ -27,6 +28,7 @@ export default function ProfilePage({
                userProfile={userProfile}
                postsCount={posts.length}
                isOwnProfile={isOwnProfile}
+               followStatus={followStatus}
             />
             <ProfileStoryHighlights isOwnProfile={isOwnProfile} />
          </div>

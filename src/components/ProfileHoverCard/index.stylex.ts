@@ -138,18 +138,6 @@ export const styles = stylex.create({
       alignItems: 'center',
       width: '100%',
    },
-   followButton: {
-      width: '100%',
-      margin: '16px',
-      padding: '8px 0',
-      backgroundColor: colors.accent,
-      color: colors.white,
-      borderRadius: radius.sm,
-      fontWeight: 600,
-      fontSize: '0.875rem',
-      textAlign: 'center',
-      cursor: 'pointer',
-   },
    skeletonWrapper: {
       margin: '16px',
    },

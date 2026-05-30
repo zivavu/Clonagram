@@ -99,12 +99,4 @@ export const styles = stylex.create({
    avatarImage: {
       borderRadius: '50%',
    },
-   followButton: {
-      fontSize: '0.8rem',
-      fontWeight: 600,
-      color: colors.accent,
-      ':hover': {
-         color: colors.accentHover,
-      },
-   },
 });
