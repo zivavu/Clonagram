@@ -7,7 +7,16 @@ export default async function Profile() {
 
    if (!profile) throw new Error('Profile not found');
 
-   const { userProfile, posts, followStatus } = await getUserProfileWithPosts({ username: profile?.username });
+   const { userProfile, posts, followStatus } = await getUserProfileWithPosts({
+      username: profile?.username,
+   });
 
-   return <ProfilePage userProfile={userProfile} posts={posts} followStatus={followStatus} isOwnProfile />;
+   return (
+      <ProfilePage
+         userProfile={userProfile}
+         posts={posts}
+         followStatus={followStatus}
+         isOwnProfile
+      />
+   );
 }

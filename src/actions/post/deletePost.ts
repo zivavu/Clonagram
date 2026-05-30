@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { getMuxClient } from '../../lib/mux';
 import { getAuthUser } from '../getAuthUser';
 
-export async function deletePostAction(params: { postId: string }): Promise<void> {
+export async function deletePostAction(params: { postId: string }) {
    const { supabase } = await getAuthUser();
 
    const { data: videos } = await supabase

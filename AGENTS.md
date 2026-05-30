@@ -173,7 +173,7 @@ Do not write comments in code. Write self-explanatory code with clear variable a
 
 <!-- BEGIN:linting-rules -->
 
-# Linting
+# Linting and building after task
 
 After finishing any coding task, always run the linter:
 
@@ -181,6 +181,20 @@ After finishing any coding task, always run the linter:
 bun biome check --write .
 ```
 
+If the linter passes, run the build command:
+
+```
+bun run build
+```
+
 Fix any errors before considering the task complete.
 
 <!-- END:linting-rules -->
+
+<!-- Begin:return-types -->
+
+# Return Types
+
+Just don't use them. Don't use the explicit return types at all.
+
+<!-- END:return-types -->

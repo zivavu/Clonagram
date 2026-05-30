@@ -18,5 +18,12 @@ export default async function Profile({ params }: ProfilePageProps) {
 
    const isOwnProfile = authProfile?.username === username;
 
-   return <ProfilePage userProfile={userProfile} posts={posts} followStatus={followStatus} isOwnProfile={isOwnProfile} />;
+   return (
+      <ProfilePage
+         userProfile={userProfile}
+         posts={posts}
+         followStatus={followStatus}
+         isOwnProfile={isOwnProfile}
+      />
+   );
 }

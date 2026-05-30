@@ -83,6 +83,7 @@ export default function ChatView({
             },
             () => {
                queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+               queryClient.invalidateQueries({ queryKey: ['conversations'] });
                markConversationRead(conversationId);
             },
          )
@@ -225,7 +226,10 @@ export default function ChatView({
          ) : (
             <MessageInput
                conversationId={conversationId}
-               onSent={() => queryClient.invalidateQueries({ queryKey: messagesKey })}
+               onSent={() => {
+                  queryClient.invalidateQueries({ queryKey: messagesKey });
+                  queryClient.invalidateQueries({ queryKey: ['conversations'] });
+               }}
             />
          )}
       </>

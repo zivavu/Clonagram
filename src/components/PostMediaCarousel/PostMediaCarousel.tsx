@@ -124,7 +124,7 @@ export default function PostMediaCarousel({
                            sizes={sizes}
                            placeholder={item.blurDataURL ? 'blur' : 'empty'}
                            blurDataURL={item.blurDataURL}
-                           style={{ objectFit: 'contain' }}
+                           style={{ objectFit: 'cover' }}
                         />
                      ) : (
                         <MuxPlayer

@@ -1,18 +1,20 @@
 'use server';
 import 'server-only';
-import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '@/src/lib/supabase/server';
 
-export async function sendMessage(conversationId: string, content: string) {
-   const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
-   if (!authProfile) throw new Error('Not authenticated');
+export async function sendMessage(conversationId: string, content: string): Promise<void> {
+   const supabase = await createServerClient();
+   const {
+      data: { user },
+   } = await supabase.auth.getUser();
+   if (!user) throw new Error('Not authenticated');
 
    const trimmed = content.trim();
    if (!trimmed) return;
 
    const { error: msgError } = await supabase.from('messages').insert({
       conversation_id: conversationId,
-      sender_id: authProfile.id,
+      sender_id: user.id,
       content: trimmed,
    });
    if (msgError) throw msgError;
@@ -25,7 +27,7 @@ export async function sendMessage(conversationId: string, content: string) {
          .update({
             last_message_preview: trimmed.slice(0, 100),
             last_message_at: now,
-            last_message_sender_id: authProfile.id,
+            last_message_sender_id: user.id,
             updated_at: now,
          })
          .eq('id', conversationId),

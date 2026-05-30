@@ -18,7 +18,7 @@ export async function updatePost({
    location,
    hideLikes,
    commentsOff,
-}: UpdatePostParams): Promise<void> {
+}: UpdatePostParams) {
    const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
 
    if (!authProfile) throw new Error('Not authenticated');

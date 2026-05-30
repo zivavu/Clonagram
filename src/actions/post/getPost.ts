@@ -1,9 +1,8 @@
 'use server';
 import 'server-only';
-import type { PostWithMedia } from '@/src/queries/posts';
 import { createServerClient } from '../../lib/supabase/server';
 
-export async function getPostAction(postId: string): Promise<PostWithMedia> {
+export async function getPostAction(postId: string) {
    const supabase = await createServerClient();
 
    const { data, error } = await supabase

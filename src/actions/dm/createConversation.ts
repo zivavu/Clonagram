@@ -1,51 +1,42 @@
 'use server';
 import 'server-only';
-import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
+import { randomUUID } from 'crypto';
 import { createServerClient } from '@/src/lib/supabase/server';
 
-export async function createConversation(participantIds: string[]) {
-   const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
-   if (!authProfile) throw new Error('Not authenticated');
+export async function createConversation(participantIds: string[]): Promise<string> {
+   const supabase = await createServerClient();
+   const {
+      data: { user },
+   } = await supabase.auth.getUser();
+   if (!user) throw new Error('Not authenticated');
 
-   const allIds = [...new Set([authProfile.id, ...participantIds])];
+   const uniqueParticipantIds = [...new Set(participantIds.filter(id => id !== user.id))];
 
-   if (allIds.length === 2) {
-      const otherId = participantIds[0];
-      const { data: otherConvIds } = await supabase
-         .from('conversation_participants')
-         .select('conversation_id')
-         .eq('user_id', otherId);
-      const otherIds = (otherConvIds ?? []).map(r => r.conversation_id);
-      if (otherIds.length > 0) {
-         const { data: existing } = await supabase
-            .from('conversation_participants')
-            .select('conversation_id')
-            .eq('user_id', authProfile.id)
-            .in('conversation_id', otherIds)
-            .limit(1)
-            .maybeSingle();
-         if (existing) return existing.conversation_id;
-      }
+   if (uniqueParticipantIds.length === 1) {
+      const { data: existingId } = await supabase.rpc('find_direct_conversation', {
+         p_user_a: user.id,
+         p_user_b: uniqueParticipantIds[0],
+      });
+      if (existingId) return existingId as string;
    }
 
-   const { data: conv, error: convError } = await supabase
+   const convId = randomUUID();
+   const { error: convError } = await supabase
       .from('conversations')
-      .insert({ title: null })
-      .select('id')
-      .single();
-   if (convError || !conv) throw convError ?? new Error('Failed to create conversation');
+      .insert({ id: convId, title: null });
+   if (convError) throw convError;
 
    const { data: followers } = await supabase
       .from('follows')
       .select('follower_id')
-      .in('follower_id', participantIds)
-      .eq('following_id', authProfile.id);
+      .in('follower_id', uniqueParticipantIds)
+      .eq('following_id', user.id);
    const followerSet = new Set((followers ?? []).map(r => r.follower_id));
 
    const participants = [
-      { conversation_id: conv.id, user_id: authProfile.id, role: 'admin', folder: 'primary' },
-      ...participantIds.map(uid => ({
-         conversation_id: conv.id,
+      { conversation_id: convId, user_id: user.id, role: 'admin', folder: 'primary' },
+      ...uniqueParticipantIds.map(uid => ({
+         conversation_id: convId,
          user_id: uid,
          role: 'member',
          folder: followerSet.has(uid) ? 'primary' : 'requests',
@@ -57,5 +48,5 @@ export async function createConversation(participantIds: string[]) {
       .insert(participants);
    if (partError) throw partError;
 
-   return conv.id;
+   return convId;
 }
