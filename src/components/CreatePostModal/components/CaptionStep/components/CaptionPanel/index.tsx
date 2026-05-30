@@ -21,11 +21,11 @@ interface CaptionPanelProps {
    onCaptionChange: (caption: string) => void;
    location: PostLocation | null;
    onLocationChange: (location: PostLocation | null) => void;
-   collaborators: PartialUser[];
-   onCollaboratorsChange: (collaborators: PartialUser[]) => void;
+   collaborators?: PartialUser[];
+   onCollaboratorsChange?: (collaborators: PartialUser[]) => void;
    postSettings: PostSettings;
    onPostSettingsChange: (settings: PostSettings) => void;
-   files: PostMedia[];
+   files?: PostMedia[];
 }
 
 export default function CaptionPanel({
@@ -45,6 +45,8 @@ export default function CaptionPanel({
    const [shareToOpen, setShareToOpen] = useState(false);
    const [accessibilityOpen, setAccessibilityOpen] = useState(false);
    const [advancedOpen, setAdvancedOpen] = useState(false);
+
+   const showCollaborators = !!onCollaboratorsChange;
 
    const updateSettings = (updates: Partial<PostSettings>) => {
       onPostSettingsChange({ ...postSettings, ...updates });
@@ -90,46 +92,47 @@ export default function CaptionPanel({
 
          <LocationAutocomplete value={location} onChange={onLocationChange} />
 
-         {collabOpen ? (
-            <UserAutocomplete
-               multiSelect
-               selected={collaborators}
-               onSelect={handleCollabToggle}
-               onDone={() => setCollabOpen(false)}
-               onDismiss={() => setCollabOpen(false)}
-               placeholder="Search..."
-               autoFocus
-            />
-         ) : (
-            <button
-               type="button"
-               {...stylex.props(styles.addRow)}
-               onClick={() => setCollabOpen(true)}
-            >
-               {collaborators.length > 0 ? (
-                  <div {...stylex.props(styles.collabAvatars)}>
-                     {collaborators.slice(0, 3).map(c => (
-                        <div key={c.id} {...stylex.props(styles.collabAvatarWrap)}>
-                           <UserAvatar
-                              src={c.avatar_url}
-                              alt={c.username}
-                              size={28}
-                              userId={c.id}
-                           />
-                        </div>
-                     ))}
-                     {collaborators.length > 3 && (
-                        <span {...stylex.props(styles.collabCount)}>
-                           +{collaborators.length - 3}
-                        </span>
-                     )}
-                  </div>
-               ) : (
-                  <span {...stylex.props(styles.addRowLabel)}>Add collaborators</span>
-               )}
-               <IoPersonAddOutline style={{ fontSize: 20, opacity: 0.7 }} />
-            </button>
-         )}
+         {showCollaborators &&
+            (collabOpen ? (
+               <UserAutocomplete
+                  multiSelect
+                  selected={collaborators ?? []}
+                  onSelect={handleCollabToggle}
+                  onDone={() => setCollabOpen(false)}
+                  onDismiss={() => setCollabOpen(false)}
+                  placeholder="Search..."
+                  autoFocus
+               />
+            ) : (
+               <button
+                  type="button"
+                  {...stylex.props(styles.addRow)}
+                  onClick={() => setCollabOpen(true)}
+               >
+                  {(collaborators ?? []).length > 0 ? (
+                     <div {...stylex.props(styles.collabAvatars)}>
+                        {(collaborators ?? []).slice(0, 3).map(c => (
+                           <div key={c.id} {...stylex.props(styles.collabAvatarWrap)}>
+                              <UserAvatar
+                                 src={c.avatar_url}
+                                 alt={c.username}
+                                 size={28}
+                                 userId={c.id}
+                              />
+                           </div>
+                        ))}
+                        {(collaborators ?? []).length > 3 && (
+                           <span {...stylex.props(styles.collabCount)}>
+                              +{(collaborators ?? []).length - 3}
+                           </span>
+                        )}
+                     </div>
+                  ) : (
+                     <span {...stylex.props(styles.addRowLabel)}>Add collaborators</span>
+                  )}
+                  <IoPersonAddOutline style={{ fontSize: 20, opacity: 0.7 }} />
+               </button>
+            ))}
 
          <CollapsibleSection
             title="Share to"
@@ -154,33 +157,35 @@ export default function CaptionPanel({
             </div>
          </CollapsibleSection>
 
-         <CollapsibleSection
-            title="Accessibility"
-            open={accessibilityOpen}
-            onToggle={() => setAccessibilityOpen(o => !o)}
-         >
-            <p {...stylex.props(styles.accessibilityDesc)}>
-               Alt text describes your photos for people with visual impairments. Alt text will be
-               automatically created for your photos or you can choose to write your own.
-            </p>
-            {files
-               .filter(file => file.type === 'image')
-               .map((file, idx) => (
-                  <div key={file.preview} {...stylex.props(styles.altRow)}>
-                     {/* biome-ignore lint/performance/noImgElement: small fixed-size thumbnail */}
-                     <img
-                        src={file.preview}
-                        alt={`Thumbnail ${idx + 1}`}
-                        {...stylex.props(styles.altThumb)}
-                     />
-                     <input
-                        type="text"
-                        placeholder="Write alt text..."
-                        {...stylex.props(styles.altInput)}
-                     />
-                  </div>
-               ))}
-         </CollapsibleSection>
+         {files && (
+            <CollapsibleSection
+               title="Accessibility"
+               open={accessibilityOpen}
+               onToggle={() => setAccessibilityOpen(o => !o)}
+            >
+               <p {...stylex.props(styles.accessibilityDesc)}>
+                  Alt text describes your photos for people with visual impairments. Alt text will
+                  be automatically created for your photos or you can choose to write your own.
+               </p>
+               {files
+                  .filter(file => file.type === 'image')
+                  .map((file, idx) => (
+                     <div key={file.preview} {...stylex.props(styles.altRow)}>
+                        {/* biome-ignore lint/performance/noImgElement: small fixed-size thumbnail */}
+                        <img
+                           src={file.preview}
+                           alt={`Thumbnail ${idx + 1}`}
+                           {...stylex.props(styles.altThumb)}
+                        />
+                        <input
+                           type="text"
+                           placeholder="Write alt text..."
+                           {...stylex.props(styles.altInput)}
+                        />
+                     </div>
+                  ))}
+            </CollapsibleSection>
+         )}
 
          <CollapsibleSection
             title="Advanced settings"

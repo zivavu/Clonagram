@@ -9,6 +9,7 @@ import { deletePostAction } from '../../actions/post/deletePost';
 import { useOwnerActionsModal } from '../../store/useOwnerActionsModalStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
+import EditPostModal from '../EditPostModal';
 import { styles } from './OwnerActionsModal.stylex';
 
 interface Action {
@@ -26,6 +27,7 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
    const [isLoading, setIsLoading] = useState(false);
    const [showConfirm, setShowConfirm] = useState(false);
    const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
+   const [editingPostId, setEditingPostId] = useState<string | null>(null);
 
    async function handleDelete() {
       if (!deletingPostId) return;
@@ -53,7 +55,13 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
             setShowConfirm(true);
          },
       },
-      { label: 'Edit', action: () => {} },
+      {
+         label: 'Edit',
+         action: () => {
+            setEditingPostId(postId);
+            close();
+         },
+      },
       { label: 'Share to...', action: () => {} },
       {
          label: 'Copy link',
@@ -109,6 +117,12 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
             onOpenChange={setShowConfirm}
             onConfirm={handleDelete}
             isLoading={isLoading}
+         />
+
+         <EditPostModal
+            isOpen={!!editingPostId}
+            postId={editingPostId}
+            onClose={() => setEditingPostId(null)}
          />
       </>
    );
