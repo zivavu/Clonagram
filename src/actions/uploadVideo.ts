@@ -9,7 +9,7 @@ export async function uploadVideo() {
       cors_origin: process.env.NEXT_PUBLIC_HOSTNAME ?? 'https://localhost:3000',
       new_asset_settings: {
          playback_policy: ['public'],
-         video_quality: 'basic',
+         video_quality: 'plus',
       },
    });
 

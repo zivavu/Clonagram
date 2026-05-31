@@ -17,6 +17,39 @@ function getFileExtension(name: string): string {
    return dotIndex > 0 ? name.slice(dotIndex) : '.mp4';
 }
 
+function getVideoDimensions(file: File): Promise<{ width: number; height: number }> {
+   return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const video = document.createElement('video');
+      video.onloadedmetadata = () => {
+         URL.revokeObjectURL(url);
+         resolve({ width: video.videoWidth, height: video.videoHeight });
+      };
+      video.onerror = () => {
+         URL.revokeObjectURL(url);
+         reject(new Error('Failed to read video dimensions'));
+      };
+      video.src = url;
+   });
+}
+
+async function isCropNeeded(
+   file: File,
+   aspectRatio: AspectRatio,
+   zoom: number,
+   panX: number,
+   panY: number,
+): Promise<boolean> {
+   if (zoom !== 1 || panX !== 0 || panY !== 0) return true;
+   if (aspectRatio === 'original') return false;
+
+   const { width, height } = await getVideoDimensions(file);
+   const [tw, th] = aspectRatio.split(':').map(Number);
+   const baseCropW = Math.min(width, (height * tw) / th);
+   const baseCropH = Math.min(height, (width * th) / tw);
+   return Math.abs(baseCropW - width) >= 1 || Math.abs(baseCropH - height) >= 1;
+}
+
 const OUTPUT_SCALE: Record<Exclude<AspectRatio, 'original'>, string> = {
    '1:1': '1080:1080',
    '4:5': '1080:1350',
@@ -42,14 +75,11 @@ function buildCropFilter(
       outScale = 'iw:ih';
    } else {
       const [tw, th] = aspectRatio.split(':').map(Number);
-      // min() with \, because comma inside a filter option must be escaped
       baseCropWExpr = `min(iw\\,ih*${tw}/${th})`;
       baseCropHExpr = `min(ih\\,iw*${th}/${tw})`;
       outScale = OUTPUT_SCALE[aspectRatio];
    }
 
-   // Convert CSS-pixel pan to a fraction of the original video dimensions, pre-divided by zoom.
-   // panX_orig_px / zoom = (panX / imageDisplayW) * iw / zoom = panXFactor * iw
    const panXFactor = imageDisplayW > 0 ? panX / (imageDisplayW * zoom) : 0;
    const panYFactor = imageDisplayH > 0 ? panY / (imageDisplayH * zoom) : 0;
 
@@ -76,11 +106,11 @@ export async function processVideo(
    imageDisplayW: number,
    imageDisplayH: number,
 ): Promise<File> {
-   const needsCrop = aspectRatio !== 'original' || zoom !== 1 || panX !== 0 || panY !== 0;
+   const needsCrop = await isCropNeeded(file, aspectRatio, zoom, panX, panY);
    const needsProcessing =
       trimStart > 0 || (trimEnd > 0 && trimEnd < duration) || muted || needsCrop;
 
-   if (!needsProcessing && file.type === 'video/mp4') {
+   if (!needsProcessing) {
       return file;
    }
 
@@ -116,7 +146,7 @@ export async function processVideo(
       } else {
          args.push('-map', '0:a?', '-c:a', 'aac');
       }
-      args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p');
+      args.push('-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-pix_fmt', 'yuv420p');
    } else {
       args.push('-map', '0:v:0', '-c:v', 'copy');
       if (muted) {
