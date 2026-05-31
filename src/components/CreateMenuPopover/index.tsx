@@ -20,12 +20,12 @@ export function CreateMenuPopover({ mainSidebarStyles }: CreateMenuPopoverProps)
 
    function handlePost() {
       setIsOpen(false);
-      openCreate();
+      openCreate('post');
    }
 
    function handleReels() {
       setIsOpen(false);
-      openCreate();
+      openCreate('reel');
    }
 
    return (
@@ -45,13 +45,18 @@ export function CreateMenuPopover({ mainSidebarStyles }: CreateMenuPopoverProps)
                </span>
             </button>
          </Popover.Trigger>
-         <Popover.Content side="bottom" sideOffset={8} align="start" {...stylex.props(styles.content)}>
+         <Popover.Content
+            side="bottom"
+            sideOffset={8}
+            align="start"
+            {...stylex.props(styles.content)}
+         >
             <button type="button" onClick={handlePost} {...stylex.props(styles.item)}>
                Post
                <BsImages style={{ fontSize: 18 }} />
             </button>
             <button type="button" onClick={handleReels} {...stylex.props(styles.item)}>
-               Reels
+               Reel
                <MdOutlineSmartDisplay style={{ fontSize: 18 }} />
             </button>
          </Popover.Content>

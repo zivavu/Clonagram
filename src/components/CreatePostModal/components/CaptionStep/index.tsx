@@ -24,6 +24,7 @@ interface CaptionStepProps {
    onCollaboratorsChange: (collaborators: PartialUser[]) => void;
    postSettings: PostSettings;
    onPostSettingsChange: (settings: PostSettings) => void;
+   isReel: boolean;
 }
 
 export default function CaptionStep({
@@ -42,11 +43,12 @@ export default function CaptionStep({
    onCollaboratorsChange,
    postSettings,
    onPostSettingsChange,
+   isReel,
 }: CaptionStepProps) {
    return (
       <div {...stylex.props(styles.root)}>
          <StepHeader
-            title="Create new post"
+            title={isReel ? 'New reel' : 'Create new post'}
             onBack={onBack}
             rightSlot={<StepHeaderAction label="Share" onClick={onShare} />}
          />

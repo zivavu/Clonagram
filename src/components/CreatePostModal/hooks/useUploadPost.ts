@@ -79,6 +79,11 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
          media.duration,
          media.muted,
          postData.aspectRatio,
+         media.zoom,
+         media.panX,
+         media.panY,
+         media.imageDisplayW,
+         media.imageDisplayH,
       ),
       getVideoNaturalDimensions(media.preview),
    ]);

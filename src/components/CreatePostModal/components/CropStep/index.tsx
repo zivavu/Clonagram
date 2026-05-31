@@ -19,6 +19,7 @@ interface CropStepProps {
    onAddFiles: () => void;
    aspectRatio: AspectRatio;
    onAspectRatioChange: (ratio: AspectRatio) => void;
+   isReel: boolean;
 }
 
 export default function CropStep({
@@ -33,6 +34,7 @@ export default function CropStep({
    onAddFiles,
    aspectRatio,
    onAspectRatioChange,
+   isReel,
 }: CropStepProps) {
    const currentFile = files[currentIndex];
    if (!currentFile) return null;
@@ -40,7 +42,7 @@ export default function CropStep({
    return (
       <div {...stylex.props(styles.root)}>
          <StepHeader
-            title="Crop"
+            title={isReel ? 'Crop reel' : 'Crop'}
             onBack={onBack}
             rightSlot={<StepHeaderAction label="Next" onClick={onNext} />}
          />
@@ -61,6 +63,7 @@ export default function CropStep({
             onReorderFiles={onReorderFiles}
             onUpdateFile={onUpdateFile}
             onAddFiles={onAddFiles}
+            isReel={isReel}
          />
       </div>
    );

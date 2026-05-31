@@ -17,14 +17,51 @@ function getFileExtension(name: string): string {
    return dotIndex > 0 ? name.slice(dotIndex) : '.mp4';
 }
 
-const ASPECT_RATIO_FILTERS: Record<Exclude<AspectRatio, 'original'>, string> = {
-   '1:1': 'crop=min(iw\\,ih):min(iw\\,ih):(iw-min(iw\\,ih))/2:(ih-min(iw\\,ih))/2,scale=1080:1080:flags=lanczos',
-   '4:5': 'crop=min(iw\\,ih*4/5):min(iw*5/4\\,ih):(iw-min(iw\\,ih*4/5))/2:(ih-min(iw*5/4\\,ih))/2,scale=1080:1350:flags=lanczos',
-   '16:9':
-      'crop=min(iw\\,ih*16/9):min(iw*9/16\\,ih):(iw-min(iw\\,ih*16/9))/2:(ih-min(iw*9/16\\,ih))/2,scale=1920:1080:flags=lanczos',
-   '9:16':
-      'crop=min(iw\\,ih*9/16):min(iw*16/9\\,ih):(iw-min(iw\\,ih*9/16))/2:(ih-min(iw*16/9\\,ih))/2,scale=1080:1920:flags=lanczos',
+const OUTPUT_SCALE: Record<Exclude<AspectRatio, 'original'>, string> = {
+   '1:1': '1080:1080',
+   '4:5': '1080:1350',
+   '16:9': '1920:1080',
+   '9:16': '1080:1920',
 };
+
+function buildCropFilter(
+   aspectRatio: AspectRatio,
+   zoom: number,
+   panX: number,
+   panY: number,
+   imageDisplayW: number,
+   imageDisplayH: number,
+): string {
+   let baseCropWExpr: string;
+   let baseCropHExpr: string;
+   let outScale: string;
+
+   if (aspectRatio === 'original') {
+      baseCropWExpr = 'iw';
+      baseCropHExpr = 'ih';
+      outScale = 'iw:ih';
+   } else {
+      const [tw, th] = aspectRatio.split(':').map(Number);
+      // min() with \, because comma inside a filter option must be escaped
+      baseCropWExpr = `min(iw\\,ih*${tw}/${th})`;
+      baseCropHExpr = `min(ih\\,iw*${th}/${tw})`;
+      outScale = OUTPUT_SCALE[aspectRatio];
+   }
+
+   // Convert CSS-pixel pan to a fraction of the original video dimensions, pre-divided by zoom.
+   // panX_orig_px / zoom = (panX / imageDisplayW) * iw / zoom = panXFactor * iw
+   const panXFactor = imageDisplayW > 0 ? panX / (imageDisplayW * zoom) : 0;
+   const panYFactor = imageDisplayH > 0 ? panY / (imageDisplayH * zoom) : 0;
+
+   const cropWExpr = `${baseCropWExpr}/${zoom}`;
+   const cropHExpr = `${baseCropHExpr}/${zoom}`;
+   const panXExpr = panXFactor !== 0 ? `${panXFactor}*iw` : '0';
+   const panYExpr = panYFactor !== 0 ? `${panYFactor}*ih` : '0';
+   const cropXExpr = `iw/2-${baseCropWExpr}/(2*${zoom})-${panXExpr}`;
+   const cropYExpr = `ih/2-${baseCropHExpr}/(2*${zoom})-${panYExpr}`;
+
+   return `crop=${cropWExpr}:${cropHExpr}:${cropXExpr}:${cropYExpr},scale=${outScale}:flags=lanczos`;
+}
 
 export async function processVideo(
    file: File,
@@ -33,9 +70,15 @@ export async function processVideo(
    duration: number,
    muted: boolean,
    aspectRatio: AspectRatio,
+   zoom: number,
+   panX: number,
+   panY: number,
+   imageDisplayW: number,
+   imageDisplayH: number,
 ): Promise<File> {
+   const needsCrop = aspectRatio !== 'original' || zoom !== 1 || panX !== 0 || panY !== 0;
    const needsProcessing =
-      trimStart > 0 || (trimEnd > 0 && trimEnd < duration) || muted || aspectRatio !== 'original';
+      trimStart > 0 || (trimEnd > 0 && trimEnd < duration) || muted || needsCrop;
 
    if (!needsProcessing && file.type === 'video/mp4') {
       return file;
@@ -50,8 +93,6 @@ export async function processVideo(
 
    await ffmpeg.writeFile(inputName, await fetchFile(file));
 
-   const needsReencode = aspectRatio !== 'original';
-
    const args: string[] = [];
 
    if (trimStart > 0) {
@@ -64,8 +105,11 @@ export async function processVideo(
       args.push('-to', String(trimEnd - trimStart));
    }
 
-   if (needsReencode) {
-      args.push('-vf', ASPECT_RATIO_FILTERS[aspectRatio]);
+   if (needsCrop) {
+      args.push(
+         '-vf',
+         buildCropFilter(aspectRatio, zoom, panX, panY, imageDisplayW, imageDisplayH),
+      );
       args.push('-map', '0:v:0');
       if (muted) {
          args.push('-an');

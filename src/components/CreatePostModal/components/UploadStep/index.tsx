@@ -8,16 +8,19 @@ interface UploadStepProps {
    getRootProps: () => Record<string, unknown>;
    open: () => void;
    isDragActive: boolean;
+   isReel: boolean;
 }
 
-export default function UploadStep({ getRootProps, open, isDragActive }: UploadStepProps) {
+export default function UploadStep({ getRootProps, open, isDragActive, isReel }: UploadStepProps) {
    return (
       <>
          <Dialog.Description style={{ display: 'none' }}>
-            Upload photos and videos to create a new post
+            {isReel
+               ? 'Upload a video to create a new reel'
+               : 'Upload photos and videos to create a new post'}
          </Dialog.Description>
          <StepHeader
-            title={<Dialog.Title>Create new post</Dialog.Title>}
+            title={<Dialog.Title>{isReel ? 'Create new reel' : 'Create new post'}</Dialog.Title>}
             rightSlot={
                <Dialog.Close asChild>
                   <button {...stylex.props(stepHeaderStyles.closeButton)} aria-label="Close">
@@ -31,9 +34,11 @@ export default function UploadStep({ getRootProps, open, isDragActive }: UploadS
             {...stylex.props(styles.dropZone, isDragActive && styles.dropZoneActive)}
          >
             <IoImagesOutline style={{ fontSize: 96, color: 'rgb(168, 168, 168)' }} />
-            <p {...stylex.props(styles.dropText)}>Drag photos and videos here</p>
+            <p {...stylex.props(styles.dropText)}>
+               {isReel ? 'Drag video here' : 'Drag photos and videos here'}
+            </p>
             <button type="button" {...stylex.props(styles.selectButton)} onClick={open}>
-               Select from computer
+               {isReel ? 'Select video' : 'Select from computer'}
             </button>
          </div>
       </>

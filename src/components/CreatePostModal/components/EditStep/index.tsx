@@ -23,6 +23,7 @@ interface EditStepProps {
    onSelectIndex: (index: number) => void;
    onUpdateFile: (index: number, updates: Partial<PostMedia>) => void;
    aspectRatio: AspectRatio;
+   isReel: boolean;
 }
 
 export default function EditStep({
@@ -33,6 +34,7 @@ export default function EditStep({
    onSelectIndex,
    onUpdateFile,
    aspectRatio,
+   isReel,
 }: EditStepProps) {
    const currentFile = files[currentIndex];
    const previewRef = useRef<HTMLDivElement>(null);
@@ -117,7 +119,7 @@ export default function EditStep({
    return (
       <div {...stylex.props(styles.root)}>
          <StepHeader
-            title="Edit"
+            title={isReel ? 'Edit reel' : 'Edit'}
             onBack={onBack}
             rightSlot={<StepHeaderAction label="Next" onClick={onNext} />}
          />

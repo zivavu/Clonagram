@@ -30,6 +30,7 @@ interface CropControlsProps {
    onReorderFiles: (fromIndex: number, toIndex: number) => void;
    onUpdateFile: (index: number, updates: Partial<PostMedia>) => void;
    onAddFiles: () => void;
+   isReel: boolean;
 }
 
 export default function CropControls({
@@ -42,6 +43,7 @@ export default function CropControls({
    onReorderFiles,
    onUpdateFile,
    onAddFiles,
+   isReel,
 }: CropControlsProps) {
    const currentFile = files[currentIndex];
    const [showRatioMenu, setShowRatioMenu] = useState(false);
@@ -79,36 +81,41 @@ export default function CropControls({
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.leftControls)}>
-            <div {...stylex.props(styles.controlWrapper)}>
-               <button
-                  type="button"
-                  {...stylex.props(styles.controlButton)}
-                  onClick={() => setShowRatioMenu(prev => !prev)}
-                  aria-label="Aspect ratio"
-               >
-                  <MdOutlineAspectRatio />
-               </button>
-               {showRatioMenu && (
-                  <div {...stylex.props(styles.ratioMenu)}>
-                     {ASPECT_RATIOS.map(({ key, label, icon }) => (
-                        <button
-                           key={key}
-                           type="button"
-                           {...stylex.props(
-                              styles.ratioMenuItem,
-                              aspectRatio === key && styles.ratioMenuItemActive,
-                           )}
-                           onClick={() => handleRatioChange(key)}
-                        >
-                           <span>{label}</span>
-                           <div {...stylex.props(styles.ratioIcon)} style={{ aspectRatio: icon }} />
-                        </button>
-                     ))}
-                  </div>
-               )}
-            </div>
+            {!isReel && (
+               <div {...stylex.props(styles.controlWrapper)}>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.controlButton)}
+                     onClick={() => setShowRatioMenu(prev => !prev)}
+                     aria-label="Aspect ratio"
+                  >
+                     <MdOutlineAspectRatio />
+                  </button>
+                  {showRatioMenu && (
+                     <div {...stylex.props(styles.ratioMenu)}>
+                        {ASPECT_RATIOS.map(({ key, label, icon }) => (
+                           <button
+                              key={key}
+                              type="button"
+                              {...stylex.props(
+                                 styles.ratioMenuItem,
+                                 aspectRatio === key && styles.ratioMenuItemActive,
+                              )}
+                              onClick={() => handleRatioChange(key)}
+                           >
+                              <span>{label}</span>
+                              <div
+                                 {...stylex.props(styles.ratioIcon)}
+                                 style={{ aspectRatio: icon }}
+                              />
+                           </button>
+                        ))}
+                     </div>
+                  )}
+               </div>
+            )}
 
-            {currentFile.type !== 'video' && (
+            {(currentFile.type !== 'video' || isReel) && (
                <div {...stylex.props(styles.controlWrapper)}>
                   <button
                      type="button"
@@ -137,113 +144,115 @@ export default function CropControls({
             )}
          </div>
 
-         <Popover.Root>
-            <Popover.Trigger asChild>
-               <button
-                  type="button"
-                  {...stylex.props(styles.controlButton)}
-                  aria-label="View all media"
-               >
-                  <PiImagesSquareLight style={{ fontSize: 20 }} />
-               </button>
-            </Popover.Trigger>
-            <Popover.Portal>
-               <Popover.Content
-                  {...stylex.props(styles.popoverContent)}
-                  side="top"
-                  align="end"
-                  sideOffset={8}
-               >
-                  <div {...stylex.props(styles.popoverThumbnails)}>
-                     {files.length > 3 && (
-                        <div {...stylex.props(styles.popoverArrow)}>
-                           <CarouselArrow
-                              direction="left"
-                              onClick={() => scrollThumbnails('left')}
-                           />
-                        </div>
-                     )}
-                     <ul {...stylex.props(styles.popoverScroll)} ref={thumbnailsRef}>
-                        {files.map((file, idx) => (
-                           <li
-                              key={file.preview}
-                              draggable={files.length > 1}
-                              {...stylex.props(
-                                 styles.popoverThumbWrapper,
-                                 dragOverIndex === idx && styles.popoverThumbWrapperDragOver,
-                              )}
-                              onDragStart={e => handleDragStart(e, idx)}
-                              onDragOver={e => {
-                                 e.preventDefault();
-                                 e.dataTransfer.dropEffect = 'move';
-                                 setDragOverIndex(idx);
-                              }}
-                              onDrop={e => handleDrop(e, idx)}
-                              onDragLeave={() => setDragOverIndex(null)}
-                              onDragEnd={() => setDragOverIndex(null)}
-                           >
-                              <button
-                                 type="button"
-                                 {...stylex.props(styles.popoverThumb)}
-                                 onClick={() => onSelectIndex(idx)}
+         {!isReel && (
+            <Popover.Root>
+               <Popover.Trigger asChild>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.controlButton)}
+                     aria-label="View all media"
+                  >
+                     <PiImagesSquareLight style={{ fontSize: 20 }} />
+                  </button>
+               </Popover.Trigger>
+               <Popover.Portal>
+                  <Popover.Content
+                     {...stylex.props(styles.popoverContent)}
+                     side="top"
+                     align="end"
+                     sideOffset={8}
+                  >
+                     <div {...stylex.props(styles.popoverThumbnails)}>
+                        {files.length > 3 && (
+                           <div {...stylex.props(styles.popoverArrow)}>
+                              <CarouselArrow
+                                 direction="left"
+                                 onClick={() => scrollThumbnails('left')}
+                              />
+                           </div>
+                        )}
+                        <ul {...stylex.props(styles.popoverScroll)} ref={thumbnailsRef}>
+                           {files.map((file, idx) => (
+                              <li
+                                 key={file.preview}
+                                 draggable={files.length > 1}
+                                 {...stylex.props(
+                                    styles.popoverThumbWrapper,
+                                    dragOverIndex === idx && styles.popoverThumbWrapperDragOver,
+                                 )}
+                                 onDragStart={e => handleDragStart(e, idx)}
+                                 onDragOver={e => {
+                                    e.preventDefault();
+                                    e.dataTransfer.dropEffect = 'move';
+                                    setDragOverIndex(idx);
+                                 }}
+                                 onDrop={e => handleDrop(e, idx)}
+                                 onDragLeave={() => setDragOverIndex(null)}
+                                 onDragEnd={() => setDragOverIndex(null)}
                               >
-                                 {file.type === 'video' ? (
-                                    <video
-                                       src={file.preview}
-                                       muted
-                                       playsInline
-                                       width={94}
-                                       height={94}
-                                       {...stylex.props(styles.thumbImage)}
-                                    />
-                                 ) : (
-                                    <Image
-                                       src={file.preview}
-                                       alt={`Thumbnail ${idx + 1}`}
-                                       width={94}
-                                       height={94}
-                                       {...stylex.props(styles.thumbImage)}
-                                    />
-                                 )}
-                                 {idx !== currentIndex && (
-                                    <div {...stylex.props(styles.thumbImageOverlay)} />
-                                 )}
-                              </button>
-                              {files.length > 1 && idx === currentIndex && (
                                  <button
                                     type="button"
-                                    {...stylex.props(styles.thumbRemove)}
-                                    onClick={() => onRemoveFile(idx)}
+                                    {...stylex.props(styles.popoverThumb)}
+                                    onClick={() => onSelectIndex(idx)}
                                  >
-                                    <IoClose style={{ fontSize: 12 }} />
+                                    {file.type === 'video' ? (
+                                       <video
+                                          src={file.preview}
+                                          muted
+                                          playsInline
+                                          width={94}
+                                          height={94}
+                                          {...stylex.props(styles.thumbImage)}
+                                       />
+                                    ) : (
+                                       <Image
+                                          src={file.preview}
+                                          alt={`Thumbnail ${idx + 1}`}
+                                          width={94}
+                                          height={94}
+                                          {...stylex.props(styles.thumbImage)}
+                                       />
+                                    )}
+                                    {idx !== currentIndex && (
+                                       <div {...stylex.props(styles.thumbImageOverlay)} />
+                                    )}
                                  </button>
-                              )}
-                           </li>
-                        ))}
-                        {files.length < MAX_FILES && (
-                           <li key="add" {...stylex.props(styles.popoverThumbWrapper)}>
-                              <button
-                                 type="button"
-                                 {...stylex.props(styles.popoverAddButton)}
-                                 onClick={onAddFiles}
-                              >
-                                 <MdAdd style={{ fontSize: 20 }} />
-                              </button>
-                           </li>
+                                 {files.length > 1 && idx === currentIndex && (
+                                    <button
+                                       type="button"
+                                       {...stylex.props(styles.thumbRemove)}
+                                       onClick={() => onRemoveFile(idx)}
+                                    >
+                                       <IoClose style={{ fontSize: 12 }} />
+                                    </button>
+                                 )}
+                              </li>
+                           ))}
+                           {!isReel && files.length < MAX_FILES && (
+                              <li key="add" {...stylex.props(styles.popoverThumbWrapper)}>
+                                 <button
+                                    type="button"
+                                    {...stylex.props(styles.popoverAddButton)}
+                                    onClick={onAddFiles}
+                                 >
+                                    <MdAdd style={{ fontSize: 20 }} />
+                                 </button>
+                              </li>
+                           )}
+                        </ul>
+                        {files.length > 3 && (
+                           <div {...stylex.props(styles.popoverArrow)}>
+                              <CarouselArrow
+                                 direction="right"
+                                 onClick={() => scrollThumbnails('right')}
+                              />
+                           </div>
                         )}
-                     </ul>
-                     {files.length > 3 && (
-                        <div {...stylex.props(styles.popoverArrow)}>
-                           <CarouselArrow
-                              direction="right"
-                              onClick={() => scrollThumbnails('right')}
-                           />
-                        </div>
-                     )}
-                  </div>
-               </Popover.Content>
-            </Popover.Portal>
-         </Popover.Root>
+                     </div>
+                  </Popover.Content>
+               </Popover.Portal>
+            </Popover.Root>
+         )}
       </div>
    );
 }

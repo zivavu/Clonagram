@@ -2,7 +2,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import type { PartialUser } from '@/src/types/global';
@@ -32,12 +32,13 @@ const MAX_FILES = 10;
 const TOAST_DURATION = 3000;
 
 export default function CreatePostModal() {
-   const { isOpen, close } = useCreatePostModalStore();
+   const { isOpen, close, mode } = useCreatePostModalStore();
+   const isReel = mode === 'reel';
    const [step, setStep] = useState<Step>('upload');
    const [files, setFiles] = useState<PostMedia[]>([]);
    const [currentIndex, setCurrentIndex] = useState(0);
    const [isDragActive, setIsDragActive] = useState(false);
-   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('original');
+   const [aspectRatio, setAspectRatio] = useState<AspectRatio>(isReel ? '9:16' : 'original');
    const [caption, setCaption] = useState('');
    const [location, setLocation] = useState<PostLocation | null>(null);
    const [collaborators, setCollaborators] = useState<PartialUser[]>([]);
@@ -48,6 +49,10 @@ export default function CreatePostModal() {
    const filesRef = useRef(files);
    filesRef.current = files;
 
+   useEffect(() => {
+      if (isOpen) setAspectRatio(isReel ? '9:16' : 'original');
+   }, [isOpen, isReel]);
+
    const showToast = useCallback((count: number) => {
       setFileLimitToast(count);
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -57,7 +62,8 @@ export default function CreatePostModal() {
    const onDrop = useCallback(
       (acceptedFiles: File[]) => {
          if (acceptedFiles.length === 0) return;
-         const remainingSlots = MAX_FILES - filesRef.current.length;
+         if (isReel && filesRef.current.length >= 1) return;
+         const remainingSlots = (isReel ? 1 : MAX_FILES) - filesRef.current.length;
 
          if (remainingSlots <= 0) {
             showToast(acceptedFiles.length);
@@ -87,15 +93,18 @@ export default function CreatePostModal() {
                .catch(() => {});
          }
       },
-      [showToast],
+      [showToast, isReel],
    );
 
    const { getRootProps, getInputProps, open } = useDropzone({
       onDrop,
-      accept: {
-         'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
-         'video/*': ['.mp4', '.mov', '.webm'],
-      },
+      accept: isReel
+         ? { 'video/*': ['.mp4', '.mov', '.webm'] }
+         : {
+              'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+              'video/*': ['.mp4', '.mov', '.webm'],
+           },
+      maxFiles: isReel ? 1 : MAX_FILES,
       noClick: true,
       noKeyboard: true,
       onDragEnter: () => setIsDragActive(true),
@@ -107,7 +116,7 @@ export default function CreatePostModal() {
       setFiles([]);
       setCurrentIndex(0);
       setStep('upload');
-      setAspectRatio('original');
+      setAspectRatio(isReel ? '9:16' : 'original');
       setCaption('');
       setLocation(null);
       setCollaborators([]);
@@ -178,6 +187,7 @@ export default function CreatePostModal() {
                         getRootProps={getRootProps}
                         open={open}
                         isDragActive={isDragActive}
+                        isReel={isReel}
                      />
                   </>
                )}
@@ -198,6 +208,7 @@ export default function CreatePostModal() {
                         onAddFiles={open}
                         aspectRatio={aspectRatio}
                         onAspectRatioChange={setAspectRatio}
+                        isReel={isReel}
                      />
                   </>
                )}
@@ -214,6 +225,7 @@ export default function CreatePostModal() {
                         onSelectIndex={setCurrentIndex}
                         onUpdateFile={handleUpdateFile}
                         aspectRatio={aspectRatio}
+                        isReel={isReel}
                      />
                   </>
                )}
@@ -238,6 +250,7 @@ export default function CreatePostModal() {
                         onCollaboratorsChange={setCollaborators}
                         postSettings={postSettings}
                         onPostSettingsChange={setPostSettings}
+                        isReel={isReel}
                      />
                   </>
                )}
@@ -265,9 +278,9 @@ export default function CreatePostModal() {
                )}
                {fileLimitToast !== null && (
                   <div {...stylex.props(styles.toast)}>
-                     {fileLimitToast} file
-                     {fileLimitToast > 1 ? 's' : ''} were not uploaded. You can only choose 10 or
-                     fewer files.
+                     {isReel
+                        ? 'You can only upload 1 video for a reel.'
+                        : `${fileLimitToast} file${fileLimitToast > 1 ? 's' : ''} were not uploaded. You can only choose 10 or fewer files.`}
                   </div>
                )}
             </Dialog.Content>
