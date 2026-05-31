@@ -1,6 +1,6 @@
 'use server';
 import 'server-only';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { createServerClient } from '@/src/lib/supabase/server';
 
 export async function createConversation(participantIds: string[]): Promise<string> {

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { IconType } from 'react-icons';
 import { BsSend, BsSendFill } from 'react-icons/bs';
-import { FaRegSquarePlus, FaSquarePlus } from 'react-icons/fa6';
 import { GoHome, GoHomeFill } from 'react-icons/go';
 import {
    MdExplore,
@@ -19,9 +18,9 @@ import {
    MdSmartDisplay,
 } from 'react-icons/md';
 import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
-import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
+import { CreateMenuPopover } from '../CreateMenuPopover';
 import type { MainSidebarStyles } from './index.stylex';
 
 interface NavItemConfig {
@@ -44,7 +43,7 @@ const navItemsConfig: NavItemConfig[] = [
       label: 'Notifications',
       action: 'notifications',
    },
-   { icon: FaRegSquarePlus, activeIcon: FaSquarePlus, label: 'Create', action: 'create' },
+   { icon: MdSearch, activeIcon: MdSearch, label: 'Create', action: 'create' },
    {
       href: '/dashboard',
       icon: RiBarChartBoxLine,
@@ -64,7 +63,6 @@ export function NavItems({ mainSidebarStyles }: NavItemsProps) {
    const isSearchOpen = useSearchPortalStore(state => state.isOpen);
    const openNotifications = useNotificationsPortalStore(state => state.open);
    const isNotificationsOpen = useNotificationsPortalStore(state => state.isOpen);
-   const openCreate = useCreatePostModalStore(state => state.open);
 
    return (
       <>
@@ -125,20 +123,7 @@ export function NavItems({ mainSidebarStyles }: NavItemsProps) {
             }
 
             if (action === 'create') {
-               return (
-                  <button
-                     key={label}
-                     type="button"
-                     onClick={openCreate}
-                     aria-label={label}
-                     {...stylex.props(
-                        mainSidebarStyles.navItem,
-                        isActive && mainSidebarStyles.navItemActive,
-                     )}
-                  >
-                     {content}
-                  </button>
-               );
+               return <CreateMenuPopover key={label} mainSidebarStyles={mainSidebarStyles} />;
             }
 
             if (!href) return <div {...stylex.props(mainSidebarStyles.navItem)}>{content}</div>;

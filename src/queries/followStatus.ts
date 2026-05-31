@@ -3,10 +3,7 @@ import type { Database } from '@/src/types/database';
 
 export type FollowState = 'following' | 'requested' | 'none';
 
-export async function getFollowStatus(
-   supabase: SupabaseClient<Database>,
-   targetUserId: string,
-): Promise<FollowState> {
+export async function getFollowStatus(supabase: SupabaseClient<Database>, targetUserId: string) {
    const {
       data: { user },
    } = await supabase.auth.getUser();

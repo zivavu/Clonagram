@@ -15,14 +15,17 @@ function extractHashtags(caption: string | null): string[] {
 export async function createPostAction(params: CreatePostParams) {
    const { supabase, user } = await getAuthUser();
    const userId = user.id;
-   const hasVideo = params.mediaResults.some(media => media.type === 'video');
+   const isReel =
+      params.mediaResults.some(media => media.type === 'video') &&
+      params.mediaResults.length === 1 &&
+      params.aspectRatio === '9:16';
 
    const { data: post, error: postError } = await supabase
       .from('posts')
       .insert({
          user_id: userId,
          caption: params.caption,
-         type: hasVideo ? 'reel' : 'photo',
+         type: isReel ? 'reel' : 'photo',
          aspect_ratio: params.aspectRatio,
          location_name: params.location?.name ?? null,
          location_lat: params.location?.lat ?? null,
