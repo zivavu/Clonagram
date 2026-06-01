@@ -45,11 +45,11 @@ export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: Feed
             onClick={onToggle}
             {...stylex.props(styles.toggleButton)}
          />
-         {isPlaying && (
+         {
             <div {...stylex.props(styles.controls)}>
                <VolumeControl side="top" vertical />
             </div>
-         )}
+         }
       </div>
    );
 }

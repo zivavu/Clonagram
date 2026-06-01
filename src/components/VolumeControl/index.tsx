@@ -23,6 +23,9 @@ export default function VolumeControl({ side, align, vertical }: VolumeControlPr
             <button
                type="button"
                onClick={e => e.stopPropagation()}
+               onDoubleClick={() => {
+                  setVolume(volume === 0 ? 1 : 0);
+               }}
                {...stylex.props(styles.button)}
             >
                {volume === 0 ? (

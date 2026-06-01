@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 interface PlayerStore {
    volume: number;
@@ -10,20 +9,12 @@ interface PlayerStore {
    pauseAll: () => void;
 }
 
-export const usePlayerStore = create<PlayerStore>()(
-   persist(
-      set => ({
-         volume: 1,
-         setVolume: (volume: number) => set({ volume }),
-         activePlayerId: null,
-         claimPlayback: (id: string) => set({ activePlayerId: id }),
-         releasePlayback: (id: string) =>
-            set(state => (state.activePlayerId === id ? { activePlayerId: null } : {})),
-         pauseAll: () => set({ activePlayerId: null }),
-      }),
-      {
-         name: 'player-preferences',
-         partialize: state => ({ volume: state.volume }),
-      },
-   ),
-);
+export const usePlayerStore = create<PlayerStore>()(set => ({
+   volume: 0,
+   setVolume: (volume: number) => set({ volume }),
+   activePlayerId: null,
+   claimPlayback: (id: string) => set({ activePlayerId: id }),
+   releasePlayback: (id: string) =>
+      set(state => (state.activePlayerId === id ? { activePlayerId: null } : {})),
+   pauseAll: () => set({ activePlayerId: null }),
+}));
