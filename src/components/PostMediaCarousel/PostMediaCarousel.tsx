@@ -3,9 +3,10 @@
 import MuxPlayer from '@mux/mux-player-react';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { PostWithMedia } from '../../queries/posts';
 import { usePostViewModal } from '../../store/postViewModalStore';
+import { usePlayerStore } from '../../store/usePlayerStore';
 import CarouselArrow from '../CarouselArrow';
 import { styles } from './PostMediaCarousel.stylex';
 
@@ -62,17 +63,44 @@ export default function PostMediaCarousel({
    onImageClick,
 }: PostMediaCarouselProps) {
    const { open: openPostFullViewModal, isOpen: isPostFullViewModalOpen } = usePostViewModal();
-   const [isPlaying, setIsPlaying] = useState(false);
+   const { activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
 
    const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex ?? 0);
+   const [isInViewport, setIsInViewport] = useState(false);
+   const rootRef = useRef<HTMLDivElement>(null);
+
    const media = mergeMedia(post);
    const hasMultipleMedia = media.length > 1;
+
+   const currentItem = media[currentImageIndex];
+   const currentVideoId =
+      currentItem?.type === 'video' ? `feed-${post.id}-${currentItem.id}` : null;
+
+   useEffect(() => {
+      const el = rootRef.current;
+      if (!el) return;
+      const observer = new IntersectionObserver(
+         ([entry]) => setIsInViewport(entry.isIntersecting),
+         { threshold: 0.5 },
+      );
+      observer.observe(el);
+      return () => observer.disconnect();
+   }, []);
+
+   useEffect(() => {
+      if (!currentVideoId) return;
+      if (isInViewport) {
+         claimPlayback(currentVideoId);
+      } else {
+         releasePlayback(currentVideoId);
+      }
+      return () => releasePlayback(currentVideoId);
+   }, [currentVideoId, isInViewport, claimPlayback, releasePlayback]);
 
    const handlePrevious = () => {
       const newImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : currentImageIndex;
       setCurrentImageIndex(newImageIndex);
       onImageChange?.(newImageIndex);
-      setIsPlaying(false);
    };
 
    const handleNext = () => {
@@ -80,11 +108,11 @@ export default function PostMediaCarousel({
          currentImageIndex < media.length - 1 ? currentImageIndex + 1 : currentImageIndex;
       setCurrentImageIndex(newImageIndex);
       onImageChange?.(newImageIndex);
-      setIsPlaying(false);
    };
 
    return (
       <div
+         ref={rootRef}
          {...stylex.props(styles.root, omitRightBorderRadius && styles.omitRightBorderRadius)}
          style={{
             height: `${height}`,
@@ -96,6 +124,9 @@ export default function PostMediaCarousel({
             style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
          >
             {media.map(item => {
+               const videoId = item.type === 'video' ? `feed-${post.id}-${item.id}` : null;
+               const isVideoPlaying = videoId !== null && activePlayerId === videoId;
+
                return (
                   <button
                      onClick={() => {
@@ -104,6 +135,12 @@ export default function PostMediaCarousel({
                               onImageClick(post, currentImageIndex);
                            } else {
                               openPostFullViewModal(post, { initialImageIndex: currentImageIndex });
+                           }
+                        } else if (videoId) {
+                           if (isVideoPlaying) {
+                              releasePlayback(videoId);
+                           } else {
+                              claimPlayback(videoId);
                            }
                         }
                      }}
@@ -135,7 +172,7 @@ export default function PostMediaCarousel({
                               '--media-object-fit': 'cover',
                            }}
                            playbackId={item.url}
-                           paused={!isPlaying}
+                           paused={!isVideoPlaying}
                         />
                      )}
                   </button>
