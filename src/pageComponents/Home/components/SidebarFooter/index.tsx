@@ -12,7 +12,7 @@ const FOOTER_LINKS = [
    'Terms',
    'Locations',
    'Language',
-   'Meta Verified',
+   'Zeta Verified',
 ];
 
 export default function SidebarFooter() {

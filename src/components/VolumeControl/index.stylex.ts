@@ -61,14 +61,16 @@ export const styles = stylex.create({
    verticalPaper: {
       padding: '14px 6px',
    },
-   verticalSlider: {
-      writingMode: 'vertical-lr',
-      direction: 'rtl',
-      width: 'auto',
+   verticalSliderWrapper: {
+      width: '20px',
       height: '80px',
-      '::-webkit-slider-thumb': {
-         marginTop: 0,
-         marginLeft: '-5.5px',
-      },
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'visible',
+   },
+   verticalSlider: {
+      transform: 'rotate(-90deg)',
+      width: '80px',
    },
 });

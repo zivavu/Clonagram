@@ -4,7 +4,7 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { styles } from './index.stylex';
 
 export const footerLinks = [
-   'Meta',
+   'Zeta',
    'About',
    'Blog',
    'Jobs',
@@ -15,10 +15,10 @@ export const footerLinks = [
    'Terms',
    'Locations',
    'Clonagram Lite',
-   'Meta AI',
+   'Zeta AI',
    'Threads',
    'Contact Uploading & Non-Users',
-   'Meta Verified',
+   'Zeta Verified',
 ] as const;
 
 export default function AuthPagesFooter({ ...props }: React.ComponentProps<'footer'>) {

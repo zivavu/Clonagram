@@ -14,6 +14,7 @@ interface UserListItemProps {
    onClick?: () => void;
    role?: string;
    ariaSelected?: boolean;
+   href?: string;
 }
 
 export function UserListItem({
@@ -25,6 +26,7 @@ export function UserListItem({
    rightElement,
    onClick,
    role,
+   href,
 }: UserListItemProps) {
    return (
       <button type="button" {...stylex.props(styles.row)} onClick={onClick} role={role}>

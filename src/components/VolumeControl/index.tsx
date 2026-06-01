@@ -41,15 +41,29 @@ export default function VolumeControl({ side, align, vertical }: VolumeControlPr
                sideOffset={4}
                {...stylex.props(styles.paper, vertical && styles.verticalPaper)}
             >
-               <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={volume}
-                  onChange={e => setVolume(Number(e.target.value))}
-                  {...stylex.props(styles.slider, vertical && styles.verticalSlider)}
-               />
+               {vertical ? (
+                  <div {...stylex.props(styles.verticalSliderWrapper)}>
+                     <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={volume}
+                        onChange={e => setVolume(Number(e.target.value))}
+                        {...stylex.props(styles.slider, styles.verticalSlider)}
+                     />
+                  </div>
+               ) : (
+                  <input
+                     type="range"
+                     min="0"
+                     max="1"
+                     step="0.01"
+                     value={volume}
+                     onChange={e => setVolume(Number(e.target.value))}
+                     {...stylex.props(styles.slider)}
+                  />
+               )}
             </Popover.Content>
          </Popover.Portal>
       </Popover.Root>

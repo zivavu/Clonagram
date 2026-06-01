@@ -198,3 +198,12 @@ Fix any errors before considering the task complete.
 Just don't use them. Don't use the explicit return types at all.
 
 <!-- END:return-types -->
+
+<!-- BEGIN:html-nesting-rules -->
+
+# HTML Nesting
+
+A `<button>` must never be a descendant of another `<button>`. This causes a hydration error in Next.js.
+If a clickable container and a clickable child are both needed, make the container a `<div>` and put interactive elements (buttons, links) inside it as siblings, not nested.
+
+<!-- END:html-nesting-rules -->
