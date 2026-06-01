@@ -7,7 +7,13 @@ import { MdVolumeDown, MdVolumeOff, MdVolumeUp } from 'react-icons/md';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import { styles } from './index.stylex';
 
-export default function VolumeControl() {
+interface VolumeControlProps {
+   side?: 'top' | 'bottom' | 'left' | 'right';
+   align?: 'start' | 'center' | 'end';
+   vertical?: boolean;
+}
+
+export default function VolumeControl({ side, align, vertical }: VolumeControlProps) {
    const { volume, setVolume } = usePlayerStore();
    const [open, setOpen] = useState(false);
 
@@ -30,10 +36,10 @@ export default function VolumeControl() {
          </Popover.Trigger>
          <Popover.Portal>
             <Popover.Content
-               side="bottom"
-               align="center"
+               side={side ?? 'bottom'}
+               align={align ?? 'center'}
                sideOffset={4}
-               {...stylex.props(styles.paper)}
+               {...stylex.props(styles.paper, vertical && styles.verticalPaper)}
             >
                <input
                   type="range"
@@ -42,7 +48,7 @@ export default function VolumeControl() {
                   step="0.01"
                   value={volume}
                   onChange={e => setVolume(Number(e.target.value))}
-                  {...stylex.props(styles.slider)}
+                  {...stylex.props(styles.slider, vertical && styles.verticalSlider)}
                />
             </Popover.Content>
          </Popover.Portal>

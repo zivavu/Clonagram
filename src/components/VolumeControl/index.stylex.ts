@@ -6,6 +6,9 @@ export const styles = stylex.create({
       display: 'flex',
       color: 'white',
       transition: 'all 0.2s ease-in-out',
+      backgroundColor: `rgba(43, 48, 54, 0.5)`,
+      padding: '4px',
+      borderRadius: radius.full,
       ':hover': {
          scale: 1.05,
       },
@@ -53,6 +56,19 @@ export const styles = stylex.create({
          borderRadius: '50%',
          border: 'none',
          boxShadow: '0 1px 6px rgba(0,0,0,0.45)',
+      },
+   },
+   verticalPaper: {
+      padding: '14px 6px',
+   },
+   verticalSlider: {
+      writingMode: 'vertical-lr',
+      direction: 'rtl',
+      width: 'auto',
+      height: '80px',
+      '::-webkit-slider-thumb': {
+         marginTop: 0,
+         marginLeft: '-5.5px',
       },
    },
 });
