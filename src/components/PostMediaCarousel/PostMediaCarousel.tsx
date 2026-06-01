@@ -127,24 +127,35 @@ export default function PostMediaCarousel({
                const videoId = item.type === 'video' ? `feed-${post.id}-${item.id}` : null;
                const isVideoPlaying = videoId !== null && activePlayerId === videoId;
 
+               if (item.type === 'video' && videoId) {
+                  return (
+                     <div
+                        key={item.id}
+                        {...stylex.props(styles.carouselSlide)}
+                        style={{ width: `${width}`, height: `${height}`, aspectRatio }}
+                     >
+                        <FeedVideoSlide
+                           playbackId={item.url}
+                           isPlaying={isVideoPlaying}
+                           onToggle={() => {
+                              if (isVideoPlaying) releasePlayback(videoId);
+                              else claimPlayback(videoId);
+                           }}
+                        />
+                     </div>
+                  );
+               }
+
                return (
                   <button
+                     key={item.id}
                      onClick={() => {
-                        if (item.type === 'image') {
-                           if (onImageClick) {
-                              onImageClick(post, currentImageIndex);
-                           } else {
-                              openPostFullViewModal(post, { initialImageIndex: currentImageIndex });
-                           }
-                        } else if (videoId) {
-                           if (isVideoPlaying) {
-                              releasePlayback(videoId);
-                           } else {
-                              claimPlayback(videoId);
-                           }
+                        if (onImageClick) {
+                           onImageClick(post, currentImageIndex);
+                        } else {
+                           openPostFullViewModal(post, { initialImageIndex: currentImageIndex });
                         }
                      }}
-                     key={item.id}
                      {...stylex.props(styles.carouselSlide)}
                      style={{
                         width: `${width}`,
@@ -153,19 +164,15 @@ export default function PostMediaCarousel({
                         cursor: isPostFullViewModalOpen ? 'default' : 'pointer',
                      }}
                   >
-                     {item.type === 'image' ? (
-                        <Image
-                           src={item.url}
-                           alt="post"
-                           fill
-                           sizes={sizes}
-                           placeholder={item.blurDataURL ? 'blur' : 'empty'}
-                           blurDataURL={item.blurDataURL}
-                           style={{ objectFit: 'cover' }}
-                        />
-                     ) : (
-                        <FeedVideoSlide playbackId={item.url} isPlaying={isVideoPlaying} />
-                     )}
+                     <Image
+                        src={item.url}
+                        alt="post"
+                        fill
+                        sizes={sizes}
+                        placeholder={item.blurDataURL ? 'blur' : 'empty'}
+                        blurDataURL={item.blurDataURL}
+                        style={{ objectFit: 'cover' }}
+                     />
                   </button>
                );
             })}

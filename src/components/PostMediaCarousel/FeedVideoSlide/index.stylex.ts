@@ -6,10 +6,17 @@ export const styles = stylex.create({
       width: '100%',
       height: '100%',
    },
+   toggleButton: {
+      position: 'absolute',
+      inset: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 2,
+   },
    controls: {
       position: 'absolute',
       bottom: '12px',
       right: '12px',
-      zIndex: 2,
+      zIndex: 3,
    },
 });

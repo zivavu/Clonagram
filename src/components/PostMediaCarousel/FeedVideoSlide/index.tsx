@@ -11,9 +11,10 @@ import { styles } from './index.stylex';
 interface FeedVideoSlideProps {
    playbackId: string;
    isPlaying: boolean;
+   onToggle: () => void;
 }
 
-export default function FeedVideoSlide({ playbackId, isPlaying }: FeedVideoSlideProps) {
+export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: FeedVideoSlideProps) {
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const { volume } = usePlayerStore();
 
@@ -37,6 +38,12 @@ export default function FeedVideoSlide({ playbackId, isPlaying }: FeedVideoSlide
             playbackId={playbackId}
             muted
             paused={!isPlaying}
+         />
+         <button
+            type="button"
+            aria-label={isPlaying ? 'Pause video' : 'Play video'}
+            onClick={onToggle}
+            {...stylex.props(styles.toggleButton)}
          />
          {isPlaying && (
             <div {...stylex.props(styles.controls)}>
