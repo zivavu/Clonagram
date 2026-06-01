@@ -4,7 +4,8 @@ import type MuxPlayerElement from '@mux/mux-player';
 import MuxPlayer from '@mux/mux-player-react';
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
-import { HiSpeakerWave, HiSpeakerXMark } from 'react-icons/hi2';
+import VolumeControl from '@/src/components/VolumeControl';
+import { usePlayerStore } from '@/src/store/usePlayerStore';
 import { styles } from './index.stylex';
 
 interface ReelVideoProps {
@@ -13,10 +14,11 @@ interface ReelVideoProps {
 
 export default function ReelVideo({ playbackId }: ReelVideoProps) {
    const containerRef = useRef<HTMLDivElement>(null);
-   const [isMuted, setIsMuted] = useState(true);
    const [isPlaying, setIsPlaying] = useState(false);
    const [isVisible, setIsVisible] = useState(false);
    const playerRef = useRef<MuxPlayerElement | null>(null);
+
+   const { volume } = usePlayerStore();
 
    useEffect(() => {
       const el = containerRef.current;
@@ -40,6 +42,13 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
       }
    }, [isVisible]);
 
+   useEffect(() => {
+      const mediaEl = playerRef.current?.media;
+      if (!mediaEl) return;
+      mediaEl.volume = volume;
+      mediaEl.muted = volume === 0;
+   }, [volume]);
+
    function togglePlayPause() {
       const player = playerRef.current;
       if (!player) return;
@@ -59,7 +68,7 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
             playbackId={playbackId}
             streamType="on-demand"
             loop
-            muted={isMuted}
+            muted={volume === 0}
             autoPlay={false}
             style={{
                width: '100%',
@@ -74,14 +83,9 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
             aria-label={isPlaying ? 'Pause' : 'Play'}
             {...stylex.props(styles.playPauseOverlay)}
          />
-         <button
-            type="button"
-            onClick={() => setIsMuted(prev => !prev)}
-            aria-label={isMuted ? 'Unmute' : 'Mute'}
-            {...stylex.props(styles.muteButton)}
-         >
-            {isMuted ? <HiSpeakerXMark size={18} /> : <HiSpeakerWave size={18} />}
-         </button>
+         <div {...stylex.props(styles.volumeControl)}>
+            <VolumeControl side="bottom" align="end" />
+         </div>
       </div>
    );
 }
