@@ -29,6 +29,7 @@ export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: Feed
       <div {...stylex.props(styles.root)}>
          <MuxPlayer
             ref={muxPlayerRef}
+            disableCookies
             style={{
                width: '100%',
                height: '100%',

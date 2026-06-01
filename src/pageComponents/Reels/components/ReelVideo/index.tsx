@@ -67,6 +67,7 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
             ref={playerRef}
             playbackId={playbackId}
             streamType="on-demand"
+            disableCookies
             loop
             muted={volume === 0}
             autoPlay={false}

@@ -25,7 +25,11 @@ function formatCount(n: number): string {
    return String(n);
 }
 
-export default function ReelActionRail({ reel, commentCount, onToggleComments }: ReelActionRailProps) {
+export default function ReelActionRail({
+   reel,
+   commentCount,
+   onToggleComments,
+}: ReelActionRailProps) {
    const { data: authUser } = useAuthUser();
    const [saved, setSaved] = useState(false);
    const [isLiked, setIsLiked] = useState(false);
@@ -33,7 +37,7 @@ export default function ReelActionRail({ reel, commentCount, onToggleComments }:
 
    useEffect(() => {
       if (authUser) setIsLiked(reel.likes.some(l => l.user_id === authUser.id));
-   }, [authUser?.id, reel.id]);
+   }, [authUser, reel]);
 
    async function handleLike() {
       const next = !isLiked;

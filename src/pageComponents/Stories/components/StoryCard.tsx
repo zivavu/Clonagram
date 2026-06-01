@@ -111,6 +111,7 @@ export default function StoryCard({
             <MuxPlayer
                key={currentMedia.id}
                ref={muxPlayerRef}
+               disableCookies
                style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
                playbackId={currentMedia.url ?? ''}
                autoPlay="always"
