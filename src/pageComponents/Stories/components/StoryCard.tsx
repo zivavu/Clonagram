@@ -34,17 +34,17 @@ export default function StoryCard({
    setPlayTime,
    goToNextStoryMedia,
 }: StoryCardProps) {
-   const [isPlaying, setIsPlaying] = useState(true);
-
    const mediaIndex = isCurrent ? currentStoryMediaIndex : 0;
    const currentMedia = story.stories[mediaIndex];
    const isVideo = currentMedia.type === 'video';
 
-   const muxPlayerRef = useRef<MuxPlayerElement>(null);
+   const storyPlayerId = `story-${story.id}-${mediaIndex}`;
 
+   const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const [videoDuration, setVideoDuration] = useState<number>(PICTURE_DURATION);
 
-   const { volume, setVolume } = usePlayerStore();
+   const { volume, setVolume, activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
+   const isPlaying = activePlayerId === storyPlayerId;
 
    useEffect(() => {
       const mediaEl = muxPlayerRef.current?.media;
@@ -53,18 +53,28 @@ export default function StoryCard({
       mediaEl.muted = volume === 0;
    }, [volume]);
 
+   useEffect(() => {
+      if (!isCurrent) return;
+      claimPlayback(storyPlayerId);
+      return () => releasePlayback(storyPlayerId);
+   }, [isCurrent, storyPlayerId, claimPlayback, releasePlayback]);
+
    function togglePlay(e: React.MouseEvent) {
       e.stopPropagation();
-      if (!isVideo) setIsPlaying(!isPlaying);
-      else {
-         const nextPlaying = !isPlaying;
-         setIsPlaying(nextPlaying);
-         const mediaEl = muxPlayerRef.current?.media;
-         if (!mediaEl) return;
-         if (nextPlaying) {
-            mediaEl.play();
+      if (!isVideo) {
+         if (isPlaying) {
+            releasePlayback(storyPlayerId);
          } else {
-            mediaEl.pause();
+            claimPlayback(storyPlayerId);
+         }
+      } else {
+         const mediaEl = muxPlayerRef.current?.media;
+         if (isPlaying) {
+            releasePlayback(storyPlayerId);
+            mediaEl?.pause();
+         } else {
+            claimPlayback(storyPlayerId);
+            mediaEl?.play();
          }
       }
    }
@@ -117,8 +127,8 @@ export default function StoryCard({
                   if (duration && duration > 0) setVideoDuration(duration * 1000);
                }}
                onEnded={goToNextStoryMedia}
-               onPause={() => setIsPlaying(false)}
-               onPlay={() => setIsPlaying(true)}
+               onPause={() => releasePlayback(storyPlayerId)}
+               onPlay={() => claimPlayback(storyPlayerId)}
                paused={!isPlaying}
             />
          ) : (
