@@ -5,6 +5,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
+import { usePlayerStore } from '@/src/store/usePlayerStore';
 import type { PartialUser } from '@/src/types/global';
 import { extractVideoFrames } from '@/src/utils/extractVideoFrames';
 import DialogOverlay from '../DialogOverlay';
@@ -33,6 +34,7 @@ const TOAST_DURATION = 3000;
 
 export default function CreatePostModal() {
    const { isOpen, close, mode } = useCreatePostModalStore();
+   const { pauseAll } = usePlayerStore();
    const isReel = mode === 'reel';
    const [step, setStep] = useState<Step>('upload');
    const [files, setFiles] = useState<PostMedia[]>([]);
@@ -50,8 +52,11 @@ export default function CreatePostModal() {
    filesRef.current = files;
 
    useEffect(() => {
-      if (isOpen) setAspectRatio(isReel ? '9:16' : 'original');
-   }, [isOpen, isReel]);
+      if (isOpen) {
+         setAspectRatio(isReel ? '9:16' : 'original');
+         pauseAll();
+      }
+   }, [isOpen, isReel, pauseAll]);
 
    const showToast = useCallback((count: number) => {
       setFileLimitToast(count);
