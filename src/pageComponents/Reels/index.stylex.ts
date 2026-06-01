@@ -14,6 +14,7 @@ export const styles = stylex.create({
    },
    scroller: {
       height: '100dvh',
+      width: '100%',
       overflowY: 'scroll',
       scrollSnapType: 'y mandatory',
       scrollbarWidth: 'none',
