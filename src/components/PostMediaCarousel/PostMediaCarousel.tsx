@@ -1,6 +1,5 @@
 'use client';
 
-import MuxPlayer from '@mux/mux-player-react';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
@@ -8,6 +7,7 @@ import type { PostWithMedia } from '../../queries/posts';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import CarouselArrow from '../CarouselArrow';
+import FeedVideoSlide from './FeedVideoSlide';
 import { styles } from './PostMediaCarousel.stylex';
 
 interface UnifiedMedia {
@@ -164,17 +164,7 @@ export default function PostMediaCarousel({
                            style={{ objectFit: 'cover' }}
                         />
                      ) : (
-                        <MuxPlayer
-                           style={{
-                              width: '100%',
-                              height: '100%',
-                              '--bottom-controls': 'none',
-                              '--media-object-fit': 'cover',
-                           }}
-                           playbackId={item.url}
-                           muted
-                           paused={!isVideoPlaying}
-                        />
+                        <FeedVideoSlide playbackId={item.url} isPlaying={isVideoPlaying} />
                      )}
                   </button>
                );

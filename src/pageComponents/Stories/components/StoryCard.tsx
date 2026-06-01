@@ -43,7 +43,7 @@ export default function StoryCard({
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const [videoDuration, setVideoDuration] = useState<number>(PICTURE_DURATION);
 
-   const { volume, setVolume, activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
+   const { volume, activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
    const [isPlayingLocal, setIsPlayingLocal] = useState(true);
 
    const anotherVideoActive = activePlayerId !== null && activePlayerId !== storyPlayerId;
@@ -103,8 +103,6 @@ export default function StoryCard({
                onPictureSegmentComplete={goToNextStoryMedia}
                isPlaying={isPlaying}
                onTogglePlay={togglePlay}
-               volume={volume}
-               setVolume={setVolume}
                currentStoryMediaIndex={currentStoryMediaIndex}
             />
          )}
