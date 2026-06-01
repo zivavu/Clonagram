@@ -172,6 +172,7 @@ export default function PostMediaCarousel({
                               '--media-object-fit': 'cover',
                            }}
                            playbackId={item.url}
+                           muted
                            paused={!isVideoPlaying}
                         />
                      )}

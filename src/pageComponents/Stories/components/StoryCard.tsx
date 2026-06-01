@@ -44,7 +44,10 @@ export default function StoryCard({
    const [videoDuration, setVideoDuration] = useState<number>(PICTURE_DURATION);
 
    const { volume, setVolume, activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
-   const isPlaying = activePlayerId === storyPlayerId;
+   const [isPlayingLocal, setIsPlayingLocal] = useState(true);
+
+   const anotherVideoActive = activePlayerId !== null && activePlayerId !== storyPlayerId;
+   const isPlaying = isPlayingLocal && !anotherVideoActive;
 
    useEffect(() => {
       const mediaEl = muxPlayerRef.current?.media;
@@ -55,27 +58,22 @@ export default function StoryCard({
 
    useEffect(() => {
       if (!isCurrent) return;
-      claimPlayback(storyPlayerId);
+      if (isPlaying) {
+         claimPlayback(storyPlayerId);
+      } else {
+         releasePlayback(storyPlayerId);
+      }
       return () => releasePlayback(storyPlayerId);
-   }, [isCurrent, storyPlayerId, claimPlayback, releasePlayback]);
+   }, [isCurrent, isPlaying, storyPlayerId, claimPlayback, releasePlayback]);
 
    function togglePlay(e: React.MouseEvent) {
       e.stopPropagation();
-      if (!isVideo) {
-         if (isPlaying) {
-            releasePlayback(storyPlayerId);
-         } else {
-            claimPlayback(storyPlayerId);
-         }
-      } else {
+      const next = !isPlaying;
+      setIsPlayingLocal(next);
+      if (isVideo) {
          const mediaEl = muxPlayerRef.current?.media;
-         if (isPlaying) {
-            releasePlayback(storyPlayerId);
-            mediaEl?.pause();
-         } else {
-            claimPlayback(storyPlayerId);
-            mediaEl?.play();
-         }
+         if (next) mediaEl?.play();
+         else mediaEl?.pause();
       }
    }
 
@@ -127,8 +125,8 @@ export default function StoryCard({
                   if (duration && duration > 0) setVideoDuration(duration * 1000);
                }}
                onEnded={goToNextStoryMedia}
-               onPause={() => releasePlayback(storyPlayerId)}
-               onPlay={() => claimPlayback(storyPlayerId)}
+               onPause={() => setIsPlayingLocal(false)}
+               onPlay={() => setIsPlayingLocal(true)}
                paused={!isPlaying}
             />
          ) : (
