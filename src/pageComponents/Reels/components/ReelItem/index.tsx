@@ -21,7 +21,12 @@ interface ReelItemProps {
    onCloseComments: () => void;
 }
 
-export default function ReelItem({ reel, isCommentsOpen, onToggleComments, onCloseComments }: ReelItemProps) {
+export default function ReelItem({
+   reel,
+   isCommentsOpen,
+   onToggleComments,
+   onCloseComments,
+}: ReelItemProps) {
    const { data: authUser } = useAuthUser();
    const video = reel.videos[0];
    const isOwnReel = authUser?.id === reel.user.id;
@@ -76,10 +81,12 @@ export default function ReelItem({ reel, isCommentsOpen, onToggleComments, onClo
                {reel.caption && <p {...stylex.props(styles.caption)}>{reel.caption}</p>}
             </div>
             <div {...stylex.props(styles.railWrapper)}>
-               <ReelActionRail reel={reel} commentCount={commentCount} onToggleComments={onToggleComments} />
-               {isCommentsOpen && (
-                  <ReelComments reel={reel} onClose={onCloseComments} />
-               )}
+               <ReelActionRail
+                  reel={reel}
+                  commentCount={commentCount}
+                  onToggleComments={onToggleComments}
+               />
+               {isCommentsOpen && <ReelComments reel={reel} onClose={onCloseComments} />}
             </div>
          </div>
       </section>

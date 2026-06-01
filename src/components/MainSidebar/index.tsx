@@ -2,11 +2,14 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MdGridView } from 'react-icons/md';
+import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { SettingsPopoverButton } from '../SttingsPopover';
 import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 
 export default async function MainSidebar() {
+   const profile = await getAuthProfile();
+
    return (
       <div {...stylex.props(styles.root)}>
          <Link
@@ -25,7 +28,7 @@ export default async function MainSidebar() {
          </Link>
 
          <nav {...stylex.props(styles.nav)}>
-            <NavItems mainSidebarStyles={styles} />
+            <NavItems mainSidebarStyles={styles} profile={profile} />
          </nav>
 
          <div {...stylex.props(styles.nav)}>

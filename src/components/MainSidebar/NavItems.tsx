@@ -11,21 +11,20 @@ import {
    MdFavorite,
    MdFavoriteBorder,
    MdOutlineExplore,
-   MdOutlinePerson,
    MdOutlineSmartDisplay,
-   MdPerson,
    MdSearch,
    MdSmartDisplay,
 } from 'react-icons/md';
 import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
+import UserAvatar from '@/src/components/UserAvatar';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
 import { CreateMenuPopover } from '../CreateMenuPopover';
 import type { MainSidebarStyles } from './index.stylex';
 
 interface NavItemConfig {
-   icon: IconType;
-   activeIcon: IconType;
+   icon?: IconType;
+   activeIcon?: IconType;
    label: string;
    href?: string;
    action?: 'search' | 'notifications' | 'create';
@@ -50,14 +49,15 @@ const navItemsConfig: NavItemConfig[] = [
       activeIcon: RiBarChartBoxFill,
       label: 'Dashboard',
    },
-   { href: '/profile', icon: MdOutlinePerson, activeIcon: MdPerson, label: 'Profile' },
+   { href: '/profile', label: 'Profile' },
 ];
 
 interface NavItemsProps {
    mainSidebarStyles: MainSidebarStyles;
+   profile: { id: string; avatar_url: string | null; username: string } | null;
 }
 
-export function NavItems({ mainSidebarStyles }: NavItemsProps) {
+export function NavItems({ mainSidebarStyles, profile }: NavItemsProps) {
    const pathname = usePathname();
    const openSearch = useSearchPortalStore(state => state.open);
    const isSearchOpen = useSearchPortalStore(state => state.isOpen);
@@ -76,9 +76,20 @@ export function NavItems({ mainSidebarStyles }: NavItemsProps) {
 
             const IconComponent = isActive ? ActiveIcon : Icon;
 
+            const iconElement =
+               label === 'Profile' ? (
+                  <UserAvatar
+                     src={profile?.avatar_url ?? null}
+                     alt={profile?.username ?? ''}
+                     size={28}
+                  />
+               ) : (
+                  IconComponent && <IconComponent style={{ fontSize: 28 }} />
+               );
+
             const content = (
                <>
-                  <IconComponent style={{ fontSize: 28 }} />
+                  {iconElement}
                   <span
                      {...stylex.props(mainSidebarStyles.navItemLabel)}
                      style={{ fontWeight: isActive ? 700 : 400 }}
