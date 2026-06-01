@@ -1,43 +1,45 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { MdLocationOn } from 'react-icons/md';
 import Autocomplete from '@/src/components/Autocomplete';
 import type { PostLocation } from '@/src/components/CreatePostModal/types';
 import { styles } from './index.stylex';
 
-const LOCATIONS: PostLocation[] = [
-   { name: 'New York, NY', lat: 40.7128, lon: -74.006 },
-   { name: 'Los Angeles, CA', lat: 34.0522, lon: -118.2437 },
-   { name: 'Chicago, IL', lat: 41.8781, lon: -87.6298 },
-   { name: 'Houston, TX', lat: 29.7604, lon: -95.3698 },
-   { name: 'Miami, FL', lat: 25.7617, lon: -80.1918 },
-   { name: 'Warsaw, Poland', lat: 52.2297, lon: 21.0122 },
-   { name: 'Kraków, Poland', lat: 50.0647, lon: 19.945 },
-   { name: 'Gniezno Rynek', lat: 52.535, lon: 17.5994 },
-   { name: 'Gniezno', lat: 52.535, lon: 17.5994 },
-   { name: 'Gniezno, Poland', lat: 52.535, lon: 17.5994 },
-   { name: 'Gdańsk, Poland', lat: 54.352, lon: 18.6466 },
-   { name: 'London, United Kingdom', lat: 51.5074, lon: -0.1278 },
-   { name: 'Paris, France', lat: 48.8566, lon: 2.3522 },
-   { name: 'Berlin, Germany', lat: 52.52, lon: 13.405 },
-   { name: 'Tokyo, Japan', lat: 35.6762, lon: 139.6503 },
-   { name: 'Sydney, Australia', lat: -33.8688, lon: 151.2093 },
-   { name: 'Toronto, Canada', lat: 43.6532, lon: -79.3832 },
-   { name: 'Barcelona, Spain', lat: 41.3851, lon: 2.1734 },
-   { name: 'Rome, Italy', lat: 41.9028, lon: 12.4964 },
-   { name: 'Amsterdam, Netherlands', lat: 52.3676, lon: 4.9041 },
-   { name: 'Vienna, Austria', lat: 48.2082, lon: 16.3738 },
-   { name: 'Prague, Czech Republic', lat: 50.0755, lon: 14.4378 },
-   { name: 'Budapest, Hungary', lat: 47.4979, lon: 19.0402 },
-   { name: 'Stockholm, Sweden', lat: 59.3293, lon: 18.0686 },
-   { name: 'Copenhagen, Denmark', lat: 55.6761, lon: 12.5683 },
-   { name: 'Lisbon, Portugal', lat: 38.7223, lon: -9.1393 },
-   { name: 'Athens, Greece', lat: 37.9838, lon: 23.7275 },
-   { name: 'Zurich, Switzerland', lat: 47.3769, lon: 8.5417 },
-];
+interface PhotonFeature {
+   geometry: { coordinates: [number, number] };
+   properties: {
+      name?: string;
+      city?: string;
+      country?: string;
+   };
+}
+
+function formatLocationName(props: PhotonFeature['properties']): string {
+   const parts = [props.name, props.city, props.country].filter(Boolean) as string[];
+   return [...new Set(parts)].join(', ');
+}
+
+async function searchLocations(query: string): Promise<PostLocation[]> {
+   const url = new URL('https://photon.komoot.io/api/');
+   url.searchParams.set('q', query);
+   url.searchParams.set('limit', '8');
+   url.searchParams.set('lang', 'en');
+   const res = await fetch(url.toString());
+   if (!res.ok) throw new Error('Location search failed');
+   const json = (await res.json()) as { features: PhotonFeature[] };
+   const seen = new Set<string>();
+   return json.features.reduce<PostLocation[]>((acc, f) => {
+      const name = formatLocationName(f.properties);
+      if (!name || seen.has(name)) return acc;
+      seen.add(name);
+      acc.push({ lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0], name });
+      return acc;
+   }, []);
+}
 
 interface LocationAutocompleteProps {
    value: PostLocation | null;
@@ -47,17 +49,24 @@ interface LocationAutocompleteProps {
 export default function LocationAutocomplete({ value, onChange }: LocationAutocompleteProps) {
    const [open, setOpen] = useState(false);
    const [query, setQuery] = useState('');
+   const [debouncedQuery, setDebouncedQuery] = useState('');
 
-   const filtered = useMemo(() => {
-      const q = query.toLowerCase();
-      if (!q) return [];
-      return LOCATIONS.filter(l => l.name.toLowerCase().includes(q)).slice(0, 8);
+   useEffect(() => {
+      const timer = setTimeout(() => setDebouncedQuery(query), 350);
+      return () => clearTimeout(timer);
    }, [query]);
+
+   const { data: locations = [] } = useQuery({
+      queryKey: ['locations', 'search', debouncedQuery],
+      queryFn: () => searchLocations(debouncedQuery),
+      enabled: !!debouncedQuery,
+   });
 
    const handleSelect = (location: PostLocation) => {
       onChange(location);
       setOpen(false);
       setQuery('');
+      setDebouncedQuery('');
    };
 
    const handleOpen = () => {
@@ -68,17 +77,18 @@ export default function LocationAutocomplete({ value, onChange }: LocationAutoco
    const handleClear = () => {
       onChange(null);
       setQuery('');
+      setDebouncedQuery('');
       setOpen(false);
    };
 
    if (open) {
       return (
          <Autocomplete
-            items={filtered}
+            items={locations}
             query={query}
             onQueryChange={setQuery}
             renderItem={item => <span {...stylex.props(styles.locationItem)}>{item.name}</span>}
-            keyExtractor={item => item.name}
+            keyExtractor={item => `${item.lat},${item.lon}`}
             onSelect={handleSelect}
             placeholder="Search locations..."
             autoFocus
