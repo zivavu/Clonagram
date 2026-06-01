@@ -5,11 +5,12 @@ interface UserProfilesQueryOptions {
    limit?: number;
    order?: 'asc' | 'desc';
    search?: string;
+   excludeId?: string;
 }
 
 export function userProfilesQuery(
    supabase: SupabaseClient<Database>,
-   { limit, order, search }: UserProfilesQueryOptions,
+   { limit, order, search, excludeId }: UserProfilesQueryOptions,
 ) {
    let q = supabase
       .from('profiles')
@@ -19,6 +20,10 @@ export function userProfilesQuery(
 
    if (search) {
       q = q.or(`username.ilike.%${search}%,full_name.ilike.%${search}%`);
+   }
+
+   if (excludeId) {
+      q = q.neq('id', excludeId);
    }
 
    return q;

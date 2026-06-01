@@ -1,11 +1,14 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { IoCheckmark, IoClose } from 'react-icons/io5';
 import Autocomplete from '@/src/components/Autocomplete';
 import { UserListItem } from '@/src/components/UserListItem';
-import { SUGGESTED_USERS } from '@/src/pageComponents/mocks/users';
+import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { createBrowserClient } from '@/src/lib/supabase/client';
+import { userProfilesQuery } from '@/src/queries/userProfiles';
 import type { PartialUser } from '@/src/types/global';
 import { styles } from './index.stylex';
 
@@ -31,18 +34,21 @@ export default function UserAutocomplete({
    autoFocus = true,
 }: UserAutocompleteProps) {
    const [query, setQuery] = useState('');
+   const { data: authUser } = useAuthUser();
 
-   const filtered = useMemo(() => {
-      const q = query.toLowerCase();
-      const all = q
-         ? SUGGESTED_USERS.filter(
-              u =>
-                 u.username.toLowerCase().includes(q) ||
-                 (u.full_name?.toLowerCase().includes(q) ?? false),
-           )
-         : SUGGESTED_USERS;
-      return all.slice(0, 8);
-   }, [query]);
+   const { data: filtered = [] } = useQuery({
+      queryKey: ['profiles', 'search', query, authUser?.id],
+      queryFn: async () => {
+         const { data, error } = await userProfilesQuery(createBrowserClient(), {
+            search: query,
+            limit: 8,
+            excludeId: authUser?.id,
+         });
+         if (error) throw error;
+         return data;
+      },
+      enabled: !!query,
+   });
 
    const isSelected = (user: PartialUser) => selected.some(s => s.id === user.id);
 
