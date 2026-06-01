@@ -6,8 +6,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      gap: '20px',
-      paddingBottom: '8px',
+      gap: '24px',
    },
    group: {
       display: 'flex',

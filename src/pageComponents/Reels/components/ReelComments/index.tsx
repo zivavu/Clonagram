@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
 import { createCommentAction } from '@/src/actions/comments/createComment';
@@ -21,15 +21,26 @@ interface ReelCommentsProps {
 }
 
 export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
+   const panelRef = useRef<HTMLDivElement>(null);
    const { data: authUser } = useAuthUser();
    const queryClient = useQueryClient();
+
+   useEffect(() => {
+      function handleMouseDown(e: MouseEvent) {
+         if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+            onClose();
+         }
+      }
+      document.addEventListener('mousedown', handleMouseDown);
+      return () => document.removeEventListener('mousedown', handleMouseDown);
+   }, [onClose]);
    const commentsKey = ['comments', reel.id];
    const [inputValue, setInputValue] = useState('');
    const [replyingTo, setReplyingTo] = useState<{ commentId: string; username: string } | null>(
       null,
    );
 
-   const { data: comments = [], isLoading } = useQuery({
+   const { data: comments = [], isLoading: isLoadingComments } = useQuery({
       queryKey: commentsKey,
       queryFn: async () => {
          const supabase = createBrowserClient();
@@ -95,7 +106,7 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
    }
 
    return (
-      <div {...stylex.props(styles.panel)}>
+      <div ref={panelRef} {...stylex.props(styles.panel)}>
          <div {...stylex.props(styles.header)}>
             <div {...stylex.props(styles.spacer)} />
             <span {...stylex.props(styles.title)}>Comments</span>
@@ -109,7 +120,7 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
             </button>
          </div>
          <div {...stylex.props(styles.body)}>
-            {isLoading
+            {isLoadingComments
                ? ['a', 'b', 'c'].map(k => <CommentSkeleton key={k} />)
                : comments.map(comment => (
                     <CommentItem

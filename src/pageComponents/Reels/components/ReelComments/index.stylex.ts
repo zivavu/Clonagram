@@ -5,8 +5,8 @@ export const styles = stylex.create({
    panel: {
       display: 'flex',
       flexDirection: 'column',
-      height: 'calc(100dvh - 24px)',
-      width: '400px',
+      height: '70dvh',
+      width: '320px',
       flexShrink: 0,
       backgroundColor: colors.bgElevated,
       borderRadius: radius.md,

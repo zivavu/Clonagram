@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
@@ -15,6 +15,7 @@ import { styles } from './index.stylex';
 
 interface ReelActionRailProps {
    reel: Reel;
+   commentCount: number;
    onToggleComments: () => void;
 }
 
@@ -24,11 +25,15 @@ function formatCount(n: number): string {
    return String(n);
 }
 
-export default function ReelActionRail({ reel, onToggleComments }: ReelActionRailProps) {
+export default function ReelActionRail({ reel, commentCount, onToggleComments }: ReelActionRailProps) {
    const { data: authUser } = useAuthUser();
    const [saved, setSaved] = useState(false);
-   const [isLiked, setIsLiked] = useState(() => reel.likes.some(l => l.user_id === authUser?.id));
-   const [likeCount, setLikeCount] = useState(reel.like_count);
+   const [isLiked, setIsLiked] = useState(false);
+   const [likeCount, setLikeCount] = useState(reel.likes.length);
+
+   useEffect(() => {
+      if (authUser) setIsLiked(reel.likes.some(l => l.user_id === authUser.id));
+   }, [authUser?.id, reel.id]);
 
    async function handleLike() {
       const next = !isLiked;
@@ -73,7 +78,7 @@ export default function ReelActionRail({ reel, onToggleComments }: ReelActionRai
             >
                <FiMessageCircle size={24} />
             </button>
-            <span {...stylex.props(styles.count)}>{formatCount(reel.comment_count)}</span>
+            <span {...stylex.props(styles.count)}>{formatCount(commentCount)}</span>
          </div>
 
          <button type="button" aria-label="Repost" {...stylex.props(styles.button)}>

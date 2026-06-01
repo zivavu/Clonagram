@@ -5,7 +5,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type Reel, reelsQuery } from '@/src/queries/posts';
-import ReelComments from './components/ReelComments';
 import ReelItem from './components/ReelItem';
 import ReelNavArrows from './components/ReelNavArrows';
 import { styles } from './index.stylex';
@@ -54,6 +53,7 @@ export default function Reels() {
    }, [scrollByItem]);
 
    const handleScroll = useCallback(() => {
+      setOpenComments(null);
       const scroller = scrollerRef.current;
       if (!scroller || !hasNextPage || isFetchingNextPage) return;
       const remaining = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
@@ -70,14 +70,13 @@ export default function Reels() {
                   <ReelItem
                      key={reel.id}
                      reel={reel}
+                     isCommentsOpen={openComments?.id === reel.id}
                      onToggleComments={() => setOpenComments(prev => (prev === reel ? null : reel))}
+                     onCloseComments={() => setOpenComments(null)}
                   />
                ))
             )}
          </div>
-         {openComments && (
-            <ReelComments reel={openComments} onClose={() => setOpenComments(null)} />
-         )}
          <ReelNavArrows onUp={() => scrollByItem(-1)} onDown={() => scrollByItem(1)} />
       </div>
    );

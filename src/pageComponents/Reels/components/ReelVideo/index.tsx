@@ -70,6 +70,10 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
             loop
             muted={volume === 0}
             autoPlay={false}
+            onError={(e: Event) => {
+               const err = (e as CustomEvent)?.detail?.error ?? (e as ErrorEvent)?.error;
+               if (err?.name === 'AbortError') return;
+            }}
             style={{
                width: '100%',
                height: '100%',
