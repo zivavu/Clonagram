@@ -6,7 +6,7 @@ export const styles = stylex.create({
       width: '100%',
       height: '44px',
       padding: '0 12px',
-      backgroundColor: colors.bgSecondary,
+      backgroundColor: colors.bg,
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: colors.border,

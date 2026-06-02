@@ -24,7 +24,10 @@ export async function updateProfile(params: UpdateProfileParams) {
       username.endsWith('.') ||
       username.includes('..')
    ) {
-      return { usernameError: 'Username must be 1–30 characters: letters, numbers, underscores, dots only (no leading/trailing/consecutive dots).' };
+      return {
+         usernameError:
+            'Username must be 1–30 characters: letters, numbers, underscores, dots only (no leading/trailing/consecutive dots).',
+      };
    }
 
    const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);

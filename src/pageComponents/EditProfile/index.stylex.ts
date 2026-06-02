@@ -3,7 +3,7 @@ import { colors, radius, spacing } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
-      maxWidth: '600px',
+      width: 'min(600px, 94%)',
       margin: '0 auto',
       paddingTop: spacing.lg,
       paddingBottom: spacing.lg,
