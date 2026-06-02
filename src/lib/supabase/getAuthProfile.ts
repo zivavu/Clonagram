@@ -9,7 +9,7 @@ export const getAuthProfile = cache(async () => {
    if (!session?.user) return null;
    const { data: profile } = await supabase
       .from('profiles')
-      .select('id, username, full_name, avatar_url')
+      .select('id, username, full_name, avatar_url, bio, website, gender')
       .eq('id', session.user.id)
       .single();
    return profile;
