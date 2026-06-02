@@ -3,11 +3,13 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { BsPlus } from 'react-icons/bs';
 import { MdExpandCircleDown } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import { useCreateStoryModalStore } from '@/src/store/useCreateStoryModalStore';
+import { useAuthUser } from '../../../../../../hooks/useAuthUser';
 import { colors } from '../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
@@ -17,6 +19,23 @@ const SCROLL_PAGES = 4;
 
 function easeInOut(t: number): number {
    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+interface OptionalLinkProps {
+   href?: string;
+   children: ReactNode;
+   styleProps: stylex.StyleXStyles;
+}
+
+function OptionalLink({ href, children, styleProps }: OptionalLinkProps) {
+   if (href) {
+      return (
+         <Link href={href} {...stylex.props(styleProps)}>
+            {children}
+         </Link>
+      );
+   }
+   return <div {...stylex.props(styleProps)}>{children}</div>;
 }
 
 interface StoriesRowProps {
@@ -37,6 +56,10 @@ export default function StoriesRow({
    const [scrollMax, setScrollMax] = useState(Infinity);
    const rafRef = useRef<number | null>(null);
    const viewedSet = new Set(viewedStoryIds);
+
+   const { data: currentUser } = useAuthUser();
+
+   const currentUserStory = entries.find(entry => entry.username === currentUser?.username);
 
    useEffect(() => {
       return () => {
@@ -73,7 +96,7 @@ export default function StoriesRow({
    };
 
    const isFirst = scrollLeft === 0;
-   const isLast = scrollLeft >= scrollMax;
+   const isLast = scrollLeft >= scrollMax || entries.length <= 6;
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -104,59 +127,83 @@ export default function StoriesRow({
          </button>
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef} onScroll={handleScroll}>
             <div {...stylex.props(styles.addStoryCard)}>
-               <div {...stylex.props(styles.addStoryRingWrapper)}>
+               <OptionalLink
+                  href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}
+                  styleProps={styles.addStoryRingWrapper}
+               >
                   {currentUserAvatarUrl ? (
-                     <Image
-                        src={currentUserAvatarUrl}
-                        alt="Your story"
-                        width={74}
-                        height={74}
-                        {...stylex.props(styles.addStoryAvatar)}
-                     />
+                     <div {...stylex.props(styles.storyRing, styles.storyRingViewed)}>
+                        <div {...stylex.props(styles.storyRingInner)}>
+                           <Image
+                              src={currentUserAvatarUrl}
+                              alt="Your story"
+                              width={74}
+                              height={74}
+                              {...stylex.props(styles.addStoryAvatar)}
+                           />
+                        </div>
+                     </div>
                   ) : (
                      <div
-                        style={{ width: 74, height: 74, borderRadius: '50%', background: '#888' }}
+                        style={{
+                           width: 74,
+                           height: 74,
+                           borderRadius: '50%',
+                           background: '#888',
+                        }}
                      />
                   )}
                   <button
                      type="button"
                      {...stylex.props(styles.addStoryPlusBadge)}
-                     onClick={openCreateStory}
+                     onClick={
+                        currentUserStory
+                           ? e => {
+                                e.stopPropagation();
+                                openCreateStory();
+                             }
+                           : openCreateStory
+                     }
                      aria-label="Add story"
                   >
                      <BsPlus fontSize={22} />
                   </button>
-               </div>
+               </OptionalLink>
                <span {...stylex.props(styles.storyUsername)}>Your story</span>
             </div>
 
-            {entries.map(entry => {
-               const allViewed = entry.stories.every(s => viewedSet.has(s.id));
-               return (
-                  <Link
-                     href={`/stories/${entry.username}`}
-                     key={entry.username}
-                     {...stylex.props(styles.storyLink)}
-                  >
-                     <div {...stylex.props(styles.storyItem)}>
-                        <div
-                           {...stylex.props(styles.storyRing, allViewed && styles.storyRingViewed)}
-                        >
-                           <div {...stylex.props(styles.storyRingInner)}>
-                              <Image
-                                 {...stylex.props(styles.storyAvatar)}
-                                 src={entry.avatarUrl}
-                                 alt={entry.username}
-                                 width={74}
-                                 height={74}
-                              />
+            {entries
+               .filter(entry => entry.username !== currentUser?.username)
+               .map(entry => {
+                  const allViewed = entry.stories.every(s => viewedSet.has(s.id));
+                  return (
+                     <Link
+                        href={`/stories/${entry.username}`}
+                        key={entry.username}
+                        {...stylex.props(styles.storyLink)}
+                     >
+                        <div {...stylex.props(styles.storyItem)}>
+                           <div
+                              {...stylex.props(
+                                 styles.storyRing,
+                                 allViewed && styles.storyRingViewed,
+                              )}
+                           >
+                              <div {...stylex.props(styles.storyRingInner)}>
+                                 <Image
+                                    {...stylex.props(styles.storyAvatar)}
+                                    src={entry.avatarUrl}
+                                    alt={entry.username}
+                                    width={74}
+                                    height={74}
+                                 />
+                              </div>
                            </div>
+                           <span {...stylex.props(styles.storyUsername)}>{entry.username}</span>
                         </div>
-                        <span {...stylex.props(styles.storyUsername)}>{entry.username}</span>
-                     </div>
-                  </Link>
-               );
-            })}
+                     </Link>
+                  );
+               })}
          </div>
       </div>
    );

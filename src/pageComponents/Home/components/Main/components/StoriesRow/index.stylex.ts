@@ -95,8 +95,11 @@ export const styles = stylex.create({
    },
    addStoryRingWrapper: {
       position: 'relative',
-      width: '80px',
-      height: '80px',
+      width: '86px',
+      height: '86px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
    },
    addStoryAvatar: {
       borderRadius: '50%',

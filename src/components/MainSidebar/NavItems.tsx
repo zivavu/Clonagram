@@ -15,7 +15,6 @@ import {
    MdSearch,
    MdSmartDisplay,
 } from 'react-icons/md';
-import { RiBarChartBoxFill, RiBarChartBoxLine } from 'react-icons/ri';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
@@ -43,12 +42,12 @@ const navItemsConfig: NavItemConfig[] = [
       action: 'notifications',
    },
    { icon: MdSearch, activeIcon: MdSearch, label: 'Create', action: 'create' },
-   {
-      href: '/dashboard',
-      icon: RiBarChartBoxLine,
-      activeIcon: RiBarChartBoxFill,
-      label: 'Dashboard',
-   },
+   // {
+   //    href: '/dashboard',
+   //    icon: RiBarChartBoxLine,
+   //    activeIcon: RiBarChartBoxFill,
+   //    label: 'Dashboard',
+   // },
    { href: '/profile', label: 'Profile' },
 ];
 

@@ -51,13 +51,6 @@ export default function StoryCard({
    const isPlaying = isPlayingLocal && !anotherVideoActive;
 
    useEffect(() => {
-      const mediaEl = muxPlayerRef.current?.media;
-      if (!mediaEl) return;
-      mediaEl.volume = volume;
-      mediaEl.muted = volume === 0;
-   }, [volume]);
-
-   useEffect(() => {
       if (!isCurrent) return;
       if (isPlaying) {
          claimPlayback(storyPlayerId);
@@ -116,6 +109,7 @@ export default function StoryCard({
                key={currentMedia.id}
                ref={muxPlayerRef}
                disableCookies
+               volume={volume}
                style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
                playbackId={currentMedia.url ?? ''}
                autoPlay="always"
@@ -138,7 +132,7 @@ export default function StoryCard({
                   src={currentMedia.url}
                   alt={story.username}
                   fill
-                  sizes="(max-width: 640px) 100vw, 33vw"
+                  unoptimized
                   placeholder={currentMedia.blurDataUrl ? 'blur' : 'empty'}
                   blurDataURL={currentMedia.blurDataUrl ?? undefined}
                />

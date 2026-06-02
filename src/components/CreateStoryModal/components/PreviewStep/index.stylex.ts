@@ -6,6 +6,8 @@ export const styles = stylex.create({
       flexDirection: 'column',
       flex: 1,
       overflow: 'hidden',
+      height: '100%',
+      aspectRatio: '9 / 16',
    },
    previewArea: {
       flex: 1,

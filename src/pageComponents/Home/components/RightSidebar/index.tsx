@@ -15,7 +15,10 @@ import LogoutButton from './LogoutButton';
 export default async function RightSidebar() {
    const [profile, supabase] = await Promise.all([getAuthProfile(), createServerClient()]);
 
-   const { data: suggestedUsers, error } = await userProfilesQuery(supabase, { limit: 6 });
+   const { data: suggestedUsers, error } = await userProfilesQuery(supabase, {
+      limit: 6,
+      excludeId: profile?.id,
+   });
 
    if (error) {
       return 'Failed to load suggested users';

@@ -4,55 +4,15 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { IoCloseOutline } from 'react-icons/io5';
 import DiscardDialog from '@/src/components/CreatePostModal/components/DiscardDialog';
 import PostSharedStep from '@/src/components/CreatePostModal/components/PostSharedStep';
-import { shared } from '@/src/components/CreatePostModal/components/Spinner.stylex';
-import StepHeader from '@/src/components/CreatePostModal/components/StepHeader';
 import UploadStep from '@/src/components/CreatePostModal/components/UploadStep';
-import { useUploadStory } from '@/src/components/CreateStoryModal/hooks/useUploadStory';
 import DialogOverlay from '@/src/components/DialogOverlay';
 import { useCreateStoryModalStore } from '@/src/store/useCreateStoryModalStore';
-import { colors, radius } from '../../styles/tokens.stylex';
 import PreviewStep from './components/PreviewStep';
+import SharingStoryStep from './components/SharingStoryStep';
 import { styles } from './index.stylex';
 import type { Step, StoryMedia } from './types';
-
-const spin = stylex.keyframes({
-   from: { transform: 'rotate(0deg)' },
-   to: { transform: 'rotate(360deg)' },
-});
-
-const sharingStyles = stylex.create({
-   spinningRing: {
-      animationName: spin,
-      animationDuration: '0.5s',
-      animationTimingFunction: 'linear',
-      animationIterationCount: 'infinite',
-   },
-   errorText: {
-      color: colors.textPrimary,
-      fontSize: 14,
-      textAlign: 'center',
-      padding: '0 24px',
-      maxWidth: 320,
-   },
-   retryButton: {
-      marginTop: 16,
-      padding: '8px 24px',
-      borderRadius: radius.md,
-      backgroundColor: colors.textPrimary,
-      color: colors.bg,
-      fontSize: 14,
-      fontWeight: 600,
-   },
-   closeButton: {
-      display: 'flex',
-      color: colors.textPrimary,
-      borderRadius: radius.full,
-      ':hover': { backgroundColor: colors.buttonHover },
-   },
-});
 
 function createStoryMedia(file: File): StoryMedia {
    return {
@@ -60,51 +20,6 @@ function createStoryMedia(file: File): StoryMedia {
       preview: URL.createObjectURL(file),
       type: file.type.startsWith('video/') ? 'video' : 'image',
    };
-}
-
-interface SharingStoryStepProps {
-   media: StoryMedia;
-   onDone: () => void;
-}
-
-function SharingStoryStep({ media, onDone }: SharingStoryStepProps) {
-   const { status, error } = useUploadStory({ media, onDone });
-   const isError = status === 'error';
-
-   return (
-      <div {...stylex.props(shared.root)}>
-         <StepHeader
-            title="Sharing"
-            rightSlot={
-               <Dialog.Close asChild>
-                  <button {...stylex.props(sharingStyles.closeButton)} aria-label="Close">
-                     <IoCloseOutline style={{ fontSize: 30 }} />
-                  </button>
-               </Dialog.Close>
-            }
-         />
-         <div {...stylex.props(shared.body)}>
-            {isError ? (
-               <>
-                  <span {...stylex.props(sharingStyles.errorText)}>
-                     {error ?? 'Something went wrong while sharing your story.'}
-                  </span>
-                  <button
-                     type="button"
-                     {...stylex.props(sharingStyles.retryButton)}
-                     onClick={onDone}
-                  >
-                     Try again
-                  </button>
-               </>
-            ) : (
-               <div {...stylex.props(shared.ring, sharingStyles.spinningRing)}>
-                  <div {...stylex.props(shared.ringInner)} />
-               </div>
-            )}
-         </div>
-      </div>
-   );
 }
 
 export default function CreateStoryModal() {
@@ -174,7 +89,7 @@ export default function CreateStoryModal() {
                         getRootProps={getRootProps}
                         open={open}
                         isDragActive={isDragActive}
-                        isReel={false}
+                        elementType="story"
                      />
                   </>
                )}

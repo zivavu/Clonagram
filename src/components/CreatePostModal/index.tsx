@@ -192,7 +192,7 @@ export default function CreatePostModal() {
                         getRootProps={getRootProps}
                         open={open}
                         isDragActive={isDragActive}
-                        isReel={isReel}
+                        elementType={isReel ? 'reel' : 'post'}
                      />
                   </>
                )}

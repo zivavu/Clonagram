@@ -5,8 +5,10 @@ import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import { BsImages } from 'react-icons/bs';
 import { FaRegSquarePlus, FaSquarePlus } from 'react-icons/fa6';
+import { LuCircleFadingPlus } from 'react-icons/lu';
 import { MdOutlineSmartDisplay } from 'react-icons/md';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
+import { useCreateStoryModalStore } from '../../store/useCreateStoryModalStore';
 import type { MainSidebarStyles } from '../MainSidebar/index.stylex';
 import { styles } from './index.stylex';
 
@@ -16,6 +18,7 @@ interface CreateMenuPopoverProps {
 
 export function CreateMenuPopover({ mainSidebarStyles }: CreateMenuPopoverProps) {
    const openCreate = useCreatePostModalStore(state => state.open);
+   const { open: openStoryCreate } = useCreateStoryModalStore();
    const [isOpen, setIsOpen] = useState(false);
 
    function handlePost() {
@@ -26,6 +29,11 @@ export function CreateMenuPopover({ mainSidebarStyles }: CreateMenuPopoverProps)
    function handleReels() {
       setIsOpen(false);
       openCreate('reel');
+   }
+
+   function handleStory() {
+      setIsOpen(false);
+      openStoryCreate();
    }
 
    return (
@@ -58,6 +66,10 @@ export function CreateMenuPopover({ mainSidebarStyles }: CreateMenuPopoverProps)
             <button type="button" onClick={handleReels} {...stylex.props(styles.item)}>
                Reel
                <MdOutlineSmartDisplay style={{ fontSize: 18 }} />
+            </button>
+            <button type="button" onClick={handleStory} {...stylex.props(styles.item)}>
+               Story
+               <LuCircleFadingPlus style={{ fontSize: 18 }} />
             </button>
          </Popover.Content>
       </Popover.Root>
