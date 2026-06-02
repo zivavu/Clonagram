@@ -72,7 +72,10 @@ export default function StoryCard({
       setIsPlayingLocal(next);
       if (isVideo) {
          const mediaEl = muxPlayerRef.current?.media;
-         if (next) mediaEl?.play();
+         if (next)
+            mediaEl?.play()?.catch(err => {
+               if (err?.name !== 'AbortError') throw err;
+            });
          else mediaEl?.pause();
       }
    }

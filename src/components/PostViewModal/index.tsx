@@ -71,6 +71,7 @@ export default function PostFullViewModal() {
                   aspectRatio={aspectRatio}
                   sizes="70vw"
                   omitRightBorderRadius={true}
+                  playerIdPrefix="modal"
                />
                <PostModalComments initialPost={post} />
             </Dialog.Content>

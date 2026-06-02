@@ -34,7 +34,9 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
       const player = playerRef.current;
       if (!player) return;
       if (isVisible) {
-         player.play();
+         player.play()?.catch(err => {
+            if (err?.name !== 'AbortError') throw err;
+         });
          setIsPlaying(true);
       } else {
          player.pause();
@@ -56,7 +58,9 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
          player.pause();
          setIsPlaying(false);
       } else {
-         player.play();
+         player.play()?.catch(err => {
+            if (err?.name !== 'AbortError') throw err;
+         });
          setIsPlaying(true);
       }
    }
@@ -71,10 +75,7 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
             loop
             muted={volume === 0}
             autoPlay={false}
-            onError={(e: Event) => {
-               const err = (e as CustomEvent)?.detail?.error ?? (e as ErrorEvent)?.error;
-               if (err?.name === 'AbortError') return;
-            }}
+            preload="none"
             style={{
                width: '100%',
                height: '100%',

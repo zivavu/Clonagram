@@ -19,6 +19,18 @@ export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: Feed
    const { volume } = usePlayerStore();
 
    useEffect(() => {
+      const player = muxPlayerRef.current;
+      if (!player) return;
+      if (isPlaying) {
+         player.play()?.catch(err => {
+            if (err?.name !== 'AbortError') throw err;
+         });
+      } else {
+         player.pause();
+      }
+   }, [isPlaying]);
+
+   useEffect(() => {
       const mediaEl = muxPlayerRef.current?.media;
       if (!mediaEl) return;
       mediaEl.volume = volume;

@@ -47,6 +47,7 @@ export interface PostMediaCarouselProps {
    sizes: string;
    aspectRatio?: string;
    omitRightBorderRadius?: boolean;
+   playerIdPrefix?: string;
    onImageChange?: (index: number) => void;
    onImageClick?: (post: PostWithMedia, index: number) => void;
 }
@@ -59,6 +60,7 @@ export default function PostMediaCarousel({
    sizes,
    aspectRatio,
    omitRightBorderRadius,
+   playerIdPrefix = 'feed',
    onImageChange,
    onImageClick,
 }: PostMediaCarouselProps) {
@@ -74,7 +76,7 @@ export default function PostMediaCarousel({
 
    const currentItem = media[currentImageIndex];
    const currentVideoId =
-      currentItem?.type === 'video' ? `feed-${post.id}-${currentItem.id}` : null;
+      currentItem?.type === 'video' ? `${playerIdPrefix}-${post.id}-${currentItem.id}` : null;
 
    useEffect(() => {
       const el = rootRef.current;
@@ -124,7 +126,8 @@ export default function PostMediaCarousel({
             style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
          >
             {media.map(item => {
-               const videoId = item.type === 'video' ? `feed-${post.id}-${item.id}` : null;
+               const videoId =
+                  item.type === 'video' ? `${playerIdPrefix}-${post.id}-${item.id}` : null;
                const isVideoPlaying = videoId !== null && activePlayerId === videoId;
 
                if (item.type === 'video' && videoId) {
