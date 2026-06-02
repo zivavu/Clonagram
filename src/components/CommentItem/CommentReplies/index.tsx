@@ -4,8 +4,8 @@ import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { commentRepliesQuery } from '@/src/queries/comments';
-import CommentItem, { CommentSkeleton, type OnReplyParams } from '../CommentItem';
-import { styles } from '../CommentItem/index.stylex';
+import CommentItem, { CommentSkeleton, type OnReplyParams } from '..';
+import { styles } from '../index.stylex';
 
 interface CommentRepliesProps {
    parentId: string;

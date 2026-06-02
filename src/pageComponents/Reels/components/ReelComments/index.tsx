@@ -6,9 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
 import { createCommentAction } from '@/src/actions/comments/createComment';
-import CommentItem, {
-   CommentSkeleton,
-} from '@/src/components/PostViewModal/PostModalComments/CommentItem';
+import CommentItem, { CommentSkeleton } from '@/src/components/CommentItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type PostComment, type PostComments, postCommentsQuery } from '@/src/queries/comments';

@@ -10,7 +10,7 @@ import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useToggleCommentLike } from '@/src/hooks/useToggleCommentLike';
 import type { PostComment } from '@/src/queries/comments';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import CommentReplies from '../CommentReplies';
+import CommentReplies from './CommentReplies';
 import CommentText from './CommentText';
 import { styles } from './index.stylex';
 

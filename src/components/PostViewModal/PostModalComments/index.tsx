@@ -22,7 +22,7 @@ import { getPostAction } from '../../../actions/post/getPost';
 import { usePostViewModal } from '../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../store/useOwnerActionsModalStore';
 import OwnerActionsModal from '../../OwnerActionsModal/OwnerActionsModal';
-import CommentItem, { CommentSkeleton, type OnReplyParams } from './CommentItem';
+import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
 import { styles } from './index.stylex';
 
 interface PostModalCommentsProps {
