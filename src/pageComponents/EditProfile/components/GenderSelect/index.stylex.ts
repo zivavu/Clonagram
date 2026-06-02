@@ -1,12 +1,14 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors, radius } from '../../../../../../styles/tokens.stylex';
+import { colors, radius } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: colors.bgSecondary,
-      border: `1px solid ${colors.border}`,
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: colors.border,
       borderRadius: radius.sm,
       overflow: 'hidden',
    },
@@ -15,7 +17,9 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '14px 16px',
-      borderBottom: `1px solid ${colors.border}`,
+      borderBottomWidth: '1px',
+      borderBottomStyle: 'solid',
+      borderBottomColor: colors.border,
       backgroundColor: 'transparent',
       color: colors.textPrimary,
       fontSize: '14px',
@@ -27,7 +31,9 @@ export const styles = stylex.create({
       width: '22px',
       height: '22px',
       borderRadius: '50%',
-      border: `2px solid ${colors.border}`,
+      borderWidth: '2px',
+      borderStyle: 'solid',
+      borderColor: colors.border,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -39,7 +45,5 @@ export const styles = stylex.create({
    },
    checkmark: {
       color: colors.bg,
-      fontSize: '14px',
-      fontWeight: 700,
    },
 });

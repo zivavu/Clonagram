@@ -1,3 +1,4 @@
+'use client';
 import * as stylex from '@stylexjs/stylex';
 import { MdClose } from 'react-icons/md';
 import { styles } from './index.stylex';

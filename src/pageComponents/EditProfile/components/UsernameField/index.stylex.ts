@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors, radius } from '../../../../../../styles/tokens.stylex';
+import { colors, radius } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
@@ -12,7 +12,9 @@ export const styles = stylex.create({
       height: '44px',
       padding: '0 12px',
       backgroundColor: colors.bgSecondary,
-      border: `1px solid ${colors.border}`,
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: colors.border,
       borderRadius: radius.sm,
       color: colors.textPrimary,
       fontSize: '14px',
