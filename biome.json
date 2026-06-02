@@ -39,9 +39,6 @@
                "level": "error"
             }
          },
-         "a11y": {
-            "useSemanticElements": "off"
-         },
          "suspicious": {
             "noConsole": {
                "level": "warn"

@@ -20,12 +20,24 @@ export const styles = stylex.create({
       borderBottomWidth: '1px',
       borderBottomStyle: 'solid',
       borderBottomColor: colors.border,
-      backgroundColor: 'transparent',
       color: colors.textPrimary,
       fontSize: '14px',
       ':last-child': {
-         borderBottom: 'none',
+         borderBottomWidth: '0px',
       },
+   },
+   hiddenInput: {
+      position: 'absolute',
+      opacity: 0,
+      width: '1px',
+      height: '1px',
+      margin: '-1px',
+      overflow: 'hidden',
+      clip: 'rect(0,0,0,0)',
+      whiteSpace: 'nowrap',
+   },
+   label: {
+      flex: 1,
    },
    radio: {
       width: '22px',
