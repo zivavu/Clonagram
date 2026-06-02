@@ -1,6 +1,6 @@
 ---
 name: edit-profile-page
-description: Edit profile page at /accounts/edit with avatar upload, multi-link website editor, bio, gender, and account suggestions toggle
+description: Edit profile page at /accounts/edit with avatar upload, multi-link website editor, bio, name, username, gender, and account suggestions toggle
 metadata:
   type: project
 ---
@@ -17,6 +17,8 @@ metadata:
 
 Fetches the authenticated user's full profile (id, username, full_name, avatar_url, bio, website, gender) using `getAuthProfile` extended to include those fields, then renders the `<EditProfile>` client component with the data as props.
 
+Username uniqueness is checked server-side in `updateProfile` before saving.
+
 Redirect to `/login` if unauthenticated.
 
 ## Client Form: `pageComponents/EditProfile/`
@@ -29,10 +31,11 @@ Redirect to `/login` if unauthenticated.
 |---|---|
 | `AvatarCard` | Displays avatar + username + display name; "Change photo" button opens modal |
 | `ChangePhotoModal` | Radix `Dialog` with three options: Upload Photo, Remove Current Photo, Cancel |
+| `NameField` | Text input for `full_name`; plain text, no char limit enforced |
+| `UsernameField` | Text input for `username`; shows inline error if taken or invalid |
 | `LinksEditor` | List of `{title, url}` pairs with add/remove; max ~5 links |
 | `BioField` | `<textarea>` with live `{n}/150` char counter; hard-capped at 150 |
-| `GenderSelect` | Native `<select>` with options: Prefer not to say, Male, Female, Non-binary, Other |
-| `SuggestionsToggle` | Toggle card (UI-only, no DB persistence in this iteration) |
+| `GenderSelect` | Radio-button list with options: Female, Male, Custom, Prefer not to say |
 
 ### Form fields & state
 
@@ -40,10 +43,12 @@ Redirect to `/login` if unauthenticated.
 type LinkEntry = { title: string; url: string };
 
 state: {
+  fullName: string;
+  username: string;
   bio: string;
   gender: string;
   links: LinkEntry[];      // serialised to JSON string in `website` column
-  suggestionsOn: boolean;  // UI-only
+  usernameError: string | null;  // inline error from server
 }
 ```
 
@@ -76,12 +81,13 @@ Add `gender text null` to the `profiles` table via Supabase migration. Not shown
 
 ```ts
 // src/actions/profile/updateProfile.ts
-params: { bio: string; website: string | null; gender: string | null }
+params: { fullName: string; username: string; bio: string; website: string | null; gender: string | null }
 ```
 
-- Validates: bio ≤ 150 chars.
+- Validates: bio ≤ 150 chars; username non-empty, alphanumeric/underscores only, 1–30 chars.
+- Checks username uniqueness (query profiles where username = new value AND id ≠ current user); throws if taken.
 - Updates `profiles` row for the authenticated user.
-- Returns void; client shows toast on success/error.
+- Returns `{ usernameError?: string }` so the client can surface inline field errors.
 
 ### `updateAvatar`
 
@@ -101,7 +107,7 @@ params: { avatarUrl: string | null }
 
 ## Out of Scope
 
-- Full name / username editing (separate feature).
+- Email / password changes (separate settings flow).
 - Private account toggle (separate feature).
-- Account suggestions DB persistence (UI-only).
+- Account suggestions section (removed entirely).
 - Supabase Storage bucket creation (assumed pre-existing or created manually).
