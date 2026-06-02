@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { revalidatePath } from 'next/cache';
+import { createServiceRoleClient } from '@/src/lib/supabase/server';
 import { getAuthUser } from '../getAuthUser';
 
 export async function deleteCommentAction(params: { commentId: string }) {
@@ -20,7 +21,8 @@ export async function deleteCommentAction(params: { commentId: string }) {
       throw new Error('Not authorized');
    }
 
-   const { error } = await supabase
+   const admin = createServiceRoleClient();
+   const { error } = await admin
       .from('comments')
       .update({ is_deleted: true })
       .eq('id', params.commentId);
