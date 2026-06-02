@@ -863,6 +863,7 @@ export type Database = {
                bio: string | null;
                created_at: string | null;
                full_name: string | null;
+               gender: string | null;
                id: string;
                is_private: boolean;
                is_verified: boolean;
@@ -875,6 +876,7 @@ export type Database = {
                bio?: string | null;
                created_at?: string | null;
                full_name?: string | null;
+               gender?: string | null;
                id: string;
                is_private?: boolean;
                is_verified?: boolean;
@@ -887,6 +889,7 @@ export type Database = {
                bio?: string | null;
                created_at?: string | null;
                full_name?: string | null;
+               gender?: string | null;
                id?: string;
                is_private?: boolean;
                is_verified?: boolean;
