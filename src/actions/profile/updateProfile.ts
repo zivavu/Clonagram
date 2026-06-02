@@ -16,8 +16,15 @@ export async function updateProfile(params: UpdateProfileParams) {
    const { fullName, username, bio, website, gender } = params;
 
    if (bio.length > 150) throw new Error('Bio must be 150 characters or less.');
-   if (!username || username.length > 30 || !/^[a-zA-Z0-9_.]+$/.test(username)) {
-      return { usernameError: 'Username must be 1–30 characters: letters, numbers, underscores, dots.' };
+   if (
+      !username ||
+      username.length > 30 ||
+      !/^[a-zA-Z0-9_.]+$/.test(username) ||
+      username.startsWith('.') ||
+      username.endsWith('.') ||
+      username.includes('..')
+   ) {
+      return { usernameError: 'Username must be 1–30 characters: letters, numbers, underscores, dots only (no leading/trailing/consecutive dots).' };
    }
 
    const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
