@@ -8,6 +8,17 @@ import type { FollowState } from '@/src/queries/followStatus';
 import { colors } from '../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
+function parseWebsiteLinks(website: string | null) {
+   if (!website) return [];
+   try {
+      const parsed = JSON.parse(website);
+      if (Array.isArray(parsed)) return parsed as Array<{ title: string; url: string }>;
+   } catch {
+      return [{ title: website, url: website }];
+   }
+   return [];
+}
+
 interface ProfileHeaderProps {
    userProfile: ProfileWithPosts['userProfile'];
    postsCount: number;
@@ -102,16 +113,17 @@ export default function ProfileHeader({
                </>
             )}
          </div>
-         {userProfile.website && (
+         {parseWebsiteLinks(userProfile.website).map(link => (
             <Link
-               href={userProfile.website}
+               key={link.url}
+               href={link.url}
                target="_blank"
                rel="noopener noreferrer"
                {...stylex.props(styles.websiteLink)}
             >
-               {userProfile.website}
+               {link.title || link.url}
             </Link>
-         )}
+         ))}
       </div>
    );
 }
