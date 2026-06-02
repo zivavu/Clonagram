@@ -40,7 +40,7 @@ export default function ConversationList({
          return data ?? [];
       },
       initialData,
-      staleTime: 30_000,
+      staleTime: Infinity,
    });
 
    useEffect(() => {

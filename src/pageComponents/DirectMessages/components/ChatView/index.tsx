@@ -66,7 +66,7 @@ export default function ChatView({
          return data;
       },
       initialData: initialConversation,
-      staleTime: 30_000,
+      staleTime: Infinity,
    });
 
    useEffect(() => {

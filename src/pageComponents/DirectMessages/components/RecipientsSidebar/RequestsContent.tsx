@@ -31,7 +31,7 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
          return data ?? [];
       },
       initialData,
-      staleTime: 30_000,
+      staleTime: Infinity,
    });
 
    useEffect(() => {

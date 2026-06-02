@@ -1,10 +1,25 @@
-import { notFound } from 'next/navigation';
-import { STORIES } from '@/src/pageComponents/mocks/stories';
+import { getActiveStories } from '@/src/actions/story/getActiveStories';
+import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import StoriesPage from '@/src/pageComponents/Stories';
 
-export default async function Stories({ params }: { params: { username: string; id: string } }) {
+export default async function StoriesRoute({
+   params,
+}: {
+   params: Promise<{ username: string; id: string }>;
+}) {
    const { username, id } = await params;
-   if (!STORIES.some(s => s.username === username)) notFound();
+   const [{ entries, viewedStoryIds }, profile] = await Promise.all([
+      getActiveStories(),
+      getAuthProfile(),
+   ]);
 
-   return <StoriesPage username={username} storyId={id} />;
+   return (
+      <StoriesPage
+         username={username}
+         storyId={id}
+         entries={entries}
+         viewedStoryIds={viewedStoryIds}
+         currentUserId={profile?.id ?? null}
+      />
+   );
 }

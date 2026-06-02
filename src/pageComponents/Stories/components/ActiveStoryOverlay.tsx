@@ -6,10 +6,10 @@ import type React from 'react';
 import { useCallback } from 'react';
 import { LuSend } from 'react-icons/lu';
 import { MdFavoriteBorder, MdMoreHoriz, MdPause, MdPlayArrow } from 'react-icons/md';
+import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import VolumeControl from '@/src/components/VolumeControl';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from '../index.stylex';
-import type { StoryEntry } from '../types';
 
 interface ActiveStoryOverlayProps {
    story: StoryEntry;

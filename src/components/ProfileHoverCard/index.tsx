@@ -12,6 +12,7 @@ import { createBrowserClient } from '@/src/lib/supabase/client';
 import { userRecentPostsQuery } from '@/src/queries/posts';
 import { userProfileCardQuery } from '@/src/queries/userProfiles';
 import { getPostThumbnail } from '@/src/utils/posts';
+import { useAuthUser } from '../../hooks/useAuthUser';
 import { colors } from '../../styles/tokens.stylex';
 import FollowButton from '../FollowButton';
 import OtherUserUsername from '../Username/OtherUserUsername';
@@ -32,6 +33,8 @@ function formatStat(n: number) {
 export default function ProfileHoverCard({ userId, children }: ProfileHoverCardProps) {
    const [open, setOpen] = useState(false);
 
+   const { data: authedUser } = useAuthUser();
+
    const { data: profile } = useQuery({
       queryKey: ['profile-card', userId],
       queryFn: async () => {
@@ -41,7 +44,7 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
          return data;
       },
       enabled: open,
-      staleTime: 5 * 60 * 1000,
+      staleTime: Infinity,
    });
 
    const { data: posts = [] } = useQuery({
@@ -53,8 +56,10 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
          return data ?? [];
       },
       enabled: open,
-      staleTime: 5 * 60 * 1000,
+      staleTime: Infinity,
    });
+
+   const isOwner = authedUser?.id === userId;
 
    return (
       <HoverCard.Root open={open} onOpenChange={setOpen} openDelay={400} closeDelay={250}>
@@ -148,13 +153,15 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
                         </div>
                      )}
 
-                     <div {...stylex.props(styles.followButtonContainer)}>
-                        <FollowButton
-                           targetUserId={profile.id}
-                           targetIsPrivate={profile.is_private}
-                           variant="card"
-                        />
-                     </div>
+                     {!isOwner && (
+                        <div {...stylex.props(styles.followButtonContainer)}>
+                           <FollowButton
+                              targetUserId={profile.id}
+                              targetIsPrivate={profile.is_private}
+                              variant="card"
+                           />
+                        </div>
+                     )}
                   </>
                )}
             </HoverCard.Content>

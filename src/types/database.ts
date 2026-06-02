@@ -1175,6 +1175,7 @@ export type Database = {
          };
          story_images: {
             Row: {
+               blur_data_url: string | null;
                created_at: string | null;
                id: string;
                position: number;
@@ -1182,6 +1183,7 @@ export type Database = {
                url: string;
             };
             Insert: {
+               blur_data_url?: string | null;
                created_at?: string | null;
                id?: string;
                position?: number;
@@ -1189,6 +1191,7 @@ export type Database = {
                url: string;
             };
             Update: {
+               blur_data_url?: string | null;
                created_at?: string | null;
                id?: string;
                position?: number;

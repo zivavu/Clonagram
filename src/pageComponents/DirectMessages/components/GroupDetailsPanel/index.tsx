@@ -42,7 +42,7 @@ export default function GroupDetailsPanel({
          return data;
       },
       initialData: initialConversation,
-      staleTime: 30_000,
+      staleTime: Infinity,
    });
 
    const participants = conversation?.participants ?? [];

@@ -34,7 +34,7 @@ export default function NewMessageModal() {
             .eq('follower_id', user.id);
          return (data ?? []).map(r => r.user).filter(Boolean);
       },
-      staleTime: 60_000,
+      staleTime: Infinity,
    });
 
    const toggleUser = (id: string) => {

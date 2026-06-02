@@ -10,9 +10,16 @@ interface UserAvatarProps extends Omit<ImageProps, 'src'> {
    alt: string;
    size: number;
    userId?: string;
+   useHoverCard?: boolean;
 }
 
-export default function UserAvatar({ src, size, userId, ...props }: UserAvatarProps) {
+export default function UserAvatar({
+   src,
+   size,
+   userId,
+   useHoverCard = true,
+   ...props
+}: UserAvatarProps) {
    const avatar = src ? (
       <Image
          src={src}
@@ -37,6 +44,8 @@ export default function UserAvatar({ src, size, userId, ...props }: UserAvatarPr
    );
 
    if (!userId) return avatar;
+
+   if (!useHoverCard) return avatar;
 
    return <ProfileHoverCard userId={userId}>{avatar}</ProfileHoverCard>;
 }

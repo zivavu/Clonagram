@@ -4,7 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { MdClose } from 'react-icons/md';
-import { STORIES } from '@/src/pageComponents/mocks/stories';
+import { recordStoryView } from '@/src/actions/story/recordStoryView';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, SWIPE_THRESHOLD } from './constants';
@@ -12,16 +12,20 @@ import { styles } from './index.stylex';
 import type { Layout, StoriesPageProps } from './types';
 import { computeLayout } from './utils';
 
-export default function StoriesPage({ username }: StoriesPageProps) {
+export default function StoriesPage({
+   username,
+   entries,
+   viewedStoryIds,
+   currentUserId,
+}: StoriesPageProps) {
    const startIndex = Math.max(
       0,
-      STORIES.findIndex(s => s.username === username),
+      entries.findIndex(s => s.username === username),
    );
 
    const [currentUserIndex, setCurrentUserIndex] = useState(startIndex);
    const [currentStoryMediaIndex, setCurrentStoryMediaIndex] = useState(0);
    const [playTime, setPlayTime] = useState(0);
-
    const [layout, setLayout] = useState<Layout>({
       mainWidth: DESKTOP_SIDE_W,
       mainHeight: DESKTOP_SIDE_H,
@@ -33,12 +37,31 @@ export default function StoriesPage({ username }: StoriesPageProps) {
    });
    const [isMoving, setIsMoving] = useState(false);
 
-   // Ref mirrors state so resize/touch handlers always read the latest index
-   // without creating stale closures via the event listener.
    const currentUserIndexRef = useRef(startIndex);
    const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
    const touchStartX = useRef(0);
    const touchStartY = useRef(0);
+   const recordedSet = useRef(new Set<string>(viewedStoryIds));
+
+   const recordView = (userIdx: number, mediaIdx: number) => {
+      const entry = entries[userIdx];
+      if (!entry) return;
+      const storyId = entry.stories[mediaIdx]?.id;
+      if (!storyId) return;
+      if (entry.id === currentUserId) return;
+      if (recordedSet.current.has(storyId)) return;
+      recordedSet.current.add(storyId);
+      recordStoryView(storyId);
+   };
+
+   useLayoutEffect(() => {
+      const entry = entries[startIndex];
+      const storyId = entry?.stories[0]?.id;
+      if (storyId && entry?.id !== currentUserId && !recordedSet.current.has(storyId)) {
+         recordedSet.current.add(storyId);
+         recordStoryView(storyId);
+      }
+   }, [currentUserId, entries, startIndex]);
 
    useLayoutEffect(() => {
       const apply = () => setLayout(computeLayout(currentUserIndexRef.current));
@@ -48,22 +71,26 @@ export default function StoriesPage({ username }: StoriesPageProps) {
    }, []);
 
    const goToStoryUserCard = (newUserIndex: number) => {
-      const idx = ((newUserIndex % STORIES.length) + STORIES.length) % STORIES.length;
+      const idx = ((newUserIndex % entries.length) + entries.length) % entries.length;
       currentUserIndexRef.current = idx;
       setCurrentUserIndex(idx);
       setCurrentStoryMediaIndex(0);
       setPlayTime(0);
       setLayout(computeLayout(idx));
-      window.history.replaceState(null, '', `/stories/${STORIES[idx].username}`);
+      window.history.replaceState(null, '', `/stories/${entries[idx].username}`);
       setIsMoving(true);
+      recordView(idx, 0);
       if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
       spinTimerRef.current = setTimeout(() => setIsMoving(false), 380);
    };
 
    const goToNextStoryMedia = () => {
       setPlayTime(0);
-      if (currentStoryMediaIndex < STORIES[currentUserIndex].stories.length - 1) {
-         setCurrentStoryMediaIndex(prev => prev + 1);
+      const entry = entries[currentUserIndex];
+      if (currentStoryMediaIndex < entry.stories.length - 1) {
+         const nextIdx = currentStoryMediaIndex + 1;
+         setCurrentStoryMediaIndex(nextIdx);
+         recordView(currentUserIndex, nextIdx);
       } else {
          goToStoryUserCard(currentUserIndex + 1);
       }
@@ -110,15 +137,14 @@ export default function StoriesPage({ username }: StoriesPageProps) {
             left={`calc(50% + ${layout.mainWidth / 2 + 16}px)`}
             isMoving={isMoving}
          />
-
          <div
             {...stylex.props(styles.strip)}
             style={{ gap: `${layout.gap}px`, transform: `translateX(${layout.xOffset}px)` }}
          >
-            {STORIES.map((story, i) => (
+            {entries.map((entry, i) => (
                <StoryCard
-                  key={story.username}
-                  story={story}
+                  key={entry.username}
+                  story={entry}
                   isCurrent={i === currentUserIndex}
                   layout={layout}
                   onClick={() => goToStoryUserCard(i)}

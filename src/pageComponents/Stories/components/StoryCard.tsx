@@ -5,9 +5,10 @@ import MuxPlayer from '@mux/mux-player-react';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import { usePlayerStore } from '../../../store/usePlayerStore';
 import { styles } from '../index.stylex';
-import type { Layout, StoryEntry } from '../types';
+import type { Layout } from '../types';
 import ActiveStoryOverlay from './ActiveStoryOverlay';
 import SideStoryOverlay from './SideStoryOverlay';
 
@@ -138,6 +139,8 @@ export default function StoryCard({
                   alt={story.username}
                   fill
                   sizes="(max-width: 640px) 100vw, 33vw"
+                  placeholder={currentMedia.blurDataUrl ? 'blur' : 'empty'}
+                  blurDataURL={currentMedia.blurDataUrl ?? undefined}
                />
             )
          )}

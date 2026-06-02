@@ -1,4 +1,6 @@
-import type { Media } from '@/src/types/global';
+import type { getActiveStories } from '@/src/actions/story/getActiveStories';
+
+export type StoryEntry = Awaited<ReturnType<typeof getActiveStories>>['entries'][number];
 
 export interface Layout {
    mainWidth: number;
@@ -10,15 +12,10 @@ export interface Layout {
    isMobile: boolean;
 }
 
-export interface StoryEntry {
-   id: number;
-   username: string;
-   avatarUrl: string;
-   timestamp: string;
-   stories: Media[];
-}
-
 export interface StoriesPageProps {
    username: string;
    storyId: string | null;
+   entries: Awaited<ReturnType<typeof getActiveStories>>['entries'];
+   viewedStoryIds: string[];
+   currentUserId: string | null;
 }

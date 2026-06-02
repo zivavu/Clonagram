@@ -46,6 +46,7 @@ export default function ProfileHeader({
                   alt={userProfile.username}
                   size={150}
                   userId={userProfile.id}
+                  useHoverCard={false}
                />
             </div>
             <div {...stylex.props(styles.infoSection)}>

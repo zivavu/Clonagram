@@ -40,15 +40,18 @@ const styles = stylex.create({
 
 interface PostSharedStepProps {
    onDone: () => void;
+   title?: string;
+   message?: string;
 }
 
-export default function PostSharedStep({ onDone }: PostSharedStepProps) {
+export default function PostSharedStep({
+   onDone,
+   title = 'Post shared',
+   message = 'Your post has been shared.',
+}: PostSharedStepProps) {
    return (
       <div {...stylex.props(shared.root)}>
-         <StepHeader
-            title="Post shared"
-            rightSlot={<StepHeaderAction label="Done" onClick={onDone} />}
-         />
+         <StepHeader title={title} rightSlot={<StepHeaderAction label="Done" onClick={onDone} />} />
          <div {...stylex.props(shared.body)}>
             <div {...stylex.props(shared.ring)}>
                <div {...stylex.props(shared.ringInner)}>
@@ -81,7 +84,7 @@ export default function PostSharedStep({ onDone }: PostSharedStepProps) {
                   </div>
                </div>
             </div>
-            <p {...stylex.props(styles.message)}>Your post has been shared.</p>
+            <p {...stylex.props(styles.message)}>{message}</p>
          </div>
       </div>
    );

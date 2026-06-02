@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import CreatePostModal from '@/src/components/CreatePostModal';
+import CreateStoryModal from '@/src/components/CreateStoryModal';
 import MainSidebar from '@/src/components/MainSidebar';
 import ModalResetOnNav from '@/src/components/ModalResetOnNav';
 import NotificationsPortal from '@/src/components/NotificationsPortal';
@@ -17,6 +18,7 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
          <PostFullViewModal />
          <OwnerActionsModal />
          <CreatePostModal />
+         <CreateStoryModal />
          <SearchPortal />
          <NotificationsPortal />
          {children}

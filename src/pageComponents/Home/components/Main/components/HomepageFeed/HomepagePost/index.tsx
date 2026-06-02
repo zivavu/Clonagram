@@ -66,7 +66,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
       initialDataUpdatedAt: Date.now(),
       queryKey: ['post', initialPost.id],
       queryFn: () => getPostAction(initialPost.id),
-      staleTime: 5 * 60 * 1000,
+      staleTime: Infinity,
    });
 
    const { mutate: togglePostLike } = useTogglePostLike(post);
@@ -120,24 +120,26 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   aria-label="Like"
                   title="Like"
                   onClick={() => togglePostLike()}
+                  {...stylex.props(styles.iconBarItemButton)}
                >
                   {isLiked ? (
                      <MdFavorite size={24} color={colors.textPrimary} />
                   ) : (
                      <MdFavoriteBorder size={24} color={colors.textPrimary} />
                   )}
+                  {(post.likes.length ?? 0) > 0 && <span>{post.likes.length}</span>}
                </button>
-               {(post.likes.length ?? 0) > 0 && <span>{post.likes.length}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
                <button
                   type="button"
                   aria-label="Comment"
                   onClick={() => handleOpenPostModal(post, currentImageIndex.current)}
+                  {...stylex.props(styles.iconBarItemButton)}
                >
                   <FiMessageCircle size={24} color={colors.textPrimary} />
+                  {(post.comments[0]?.count ?? 0) > 0 && <span>{post.comments[0]?.count}</span>}
                </button>
-               {(post.comments[0]?.count ?? 0) > 0 && <span>{post.comments[0]?.count}</span>}
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Repost">

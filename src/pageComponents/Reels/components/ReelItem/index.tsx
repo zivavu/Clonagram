@@ -39,7 +39,7 @@ export default function ReelItem({
          if (error) throw error;
          return data;
       },
-      staleTime: 30_000,
+      staleTime: Infinity,
    });
 
    const commentCount = comments?.length ?? reel.comment_count ?? 0;

@@ -31,7 +31,7 @@ export default function FollowButton({
          return getFollowStatus(supabase, targetUserId);
       },
       ...(initialState !== undefined && { initialData: initialState }),
-      staleTime: 5 * 60 * 1000,
+      staleTime: Infinity,
    });
 
    const { mutate, isPending } = useMutation({

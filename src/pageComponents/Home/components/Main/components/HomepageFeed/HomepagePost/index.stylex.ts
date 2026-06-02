@@ -36,7 +36,7 @@ export const styles = stylex.create({
    iconsBar: {
       display: 'flex',
       alignItems: 'center',
-      gap: '16px',
+      gap: '8px',
       width: '100%',
       marginTop: '12px',
       padding: '0 16px',
@@ -46,7 +46,12 @@ export const styles = stylex.create({
       display: 'flex',
       alignItems: 'center',
       gap: '4px',
-      fontWeight: 500,
+   },
+   iconBarItemButton: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px',
+      fontWeight: 600,
    },
    descriptionContainer: {
       display: 'flex',
