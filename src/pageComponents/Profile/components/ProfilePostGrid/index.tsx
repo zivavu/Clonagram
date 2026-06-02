@@ -67,11 +67,13 @@ export default function ProfilePostGrid({ posts, username }: ProfilePostGridProp
                   <div {...stylex.props(styles.overlay, isHovered && styles.overlayVisible)}>
                      <div {...stylex.props(styles.stat)}>
                         <MdFavorite size={20} color={colors.white} />
-                        <span {...stylex.props(styles.statText)}>{post.like_count}</span>
+                        <span {...stylex.props(styles.statText)}>{post.likes.length}</span>
                      </div>
                      <div {...stylex.props(styles.stat)}>
                         <FiMessageCircle size={20} color={colors.white} />
-                        <span {...stylex.props(styles.statText)}>{post.comment_count}</span>
+                        <span {...stylex.props(styles.statText)}>
+                           {post.comments[0]?.count ?? 0}
+                        </span>
                      </div>
                   </div>
                   {hasMultipleImages && (
