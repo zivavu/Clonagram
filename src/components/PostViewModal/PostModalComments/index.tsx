@@ -10,6 +10,7 @@ import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { createCommentAction } from '@/src/actions/comments/createComment';
+import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
@@ -22,7 +23,6 @@ import { getPostAction } from '../../../actions/post/getPost';
 import { usePostViewModal } from '../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../store/useOwnerActionsModalStore';
 import OwnerActionsModal from '../../OwnerActionsModal/OwnerActionsModal';
-import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
 import { styles } from './index.stylex';
 
 interface PostModalCommentsProps {
@@ -249,6 +249,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                              comment={comment}
                              commentsKey={commentsKey}
                              onReply={handleReply}
+                             postOwnerId={post.user.id}
                           />
                        ))}
                </div>

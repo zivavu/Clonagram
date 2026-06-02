@@ -10,9 +10,10 @@ import { styles } from '../index.stylex';
 interface CommentRepliesProps {
    parentId: string;
    onReply: (params: OnReplyParams) => void;
+   postOwnerId: string;
 }
 
-export default function CommentReplies({ parentId, onReply }: CommentRepliesProps) {
+export default function CommentReplies({ parentId, onReply, postOwnerId }: CommentRepliesProps) {
    const repliesKey = ['replies', parentId];
 
    const { data: replies = [], isLoading } = useQuery({
@@ -40,6 +41,7 @@ export default function CommentReplies({ parentId, onReply }: CommentRepliesProp
                     commentsKey={repliesKey}
                     onReply={handleReplyToReply}
                     isReply
+                    postOwnerId={postOwnerId}
                  />
               ))}
       </div>

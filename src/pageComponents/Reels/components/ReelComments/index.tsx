@@ -125,6 +125,7 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
                        key={comment.id}
                        comment={comment}
                        commentsKey={commentsKey}
+                       postOwnerId={reel.user.id}
                        onReply={params => {
                           setReplyingTo(params);
                           setInputValue(`@${params.username} `);

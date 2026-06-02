@@ -92,4 +92,13 @@ export const styles = stylex.create({
       flexDirection: 'column',
       gap: '6px',
    },
+   dotsButton: {
+      color: colors.textSecondary,
+      opacity: 0,
+      transition: 'opacity 0.15s',
+      lineHeight: 1,
+   },
+   dotsButtonVisible: {
+      opacity: 1,
+   },
 });
