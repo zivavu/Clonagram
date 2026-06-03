@@ -14,3 +14,5 @@ export const getAuthProfile = cache(async () => {
       .single();
    return profile;
 });
+
+export type Profile = Awaited<ReturnType<typeof getAuthProfile>>;

@@ -90,6 +90,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      position: 'relative',
       gap: '6px',
       flexShrink: 0,
    },
@@ -107,7 +108,7 @@ export const styles = stylex.create({
    },
    addStoryPlusBadge: {
       position: 'absolute',
-      bottom: 0,
+      bottom: 16,
       right: 0,
       width: '28px',
       height: '28px',
@@ -124,6 +125,7 @@ export const styles = stylex.create({
       borderColor: colors.bgBubble,
    },
    storyRingViewed: {
-      background: colors.buttonHover,
+      backgroundImage: 'none',
+      backgroundColor: colors.buttonHover,
    },
 });

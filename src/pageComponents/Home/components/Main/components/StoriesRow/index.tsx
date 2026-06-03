@@ -9,7 +9,7 @@ import { BsPlus } from 'react-icons/bs';
 import { MdExpandCircleDown } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import { useCreateStoryModalStore } from '@/src/store/useCreateStoryModalStore';
-import { useAuthUser } from '../../../../../../hooks/useAuthUser';
+import type { Profile } from '../../../../../../lib/supabase/getAuthProfile';
 import { colors } from '../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
@@ -41,14 +41,10 @@ function OptionalLink({ href, children, styleProps }: OptionalLinkProps) {
 interface StoriesRowProps {
    entries: StoryEntry[];
    viewedStoryIds: string[];
-   currentUserAvatarUrl: string | null;
+   currentUser: Profile | undefined;
 }
 
-export default function StoriesRow({
-   entries,
-   viewedStoryIds,
-   currentUserAvatarUrl,
-}: StoriesRowProps) {
+export default function StoriesRow({ entries, viewedStoryIds, currentUser }: StoriesRowProps) {
    const { open: openCreateStory } = useCreateStoryModalStore();
    const storiesRowRef = useRef<HTMLDivElement>(null);
    const [isScrolling, setIsScrolling] = useState(false);
@@ -56,8 +52,6 @@ export default function StoriesRow({
    const [scrollMax, setScrollMax] = useState(Infinity);
    const rafRef = useRef<number | null>(null);
    const viewedSet = new Set(viewedStoryIds);
-
-   const { data: currentUser } = useAuthUser();
 
    const currentUserStory = entries.find(entry => entry.username === currentUser?.username);
 
@@ -131,11 +125,11 @@ export default function StoriesRow({
                   href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}
                   styleProps={styles.addStoryRingWrapper}
                >
-                  {currentUserAvatarUrl ? (
+                  {currentUser?.avatar_url ? (
                      <div {...stylex.props(styles.storyRing, styles.storyRingViewed)}>
                         <div {...stylex.props(styles.storyRingInner)}>
                            <Image
-                              src={currentUserAvatarUrl}
+                              src={currentUser?.avatar_url}
                               alt="Your story"
                               width={74}
                               height={74}
@@ -153,22 +147,22 @@ export default function StoriesRow({
                         }}
                      />
                   )}
-                  <button
-                     type="button"
-                     {...stylex.props(styles.addStoryPlusBadge)}
-                     onClick={
-                        currentUserStory
-                           ? e => {
-                                e.stopPropagation();
-                                openCreateStory();
-                             }
-                           : openCreateStory
-                     }
-                     aria-label="Add story"
-                  >
-                     <BsPlus fontSize={22} />
-                  </button>
                </OptionalLink>
+               <button
+                  type="button"
+                  {...stylex.props(styles.addStoryPlusBadge)}
+                  onClick={
+                     currentUserStory
+                        ? e => {
+                             e.stopPropagation();
+                             openCreateStory();
+                          }
+                        : openCreateStory
+                  }
+                  aria-label="Add story"
+               >
+                  <BsPlus fontSize={22} />
+               </button>
                <span {...stylex.props(styles.storyUsername)}>Your story</span>
             </div>
 

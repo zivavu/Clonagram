@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 
+import { revalidatePath } from 'next/cache';
 import { getAuthUser } from '../getAuthUser';
 
 export async function recordStoryView(storyId: string) {
@@ -11,4 +12,5 @@ export async function recordStoryView(storyId: string) {
          { story_id: storyId, viewer_id: user.id },
          { onConflict: 'story_id,viewer_id', ignoreDuplicates: true },
       );
+   revalidatePath('/');
 }

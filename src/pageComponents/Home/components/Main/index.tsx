@@ -13,11 +13,7 @@ export default async function Main() {
 
    return (
       <main {...stylex.props(styles.root)}>
-         <StoriesRow
-            entries={entries}
-            viewedStoryIds={viewedStoryIds}
-            currentUserAvatarUrl={profile?.avatar_url ?? null}
-         />
+         <StoriesRow entries={entries} viewedStoryIds={viewedStoryIds} currentUser={profile} />
          <HomepageFeed />
       </main>
    );
