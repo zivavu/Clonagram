@@ -35,9 +35,10 @@ export default function PostFullViewModal() {
    if (!post) return null;
 
    function handleClose() {
+      if (!isOpen) return;
       close();
       if (returnPath) {
-         window.history.back();
+         history.replaceState(null, '', returnPath);
       } else if (post) {
          router.replace(`/profile/${post.user.username}`);
       }

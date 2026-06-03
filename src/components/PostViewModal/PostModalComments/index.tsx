@@ -122,9 +122,10 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
       <>
          <OwnerActionsModal
             onFinish={() => {
+               const currentReturnPath = returnPath;
                closePostViewModalStore();
-               if (returnPath) {
-                  window.history.back();
+               if (currentReturnPath) {
+                  history.replaceState(null, '', currentReturnPath);
                } else {
                   router.replace(`/profile/${initialPost.user.username}`);
                }

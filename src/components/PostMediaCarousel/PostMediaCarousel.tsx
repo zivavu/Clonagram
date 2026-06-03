@@ -153,6 +153,7 @@ export default function PostMediaCarousel({
                   <button
                      key={item.id}
                      onClick={() => {
+                        if (isPostFullViewModalOpen) return;
                         if (onImageClick) {
                            onImageClick(post, currentImageIndex);
                         } else {
