@@ -17,7 +17,7 @@ import {
    getConversationDisplayName,
    isGroupConversation,
 } from '@/src/utils/conversations';
-import { formatGroupSeparator } from '@/src/utils/formatters';
+import { formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
 import MessageInput from './MessageInput';
 import RequestActions from './RequestActions';

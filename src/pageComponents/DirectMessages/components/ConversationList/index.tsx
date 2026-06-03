@@ -12,7 +12,7 @@ import {
    getConversationDisplayName,
    isUnread,
 } from '@/src/utils/conversations';
-import { formatTimestamp } from '@/src/utils/formatters';
+import { formatTimestamp } from '@/src/utils/time';
 import { styles } from '../RecipientsSidebar/index.stylex';
 
 interface ConversationListProps {

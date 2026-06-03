@@ -10,7 +10,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
 import { getConversationAvatars, getConversationDisplayName } from '@/src/utils/conversations';
-import { formatTimestamp } from '@/src/utils/formatters';
+import { formatTimestamp } from '@/src/utils/time';
 import { styles } from './index.stylex';
 
 interface RequestsContentProps {

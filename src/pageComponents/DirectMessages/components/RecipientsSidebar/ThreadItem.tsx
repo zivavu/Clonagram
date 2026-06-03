@@ -2,8 +2,8 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { MessageThread } from '@/src/pageComponents/mocks/messageThreads';
-import { formatTimestamp } from '@/src/utils/formatters';
 import { getLastMessagePreview } from '@/src/utils/messages';
+import { formatTimestamp } from '@/src/utils/time';
 import { styles } from './index.stylex';
 
 export function ThreadItem({
