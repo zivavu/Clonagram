@@ -35,6 +35,7 @@ export default function StoriesPage({
       isMobile: false,
    });
    const [isMoving, setIsMoving] = useState(false);
+   const [ready, setReady] = useState(false);
 
    const currentUserIndexRef = useRef(startIndex);
    const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -65,6 +66,7 @@ export default function StoriesPage({
    useLayoutEffect(() => {
       const apply = () => setLayout(computeLayout(currentUserIndexRef.current));
       apply();
+      setReady(true);
       window.addEventListener('resize', apply);
       return () => window.removeEventListener('resize', apply);
    }, []);
@@ -122,33 +124,37 @@ export default function StoriesPage({
          <Link href="/" {...stylex.props(styles.closeLink)}>
             <MdClose size={38} />
          </Link>
-         <StoryNavigationButton
-            onClick={goToPreviousStoryMedia}
-            left={`calc(50% - ${layout.mainWidth / 2 + 40}px)`}
-            isMoving={isMoving}
-            isLeft
-         />
-         <StoryNavigationButton
-            onClick={goToNextStoryMedia}
-            left={`calc(50% + ${layout.mainWidth / 2 + 16}px)`}
-            isMoving={isMoving}
-         />
-         <div
-            {...stylex.props(styles.strip)}
-            style={{ gap: `${layout.gap}px`, transform: `translateX(${layout.xOffset}px)` }}
-         >
-            {entries.map((entry, i) => (
-               <StoryCard
-                  key={entry.username}
-                  story={entry}
-                  isCurrent={i === currentUserIndex}
-                  layout={layout}
-                  onClick={() => goToStoryUserCard(i)}
-                  currentStoryMediaIndex={currentStoryMediaIndex}
-                  goToNextStoryMedia={goToNextStoryMedia}
+         {ready && (
+            <>
+               <StoryNavigationButton
+                  onClick={goToPreviousStoryMedia}
+                  left={`calc(50% - ${layout.mainWidth / 2 + 40}px)`}
+                  isMoving={isMoving}
+                  isLeft
                />
-            ))}
-         </div>
+               <StoryNavigationButton
+                  onClick={goToNextStoryMedia}
+                  left={`calc(50% + ${layout.mainWidth / 2 + 16}px)`}
+                  isMoving={isMoving}
+               />
+               <div
+                  {...stylex.props(styles.strip)}
+                  style={{ gap: `${layout.gap}px`, transform: `translateX(${layout.xOffset}px)` }}
+               >
+                  {entries.map((entry, i) => (
+                     <StoryCard
+                        key={entry.username}
+                        story={entry}
+                        isCurrent={i === currentUserIndex}
+                        layout={layout}
+                        onClick={() => goToStoryUserCard(i)}
+                        currentStoryMediaIndex={currentStoryMediaIndex}
+                        goToNextStoryMedia={goToNextStoryMedia}
+                     />
+                  ))}
+               </div>
+            </>
+         )}
       </div>
    );
 }
