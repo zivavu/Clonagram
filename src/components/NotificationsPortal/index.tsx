@@ -3,6 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { markNotificationsReadAction } from '@/src/actions/notifications/markNotificationsRead';
@@ -108,25 +109,10 @@ function groupNotifications(rows: NotificationRow[]): GroupedNotification[] {
    return groups;
 }
 
-function NotificationRowComponent({
-   notification,
-   onClose,
-}: {
-   notification: GroupedNotification;
-   onClose: () => void;
-}) {
+function NotificationRowComponent({ notification }: { notification: GroupedNotification }) {
    const firstActor = notification.actors[0];
    const othersCount = notification.actors.length - 1;
    const openPost = usePostViewModal(state => state.open);
-
-   const targetId = notification.postId ?? notification.storyId ?? notification.commentId;
-
-   function handleClick() {
-      if (notification.postId) {
-         openPost(notification.postId, { returnPath: window.location.pathname });
-      }
-      onClose();
-   }
 
    const actorName = (
       <span style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
@@ -156,12 +142,8 @@ function NotificationRowComponent({
       }
    })();
 
-   return (
-      <button
-         type="button"
-         onClick={handleClick}
-         {...stylex.props(styles.notificationItem, styles.notificationButton)}
-      >
+   const inner = (
+      <>
          <div {...stylex.props(styles.notificationAvatarWrapper)}>
             <UserAvatar
                src={firstActor.avatar_url}
@@ -178,6 +160,31 @@ function NotificationRowComponent({
                </span>
             </div>
          </div>
+      </>
+   );
+
+   if (notification.type === 'follow') {
+      return (
+         <Link
+            href={`/profile/${firstActor.username}`}
+            {...stylex.props(styles.notificationItem, styles.notificationLink)}
+         >
+            {inner}
+         </Link>
+      );
+   }
+
+   return (
+      <button
+         type="button"
+         onClick={() => {
+            if (notification.postId) {
+               openPost(notification.postId, { returnPath: window.location.pathname });
+            }
+         }}
+         {...stylex.props(styles.notificationItem, styles.notificationButton)}
+      >
+         {inner}
       </button>
    );
 }
@@ -265,7 +272,7 @@ export default function NotificationsPortal() {
                      <div key={group.label}>
                         <div {...stylex.props(styles.groupHeader)}>{group.label}</div>
                         {group.items.map(n => (
-                           <NotificationRowComponent key={n.id} notification={n} onClose={close} />
+                           <NotificationRowComponent key={n.id} notification={n} />
                         ))}
                      </div>
                   ))}

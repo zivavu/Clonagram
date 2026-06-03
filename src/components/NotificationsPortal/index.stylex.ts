@@ -193,6 +193,10 @@ export const styles = stylex.create({
       fontFamily: 'inherit',
       color: 'inherit',
    },
+   notificationLink: {
+      textDecoration: 'none',
+      color: 'inherit',
+   },
    notificationAvatarWrapper: {
       position: 'relative',
       flexShrink: 0,
