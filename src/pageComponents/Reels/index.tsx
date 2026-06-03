@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/src/lib/supabase/client';
 import { type Reel, reelsQuery } from '@/src/queries/posts';
 import ReelItem from './components/ReelItem';
@@ -29,11 +29,11 @@ export default function Reels() {
 
    const reels = data?.pages.flat() ?? [];
 
-   const scrollByItem = useCallback((direction: 1 | -1) => {
+   function scrollByItem(direction: 1 | -1) {
       const scroller = scrollerRef.current;
       if (!scroller) return;
       scroller.scrollBy({ top: direction * scroller.clientHeight, behavior: 'smooth' });
-   }, []);
+   }
 
    useEffect(() => {
       function handleKey(e: KeyboardEvent) {
@@ -49,15 +49,16 @@ export default function Reels() {
       }
       window.addEventListener('keydown', handleKey);
       return () => window.removeEventListener('keydown', handleKey);
+      // biome-ignore lint/correctness/useExhaustiveDependencies: React Compiler stabilizes this function
    }, [scrollByItem]);
 
-   const handleScroll = useCallback(() => {
+   function handleScroll() {
       setOpenComments(null);
       const scroller = scrollerRef.current;
       if (!scroller || !hasNextPage || isFetchingNextPage) return;
       const remaining = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
       if (remaining < scroller.clientHeight * 2) fetchNextPage();
-   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+   }
 
    return (
       <div {...stylex.props(styles.viewport)}>

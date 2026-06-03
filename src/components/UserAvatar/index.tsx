@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import Image, { type ImageProps } from 'next/image';
+import { MdPerson } from 'react-icons/md';
 import ProfileHoverCard from '@/src/components/ProfileHoverCard';
 import { colors } from '../../styles/tokens.stylex';
 
@@ -31,15 +32,7 @@ export default function UserAvatar({
       />
    ) : (
       <div {...stylex.props(styles.placeholder)} style={{ width: size, height: size }}>
-         <svg
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            role="img"
-            aria-label="User avatar placeholder"
-            {...stylex.props(styles.placeholderIcon)}
-         >
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-         </svg>
+         <MdPerson {...stylex.props(styles.placeholderIcon)} />
       </div>
    );
 

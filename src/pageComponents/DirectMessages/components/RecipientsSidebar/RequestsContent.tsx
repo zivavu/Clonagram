@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { IoChevronForward, IoEyeOffOutline } from 'react-icons/io5';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -20,7 +20,7 @@ interface RequestsContentProps {
 
 export function RequestsContent({ authUserId, initialData }: RequestsContentProps) {
    const queryClient = useQueryClient();
-   const queryKey = useMemo(() => ['conversations', 'requests', authUserId], [authUserId]);
+   const queryKey = ['conversations', 'requests', authUserId];
 
    const { data: requests = initialData } = useQuery({
       queryKey,
@@ -37,13 +37,13 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
       const channel = supabase
          .channel(`requests-list-${authUserId}`)
          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {
-            queryClient.invalidateQueries({ queryKey });
+            queryClient.invalidateQueries({ queryKey: ['conversations', 'requests', authUserId] });
          })
          .subscribe();
       return () => {
          supabase.removeChannel(channel);
       };
-   }, [authUserId, queryClient, queryKey]);
+   }, [authUserId, queryClient]);
 
    return (
       <>

@@ -4,7 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { markNotificationsReadAction } from '@/src/actions/notifications/markNotificationsRead';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -204,25 +204,20 @@ export default function NotificationsPortal() {
       }
    }, [isOpen]);
 
-   const grouped = useMemo(() => groupNotifications(notificationRows), [notificationRows]);
+   const grouped = groupNotifications(notificationRows);
 
-   const filtered = useMemo(
-      () => grouped.filter(n => typeMatchesCategory(n.type, activeCategory)),
-      [grouped, activeCategory],
-   );
+   const filtered = grouped.filter(n => typeMatchesCategory(n.type, activeCategory));
 
-   const timeGroups = useMemo(() => {
-      const map = new Map<string, GroupedNotification[]>();
-      for (const n of filtered) {
-         const label = getGroupLabel(new Date(n.createdAt)) ?? 'Earlier';
-         if (!map.has(label)) map.set(label, []);
-         map.get(label)?.push(n);
-      }
-      const order = ['Today', 'This month', 'Earlier'];
-      return order
-         .map(label => ({ label, items: map.get(label) ?? [] }))
-         .filter(g => g.items.length > 0);
-   }, [filtered]);
+   const map = new Map<string, GroupedNotification[]>();
+   for (const n of filtered) {
+      const label = getGroupLabel(new Date(n.createdAt)) ?? 'Earlier';
+      if (!map.has(label)) map.set(label, []);
+      map.get(label)?.push(n);
+   }
+   const order = ['Today', 'This month', 'Earlier'];
+   const timeGroups = order
+      .map(label => ({ label, items: map.get(label) ?? [] }))
+      .filter(g => g.items.length > 0);
 
    return (
       <Dialog.Root open={isOpen} onOpenChange={close}>

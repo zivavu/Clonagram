@@ -2,7 +2,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
@@ -58,48 +58,45 @@ export default function CreatePostModal() {
       }
    }, [isOpen, isReel, pauseAll]);
 
-   const showToast = useCallback((count: number) => {
+   function showToast(count: number) {
       setFileLimitToast(count);
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       toastTimerRef.current = setTimeout(() => setFileLimitToast(null), TOAST_DURATION);
-   }, []);
+   }
 
-   const onDrop = useCallback(
-      (acceptedFiles: File[]) => {
-         if (acceptedFiles.length === 0) return;
-         if (isReel && filesRef.current.length >= 1) return;
-         const remainingSlots = (isReel ? 1 : MAX_FILES) - filesRef.current.length;
+   function onDrop(acceptedFiles: File[]) {
+      if (acceptedFiles.length === 0) return;
+      if (isReel && filesRef.current.length >= 1) return;
+      const remainingSlots = (isReel ? 1 : MAX_FILES) - filesRef.current.length;
 
-         if (remainingSlots <= 0) {
-            showToast(acceptedFiles.length);
-            return;
-         }
+      if (remainingSlots <= 0) {
+         showToast(acceptedFiles.length);
+         return;
+      }
 
-         const filesToProcess = acceptedFiles.slice(0, remainingSlots);
-         const cutCount = acceptedFiles.length - filesToProcess.length;
-         if (cutCount > 0) showToast(cutCount);
+      const filesToProcess = acceptedFiles.slice(0, remainingSlots);
+      const cutCount = acceptedFiles.length - filesToProcess.length;
+      if (cutCount > 0) showToast(cutCount);
 
-         const newFiles = filesToProcess.map(createPostMedia);
-         setFiles(prev => [...prev, ...newFiles]);
-         setStep('crop');
+      const newFiles = filesToProcess.map(createPostMedia);
+      setFiles(prev => [...prev, ...newFiles]);
+      setStep('crop');
 
-         for (const media of newFiles) {
-            if (media.type !== 'video') continue;
-            extractVideoFrames(media.preview)
-               .then(({ urls, duration }) => {
-                  setFiles(prev =>
-                     prev.map(f =>
-                        f.preview === media.preview
-                           ? { ...f, frames: urls, duration, trimEnd: duration }
-                           : f,
-                     ),
-                  );
-               })
-               .catch(() => {});
-         }
-      },
-      [showToast, isReel],
-   );
+      for (const media of newFiles) {
+         if (media.type !== 'video') continue;
+         extractVideoFrames(media.preview)
+            .then(({ urls, duration }) => {
+               setFiles(prev =>
+                  prev.map(f =>
+                     f.preview === media.preview
+                        ? { ...f, frames: urls, duration, trimEnd: duration }
+                        : f,
+                  ),
+               );
+            })
+            .catch(() => {});
+      }
+   }
 
    const { getRootProps, getInputProps, open } = useDropzone({
       onDrop,
