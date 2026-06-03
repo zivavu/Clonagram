@@ -24,7 +24,6 @@ export const styles = stylex.create({
    infoSection: {
       display: 'flex',
       flexDirection: 'column',
-      marginTop: spacing.lg,
       gap: spacing.sm,
       flex: 1,
    },
@@ -93,6 +92,8 @@ export const styles = stylex.create({
    websiteLink: {
       fontSize: '14px',
       fontWeight: 600,
-      color: colors.accentText,
+      display: 'flex',
+      alignItems: 'center',
+      gap: spacing.xs,
    },
 });

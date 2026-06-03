@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MdGridView } from 'react-icons/md';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { SettingsPopoverButton } from '../SttingsPopover';
+import { SettingsPopoverButton } from '../SettingsPopover';
 import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 

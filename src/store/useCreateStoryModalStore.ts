@@ -1,13 +1,3 @@
-import { create } from 'zustand';
+import { createModalStore } from './createModalStore';
 
-interface CreateStoryModalStore {
-   isOpen: boolean;
-   open: () => void;
-   close: () => void;
-}
-
-export const useCreateStoryModalStore = create<CreateStoryModalStore>(set => ({
-   isOpen: false,
-   open: () => set({ isOpen: true }),
-   close: () => set({ isOpen: false }),
-}));
+export const useCreateStoryModalStore = createModalStore();

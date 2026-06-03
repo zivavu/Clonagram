@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
+import { BiLink } from 'react-icons/bi';
 import { MdPersonAdd, MdVerified } from 'react-icons/md';
 import type { ProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
 import FollowButton from '@/src/components/FollowButton';
@@ -75,6 +76,18 @@ export default function ProfileHeader({
                      <strong>{followingCount}</strong> following
                   </span>
                </div>
+               {parseWebsiteLinks(userProfile.website).map(link => (
+                  <Link
+                     key={link.url}
+                     href={link.url}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     {...stylex.props(styles.websiteLink)}
+                  >
+                     <BiLink size={16} />
+                     {link.title || link.url}
+                  </Link>
+               ))}
             </div>
          </div>
          <div {...stylex.props(styles.buttonsRow)}>
@@ -114,17 +127,6 @@ export default function ProfileHeader({
                </>
             )}
          </div>
-         {parseWebsiteLinks(userProfile.website).map(link => (
-            <Link
-               key={link.url}
-               href={link.url}
-               target="_blank"
-               rel="noopener noreferrer"
-               {...stylex.props(styles.websiteLink)}
-            >
-               {link.title || link.url}
-            </Link>
-         ))}
       </div>
    );
 }

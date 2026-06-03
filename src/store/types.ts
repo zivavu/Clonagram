@@ -1,16 +1,8 @@
-export interface ModalStore {
-   isOpen: boolean;
-   open: () => void;
-   close: () => void;
-   toggle: () => void;
-}
+export type { ModalStore } from './createModalStore';
 
 export type CreatePostMode = 'post' | 'reel';
 
-export interface CreatePostModalStore {
-   isOpen: boolean;
+export type CreatePostModalStore = ModalStore & {
    mode: CreatePostMode;
    open: (mode?: CreatePostMode) => void;
-   close: () => void;
-   toggle: () => void;
-}
+};
