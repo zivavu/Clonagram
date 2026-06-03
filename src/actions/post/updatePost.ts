@@ -2,7 +2,7 @@
 import 'server-only';
 import type { PostLocation } from '@/src/components/CreatePostModal/types';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getAuthUser } from '../getAuthUser';
 
 interface UpdatePostParams {
    postId: string;
@@ -19,9 +19,10 @@ export async function updatePost({
    hideLikes,
    commentsOff,
 }: UpdatePostParams) {
-   const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
+   const { supabase, user } = await getAuthUser();
+   const authProfile = await getAuthProfile(supabase);
 
-   if (!authProfile) throw new Error('Not authenticated');
+   if (!authProfile || authProfile.id !== user.id) throw new Error('Not authorized');
 
    const { error } = await supabase
       .from('posts')

@@ -2,7 +2,7 @@
 import 'server-only';
 import { revalidatePath } from 'next/cache';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
-import { createServerClient } from '../../lib/supabase/server';
+import { getAuthUser } from '../getAuthUser';
 
 interface UpdateProfileParams {
    fullName: string;
@@ -30,8 +30,9 @@ export async function updateProfile(params: UpdateProfileParams) {
       };
    }
 
-   const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
-   if (!authProfile) throw new Error('Not authenticated.');
+   const { supabase, user } = await getAuthUser();
+   const authProfile = await getAuthProfile(supabase);
+   if (!authProfile || authProfile.id !== user.id) throw new Error('Not authorized.');
 
    const { data: taken } = await supabase
       .from('profiles')

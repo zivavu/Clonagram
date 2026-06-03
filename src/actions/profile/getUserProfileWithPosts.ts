@@ -1,12 +1,13 @@
 'use server';
 import 'server-only';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
-import { createServerClient } from '../../lib/supabase/server';
 import { getFollowStatus } from '../../queries/followStatus';
+import { getAuthUser } from '../getAuthUser';
 
 export async function getUserProfileWithPosts(params: { username: string }) {
    const { username } = params;
-   const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
+   const { supabase } = await getAuthUser();
+   const authProfile = await getAuthProfile(supabase);
 
    const { data, error } = await supabase
       .from('profiles')
