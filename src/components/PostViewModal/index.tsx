@@ -55,13 +55,15 @@ export default function PostFullViewModal() {
       <Dialog.Root open={isOpen} onOpenChange={() => handleClose()}>
          <Dialog.Portal>
             <DialogOverlay />
-            <button
-               aria-label="Close"
-               onClick={handleClose}
-               {...stylex.props(styles.closeOverlayButton)}
-            >
-               <IoCloseOutline style={{ fontSize: 28 }} />
-            </button>
+            <div {...stylex.props(styles.closeOverlayLayer)}>
+               <button
+                  aria-label="Close"
+                  onClick={handleClose}
+                  {...stylex.props(styles.closeOverlayButton)}
+               >
+                  <IoCloseOutline style={{ fontSize: 28 }} />
+               </button>
+            </div>
             <Dialog.Content
                {...stylex.props(styles.content, suppressAnimation && styles.noAnimation)}
             >
