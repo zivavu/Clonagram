@@ -3,5 +3,7 @@ import type { DirectPageProps } from '../../[chatId]/page';
 
 export default async function DirectRequestsChat({ params }: DirectPageProps) {
    const { chatId } = await params;
-   return <DirectMessagesPage chatId={chatId} currentFolderHref="/direct/requests" />;
+   return (
+      <DirectMessagesPage chatId={chatId} isRequestsPage currentFolderHref="/direct/requests" />
+   );
 }

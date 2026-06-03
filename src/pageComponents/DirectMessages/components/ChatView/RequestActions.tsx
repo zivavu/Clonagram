@@ -2,17 +2,20 @@
 
 import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { acceptRequest } from '@/src/actions/dm/acceptRequest';
 import { blockAndDeleteRequest } from '@/src/actions/dm/blockAndDeleteRequest';
 import { deleteRequest } from '@/src/actions/dm/deleteRequest';
 import { toast } from '@/src/components/AppToast';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
+import { supabase } from '@/src/lib/supabase/client';
 import { styles } from '../../index.stylex';
 
 interface RequestActionsProps {
    conversationId: string;
+   authUserId: string;
    senderUserId: string;
    senderProfile: {
       id: string;
@@ -24,16 +27,47 @@ interface RequestActionsProps {
 
 export default function RequestActions({
    conversationId,
+   authUserId,
    senderUserId,
    senderProfile,
 }: RequestActionsProps) {
    const router = useRouter();
+   const queryClient = useQueryClient();
    const [loading, setLoading] = useState(false);
+
+   useEffect(() => {
+      const channel = supabase
+         .channel(`follow-auto-accept-${authUserId}-${senderUserId}`)
+         .on(
+            'postgres_changes',
+            {
+               event: 'INSERT',
+               schema: 'public',
+               table: 'follows',
+               filter: `follower_id=eq.${authUserId}`,
+            },
+            async payload => {
+               if (payload.new.following_id === senderUserId) {
+                  try {
+                     await acceptRequest(conversationId);
+                     router.push('/direct');
+                  } catch (e) {
+                     toast(e instanceof Error ? e.message : 'Something went wrong.');
+                  }
+               }
+            },
+         )
+         .subscribe();
+      return () => {
+         supabase.removeChannel(channel);
+      };
+   }, [authUserId, senderUserId, conversationId, router]);
 
    async function run(action: () => Promise<void>, redirectToRequests = false) {
       setLoading(true);
       try {
          await action();
+         await queryClient.invalidateQueries({ queryKey: ['conversations'] });
          router.push(redirectToRequests ? '/direct/requests' : '/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Something went wrong.');

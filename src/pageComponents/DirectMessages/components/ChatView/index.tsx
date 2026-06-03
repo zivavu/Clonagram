@@ -217,6 +217,7 @@ export default function ChatView({
          {isRequest ? (
             <RequestActions
                conversationId={conversationId}
+               authUserId={authUserId}
                senderUserId={participants.find(p => p.user_id !== authUserId)?.user_id ?? ''}
                senderProfile={otherParticipant ?? null}
             />
