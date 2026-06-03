@@ -1,8 +1,10 @@
-export type { ModalStore } from './createModalStore';
+import type { ModalStore } from './createModalStore';
+
+export type { ModalStore };
 
 export type CreatePostMode = 'post' | 'reel';
 
-export type CreatePostModalStore = ModalStore & {
+export interface CreatePostModalStore extends ModalStore {
    mode: CreatePostMode;
    open: (mode?: CreatePostMode) => void;
-};
+}

@@ -28,7 +28,12 @@ export async function deletePostAction(params: { postId: string }) {
 
    if (videos?.length) {
       const mux = getMuxClient();
-      cleanupTasks.push(...videos.map(v => mux.video.assets.delete(v.mux_asset_id)));
+      cleanupTasks.push(
+         ...videos
+            .map(v => v.mux_asset_id)
+            .filter((id): id is string => id !== null)
+            .map(id => mux.video.assets.delete(id)),
+      );
    }
 
    if (images?.length) {

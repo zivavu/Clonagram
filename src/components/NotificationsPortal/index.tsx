@@ -2,17 +2,19 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import { MdVerified } from 'react-icons/md';
+import { markNotificationsReadAction } from '@/src/actions/notifications/markNotificationsRead';
 import UserAvatar from '@/src/components/UserAvatar';
-import type { Notification, NotificationType } from '@/src/pageComponents/mocks/notifications';
-import { NOTIFICATIONS, VERIFIED_USERS } from '@/src/pageComponents/mocks/notifications';
+import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { createBrowserClient } from '@/src/lib/supabase/client';
+import { type NotificationRow, notificationsQuery } from '@/src/queries/notifications';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 
+type NotificationType = NotificationRow['type'];
 type FilterCategory = 'all' | 'people_you_follow' | 'comments' | 'follows';
 
 const FILTER_CATEGORIES: { key: FilterCategory; label: string }[] = [
@@ -22,7 +24,7 @@ const FILTER_CATEGORIES: { key: FilterCategory; label: string }[] = [
    { key: 'follows', label: 'Follows' },
 ];
 
-const typeMatchesCategory = (type: NotificationType, category: FilterCategory): boolean => {
+const typeMatchesCategory = (type: string, category: FilterCategory): boolean => {
    switch (category) {
       case 'all':
          return true;
@@ -52,8 +54,7 @@ function formatTimeAgo(dateString: string): string {
    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function getGroupLabel(dateString: string): string | null {
-   const date = new Date(dateString);
+function getGroupLabel(date: Date): string | null {
    const now = new Date();
    const diffMs = now.getTime() - date.getTime();
    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -65,58 +66,83 @@ function getGroupLabel(dateString: string): string | null {
    return 'Earlier';
 }
 
-function getNotificationText(notification: Notification): React.ReactNode {
-   const { actors, type, target, message } = notification;
-   const firstActor = actors[0];
-   const othersCount = actors.length - 1;
-   const isVerified = VERIFIED_USERS.has(firstActor.username);
+function getTargetGroupKey(row: NotificationRow): string {
+   return `${row.type}-${row.post_id ?? ''}-${row.story_id ?? ''}-${row.comment_id ?? ''}`;
+}
+
+type GroupedNotification = {
+   id: string;
+   type: NotificationType;
+   actors: { id: string; username: string; avatar_url: string | null }[];
+   createdAt: string;
+   postId: string | null;
+   storyId: string | null;
+   commentId: string | null;
+};
+
+function groupNotifications(rows: NotificationRow[]): GroupedNotification[] {
+   if (rows.length === 0) return [];
+
+   const groups: GroupedNotification[] = [];
+   let current: GroupedNotification | null = null;
+
+   for (const row of rows) {
+      const actor = row.actor;
+      const groupKey = getTargetGroupKey(row);
+
+      if (
+         current &&
+         getTargetGroupKey(rows[groups.length > 0 ? rows.indexOf(row) - 1 : 0]) === groupKey
+      ) {
+         current.actors.push(actor);
+      } else {
+         current = {
+            id: row.id,
+            type: row.type,
+            actors: [actor],
+            createdAt: row.created_at ?? '',
+            postId: row.post_id,
+            storyId: row.story_id,
+            commentId: row.comment_id,
+         };
+         groups.push(current);
+      }
+   }
+
+   return groups;
+}
+
+function NotificationRowComponent({ notification }: { notification: GroupedNotification }) {
+   const firstActor = notification.actors[0];
+   const othersCount = notification.actors.length - 1;
 
    const actorName = (
       <span style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
          {firstActor.username}
-         {isVerified && (
-            <MdVerified style={{ color: 'rgb(0, 149, 246)', fontSize: 14, flexShrink: 0 }} />
-         )}
          {othersCount > 0 && ` and ${othersCount} other${othersCount > 1 ? 's' : ''}`}
       </span>
    );
 
-   switch (type) {
-      case 'like':
-         return (
-            <>
-               {actorName} liked your {target?.type ?? 'post'}.
-            </>
-         );
-      case 'comment':
-         return (
-            <>
-               {actorName} commented: {message}
-            </>
-         );
-      case 'follow':
-         return <>{actorName} started following you.</>;
-      case 'mention':
-         return (
-            <>
-               {actorName} mentioned you in a comment: {message}
-            </>
-         );
-      case 'tag':
-         return (
-            <>
-               {actorName} tagged you in a {target?.type ?? 'post'}.
-            </>
-         );
-      case 'story_like':
-         return <>{actorName} liked your story.</>;
-      default:
-         return <>{actorName} interacted with you.</>;
-   }
-}
-
-function NotificationItem({ notification }: { notification: Notification }) {
-   const firstActor = notification.actors[0];
+   const text = (() => {
+      switch (notification.type) {
+         case 'like':
+            return <>{actorName} liked your post.</>;
+         case 'comment':
+            return <>{actorName} commented on your post.</>;
+         case 'follow':
+            return <>{actorName} started following you.</>;
+         case 'mention':
+            return <>{actorName} mentioned you.</>;
+         case 'tag':
+            return <>{actorName} tagged you in a post.</>;
+         case 'story_like':
+            return <>{actorName} liked your story.</>;
+         case 'story_reply':
+            return <>{actorName} replied to your story.</>;
+         default:
+            return <>{actorName} interacted with you.</>;
+      }
+   })();
 
    return (
       <div {...stylex.props(styles.notificationItem)}>
@@ -127,89 +153,62 @@ function NotificationItem({ notification }: { notification: Notification }) {
                size={44}
                userId={firstActor.id}
             />
-            {notification.actors.length > 1 && (
-               <div {...stylex.props(styles.secondaryAvatar)}>
-                  <UserAvatar
-                     src={notification.actors[1].avatar_url}
-                     alt={notification.actors[1].username}
-                     size={20}
-                     userId={notification.actors[1].id}
-                  />
-               </div>
-            )}
          </div>
          <div {...stylex.props(styles.notificationBody)}>
             <div {...stylex.props(styles.notificationText)}>
-               {getNotificationText(notification)}
+               {text}
                <span {...stylex.props(styles.timeAgo)}>
                   {formatTimeAgo(notification.createdAt)}
                </span>
             </div>
          </div>
-         {notification.type === 'follow' ? (
-            <button {...stylex.props(styles.followButton)}>Follow</button>
-         ) : notification.target?.thumbnailUrl ? (
-            <Image
-               src={notification.target.thumbnailUrl}
-               alt="Post"
-               width={44}
-               height={44}
-               {...stylex.props(styles.targetThumbnail)}
-            />
-         ) : null}
       </div>
    );
 }
 
 export default function NotificationsPortal() {
    const { isOpen, close } = useNotificationsPortalStore();
+   const { data: authUser } = useAuthUser();
    const [activeCategory, setActiveCategory] = useState<FilterCategory>('all');
-   const [showFilterPanel, setShowFilterPanel] = useState(false);
-   const [filterState, setFilterState] = useState({
-      tagsMentions: false,
-      comments: false,
-      follows: false,
-      verified: false,
-      following: false,
+
+   const { data: notificationRows = [] } = useQuery({
+      queryKey: ['notifications', authUser?.id],
+      queryFn: async () => {
+         if (!authUser?.id) return [];
+         const supabase = createBrowserClient();
+         const { data, error } = await notificationsQuery(supabase, authUser.id);
+         if (error) throw error;
+         return (data ?? []) as NotificationRow[];
+      },
+      enabled: isOpen && !!authUser?.id,
+      staleTime: 30_000,
    });
-   const [appliedFilter, setAppliedFilter] = useState(filterState);
 
-   const filteredNotifications = NOTIFICATIONS.filter(n => {
-      if (!typeMatchesCategory(n.type, activeCategory)) return false;
-
-      const anyCategoryChecked =
-         appliedFilter.tagsMentions || appliedFilter.comments || appliedFilter.follows;
-      if (anyCategoryChecked) {
-         let matches = false;
-         if (appliedFilter.tagsMentions && (n.type === 'mention' || n.type === 'tag'))
-            matches = true;
-         if (
-            appliedFilter.comments &&
-            (n.type === 'comment' || n.type === 'mention' || n.type === 'tag')
-         )
-            matches = true;
-         if (appliedFilter.follows && n.type === 'follow') matches = true;
-         if (!matches) return false;
+   useEffect(() => {
+      if (isOpen) {
+         markNotificationsReadAction().catch(() => {});
       }
+   }, [isOpen]);
 
-      if (appliedFilter.verified && !n.actors.some(a => VERIFIED_USERS.has(a.username)))
-         return false;
+   const grouped = useMemo(() => groupNotifications(notificationRows), [notificationRows]);
 
-      return true;
-   });
+   const filtered = useMemo(
+      () => grouped.filter(n => typeMatchesCategory(n.type, activeCategory)),
+      [grouped, activeCategory],
+   );
 
-   const groups: { label: string; items: Notification[] }[] = [];
-   const groupMap = new Map<string, Notification[]>();
-   for (const n of filteredNotifications) {
-      const label = getGroupLabel(n.createdAt) ?? 'Earlier';
-      if (!groupMap.has(label)) groupMap.set(label, []);
-      groupMap.get(label)?.push(n);
-   }
-   const order = ['Today', 'This month', 'Earlier'];
-   for (const label of order) {
-      const items = groupMap.get(label);
-      if (items) groups.push({ label, items });
-   }
+   const timeGroups = useMemo(() => {
+      const map = new Map<string, GroupedNotification[]>();
+      for (const n of filtered) {
+         const label = getGroupLabel(new Date(n.createdAt)) ?? 'Earlier';
+         if (!map.has(label)) map.set(label, []);
+         map.get(label)?.push(n);
+      }
+      const order = ['Today', 'This month', 'Earlier'];
+      return order
+         .map(label => ({ label, items: map.get(label) ?? [] }))
+         .filter(g => g.items.length > 0);
+   }, [filtered]);
 
    return (
       <Dialog.Root open={isOpen} onOpenChange={close}>
@@ -222,13 +221,6 @@ export default function NotificationsPortal() {
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Notifications</Dialog.Title>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                     <button
-                        {...stylex.props(styles.filterButton)}
-                        onClick={() => setShowFilterPanel(prev => !prev)}
-                        aria-label="Filter notifications"
-                     >
-                        Filter
-                     </button>
                      <Dialog.Close asChild>
                         <button {...stylex.props(styles.closeButton)} aria-label="Close">
                            <IoCloseOutline style={{ fontSize: 30 }} />
@@ -252,91 +244,16 @@ export default function NotificationsPortal() {
                   ))}
                </div>
 
-               {showFilterPanel && (
-                  <div {...stylex.props(styles.filterPanel)}>
-                     <div {...stylex.props(styles.filterSectionTitle)}>Categories</div>
-                     <label {...stylex.props(styles.filterOption)}>
-                        Tags & mentions
-                        <input
-                           type="checkbox"
-                           checked={filterState.tagsMentions}
-                           onChange={e =>
-                              setFilterState(s => ({ ...s, tagsMentions: e.target.checked }))
-                           }
-                           {...stylex.props(styles.filterCheckbox)}
-                        />
-                     </label>
-                     <label {...stylex.props(styles.filterOption)}>
-                        Comments
-                        <input
-                           type="checkbox"
-                           checked={filterState.comments}
-                           onChange={e =>
-                              setFilterState(s => ({ ...s, comments: e.target.checked }))
-                           }
-                           {...stylex.props(styles.filterCheckbox)}
-                        />
-                     </label>
-                     <label {...stylex.props(styles.filterOption)}>
-                        Follows
-                        <input
-                           type="checkbox"
-                           checked={filterState.follows}
-                           onChange={e =>
-                              setFilterState(s => ({ ...s, follows: e.target.checked }))
-                           }
-                           {...stylex.props(styles.filterCheckbox)}
-                        />
-                     </label>
-
-                     <div {...stylex.props(styles.filterDivider)} />
-
-                     <div {...stylex.props(styles.filterSectionTitle)}>Account types</div>
-                     <label {...stylex.props(styles.filterOption)}>
-                        Verified
-                        <input
-                           type="checkbox"
-                           checked={filterState.verified}
-                           onChange={e =>
-                              setFilterState(s => ({ ...s, verified: e.target.checked }))
-                           }
-                           {...stylex.props(styles.filterCheckbox)}
-                        />
-                     </label>
-                     <label {...stylex.props(styles.filterOption)}>
-                        Following
-                        <input
-                           type="checkbox"
-                           checked={filterState.following}
-                           onChange={e =>
-                              setFilterState(s => ({ ...s, following: e.target.checked }))
-                           }
-                           {...stylex.props(styles.filterCheckbox)}
-                        />
-                     </label>
-
-                     <button
-                        {...stylex.props(styles.applyButton)}
-                        onClick={() => {
-                           setAppliedFilter({ ...filterState });
-                           setShowFilterPanel(false);
-                        }}
-                     >
-                        Apply
-                     </button>
-                  </div>
-               )}
-
                <div {...stylex.props(styles.list)}>
-                  {groups.map(group => (
+                  {timeGroups.map(group => (
                      <div key={group.label}>
                         <div {...stylex.props(styles.groupHeader)}>{group.label}</div>
-                        {group.items.map(notification => (
-                           <NotificationItem key={notification.id} notification={notification} />
+                        {group.items.map(n => (
+                           <NotificationRowComponent key={n.id} notification={n} />
                         ))}
                      </div>
                   ))}
-                  {filteredNotifications.length === 0 && (
+                  {filtered.length === 0 && (
                      <div {...stylex.props(styles.emptyState)}>No notifications to show.</div>
                   )}
                </div>

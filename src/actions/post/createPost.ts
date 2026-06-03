@@ -47,7 +47,7 @@ async function saveMedia(
             url: result.path,
             width: result.width,
             height: result.height,
-            blur_data_url: result.blurDataURL,
+            blur_data_url: result.blurDataURL ?? null,
          });
       } else {
          videoInserts.push({

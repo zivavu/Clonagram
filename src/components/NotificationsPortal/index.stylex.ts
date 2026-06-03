@@ -84,7 +84,7 @@ export const styles = stylex.create({
       backgroundColor: colors.bgBubble,
       borderStyle: 'none',
       ':hover': {
-         backgroundColor: colors.textPrimary,
+         backgroundColor: colors.buttonHover,
       },
    },
    chipIcon: {
