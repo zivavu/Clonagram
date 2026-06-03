@@ -21,7 +21,6 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'center',
       height: '95dvh',
-      width: '84dvw',
       zIndex: 4,
    },
    noAnimation: {
@@ -36,17 +35,14 @@ export const styles = stylex.create({
    },
    closeOverlayButton: {
       position: 'absolute',
-      top: '20px',
-      right: '20px',
+      top: '8px',
+      right: '8px',
       pointerEvents: 'auto',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       width: '40px',
       height: '40px',
-      border: 'none',
-      background: 'transparent',
-      color: 'white',
       borderRadius: '50%',
       cursor: 'pointer',
       ':hover': {
