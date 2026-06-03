@@ -1,13 +1,9 @@
 import { type CookieMethodsServer, type CookieOptions, createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
+import { getSupabaseEnv } from './env';
 
 export async function updateSession(request: NextRequest) {
-   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-   const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-   if (!supabaseUrl || !supabasePublishableKey) {
-      throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
-   }
-
+   const { url, key } = getSupabaseEnv();
    const supabaseResponse = NextResponse.next({ request });
 
    const cookieMethods: CookieMethodsServer = {
@@ -24,7 +20,7 @@ export async function updateSession(request: NextRequest) {
       },
    };
 
-   const supabase = createServerClient(supabaseUrl, supabasePublishableKey, {
+   const supabase = createServerClient(url, key, {
       cookies: cookieMethods,
    });
 
