@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { cancelFollowRequest } from '@/src/actions/follow/cancelFollowRequest';
 import { followUser } from '@/src/actions/follow/followUser';
 import { unfollowUser } from '@/src/actions/follow/unfollowUser';
+import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type FollowState, getFollowStatus } from '@/src/queries/followStatus';
 import { styles } from './index.stylex';
@@ -21,6 +22,7 @@ export default function FollowButton({
    initialState,
    variant,
 }: FollowButtonProps) {
+   const { data: authUser } = useAuthUser();
    const queryClient = useQueryClient();
    const queryKey = ['follow-status', targetUserId];
 
@@ -28,7 +30,7 @@ export default function FollowButton({
       queryKey,
       queryFn: async () => {
          const supabase = createBrowserClient();
-         return getFollowStatus(supabase, targetUserId);
+         return getFollowStatus(supabase, authUser?.id ?? '', targetUserId);
       },
       ...(initialState !== undefined && { initialData: initialState }),
       staleTime: Infinity,

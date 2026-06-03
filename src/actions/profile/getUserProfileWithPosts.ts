@@ -2,7 +2,7 @@
 import 'server-only';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
 import { createServerClient } from '../../lib/supabase/server';
-import { getFollowStatusServer } from '../../queries/followStatus';
+import { getFollowStatus } from '../../queries/followStatus';
 
 export async function getUserProfileWithPosts(params: { username: string }) {
    const { username } = params;
@@ -31,7 +31,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
 
    const followStatus =
       authProfile && authProfile.id !== data.id
-         ? await getFollowStatusServer(supabase, authProfile.id, data.id)
+         ? await getFollowStatus(supabase, authProfile.id, data.id)
          : 'none';
 
    return { userProfile: data, posts: data.posts ?? [], followStatus };

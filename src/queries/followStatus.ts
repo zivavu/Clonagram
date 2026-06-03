@@ -3,33 +3,7 @@ import type { Database } from '@/src/types/database';
 
 export type FollowState = 'following' | 'requested' | 'none';
 
-export async function getFollowStatus(supabase: SupabaseClient<Database>, targetUserId: string) {
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
-   if (!user) return 'none';
-
-   const [{ data: followData }, { data: requestData }] = await Promise.all([
-      supabase
-         .from('follows')
-         .select('follower_id')
-         .eq('follower_id', user.id)
-         .eq('following_id', targetUserId)
-         .maybeSingle(),
-      supabase
-         .from('follow_requests')
-         .select('requester_id')
-         .eq('requester_id', user.id)
-         .eq('target_id', targetUserId)
-         .maybeSingle(),
-   ]);
-
-   if (followData) return 'following';
-   if (requestData) return 'requested';
-   return 'none';
-}
-
-export async function getFollowStatusServer(
+export async function getFollowStatus(
    supabase: SupabaseClient<Database>,
    authUserId: string,
    targetUserId: string,
