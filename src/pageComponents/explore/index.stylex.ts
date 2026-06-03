@@ -35,34 +35,4 @@ export const styles = stylex.create({
    headerInactive: {
       color: colors.textSecondary,
    },
-   grid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      width: '100%',
-      gridAutoFlow: 'row dense',
-      gap: 1,
-   },
-   item: {
-      position: 'relative',
-      overflow: 'hidden',
-      cursor: 'pointer',
-      backgroundColor: colors.bgSecondary,
-   },
-   itemTall: {
-      gridRow: 'span 2',
-      aspectRatio: '1 / 2',
-   },
-   videoBadge: {
-      position: 'absolute',
-      top: '8px',
-      right: '8px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-   },
-   videoIcon: {
-      color: 'white',
-      fontSize: '20px',
-      filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',
-   },
 });
