@@ -184,6 +184,15 @@ export const styles = stylex.create({
          backgroundColor: colors.threadHover,
       },
    },
+   notificationButton: {
+      width: '100%',
+      textAlign: 'left',
+      background: 'none',
+      border: 'none',
+      fontSize: 'inherit',
+      fontFamily: 'inherit',
+      color: 'inherit',
+   },
    notificationAvatarWrapper: {
       position: 'relative',
       flexShrink: 0,

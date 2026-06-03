@@ -10,11 +10,11 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type NotificationRow, notificationsQuery } from '@/src/queries/notifications';
+import { usePostViewModal } from '@/src/store/postViewModalStore';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 
-type NotificationType = NotificationRow['type'];
 type FilterCategory = 'all' | 'people_you_follow' | 'comments' | 'follows';
 
 const FILTER_CATEGORIES: { key: FilterCategory; label: string }[] = [
@@ -72,8 +72,8 @@ function getTargetGroupKey(row: NotificationRow): string {
 
 type GroupedNotification = {
    id: string;
-   type: NotificationType;
-   actors: { id: string; username: string; avatar_url: string | null }[];
+   type: NotificationRow['type'];
+   actors: NotificationRow['actor'][];
    createdAt: string;
    postId: string | null;
    storyId: string | null;
@@ -87,19 +87,15 @@ function groupNotifications(rows: NotificationRow[]): GroupedNotification[] {
    let current: GroupedNotification | null = null;
 
    for (const row of rows) {
-      const actor = row.actor;
       const groupKey = getTargetGroupKey(row);
 
-      if (
-         current &&
-         getTargetGroupKey(rows[groups.length > 0 ? rows.indexOf(row) - 1 : 0]) === groupKey
-      ) {
-         current.actors.push(actor);
+      if (current && getTargetGroupKey(rows[rows.indexOf(row) - 1]) === groupKey) {
+         current.actors.push(row.actor);
       } else {
          current = {
             id: row.id,
             type: row.type,
-            actors: [actor],
+            actors: [row.actor],
             createdAt: row.created_at ?? '',
             postId: row.post_id,
             storyId: row.story_id,
@@ -112,9 +108,25 @@ function groupNotifications(rows: NotificationRow[]): GroupedNotification[] {
    return groups;
 }
 
-function NotificationRowComponent({ notification }: { notification: GroupedNotification }) {
+function NotificationRowComponent({
+   notification,
+   onClose,
+}: {
+   notification: GroupedNotification;
+   onClose: () => void;
+}) {
    const firstActor = notification.actors[0];
    const othersCount = notification.actors.length - 1;
+   const openPost = usePostViewModal(state => state.open);
+
+   const targetId = notification.postId ?? notification.storyId ?? notification.commentId;
+
+   function handleClick() {
+      if (notification.postId) {
+         openPost(notification.postId, { returnPath: window.location.pathname });
+      }
+      onClose();
+   }
 
    const actorName = (
       <span style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
@@ -145,7 +157,11 @@ function NotificationRowComponent({ notification }: { notification: GroupedNotif
    })();
 
    return (
-      <div {...stylex.props(styles.notificationItem)}>
+      <button
+         type="button"
+         onClick={handleClick}
+         {...stylex.props(styles.notificationItem, styles.notificationButton)}
+      >
          <div {...stylex.props(styles.notificationAvatarWrapper)}>
             <UserAvatar
                src={firstActor.avatar_url}
@@ -162,7 +178,7 @@ function NotificationRowComponent({ notification }: { notification: GroupedNotif
                </span>
             </div>
          </div>
-      </div>
+      </button>
    );
 }
 
@@ -249,7 +265,7 @@ export default function NotificationsPortal() {
                      <div key={group.label}>
                         <div {...stylex.props(styles.groupHeader)}>{group.label}</div>
                         {group.items.map(n => (
-                           <NotificationRowComponent key={n.id} notification={n} />
+                           <NotificationRowComponent key={n.id} notification={n} onClose={close} />
                         ))}
                      </div>
                   ))}
