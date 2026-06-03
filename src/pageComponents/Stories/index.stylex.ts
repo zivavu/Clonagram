@@ -42,6 +42,7 @@ export const styles = stylex.create({
       transition: 'transform 380ms cubic-bezier(0.4, 0, 0.2, 1)',
    },
    story: {
+      userSelect: 'none',
       position: 'relative',
       height: '100%',
       flexShrink: 0,
@@ -49,6 +50,13 @@ export const styles = stylex.create({
       cursor: 'pointer',
       transition:
          'width 380ms cubic-bezier(0.4, 0, 0.2, 1), height 380ms cubic-bezier(0.4, 0, 0.2, 1)',
+   },
+   mediaLayer: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      willChange: 'transform',
+      transition: 'transform 380ms cubic-bezier(0.4, 0, 0.2, 1)',
    },
    storyRounded: {
       borderRadius: radius.md,

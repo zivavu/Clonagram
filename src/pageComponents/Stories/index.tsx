@@ -25,7 +25,6 @@ export default function StoriesPage({
 
    const [currentUserIndex, setCurrentUserIndex] = useState(startIndex);
    const [currentStoryMediaIndex, setCurrentStoryMediaIndex] = useState(0);
-   const [playTime, setPlayTime] = useState(0);
    const [layout, setLayout] = useState<Layout>({
       mainWidth: DESKTOP_SIDE_W,
       mainHeight: DESKTOP_SIDE_H,
@@ -71,21 +70,19 @@ export default function StoriesPage({
    }, []);
 
    const goToStoryUserCard = (newUserIndex: number) => {
-      const idx = ((newUserIndex % entries.length) + entries.length) % entries.length;
-      currentUserIndexRef.current = idx;
-      setCurrentUserIndex(idx);
+      const index = ((newUserIndex % entries.length) + entries.length) % entries.length;
+      currentUserIndexRef.current = index;
+      setCurrentUserIndex(index);
       setCurrentStoryMediaIndex(0);
-      setPlayTime(0);
-      setLayout(computeLayout(idx));
-      window.history.replaceState(null, '', `/stories/${entries[idx].username}`);
+      setLayout(computeLayout(index));
+      window.history.replaceState(null, '', `/stories/${entries[index].username}`);
       setIsMoving(true);
-      recordView(idx, 0);
+      recordView(index, 0);
       if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
       spinTimerRef.current = setTimeout(() => setIsMoving(false), 380);
    };
 
    const goToNextStoryMedia = () => {
-      setPlayTime(0);
       const entry = entries[currentUserIndex];
       if (currentStoryMediaIndex < entry.stories.length - 1) {
          const nextIdx = currentStoryMediaIndex + 1;
@@ -97,7 +94,6 @@ export default function StoriesPage({
    };
 
    const goToPreviousStoryMedia = () => {
-      setPlayTime(0);
       if (currentStoryMediaIndex > 0) {
          setCurrentStoryMediaIndex(prev => prev - 1);
       } else {
@@ -149,8 +145,6 @@ export default function StoriesPage({
                   layout={layout}
                   onClick={() => goToStoryUserCard(i)}
                   currentStoryMediaIndex={currentStoryMediaIndex}
-                  playTime={playTime}
-                  setPlayTime={setPlayTime}
                   goToNextStoryMedia={goToNextStoryMedia}
                />
             ))}

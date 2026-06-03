@@ -20,8 +20,6 @@ interface StoryCardProps {
    layout: Layout;
    onClick: () => void;
    currentStoryMediaIndex: number;
-   playTime: number;
-   setPlayTime: (time: number) => void;
    goToNextStoryMedia: () => void;
 }
 
@@ -31,11 +29,19 @@ export default function StoryCard({
    layout,
    onClick,
    currentStoryMediaIndex,
-   playTime,
-   setPlayTime,
    goToNextStoryMedia,
 }: StoryCardProps) {
-   const mediaIndex = isCurrent ? currentStoryMediaIndex : 0;
+   const [displayedIndex, setDisplayedIndex] = useState(0);
+   useEffect(() => {
+      if (isCurrent) {
+         setDisplayedIndex(currentStoryMediaIndex);
+         return;
+      }
+      const t = setTimeout(() => setDisplayedIndex(0), 400);
+      return () => clearTimeout(t);
+   }, [isCurrent, currentStoryMediaIndex]);
+
+   const mediaIndex = displayedIndex;
    const currentMedia = story.stories[mediaIndex];
    const isVideo = currentMedia.type === 'video';
 
@@ -43,6 +49,7 @@ export default function StoryCard({
 
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const [videoDuration, setVideoDuration] = useState<number>(PICTURE_DURATION);
+   const [playTime, setPlayTime] = useState(0);
 
    const { volume, activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
    const [isPlayingLocal, setIsPlayingLocal] = useState(true);
@@ -104,40 +111,51 @@ export default function StoryCard({
             />
          )}
 
-         {isVideo ? (
-            <MuxPlayer
-               key={currentMedia.id}
-               ref={muxPlayerRef}
-               disableCookies
-               volume={volume}
-               style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
-               playbackId={currentMedia.url ?? ''}
-               autoPlay="always"
-               onTimeUpdate={() => {
-                  const time = muxPlayerRef.current?.media?.currentTime;
-                  if (time) setPlayTime(time * 1000);
-               }}
-               onDurationChange={() => {
-                  const duration = muxPlayerRef.current?.media?.duration;
-                  if (duration && duration > 0) setVideoDuration(duration * 1000);
-               }}
-               onEnded={goToNextStoryMedia}
-               onPause={() => setIsPlayingLocal(false)}
-               onPlay={() => setIsPlayingLocal(true)}
-               paused={!isPlaying}
-            />
-         ) : (
-            currentMedia.url && (
-               <Image
-                  src={currentMedia.url}
-                  alt={story.username}
-                  fill
-                  unoptimized
-                  placeholder={currentMedia.blurDataUrl ? 'blur' : 'empty'}
-                  blurDataURL={currentMedia.blurDataUrl ?? undefined}
+         <div
+            {...stylex.props(styles.mediaLayer)}
+            style={{
+               width: `${layout.mainWidth}px`,
+               height: `${layout.mainHeight}px`,
+               transform: `translate(-50%, -50%) scale(${
+                  isCurrent ? 1 : layout.sideHeight / layout.mainHeight
+               })`,
+            }}
+         >
+            {isVideo ? (
+               <MuxPlayer
+                  key={currentMedia.id}
+                  ref={muxPlayerRef}
+                  disableCookies
+                  volume={volume}
+                  style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
+                  playbackId={currentMedia.url ?? ''}
+                  autoPlay="always"
+                  onTimeUpdate={() => {
+                     const time = muxPlayerRef.current?.media?.currentTime;
+                     if (time) setPlayTime(time * 1000);
+                  }}
+                  onDurationChange={() => {
+                     const duration = muxPlayerRef.current?.media?.duration;
+                     if (duration && duration > 0) setVideoDuration(duration * 1000);
+                  }}
+                  onEnded={goToNextStoryMedia}
+                  onPause={() => setIsPlayingLocal(false)}
+                  onPlay={() => setIsPlayingLocal(true)}
+                  paused={!isPlaying}
                />
-            )
-         )}
+            ) : (
+               currentMedia.url && (
+                  <Image
+                     src={currentMedia.url}
+                     alt={story.username}
+                     fill
+                     unoptimized
+                     placeholder={currentMedia.blurDataUrl ? 'blur' : 'empty'}
+                     blurDataURL={currentMedia.blurDataUrl ?? undefined}
+                  />
+               )
+            )}
+         </div>
       </div>
    );
 }
