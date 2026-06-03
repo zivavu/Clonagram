@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { useNotificationsPortalStore } from '../../store/createModalStore';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../store/useOwnerActionsModalStore';
 
@@ -11,12 +12,19 @@ export default function ModalResetOnNav() {
    const pathname = usePathname();
    const closePostViewModal = usePostViewModal(state => state.close);
    const closeOwnerActionsModal = useOwnerActionsModal(state => state.close);
+   const closeNotificationsModal = useNotificationsPortalStore(state => state.close);
+
+   // biome-ignore lint/correctness/useExhaustiveDependencies: The pathname dependency is intentional.
+   useEffect(() => {
+      closeNotificationsModal();
+   }, [pathname, closeNotificationsModal]);
 
    useEffect(() => {
       if (POST_URL_PATTERN.test(pathname)) return;
       closePostViewModal();
       closeOwnerActionsModal();
-   }, [pathname, closePostViewModal, closeOwnerActionsModal]);
+      closeNotificationsModal();
+   }, [pathname, closePostViewModal, closeOwnerActionsModal, closeNotificationsModal]);
 
    useEffect(() => {
       function onPopState() {

@@ -28,4 +28,19 @@ export const styles = stylex.create({
       animationName: 'none',
       animationDuration: '0s',
    },
+   closeOverlayButton: {
+      position: 'fixed',
+      top: '8px',
+      right: '8px',
+      zIndex: 5,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '40px',
+      height: '40px',
+      borderRadius: '50%',
+      ':hover': {
+         backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      },
+   },
 });

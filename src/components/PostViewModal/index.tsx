@@ -4,6 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { IoCloseOutline } from 'react-icons/io5';
 import { getPostAction } from '../../actions/post/getPost';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import DialogOverlay from '../DialogOverlay';
@@ -54,6 +55,13 @@ export default function PostFullViewModal() {
       <Dialog.Root open={isOpen} onOpenChange={() => handleClose()}>
          <Dialog.Portal>
             <DialogOverlay />
+            <button
+               aria-label="Close"
+               onClick={handleClose}
+               {...stylex.props(styles.closeOverlayButton)}
+            >
+               <IoCloseOutline style={{ fontSize: 28 }} />
+            </button>
             <Dialog.Content
                {...stylex.props(styles.content, suppressAnimation && styles.noAnimation)}
             >
