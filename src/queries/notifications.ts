@@ -22,7 +22,8 @@ export function notificationsQuery(supabase: SupabaseClient<Database>, userId: s
          post_id,
          comment_id,
          story_id,
-         actor:profiles!actor_id(id, username, avatar_url, full_name)
+         actor:profiles!actor_id(id, username, avatar_url, full_name),
+         post:post_id(id, type, user:profiles!user_id(username))
       `,
       )
       .eq('user_id', userId)

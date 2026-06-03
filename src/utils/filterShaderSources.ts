@@ -14,7 +14,6 @@ in vec2 v_texCoord;
 uniform sampler2D u_image;
 uniform sampler2D u_curves;
 
-// Preset uniforms
 uniform float u_presetActive;
 uniform float u_pBrightness;
 uniform float u_pContrast;
@@ -26,7 +25,6 @@ uniform vec3 u_pColorBalance;
 uniform float u_pVignette;
 uniform float u_filterStrength;
 
-// User-controlled adjustments
 uniform float u_brightness;
 uniform float u_contrast;
 uniform float u_saturation;
@@ -60,16 +58,10 @@ void main() {
   vec3 filtered = color.rgb;
 
   if (u_presetActive > 0.5) {
-    // 1. Per-channel tone curves (single-pass)
     filtered = applyCurves(filtered);
-
-    // 2. Preset saturation
     filtered = setSaturation(filtered, u_pSaturation);
-
-    // 3. Preset color balance shift
     filtered += u_pColorBalance;
 
-    // 4. Split toning: luminance-weighted color tint for shadows and highlights
     float lum = dot(clamp(filtered, 0.0, 1.0), LUM_WEIGHTS);
     if (u_pShadowTint.a > 0.0) {
       float mask = pow(1.0 - lum, 1.8) * u_pShadowTint.a;
@@ -80,18 +72,15 @@ void main() {
       filtered = mix(filtered, u_pHighlightTint.rgb, mask);
     }
 
-    // 5. Preset fade (lifts shadows toward a matte color)
     if (u_pFade.a > 0.0) {
       float mask = pow(1.0 - lum, 1.2) * u_pFade.a;
       filtered = mix(filtered, u_pFade.rgb, mask);
     }
 
-    // 6. Preset contrast + brightness
     filtered = (filtered - 0.5) * u_pContrast + 0.5;
     filtered += u_pBrightness;
   }
 
-  // ── User adjustments ──
   filtered += u_brightness;
   filtered = (filtered - 0.5) * u_contrast + 0.5;
   filtered = setSaturation(filtered, u_saturation);
@@ -112,7 +101,6 @@ void main() {
 
   filtered = clamp(filtered, 0.0, 1.0);
 
-  // Blend filtered result with the original based on filter strength
   color.rgb = mix(originalRGB, filtered, u_filterStrength);
 
   outColor = color;

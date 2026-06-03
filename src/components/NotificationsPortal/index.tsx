@@ -11,7 +11,6 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { createBrowserClient } from '@/src/lib/supabase/client';
 import { type NotificationRow, notificationsQuery } from '@/src/queries/notifications';
-import { usePostViewModal } from '@/src/store/postViewModalStore';
 import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
@@ -77,6 +76,7 @@ type GroupedNotification = {
    actors: NotificationRow['actor'][];
    createdAt: string;
    postId: string | null;
+   postAuthorUsername: string | null;
    storyId: string | null;
    commentId: string | null;
 };
@@ -93,12 +93,14 @@ function groupNotifications(rows: NotificationRow[]): GroupedNotification[] {
       if (current && getTargetGroupKey(rows[rows.indexOf(row) - 1]) === groupKey) {
          current.actors.push(row.actor);
       } else {
+         const postData = row.post as { user: { username: string } } | null;
          current = {
             id: row.id,
             type: row.type,
             actors: [row.actor],
             createdAt: row.created_at ?? '',
             postId: row.post_id,
+            postAuthorUsername: postData?.user?.username ?? null,
             storyId: row.story_id,
             commentId: row.comment_id,
          };
@@ -112,8 +114,6 @@ function groupNotifications(rows: NotificationRow[]): GroupedNotification[] {
 function NotificationRowComponent({ notification }: { notification: GroupedNotification }) {
    const firstActor = notification.actors[0];
    const othersCount = notification.actors.length - 1;
-   const openPost = usePostViewModal(state => state.open);
-
    const actorName = (
       <span style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
          {firstActor.username}
@@ -163,30 +163,22 @@ function NotificationRowComponent({ notification }: { notification: GroupedNotif
       </>
    );
 
-   if (notification.type === 'follow') {
+   const href =
+      notification.type === 'follow'
+         ? `/profile/${firstActor.username}`
+         : notification.postAuthorUsername && notification.postId
+           ? `/profile/${notification.postAuthorUsername}/${notification.postId}`
+           : null;
+
+   if (href) {
       return (
-         <Link
-            href={`/profile/${firstActor.username}`}
-            {...stylex.props(styles.notificationItem, styles.notificationLink)}
-         >
+         <Link href={href} {...stylex.props(styles.notificationItem, styles.notificationLink)}>
             {inner}
          </Link>
       );
    }
 
-   return (
-      <button
-         type="button"
-         onClick={() => {
-            if (notification.postId) {
-               openPost(notification.postId, { returnPath: window.location.pathname });
-            }
-         }}
-         {...stylex.props(styles.notificationItem, styles.notificationButton)}
-      >
-         {inner}
-      </button>
-   );
+   return <div {...stylex.props(styles.notificationItem)}>{inner}</div>;
 }
 
 export default function NotificationsPortal() {

@@ -1,7 +1,7 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
@@ -9,14 +9,13 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
-import { createCommentAction } from '@/src/actions/comments/createComment';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
 import { createBrowserClient } from '@/src/lib/supabase/client';
-import { type PostComment, type PostComments, postCommentsQuery } from '@/src/queries/comments';
+import { postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { getPostAction } from '../../../actions/post/getPost';
@@ -24,6 +23,7 @@ import { usePostViewModal } from '../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../store/useOwnerActionsModalStore';
 import OwnerActionsModal from '../../OwnerActionsModal/OwnerActionsModal';
 import { styles } from './index.stylex';
+import { useSubmitComment } from './useSubmitComment';
 
 interface PostModalCommentsProps {
    initialPost: PostWithMedia;
@@ -42,7 +42,6 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const { close: closePostViewModalStore, returnPath } = usePostViewModal();
    const router = useRouter();
    const { data: authUser } = useAuthUser();
-   const queryClient = useQueryClient();
    const postKey = ['post', initialPost.id];
    const commentsKey = ['comments', initialPost.id];
 
@@ -76,71 +75,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
 
    const { mutate: togglePostLike } = useTogglePostLike(post);
 
-   const { mutate: submitComment } = useMutation({
-      mutationFn: ({ content, parentId }: { content: string; parentId?: string }) =>
-         createCommentAction({ postId: post.id, content, parentId }),
-      onMutate: async ({ content, parentId }) => {
-         if (!authUser) return {};
-
-         const optimistic: PostComment = {
-            id: `optimistic-${Date.now()}`,
-            content,
-            created_at: new Date().toISOString(),
-            like_count: 0,
-            reply_count: 0,
-            parent_id: parentId ?? null,
-            comment_likes: [],
-            user: { id: authUser.id, username: authUser.username, avatar_url: authUser.avatar_url },
-         };
-
-         if (parentId) {
-            const repliesKey = ['replies', parentId];
-            await queryClient.cancelQueries({ queryKey: repliesKey });
-            const previousReplies = queryClient.getQueryData<PostComments>(repliesKey);
-            queryClient.setQueryData<PostComments>(repliesKey, prev => [
-               ...(prev ?? []),
-               optimistic,
-            ]);
-            queryClient.setQueryData<PostComments>(commentsKey, prev =>
-               (prev ?? []).map(c =>
-                  c.id === parentId ? { ...c, reply_count: c.reply_count + 1 } : c,
-               ),
-            );
-            return { previousReplies, repliesKey };
-         }
-
-         await queryClient.cancelQueries({ queryKey: commentsKey });
-         const previousComments = queryClient.getQueryData<PostComments>(commentsKey);
-         queryClient.setQueryData<PostComments>(commentsKey, prev => [...(prev ?? []), optimistic]);
-         return { previousComments };
-      },
-      onError: (_err, { parentId }, context) => {
-         if (!context) return;
-         if (parentId && 'previousReplies' in context && context.repliesKey) {
-            queryClient.setQueryData(context.repliesKey, context.previousReplies);
-            queryClient.setQueryData<PostComments>(commentsKey, prev =>
-               (prev ?? []).map(c =>
-                  c.id === parentId ? { ...c, reply_count: Math.max(c.reply_count - 1, 0) } : c,
-               ),
-            );
-         } else if ('previousComments' in context) {
-            queryClient.setQueryData(commentsKey, context.previousComments);
-         }
-      },
-      onSuccess: (newComment, { parentId }) => {
-         if (parentId) {
-            const repliesKey = ['replies', parentId];
-            queryClient.setQueryData<PostComments>(repliesKey, prev =>
-               (prev ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
-            );
-            queryClient.invalidateQueries({ queryKey: commentsKey });
-         } else {
-            queryClient.setQueryData<PostComments>(commentsKey, prev =>
-               (prev ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
-            );
-         }
-      },
-   });
+   const { mutate: submitComment } = useSubmitComment(post.id, commentsKey);
 
    const ACTION_BUTTONS: readonly ActionButton[] = [
       {
