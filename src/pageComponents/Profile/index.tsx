@@ -2,10 +2,9 @@ import * as stylex from '@stylexjs/stylex';
 import type { ProfileWithPosts } from '../../actions/profile/getUserProfileWithPosts';
 import type { PostWithMedia } from '../../queries/posts';
 import OpenPostOnMount from './components/OpenPostOnMount';
+import ProfileContent from './components/ProfileContent';
 import ProfileHeader from './components/ProfileHeader';
-import ProfilePostGrid from './components/ProfilePostGrid';
 import ProfileStoryHighlights from './components/ProfileStoryHighlights';
-import ProfileTabs from './components/ProfileTabs';
 import { styles } from './index.stylex';
 
 interface ProfilePageProps extends ProfileWithPosts {
@@ -32,8 +31,11 @@ export default function ProfilePage({
             />
             <ProfileStoryHighlights isOwnProfile={isOwnProfile} />
          </div>
-         <ProfileTabs isOwnProfile={isOwnProfile} />
-         <ProfilePostGrid posts={posts} username={userProfile.username} />
+         <ProfileContent
+            posts={posts}
+            username={userProfile.username}
+            isOwnProfile={isOwnProfile}
+         />
       </div>
    );
 }

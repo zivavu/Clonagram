@@ -13,10 +13,7 @@ export async function deletePostAction(params: { postId: string }) {
          .select('mux_asset_id')
          .eq('post_id', params.postId)
          .not('mux_asset_id', 'is', null),
-      supabase
-         .from('post_images')
-         .select('url')
-         .eq('post_id', params.postId),
+      supabase.from('post_images').select('url').eq('post_id', params.postId),
    ]);
 
    const { count, error } = await supabase
@@ -43,7 +40,9 @@ export async function deletePostAction(params: { postId: string }) {
          .filter((p): p is string => p !== null);
 
       if (storagePaths.length) {
-         cleanupTasks.push(supabase.storage.from('posts').remove(storagePaths.map(p => p.replace(/^posts\//, ''))));
+         cleanupTasks.push(
+            supabase.storage.from('posts').remove(storagePaths.map(p => p.replace(/^posts\//, ''))),
+         );
       }
    }
 

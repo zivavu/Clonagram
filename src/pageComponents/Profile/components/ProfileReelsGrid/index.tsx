@@ -5,61 +5,58 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { FaComment } from 'react-icons/fa6';
-import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
+import { MdFavorite, MdPlayArrow } from 'react-icons/md';
 import type { ProfileWithPosts } from '../../../../actions/profile/getUserProfileWithPosts';
 import { usePostViewModal } from '../../../../store/postViewModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
 import { getPostThumbnail } from '../../../../utils/posts';
 import { styles } from './index.stylex';
 
-interface ProfilePostGridProps {
-   posts: ProfileWithPosts['posts'];
+interface ProfileReelsGridProps {
+   reels: ProfileWithPosts['posts'];
    username: string;
 }
 
-export default function ProfilePostGrid({ posts, username }: ProfilePostGridProps) {
+export default function ProfileReelsGrid({ reels, username }: ProfileReelsGridProps) {
    const pathname = usePathname();
    const { open } = usePostViewModal();
-
    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-   if (!posts || posts.length === 0) {
+   if (reels.length === 0) {
       return (
          <div {...stylex.props(styles.emptyState)}>
-            <span {...stylex.props(styles.emptyText)}>No posts yet</span>
+            <span {...stylex.props(styles.emptyText)}>No reels yet</span>
          </div>
       );
    }
 
    return (
       <div {...stylex.props(styles.grid)}>
-         {posts.map(post => {
-            const thumbnail = getPostThumbnail(post);
+         {reels.map(reel => {
+            const thumbnail = getPostThumbnail(reel);
             if (!thumbnail) return null;
 
-            const hasMultipleImages = post.images.length > 1;
-            const isVideoOnly = post.videos.length > 0 && post.images.length === 0;
-            const isHovered = hoveredId === post.id;
+            const isHovered = hoveredId === reel.id;
 
             return (
                <button
-                  key={post.id}
+                  key={reel.id}
                   type="button"
-                  {...stylex.props(styles.postContainer)}
-                  onMouseEnter={() => setHoveredId(post.id)}
+                  {...stylex.props(styles.reelContainer)}
+                  onMouseEnter={() => setHoveredId(reel.id)}
                   onMouseLeave={() => setHoveredId(null)}
                   onClick={() => {
-                     open(post.id, { returnPath: pathname });
+                     open(reel.id, { returnPath: pathname });
                      window.history.pushState(
                         { postModal: true },
                         '',
-                        `/profile/${username}/${post.id}`,
+                        `/profile/${username}/${reel.id}`,
                      );
                   }}
                >
                   <Image
                      src={thumbnail}
-                     alt="Post"
+                     alt="Reel"
                      fill
                      sizes="(max-width: 1385px) 33vw, 25vw"
                      style={{ objectFit: 'cover' }}
@@ -67,25 +64,18 @@ export default function ProfilePostGrid({ posts, username }: ProfilePostGridProp
                   <div {...stylex.props(styles.overlay, isHovered && styles.overlayVisible)}>
                      <div {...stylex.props(styles.stat)}>
                         <MdFavorite size={20} color={colors.white} />
-                        <span {...stylex.props(styles.statText)}>{post.likes.length}</span>
+                        <span {...stylex.props(styles.statText)}>{reel.likes.length}</span>
                      </div>
                      <div {...stylex.props(styles.stat)}>
                         <FaComment size={18} color={colors.white} />
                         <span {...stylex.props(styles.statText)}>
-                           {post.comments[0]?.count ?? 0}
+                           {reel.comments[0]?.count ?? 0}
                         </span>
                      </div>
                   </div>
-                  {hasMultipleImages && (
-                     <div {...stylex.props(styles.badge)}>
-                        <MdCollections size={18} color={colors.white} />
-                     </div>
-                  )}
-                  {isVideoOnly && (
-                     <div {...stylex.props(styles.badge)}>
-                        <MdPlayArrow size={18} color={colors.white} />
-                     </div>
-                  )}
+                  <div {...stylex.props(styles.badge)}>
+                     <MdPlayArrow size={18} color={colors.white} />
+                  </div>
                </button>
             );
          })}

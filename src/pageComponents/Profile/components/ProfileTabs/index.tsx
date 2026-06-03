@@ -1,13 +1,14 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useState } from 'react';
 import { MdBookmarkBorder, MdGridOn, MdOutlinePlayCircle, MdPersonOutline } from 'react-icons/md';
 import { TbRepeat } from 'react-icons/tb';
 import { styles } from './index.stylex';
 
 interface ProfileTabsProps {
    isOwnProfile: boolean;
+   activeTab: string;
+   onTabChange: (tab: string) => void;
 }
 
 interface Tab {
@@ -15,9 +16,7 @@ interface Tab {
    icon: React.ReactNode;
 }
 
-export default function ProfileTabs({ isOwnProfile }: ProfileTabsProps) {
-   const [activeTab, setActiveTab] = useState('posts');
-
+export default function ProfileTabs({ isOwnProfile, activeTab, onTabChange }: ProfileTabsProps) {
    const commonTabs: Tab[] = [
       { id: 'posts', icon: <MdGridOn size={24} /> },
       { id: 'reels', icon: <MdOutlinePlayCircle size={24} /> },
@@ -41,7 +40,7 @@ export default function ProfileTabs({ isOwnProfile }: ProfileTabsProps) {
             <button
                key={tab.id}
                type="button"
-               onClick={() => setActiveTab(tab.id)}
+               onClick={() => onTabChange(tab.id)}
                {...stylex.props(styles.tab, activeTab === tab.id && styles.tabActive)}
             >
                <span {...stylex.props(styles.tabIcon)}>{tab.icon}</span>
