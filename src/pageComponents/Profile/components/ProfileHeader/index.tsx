@@ -7,6 +7,7 @@ import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { FollowState } from '@/src/queries/followStatus';
 import { colors } from '../../../../styles/tokens.stylex';
+import MessageButton from './components/MessageButton';
 import { styles } from './index.stylex';
 
 function parseWebsiteLinks(website: string | null) {
@@ -111,12 +112,7 @@ export default function ProfileHeader({
                      initialState={followStatus}
                      variant="profile"
                   />
-                  <Link
-                     href={`/direct/t/${userProfile.id}`}
-                     {...stylex.props(styles.button, styles.buttonSecondary)}
-                  >
-                     Message
-                  </Link>
+                  <MessageButton targetUserId={userProfile.id} />
                   <button
                      type="button"
                      {...stylex.props(styles.button, styles.buttonIcon)}
