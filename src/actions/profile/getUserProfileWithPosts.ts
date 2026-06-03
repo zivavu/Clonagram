@@ -15,7 +15,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
          followers:follows!following_id(count),
          following:follows!follower_id(count),
          posts!user_id(
-            id, caption, created_at, aspect_ratio, hide_likes,
+            id, caption, created_at, aspect_ratio, hide_likes, type,
             likes(user_id),
             comments(count),
             images:post_images(id, url, position, width, height),
