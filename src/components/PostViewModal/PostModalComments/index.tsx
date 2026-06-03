@@ -16,7 +16,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { usePostViewModal } from '@/src/store/postViewModalStore';
@@ -60,7 +60,6 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const { data: comments = [], isLoading: commentsLoading } = useQuery({
       queryKey: commentsKey,
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await postCommentsQuery(supabase, post.id);
          if (error) throw error;
          return data;

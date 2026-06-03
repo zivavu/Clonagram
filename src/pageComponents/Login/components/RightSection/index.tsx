@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import z from 'zod';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import ZetaLogo from '@/src/components/ZetaLogo';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import FloatingInput from '../../../../components/FloatingInput';
 import { colors } from '../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
@@ -22,7 +22,6 @@ const schema = z.object({
 export default function RightSection() {
    const [isLoading, setIsLoading] = useState(false);
 
-   const supabase = createBrowserClient();
    const {
       register,
       handleSubmit,

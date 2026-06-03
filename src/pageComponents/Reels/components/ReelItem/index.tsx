@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { MdLocationOn, MdVerified } from 'react-icons/md';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
 import type { Reel } from '@/src/queries/posts';
 import ReelActionRail from '../ReelActionRail';
@@ -34,7 +34,6 @@ export default function ReelItem({
    const { data: comments } = useQuery({
       queryKey: ['comments', reel.id],
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await postCommentsQuery(supabase, reel.id);
          if (error) throw error;
          return data;

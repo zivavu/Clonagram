@@ -7,7 +7,7 @@ import { useEffect, useMemo } from 'react';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { IoChevronForward, IoEyeOffOutline } from 'react-icons/io5';
 import UserAvatar from '@/src/components/UserAvatar';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
 import { getConversationAvatars, getConversationDisplayName } from '@/src/utils/conversations';
 import { formatTimestamp } from '@/src/utils/time';
@@ -25,7 +25,6 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
    const { data: requests = initialData } = useQuery({
       queryKey,
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await getConversationsQuery(supabase, authUserId, 'requests');
          if (error) throw error;
          return data ?? [];
@@ -35,7 +34,6 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
    });
 
    useEffect(() => {
-      const supabase = createBrowserClient();
       const channel = supabase
          .channel(`requests-list-${authUserId}`)
          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {

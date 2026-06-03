@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { type Reel, reelsQuery } from '@/src/queries/posts';
 import ReelItem from './components/ReelItem';
 import ReelNavArrows from './components/ReelNavArrows';
@@ -16,7 +16,6 @@ export default function Reels() {
    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
       queryKey: ['reels'],
       queryFn: async ({ pageParam }) => {
-         const supabase = createBrowserClient();
          let query = reelsQuery(supabase);
          if (pageParam) query = query.lt('created_at', pageParam);
          const { data, error } = await query;

@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { commentRepliesQuery } from '@/src/queries/comments';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '..';
 import { styles } from '../index.stylex';
@@ -19,7 +19,6 @@ export default function CommentReplies({ parentId, onReply, postOwnerId }: Comme
    const { data: replies = [], isLoading } = useQuery({
       queryKey: repliesKey,
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await commentRepliesQuery(supabase, parentId);
          if (error) throw error;
          return data;

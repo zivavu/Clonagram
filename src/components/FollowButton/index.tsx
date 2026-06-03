@@ -5,7 +5,7 @@ import { cancelFollowRequest } from '@/src/actions/follow/cancelFollowRequest';
 import { followUser } from '@/src/actions/follow/followUser';
 import { unfollowUser } from '@/src/actions/follow/unfollowUser';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { type FollowState, getFollowStatus } from '@/src/queries/followStatus';
 import { styles } from './index.stylex';
 
@@ -29,7 +29,6 @@ export default function FollowButton({
    const { data: state = 'none' } = useQuery({
       queryKey,
       queryFn: async () => {
-         const supabase = createBrowserClient();
          return getFollowStatus(supabase, authUser?.id ?? '', targetUserId);
       },
       ...(initialState !== undefined && { initialData: initialState }),

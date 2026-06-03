@@ -9,8 +9,8 @@ import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
 import { createConversation } from '@/src/actions/dm/createConversation';
 import { toast } from '@/src/components/AppToast';
 import { UserListItem, UserListSkeleton } from '@/src/components/UserListItem';
-import { createBrowserClient } from '@/src/lib/supabase/client';
-import { useNewMessageModalStore } from '../../../../store/useNewMessageModalStore';
+import { supabase } from '@/src/lib/supabase/client';
+import { useNewMessageModalStore } from '@/src/store/createModalStore';
 import { styles } from './index.stylex';
 
 export default function NewMessageModal() {
@@ -23,7 +23,6 @@ export default function NewMessageModal() {
    const { data: followedUsers = [] } = useQuery({
       queryKey: ['followed-users'],
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const {
             data: { user },
          } = await supabase.auth.getUser();

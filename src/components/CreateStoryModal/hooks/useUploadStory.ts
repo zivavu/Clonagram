@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createStoryAction } from '@/src/actions/story/createStory';
 import { uploadVideo } from '@/src/actions/uploadVideo';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { bakeStoryImage } from '@/src/utils/bakeStoryImage';
 import { pollMuxAsset } from '@/src/utils/pollMuxAsset';
 import type { StoryMedia, StoryMediaResult } from '../types';
@@ -18,7 +18,6 @@ async function processStoryMedia(media: StoryMedia): Promise<StoryMediaResult> {
       const { blob, blurDataUrl } = await bakeStoryImage(media.file);
       const fileName = `${crypto.randomUUID()}.webp`;
       const file = new File([blob], fileName, { type: 'image/webp' });
-      const supabase = createBrowserClient();
       const { error: uploadError } = await supabase.storage.from('stories').upload(fileName, file);
       if (uploadError) throw new Error(`Image upload failed: ${uploadError.message}`);
       const { data: urlData } = supabase.storage.from('stories').getPublicUrl(fileName);

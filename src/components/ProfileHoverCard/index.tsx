@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { FiUser } from 'react-icons/fi';
 import { TbCamera } from 'react-icons/tb';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { userRecentPostsQuery } from '@/src/queries/posts';
 import { userProfileCardQuery } from '@/src/queries/userProfiles';
 import { getPostThumbnail } from '@/src/utils/posts';
@@ -38,7 +38,6 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
    const { data: profile } = useQuery({
       queryKey: ['profile-card', userId],
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await userProfileCardQuery(supabase, userId);
          if (error) throw error;
          return data;
@@ -50,7 +49,6 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
    const { data: posts = [] } = useQuery({
       queryKey: ['profile-recent-posts', userId],
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await userRecentPostsQuery(supabase, userId);
          if (error) throw error;
          return data ?? [];

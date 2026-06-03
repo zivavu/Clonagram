@@ -9,7 +9,7 @@ import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { markConversationRead } from '@/src/actions/dm/markConversationRead';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
 import { type ConversationMessages, getMessagesQuery } from '@/src/queries/messages';
 import {
@@ -48,7 +48,6 @@ export default function ChatView({
    const { data: messages = initialMessages } = useQuery({
       queryKey: messagesKey,
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await getMessagesQuery(supabase, conversationId);
          if (error) throw error;
          return data ?? [];
@@ -60,7 +59,6 @@ export default function ChatView({
    const { data: conversation = initialConversation } = useQuery({
       queryKey: ['conversation', conversationId],
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await getConversationQuery(supabase, conversationId);
          if (error) throw error;
          return data;
@@ -70,7 +68,6 @@ export default function ChatView({
    });
 
    useEffect(() => {
-      const supabase = createBrowserClient();
       const channel = supabase
          .channel(`messages-${conversationId}`)
          .on(

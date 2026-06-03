@@ -9,8 +9,8 @@ import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { RiMenuFill } from 'react-icons/ri';
 import { TbLogout, TbTrash } from 'react-icons/tb';
 import { deleteAccountAction } from '@/src/actions/auth/deleteAccount';
-import { createBrowserClient } from '@/src/lib/supabase/client';
-import { useSettingsPopoverStore } from '@/src/store/useSettingsPopoverStore';
+import { supabase } from '@/src/lib/supabase/client';
+import { useSettingsPopoverStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
@@ -27,7 +27,6 @@ export function SettingsPopoverButton() {
    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
    async function handleLogout() {
-      const supabase = createBrowserClient();
       await supabase.auth.signOut();
       queryClient.clear();
       router.push('/login');
@@ -37,7 +36,6 @@ export function SettingsPopoverButton() {
       setIsDeletingAccount(true);
       try {
          await deleteAccountAction();
-         const supabase = createBrowserClient();
          await supabase.auth.signOut();
          queryClient.clear();
          router.push('/login');

@@ -1,6 +1,6 @@
 'use client';
 
-import { useNewMessageModalStore } from '@/src/store/useNewMessageModalStore';
+import { useNewMessageModalStore } from '@/src/store/createModalStore';
 
 interface NewMessageTriggerProps {
    children: React.ReactNode;

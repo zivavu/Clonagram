@@ -16,8 +16,7 @@ import {
    MdSmartDisplay,
 } from 'react-icons/md';
 import UserAvatar from '@/src/components/UserAvatar';
-import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
-import { useSearchPortalStore } from '@/src/store/useSearchPortalStore';
+import { useNotificationsPortalStore, useSearchPortalStore } from '@/src/store/createModalStore';
 import { CreateMenuPopover } from '../CreateMenuPopover';
 import type { MainSidebarStyles } from './index.stylex';
 

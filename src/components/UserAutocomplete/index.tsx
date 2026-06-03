@@ -7,7 +7,7 @@ import { IoCheckmark, IoClose } from 'react-icons/io5';
 import Autocomplete from '@/src/components/Autocomplete';
 import { UserListItem } from '@/src/components/UserListItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { userProfilesQuery } from '@/src/queries/userProfiles';
 import type { PartialUser } from '@/src/types/global';
 import { styles } from './index.stylex';
@@ -39,7 +39,7 @@ export default function UserAutocomplete({
    const { data: filtered = [] } = useQuery({
       queryKey: ['profiles', 'search', query, authUser?.id],
       queryFn: async () => {
-         const { data, error } = await userProfilesQuery(createBrowserClient(), {
+         const { data, error } = await userProfilesQuery(supabase, {
             search: query,
             limit: 8,
             excludeId: authUser?.id,

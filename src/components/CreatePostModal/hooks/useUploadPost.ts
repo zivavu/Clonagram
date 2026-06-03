@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPostAction } from '@/src/actions/post/createPost';
 import { uploadVideo } from '@/src/actions/uploadVideo';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { bakeImage } from '@/src/utils/bakeImage';
 import { pollMuxAsset } from '@/src/utils/pollMuxAsset';
 import { processVideo } from '@/src/utils/processVideo';
@@ -34,7 +34,6 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
       const { blob, blurDataURL, width, height } = await bakeImage(media, postData.aspectRatio);
       const fileName = `${crypto.randomUUID()}.jpg`;
       const file = new File([blob], fileName, { type: 'image/jpeg' });
-      const supabase = createBrowserClient();
       const { error: uploadError } = await supabase.storage.from('posts').upload(fileName, file);
       if (uploadError) {
          throw new Error(`Image upload failed: ${uploadError.message}`);

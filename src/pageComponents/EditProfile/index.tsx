@@ -9,7 +9,7 @@ import z from 'zod';
 import { updateAvatar } from '@/src/actions/profile/updateAvatar';
 import { updateProfile } from '@/src/actions/profile/updateProfile';
 import { toast } from '@/src/components/AppToast';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import type { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import AuthPagesFooter from '../../components/AuthPagesFooter';
 import AvatarCard from './components/AvatarCard';
@@ -78,7 +78,6 @@ export default function EditProfile({ profile }: { profile: AuthProfile }) {
    const [fullName, username] = watch(['fullName', 'username']);
 
    async function handleAvatarUpload(file: File) {
-      const supabase = createBrowserClient();
       const ext = file.name.split('.').pop() ?? 'jpg';
       const path = `${profile.id}/${Date.now()}.${ext}`;
       const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: true });

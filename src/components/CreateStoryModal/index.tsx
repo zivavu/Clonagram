@@ -8,7 +8,7 @@ import DiscardDialog from '@/src/components/CreatePostModal/components/DiscardDi
 import PostSharedStep from '@/src/components/CreatePostModal/components/PostSharedStep';
 import UploadStep from '@/src/components/CreatePostModal/components/UploadStep';
 import DialogOverlay from '@/src/components/DialogOverlay';
-import { useCreateStoryModalStore } from '@/src/store/useCreateStoryModalStore';
+import { useCreateStoryModalStore } from '@/src/store/createModalStore';
 import PreviewStep from './components/PreviewStep';
 import SharingStoryStep from './components/SharingStoryStep';
 import { styles } from './index.stylex';

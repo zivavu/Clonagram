@@ -13,7 +13,7 @@ import { updateGroupName } from '@/src/actions/dm/updateGroupName';
 import { toast } from '@/src/components/AppToast';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
 import type { PartialUser } from '@/src/types/global';
 import { styles } from './index.stylex';
@@ -36,7 +36,6 @@ export default function GroupDetailsPanel({
    const { data: conversation = initialConversation } = useQuery({
       queryKey: convKey,
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await getConversationQuery(supabase, conversationId);
          if (error) throw error;
          return data;

@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { styles } from './index.stylex';
 
 export default function LogoutButton() {
@@ -11,7 +11,6 @@ export default function LogoutButton() {
    const querryClient = useQueryClient();
 
    async function handleLogout() {
-      const supabase = createBrowserClient();
       await supabase.auth.signOut();
       router.push('/login');
       querryClient.invalidateQueries();

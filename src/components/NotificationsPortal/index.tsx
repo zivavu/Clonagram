@@ -9,9 +9,9 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { markNotificationsReadAction } from '@/src/actions/notifications/markNotificationsRead';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { type NotificationRow, notificationsQuery } from '@/src/queries/notifications';
-import { useNotificationsPortalStore } from '@/src/store/useNotificationsPortalStore';
+import { useNotificationsPortalStore } from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 
@@ -190,7 +190,6 @@ export default function NotificationsPortal() {
       queryKey: ['notifications', authUser?.id],
       queryFn: async () => {
          if (!authUser?.id) return [];
-         const supabase = createBrowserClient();
          const { data, error } = await notificationsQuery(supabase, authUser.id);
          if (error) throw error;
          return (data ?? []) as NotificationRow[];

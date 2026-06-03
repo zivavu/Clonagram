@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import UserAvatar from '@/src/components/UserAvatar';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
 import {
    getConversationAvatars,
@@ -34,7 +34,6 @@ export default function ConversationList({
    const { data: conversations = initialData } = useQuery({
       queryKey,
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await getConversationsQuery(supabase, authUserId, folder);
          if (error) throw error;
          return data ?? [];
@@ -44,7 +43,6 @@ export default function ConversationList({
    });
 
    useEffect(() => {
-      const supabase = createBrowserClient();
       const channel = supabase
          .channel(`conversations-list-${authUserId}-${folder}`)
          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {

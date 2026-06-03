@@ -8,7 +8,7 @@ import { IoClose } from 'react-icons/io5';
 import { createCommentAction } from '@/src/actions/comments/createComment';
 import CommentItem, { CommentSkeleton } from '@/src/components/CommentItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
-import { createBrowserClient } from '@/src/lib/supabase/client';
+import { supabase } from '@/src/lib/supabase/client';
 import { type PostComment, type PostComments, postCommentsQuery } from '@/src/queries/comments';
 import type { Reel } from '@/src/queries/posts';
 import { styles } from './index.stylex';
@@ -41,7 +41,6 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
    const { data: comments = [], isLoading: isLoadingComments } = useQuery({
       queryKey: commentsKey,
       queryFn: async () => {
-         const supabase = createBrowserClient();
          const { data, error } = await postCommentsQuery(supabase, reel.id);
          if (error) throw error;
          return data;

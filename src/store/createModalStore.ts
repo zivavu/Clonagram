@@ -15,3 +15,9 @@ export function createModalStore() {
       toggle: () => set(state => ({ isOpen: !state.isOpen })),
    }));
 }
+
+export const useNotificationsPortalStore = createModalStore();
+export const useSearchPortalStore = createModalStore();
+export const useCreateStoryModalStore = createModalStore();
+export const useNewMessageModalStore = createModalStore();
+export const useSettingsPopoverStore = createModalStore();

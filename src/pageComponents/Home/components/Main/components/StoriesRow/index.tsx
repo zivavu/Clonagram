@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { BsPlus } from 'react-icons/bs';
 import { MdExpandCircleDown } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
-import { useCreateStoryModalStore } from '@/src/store/useCreateStoryModalStore';
+import { useCreateStoryModalStore } from '@/src/store/createModalStore';
 import type { Profile } from '../../../../../../lib/supabase/getAuthProfile';
 import { colors } from '../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
