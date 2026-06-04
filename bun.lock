@@ -8,7 +8,7 @@
         "@ffmpeg/ffmpeg": "^0.12.15",
         "@ffmpeg/util": "^0.12.2",
         "@hookform/resolvers": "^5.4.0",
-        "@mux/mux-node": "^14.1.0",
+        "@mux/mux-node": "^14.1.1",
         "@mux/mux-player-react": "^3.13.0",
         "@mux/mux-uploader-react": "^1.5.0",
         "@radix-ui/react-avatar": "^1.1.11",
@@ -24,26 +24,27 @@
         "@radix-ui/react-toast": "^1.2.15",
         "@stylexjs/stylex": "^0.18.3",
         "@supabase/ssr": "^0.10.3",
-        "@supabase/supabase-js": "^2.106.1",
-        "@tanstack/react-query": "^5.100.13",
-        "@tanstack/react-query-devtools": "^5.100.13",
+        "@supabase/supabase-js": "^2.106.2",
+        "@tanstack/react-query": "^5.100.14",
+        "@tanstack/react-query-devtools": "^5.100.14",
         "@upstash/ratelimit": "^2.0.8",
         "@upstash/redis": "^1.38.0",
         "@vercel/speed-insights": "^2.0.0",
+        "emoji-picker-react": "^4.19.1",
         "next": "16.2.4",
         "next-video": "^2.8.0",
         "react": "19.2.4",
         "react-dom": "19.2.4",
         "react-dropzone": "^15.0.0",
-        "react-hook-form": "^7.76.1",
+        "react-hook-form": "^7.77.0",
         "react-icons": "^5.6.0",
         "react-intersection-observer": "^10.0.3",
         "server-only": "^0.0.1",
         "zod": "^4.4.3",
-        "zustand": "^5.0.13",
+        "zustand": "^5.0.14",
       },
       "devDependencies": {
-        "@biomejs/biome": "^2.4.15",
+        "@biomejs/biome": "^2.4.16",
         "@faker-js/faker": "^10.4.0",
         "@next/bundle-analyzer": "^16.2.6",
         "@stylexjs/babel-plugin": "^0.18.3",
@@ -53,7 +54,7 @@
         "@types/react-dom": "^19.2.3",
         "autoprefixer": "^10.5.0",
         "babel-plugin-react-compiler": "^1.0.0",
-        "supabase": "^2.101.0",
+        "supabase": "^2.102.0",
         "typescript": "^5.9.3",
       },
     },
@@ -739,6 +740,8 @@
 
     "electron-to-chromium": ["electron-to-chromium@1.5.340", "", {}, "sha512-908qahOGocRMinT2nM3ajCEM99H4iPdv84eagPP3FfZy/1ZGeOy2CZYzjhms81ckOPCXPlW7LkY4XpxD8r1DrA=="],
 
+    "emoji-picker-react": ["emoji-picker-react@4.19.1", "", { "dependencies": { "flairup": "1.0.0" }, "peerDependencies": { "react": ">=16" } }, "sha512-BmDdqInKFVYJpv7qS9WI6L9656cDAC+FkDvUjJds56nKHbaVTBNeDmLwKBytRnzu37zWHs9Isg7gt5PT43y6xA=="],
+
     "emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
 
     "es-define-property": ["es-define-property@1.0.1", "", {}, "sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g=="],
@@ -768,6 +771,8 @@
     "file-selector": ["file-selector@2.1.2", "", { "dependencies": { "tslib": "^2.7.0" } }, "sha512-QgXo+mXTe8ljeqUFaX3QVHc5osSItJ/Km+xpocx0aSqWGMSCf6qYs/VnzZgS864Pjn5iceMRFigeAV7AfTlaig=="],
 
     "fill-range": ["fill-range@7.1.1", "", { "dependencies": { "to-regex-range": "^5.0.1" } }, "sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg=="],
+
+    "flairup": ["flairup@1.0.0", "", {}, "sha512-IKlE+pNvL2R+kVL1kEhUYqRxVqeFnjiIvHWDMLFXNaqyUdFXQM2wte44EfMYJNHkW16X991t2Zg8apKkhv7OBA=="],
 
     "form-data": ["form-data@4.0.5", "", { "dependencies": { "asynckit": "^0.4.0", "combined-stream": "^1.0.8", "es-set-tostringtag": "^2.1.0", "hasown": "^2.0.2", "mime-types": "^2.1.12" } }, "sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w=="],
 

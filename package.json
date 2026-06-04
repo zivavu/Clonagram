@@ -38,6 +38,7 @@
       "@upstash/ratelimit": "^2.0.8",
       "@upstash/redis": "^1.38.0",
       "@vercel/speed-insights": "^2.0.0",
+      "emoji-picker-react": "^4.19.1",
       "next": "16.2.4",
       "next-video": "^2.8.0",
       "react": "19.2.4",

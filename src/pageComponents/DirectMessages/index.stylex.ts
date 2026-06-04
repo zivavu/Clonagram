@@ -219,6 +219,7 @@ export const styles = stylex.create({
    inputIcon: {
       fontSize: '1.6rem',
       cursor: 'pointer',
+      color: colors.textPrimary,
    },
    requestActionsContainer: {
       display: 'flex',
