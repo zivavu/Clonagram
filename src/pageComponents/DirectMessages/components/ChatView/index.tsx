@@ -14,7 +14,11 @@ import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
-import { type ConversationMessages, getMessagesQuery } from '@/src/queries/messages';
+import {
+   type ConversationMessage,
+   type ConversationMessages,
+   getMessagesQuery,
+} from '@/src/queries/messages';
 import {
    getConversationAvatars,
    getConversationDisplayName,
