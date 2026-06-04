@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { markConversationRead } from '@/src/actions/dm/markConversationRead';
+import { sendMessage } from '@/src/actions/dm/sendMessage';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { supabase } from '@/src/lib/supabase/client';
@@ -103,6 +104,7 @@ export default function ChatView({
    }, [messagesCount]);
 
    const participants = conversation?.participants ?? [];
+   const authProfile = participants.find(p => p.user_id === authUserId)?.user;
    const displayName = getConversationDisplayName(participants, authUserId, conversation?.title);
    const avatars = getConversationAvatars(participants, authUserId);
    const isGroup = isGroupConversation(participants);
@@ -225,9 +227,37 @@ export default function ChatView({
          ) : (
             <MessageInput
                conversationId={conversationId}
-               onSent={() => {
-                  queryClient.invalidateQueries({ queryKey: messagesKey });
-                  queryClient.invalidateQueries({ queryKey: ['conversations'] });
+               onSend={async text => {
+                  const optimisticId = `optimistic-${Date.now()}`;
+                  const optimisticMsg = {
+                     id: optimisticId,
+                     content: text,
+                     created_at: new Date().toISOString(),
+                     sender_id: authUserId,
+                     is_deleted: false,
+                     reply_to_id: null,
+                     sender: authProfile ?? {
+                        id: authUserId,
+                        username: '',
+                        full_name: null,
+                        avatar_url: null,
+                     },
+                  };
+
+                  queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
+                     ...(prev ?? []),
+                     optimisticMsg,
+                  ]);
+
+                  try {
+                     await sendMessage(conversationId, text);
+                     queryClient.invalidateQueries({ queryKey: messagesKey });
+                     queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                  } catch {
+                     queryClient.setQueryData(messagesKey, (prev: ConversationMessages) =>
+                        (prev ?? []).filter(m => m.id !== optimisticId),
+                     );
+                  }
                }}
             />
          )}

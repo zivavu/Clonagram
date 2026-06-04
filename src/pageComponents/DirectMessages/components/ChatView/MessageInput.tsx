@@ -7,14 +7,12 @@ import { AiOutlineSmile } from 'react-icons/ai';
 import { IoMicOutline } from 'react-icons/io5';
 import { LuSticker } from 'react-icons/lu';
 import { TbPhoto } from 'react-icons/tb';
-import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { radius } from '../../../../styles/tokens.stylex';
 import { styles } from '../../index.stylex';
 
 interface MessageInputProps {
-   conversationId: string;
-   onSent: () => void;
+   onSend: (text: string) => Promise<void>;
 }
 
 const PICKER_CLASS = 'clonagram-emoji-picker';
@@ -42,7 +40,7 @@ function extractText(div: HTMLElement): string {
    return text;
 }
 
-export default function MessageInput({ conversationId, onSent }: MessageInputProps) {
+export default function MessageInput({ onSend }: MessageInputProps) {
    const isDark = useThemeStore(s => s.isDark);
    const [sending, setSending] = useState(false);
    const [pickerOpen, setPickerOpen] = useState(false);
@@ -67,11 +65,10 @@ export default function MessageInput({ conversationId, onSent }: MessageInputPro
       const text = extractText(div);
       if (!text.trim()) return;
       setSending(true);
+      div.innerHTML = '';
+      setIsEmpty(true);
       try {
-         await sendMessage(conversationId, text);
-         div.innerHTML = '';
-         setIsEmpty(true);
-         onSent();
+         await onSend(text);
       } finally {
          setSending(false);
       }
