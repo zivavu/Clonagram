@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
 import { createConversation } from '@/src/actions/dm/createConversation';
 import { toast } from '@/src/components/AppToast';
-import { UserListItem, UserListSkeleton } from '@/src/components/UserListItem';
+import { UserListItem } from '@/src/components/UserListItem';
 import { supabase } from '@/src/lib/supabase/client';
 import { useNewMessageModalStore } from '@/src/store/createModalStore';
 import { styles } from './index.stylex';
@@ -36,6 +36,20 @@ export default function NewMessageModal() {
       staleTime: Infinity,
    });
 
+   const { data: searchResults = [] } = useQuery({
+      queryKey: ['user-search', query],
+      queryFn: async () => {
+         if (!query.trim()) return [];
+         const { data } = await supabase
+            .from('profiles')
+            .select('id, username, full_name, avatar_url')
+            .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
+            .limit(20);
+         return data ?? [];
+      },
+      staleTime: 30_000,
+   });
+
    const toggleUser = (id: string) => {
       setSelectedIds(prev => {
          const next = new Set(prev);
@@ -56,17 +70,15 @@ export default function NewMessageModal() {
       });
    };
 
-   const filteredUsers = followedUsers.filter(
-      u =>
-         (u.full_name?.toLowerCase() ?? '').includes(query.toLowerCase()) ||
-         u.username.toLowerCase().includes(query.toLowerCase()),
-   );
+   const allKnownUsers = [
+      ...followedUsers,
+      ...searchResults.filter(r => !followedUsers.some(f => f.id === r.id)),
+   ];
 
-   const selectedUsers = followedUsers.filter(u => selectedIds.has(u.id));
+   const filteredUsers = query.trim() ? searchResults : followedUsers;
+
+   const selectedUsers = allKnownUsers.filter(u => selectedIds.has(u.id));
    const hasSelection = selectedIds.size > 0;
-
-   const MIN_VISIBLE_ROWS = 7;
-   const skeletonCount = Math.max(0, MIN_VISIBLE_ROWS - filteredUsers.length);
 
    async function handleChat() {
       if (!hasSelection || creating) return;
@@ -133,35 +145,37 @@ export default function NewMessageModal() {
                <hr {...stylex.props(styles.divider)} />
 
                <div {...stylex.props(styles.listContainer)}>
-                  <h3 {...stylex.props(styles.suggestedHeading)}>Suggested</h3>
-                  <div {...stylex.props(styles.userList)} role="listbox">
-                     {filteredUsers.map(user => {
-                        const isSelected = selectedIds.has(user.id);
-                        return (
-                           <UserListItem
-                              key={user.id}
-                              avatarUrl={user.avatar_url}
-                              avatarAlt={user.full_name || user.username}
-                              name={user.full_name || user.username}
-                              subtitle={user.username}
-                              rightElement={
-                                 <div
-                                    {...stylex.props(
-                                       styles.radioCircle,
-                                       isSelected && styles.radioCircleSelected,
-                                    )}
-                                 >
-                                    {isSelected && <IoCheckmark style={{ fontSize: '14px' }} />}
-                                 </div>
-                              }
-                              onClick={() => toggleUser(user.id)}
-                              role="option"
-                              ariaSelected={isSelected}
-                           />
-                        );
-                     })}
-                     <UserListSkeleton count={skeletonCount} />
-                  </div>
+                  {query.trim() && filteredUsers.length === 0 ? (
+                     <p {...stylex.props(styles.noResults)}>No results found.</p>
+                  ) : (
+                     <div {...stylex.props(styles.userList)} role="listbox">
+                        {filteredUsers.map(user => {
+                           const isSelected = selectedIds.has(user.id);
+                           return (
+                              <UserListItem
+                                 key={user.id}
+                                 avatarUrl={user.avatar_url}
+                                 avatarAlt={user.full_name || user.username}
+                                 name={user.full_name || user.username}
+                                 subtitle={user.username}
+                                 rightElement={
+                                    <div
+                                       {...stylex.props(
+                                          styles.radioCircle,
+                                          isSelected && styles.radioCircleSelected,
+                                       )}
+                                    >
+                                       {isSelected && <IoCheckmark style={{ fontSize: '14px' }} />}
+                                    </div>
+                                 }
+                                 onClick={() => toggleUser(user.id)}
+                                 role="option"
+                                 ariaSelected={isSelected}
+                              />
+                           );
+                        })}
+                     </div>
+                  )}
                </div>
 
                <div {...stylex.props(styles.footer)}>

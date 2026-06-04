@@ -64,6 +64,13 @@ export const styles = stylex.create({
       fontSize: '50px',
       transform: 'scaleX(-1)',
    },
+   chatViewRoot: {
+      flex: 1,
+      minWidth: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+   },
    chatTopBar: {
       display: 'flex',
       alignItems: 'center',
@@ -225,6 +232,12 @@ export const styles = stylex.create({
       fontSize: '1.6rem',
       cursor: 'pointer',
       color: colors.textPrimary,
+
+      transition: 'scale 0.1s ease-in-out',
+
+      ':hover': {
+         scale: 1.05,
+      },
    },
    requestActionsContainer: {
       display: 'flex',

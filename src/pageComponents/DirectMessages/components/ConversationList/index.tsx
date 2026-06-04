@@ -60,6 +60,18 @@ export default function ConversationList({
                queryClient.invalidateQueries({ queryKey: ['conversations', folder, authUserId] });
             },
          )
+         .on(
+            'postgres_changes',
+            {
+               event: 'DELETE',
+               schema: 'public',
+               table: 'conversation_participants',
+               filter: `user_id=eq.${authUserId}`,
+            },
+            () => {
+               queryClient.invalidateQueries({ queryKey: ['conversations', folder, authUserId] });
+            },
+         )
          .subscribe();
       return () => {
          supabase.removeChannel(channel);

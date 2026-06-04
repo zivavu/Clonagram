@@ -1,10 +1,12 @@
 'use client';
 
+import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import type { ConversationDetail } from '@/src/queries/conversations';
 import type { ConversationMessages } from '@/src/queries/messages';
 import ChatView from '../ChatView';
 import GroupDetailsPanel from '../GroupDetailsPanel';
+import { styles } from './index.stylex';
 
 interface ChatLayoutProps {
    conversationId: string;
@@ -26,7 +28,7 @@ export default function ChatLayout({
    const [showDetails, setShowDetails] = useState(false);
 
    return (
-      <>
+      <div {...stylex.props(styles.root)}>
          <ChatView
             conversationId={conversationId}
             authUserId={authUserId}
@@ -42,6 +44,6 @@ export default function ChatLayout({
                initialConversation={initialConversation}
             />
          )}
-      </>
+      </div>
    );
 }

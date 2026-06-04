@@ -186,7 +186,7 @@ export default function ChatView({
    const otherParticipant = participants.find(p => p.user_id !== authUserId)?.user;
 
    return (
-      <>
+      <div {...stylex.props(styles.chatViewRoot)}>
          <div {...stylex.props(styles.chatTopBar)}>
             <div {...stylex.props(styles.chatTopBarRecipient)}>
                <UserAvatar
@@ -341,6 +341,6 @@ export default function ChatView({
                }}
             />
          )}
-      </>
+      </div>
    );
 }

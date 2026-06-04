@@ -1,9 +1,11 @@
 'use client';
 
+import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { IoCloseOutline } from 'react-icons/io5';
 import { addParticipants } from '@/src/actions/dm/addParticipants';
 import { deleteConversation } from '@/src/actions/dm/deleteConversation';
 import { leaveConversation } from '@/src/actions/dm/leaveConversation';
@@ -49,13 +51,17 @@ export default function GroupDetailsPanel({
    const isAdmin = selfParticipant?.role === 'admin';
    const isMuted = selfParticipant?.is_muted ?? false;
 
+   const [showRenameModal, setShowRenameModal] = useState(false);
    const [groupName, setGroupName] = useState(conversation?.title ?? '');
    const [showAddPeople, setShowAddPeople] = useState(false);
    const [pendingAdd, setPendingAdd] = useState<PartialUser[]>([]);
 
    const { mutate: saveName } = useMutation({
       mutationFn: () => updateGroupName(conversationId, groupName),
-      onSuccess: () => queryClient.invalidateQueries({ queryKey: convKey }),
+      onSuccess: () => {
+         queryClient.invalidateQueries({ queryKey: convKey });
+         setShowRenameModal(false);
+      },
       onError: (e: Error) => toast(e.message),
    });
 
@@ -104,6 +110,7 @@ export default function GroupDetailsPanel({
    async function handleLeave() {
       try {
          await leaveConversation(conversationId);
+         queryClient.invalidateQueries({ queryKey: ['conversations'] });
          router.push('/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Could not leave chat.');
@@ -113,6 +120,7 @@ export default function GroupDetailsPanel({
    async function handleDelete() {
       try {
          await deleteConversation(conversationId);
+         queryClient.invalidateQueries({ queryKey: ['conversations'] });
          router.push('/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Could not delete chat.');
@@ -124,22 +132,66 @@ export default function GroupDetailsPanel({
          <div {...stylex.props(styles.header)}>Details</div>
 
          {isAdmin && (
-            <div {...stylex.props(styles.row)}>
-               <span {...stylex.props(styles.rowLabel)}>Change group name</span>
-               <input
-                  {...stylex.props(styles.changeInput)}
-                  value={groupName}
-                  onChange={e => setGroupName(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && saveName()}
-               />
-               <button
-                  type="button"
-                  {...stylex.props(styles.changeButton)}
-                  onClick={() => saveName()}
+            <>
+               <div {...stylex.props(styles.row)}>
+                  <span {...stylex.props(styles.rowLabel)}>Change group name</span>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.changeButton)}
+                     onClick={() => setShowRenameModal(true)}
+                  >
+                     Change
+                  </button>
+               </div>
+
+               <Dialog.Root
+                  open={showRenameModal}
+                  onOpenChange={open => {
+                     setShowRenameModal(open);
+                     if (!open) setGroupName(conversation?.title ?? '');
+                  }}
                >
-                  Change
-               </button>
-            </div>
+                  <Dialog.Portal>
+                     <Dialog.Overlay {...stylex.props(styles.modalOverlay)} />
+                     <Dialog.Content {...stylex.props(styles.modalContent)}>
+                        <Dialog.Description style={{ display: 'none' }}>
+                           Change the group name
+                        </Dialog.Description>
+                        <div {...stylex.props(styles.modalHeader)}>
+                           <Dialog.Close asChild>
+                              <button
+                                 type="button"
+                                 {...stylex.props(styles.modalCloseButton)}
+                                 aria-label="Close"
+                              >
+                                 <IoCloseOutline style={{ fontSize: 24 }} />
+                              </button>
+                           </Dialog.Close>
+                           <Dialog.Title {...stylex.props(styles.modalTitle)}>
+                              Change group name
+                           </Dialog.Title>
+                        </div>
+                        <p {...stylex.props(styles.modalSubtitle)}>
+                           Changing the name of a group chat changes it for everyone.
+                        </p>
+                        <input
+                           {...stylex.props(styles.modalInput)}
+                           value={groupName}
+                           onChange={e => setGroupName(e.target.value)}
+                           onKeyDown={e => e.key === 'Enter' && saveName()}
+                           placeholder="example name"
+                        />
+                        <button
+                           type="button"
+                           {...stylex.props(styles.modalSaveButton)}
+                           onClick={() => saveName()}
+                        >
+                           Save
+                        </button>
+                     </Dialog.Content>
+                  </Dialog.Portal>
+               </Dialog.Root>
+            </>
          )}
 
          <div {...stylex.props(styles.row)}>
@@ -225,9 +277,11 @@ export default function GroupDetailsPanel({
          <button type="button" {...stylex.props(styles.dangerButton)} onClick={handleLeave}>
             Leave chat
          </button>
-         <button type="button" {...stylex.props(styles.dangerButton)} onClick={handleDelete}>
-            Delete chat
-         </button>
+         {isAdmin && (
+            <button type="button" {...stylex.props(styles.dangerButton)} onClick={handleDelete}>
+               Delete chat
+            </button>
+         )}
       </div>
    );
 }

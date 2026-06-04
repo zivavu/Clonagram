@@ -14,7 +14,7 @@ export const styles = stylex.create({
       left: '50%',
       transform: 'translate(-50%, -50%)',
       width: 'min(90vw, 550px)',
-      maxHeight: '65dvh',
+      height: 'min(85dvh, 600px)',
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: colors.bgBubble,
@@ -126,12 +126,7 @@ export const styles = stylex.create({
       flexDirection: 'column',
       overflow: 'hidden',
    },
-   suggestedHeading: {
-      padding: '16px 16px 0',
-      fontSize: '0.9rem',
-      fontWeight: 600,
-      color: colors.textPrimary,
-   },
+
    userList: {
       flex: 1,
       overflowY: 'auto',
@@ -174,6 +169,14 @@ export const styles = stylex.create({
       ':hover': {
          backgroundColor: 'rgb(18, 25, 110)',
       },
+   },
+   noResults: {
+      flex: 1,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: colors.textSecondary,
+      fontSize: '14px',
    },
    chatButtonDisabled: {
       opacity: 0.5,

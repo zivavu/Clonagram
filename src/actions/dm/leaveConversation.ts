@@ -9,6 +9,32 @@ export async function leaveConversation(conversationId: string): Promise<void> {
    } = await supabase.auth.getUser();
    if (!user) throw new Error('Not authenticated');
 
+   const { data: self } = await supabase
+      .from('conversation_participants')
+      .select('role')
+      .eq('conversation_id', conversationId)
+      .eq('user_id', user.id)
+      .single();
+
+   if (self?.role === 'admin') {
+      const { data: nextAdmin } = await supabase
+         .from('conversation_participants')
+         .select('user_id')
+         .eq('conversation_id', conversationId)
+         .neq('user_id', user.id)
+         .limit(1)
+         .single();
+
+      if (nextAdmin) {
+         const { error: promoteError } = await supabase
+            .from('conversation_participants')
+            .update({ role: 'admin' })
+            .eq('conversation_id', conversationId)
+            .eq('user_id', nextAdmin.user_id);
+         if (promoteError) throw promoteError;
+      }
+   }
+
    const { error } = await supabase
       .from('conversation_participants')
       .delete()

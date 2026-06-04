@@ -132,9 +132,13 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
             })}
          </div>
 
-         <div {...stylex.props(styles.bottomSection)}>
-            <button {...stylex.props(styles.deleteAllButton)}>Delete all {requests.length}</button>
-         </div>
+         {requests.length > 0 && (
+            <div {...stylex.props(styles.bottomSection)}>
+               <button {...stylex.props(styles.deleteAllButton)}>
+                  Delete all {requests.length}
+               </button>
+            </div>
+         )}
       </>
    );
 }
