@@ -5,7 +5,7 @@ export function getMessagesQuery(supabase: SupabaseClient<Database>, conversatio
    return supabase
       .from('messages')
       .select(
-         `id, content, created_at, sender_id, is_deleted, reply_to_id,
+         `id, content, created_at, sender_id, is_deleted, reply_to_id, sticker_url,
          sender:profiles!sender_id(id, username, full_name, avatar_url)`,
       )
       .eq('conversation_id', conversationId)

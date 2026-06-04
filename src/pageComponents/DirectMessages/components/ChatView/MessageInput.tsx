@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import EmojiPicker, { type EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
+import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { IoMicOutline } from 'react-icons/io5';
@@ -11,8 +12,11 @@ import { useThemeStore } from '@/src/store/useThemeStore';
 import { radius } from '../../../../styles/tokens.stylex';
 import { styles } from '../../index.stylex';
 
+const StickerPicker = dynamic(() => import('./StickerPicker'), { ssr: false });
+
 interface MessageInputProps {
    onSend: (text: string) => Promise<void>;
+   onSendSticker: (url: string) => Promise<void>;
 }
 
 const PICKER_CLASS = 'clonagram-emoji-picker';
@@ -40,10 +44,11 @@ function extractText(div: HTMLElement): string {
    return text;
 }
 
-export default function MessageInput({ onSend }: MessageInputProps) {
+export default function MessageInput({ onSend, onSendSticker }: MessageInputProps) {
    const isDark = useThemeStore(s => s.isDark);
    const [sending, setSending] = useState(false);
    const [pickerOpen, setPickerOpen] = useState(false);
+   const [stickerPickerOpen, setStickerPickerOpen] = useState(false);
    const [isEmpty, setIsEmpty] = useState(true);
    const editorRef = useRef<HTMLDivElement>(null);
    const pickerContainerRef = useRef<HTMLDivElement>(null);
@@ -163,7 +168,21 @@ export default function MessageInput({ onSend }: MessageInputProps) {
             </div>
             <IoMicOutline {...stylex.props(styles.inputIcon)} />
             <TbPhoto {...stylex.props(styles.inputIcon)} />
-            <LuSticker {...stylex.props(styles.inputIcon)} />
+            <div style={{ position: 'relative', display: 'flex' }}>
+               <LuSticker
+                  {...stylex.props(styles.inputIcon)}
+                  onClick={() => setStickerPickerOpen(open => !open)}
+               />
+               {stickerPickerOpen && (
+                  <StickerPicker
+                     onSelect={async url => {
+                        setStickerPickerOpen(false);
+                        await onSendSticker(url);
+                     }}
+                     onClose={() => setStickerPickerOpen(false)}
+                  />
+               )}
+            </div>
          </div>
       </div>
    );

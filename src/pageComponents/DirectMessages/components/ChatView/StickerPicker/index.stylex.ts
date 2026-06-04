@@ -1,0 +1,68 @@
+import * as stylex from '@stylexjs/stylex';
+import { colors, radius, spacing } from '../../../../../styles/tokens.stylex';
+
+export const styles = stylex.create({
+   popover: {
+      position: 'absolute',
+      bottom: '150%',
+      left: 0,
+      transform: 'translateX(-50%)',
+      zIndex: 100,
+      marginBottom: 8,
+      width: 340,
+      height: 360,
+      borderRadius: radius.md,
+      overflow: 'hidden',
+      backgroundColor: colors.bg,
+      borderWidth: 1,
+      borderStyle: 'solid',
+      borderColor: colors.separator,
+      boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+      display: 'flex',
+      flexDirection: 'column',
+   },
+   searchWrapper: {
+      padding: spacing.sm,
+      borderBottomWidth: 1,
+      borderBottomStyle: 'solid',
+      borderBottomColor: colors.separator,
+      flexShrink: 0,
+   },
+   searchInput: {
+      width: '100%',
+      padding: `${spacing.xs} ${spacing.sm}`,
+      borderRadius: radius.sm,
+      borderWidth: 1,
+      borderStyle: 'solid',
+      borderColor: colors.separator,
+      backgroundColor: colors.bgSecondary,
+      color: colors.textPrimary,
+      fontSize: '0.875rem',
+      outline: 'none',
+   },
+   grid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: spacing.xs,
+      padding: spacing.sm,
+      overflowY: 'auto',
+      flex: 1,
+   },
+   cell: {
+      aspectRatio: '1',
+      borderRadius: radius.sm,
+      overflow: 'hidden',
+      cursor: 'pointer',
+      backgroundColor: colors.bgSecondary,
+      ':hover': {
+         backgroundColor: colors.buttonHover,
+      },
+   },
+   empty: {
+      gridColumn: '1 / -1',
+      textAlign: 'center',
+      color: colors.textSecondary,
+      fontSize: '0.875rem',
+      padding: spacing.lg,
+   },
+});

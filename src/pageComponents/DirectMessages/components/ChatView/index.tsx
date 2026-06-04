@@ -8,6 +8,7 @@ import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { markConversationRead } from '@/src/actions/dm/markConversationRead';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
+import { sendSticker } from '@/src/actions/dm/sendSticker';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { supabase } from '@/src/lib/supabase/client';
@@ -23,6 +24,7 @@ import { styles } from '../../index.stylex';
 import MessageInput from './MessageInput';
 import MessageText from './MessageText';
 import RequestActions from './RequestActions';
+import StickerMessage from './StickerMessage';
 
 const MS_PER_DAY = 86_400_000;
 
@@ -202,14 +204,18 @@ export default function ChatView({
                               )}
                            </div>
                         )}
-                        <div
-                           {...stylex.props(
-                              styles.messageBubble,
-                              isSent ? styles.messageBubbleSent : styles.messageBubbleReceived,
-                           )}
-                        >
-                           <MessageText content={msg.content} />
-                        </div>
+                        {msg.sticker_url ? (
+                           <StickerMessage src={msg.sticker_url} />
+                        ) : (
+                           <div
+                              {...stylex.props(
+                                 styles.messageBubble,
+                                 isSent ? styles.messageBubbleSent : styles.messageBubbleReceived,
+                              )}
+                           >
+                              <MessageText content={msg.content ?? ''} />
+                           </div>
+                        )}
                      </div>
                   </div>
                );
@@ -226,7 +232,37 @@ export default function ChatView({
             />
          ) : (
             <MessageInput
-               conversationId={conversationId}
+               onSendSticker={async (url: string) => {
+                  const optimisticId = `optimistic-sticker-${Date.now()}`;
+                  const optimisticMsg = {
+                     id: optimisticId,
+                     content: null,
+                     sticker_url: url,
+                     created_at: new Date().toISOString(),
+                     sender_id: authUserId,
+                     is_deleted: false,
+                     reply_to_id: null,
+                     sender: authProfile ?? {
+                        id: authUserId,
+                        username: '',
+                        full_name: null,
+                        avatar_url: null,
+                     },
+                  };
+                  queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
+                     ...(prev ?? []),
+                     optimisticMsg,
+                  ]);
+                  try {
+                     await sendSticker(conversationId, url);
+                     queryClient.invalidateQueries({ queryKey: messagesKey });
+                     queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                  } catch {
+                     queryClient.setQueryData(messagesKey, (prev: ConversationMessages) =>
+                        (prev ?? []).filter(m => m.id !== optimisticId),
+                     );
+                  }
+               }}
                onSend={async text => {
                   const optimisticId = `optimistic-${Date.now()}`;
                   const optimisticMsg = {
