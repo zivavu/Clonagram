@@ -80,9 +80,6 @@ export const styles = stylex.create({
       alignItems: 'center',
       gap: '12px',
    },
-   chatTopBarRecipientImage: {
-      borderRadius: '50%',
-   },
    chatTopBarRecipientName: {
       fontSize: '1rem',
       fontWeight: '600',
@@ -164,10 +161,6 @@ export const styles = stylex.create({
    messageAvatarSlot: {
       width: '28px',
       height: '28px',
-      flexShrink: 0,
-   },
-   messageAvatar: {
-      borderRadius: '50%',
       flexShrink: 0,
    },
    messageBubble: {
@@ -294,5 +287,11 @@ export const styles = stylex.create({
       height: '100%',
       backgroundColor: colors.separator,
       flexShrink: 0,
+   },
+   readReceipt: {
+      fontSize: '0.6875rem',
+      color: colors.textSecondary,
+      marginTop: '-4px',
+      marginBottom: '2px',
    },
 });

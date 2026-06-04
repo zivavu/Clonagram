@@ -39,7 +39,7 @@ export default function ConversationList({
          return data ?? [];
       },
       initialData,
-      staleTime: Infinity,
+      staleTime: 30_000,
    });
 
    useEffect(() => {
@@ -48,6 +48,18 @@ export default function ConversationList({
          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {
             queryClient.invalidateQueries({ queryKey: ['conversations', folder, authUserId] });
          })
+         .on(
+            'postgres_changes',
+            {
+               event: 'UPDATE',
+               schema: 'public',
+               table: 'conversation_participants',
+               filter: `user_id=eq.${authUserId}`,
+            },
+            () => {
+               queryClient.invalidateQueries({ queryKey: ['conversations', folder, authUserId] });
+            },
+         )
          .subscribe();
       return () => {
          supabase.removeChannel(channel);

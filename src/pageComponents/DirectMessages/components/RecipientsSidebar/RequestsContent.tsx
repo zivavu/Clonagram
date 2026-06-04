@@ -30,7 +30,7 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
          return data ?? [];
       },
       initialData,
-      staleTime: Infinity,
+      staleTime: 30_000,
    });
 
    useEffect(() => {
@@ -39,6 +39,20 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {
             queryClient.invalidateQueries({ queryKey: ['conversations', 'requests', authUserId] });
          })
+         .on(
+            'postgres_changes',
+            {
+               event: 'UPDATE',
+               schema: 'public',
+               table: 'conversation_participants',
+               filter: `user_id=eq.${authUserId}`,
+            },
+            () => {
+               queryClient.invalidateQueries({
+                  queryKey: ['conversations', 'requests', authUserId],
+               });
+            },
+         )
          .subscribe();
       return () => {
          supabase.removeChannel(channel);

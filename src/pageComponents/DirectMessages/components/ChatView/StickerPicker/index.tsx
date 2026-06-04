@@ -13,7 +13,13 @@ import {
 import { styles as inputStyles } from '../../../index.stylex';
 import { styles } from './index.stylex';
 
-function StickerCell({ anim, onSelect }: { anim: LottieAnimation; onSelect: (url: string) => void }) {
+function StickerCell({
+   anim,
+   onSelect,
+}: {
+   anim: LottieAnimation;
+   onSelect: (url: string) => void;
+}) {
    const lottieRef = useRef<DotLottie | null>(null);
    return (
       <button
@@ -25,7 +31,9 @@ function StickerCell({ anim, onSelect }: { anim: LottieAnimation; onSelect: (url
       >
          <DotLottieReact
             src={anim.jsonUrl}
-            dotLottieRefCallback={ref => { lottieRef.current = ref; }}
+            dotLottieRefCallback={ref => {
+               lottieRef.current = ref;
+            }}
             style={{ width: '100%', height: '100%' }}
          />
       </button>
@@ -80,9 +88,13 @@ export default function StickerPicker({ onSelect }: StickerPickerProps) {
                         <span {...stylex.props(styles.empty)}>No stickers found</span>
                      )}
                      {animations.map(anim => (
-                        <StickerCell key={anim.id} anim={anim} onSelect={url => {
-                           onSelect(url);
-                        }} />
+                        <StickerCell
+                           key={anim.id}
+                           anim={anim}
+                           onSelect={url => {
+                              onSelect(url);
+                           }}
+                        />
                      ))}
                   </div>
                </div>

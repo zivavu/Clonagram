@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { markConversationRead } from '@/src/actions/dm/markConversationRead';
+import { markMessagesRead } from '@/src/actions/dm/markMessagesRead';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { sendSticker } from '@/src/actions/dm/sendSticker';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -85,7 +86,18 @@ export default function ChatView({
             () => {
                queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
                queryClient.invalidateQueries({ queryKey: ['conversations'] });
-               markConversationRead(conversationId);
+            },
+         )
+         .on(
+            'postgres_changes',
+            {
+               event: 'UPDATE',
+               schema: 'public',
+               table: 'messages',
+               filter: `conversation_id=eq.${conversationId}`,
+            },
+            () => {
+               queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
             },
          )
          .subscribe();
@@ -96,6 +108,7 @@ export default function ChatView({
 
    useEffect(() => {
       markConversationRead(conversationId);
+      markMessagesRead(conversationId);
       messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
    }, [conversationId]);
 
@@ -104,6 +117,27 @@ export default function ChatView({
    useEffect(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
    }, [messagesCount]);
+
+   function createOptimisticMessage(overrides: Partial<ConversationMessage>) {
+      const id = `optimistic-${Date.now()}`;
+      return {
+         id,
+         content: null,
+         sticker_url: null,
+         created_at: new Date().toISOString(),
+         sender_id: authUserId,
+         is_deleted: false,
+         reply_to_id: null,
+         read_at: null,
+         sender: authProfile ?? {
+            id: authUserId,
+            username: '',
+            full_name: null,
+            avatar_url: null,
+         },
+         ...overrides,
+      } satisfies ConversationMessage;
+   }
 
    const participants = conversation?.participants ?? [];
    const authProfile = participants.find(p => p.user_id === authUserId)?.user;
@@ -177,6 +211,8 @@ export default function ChatView({
                   : Infinity;
                const showSeparator = gapToPrev > MS_PER_DAY;
 
+               const hasReadReceipt = isSent && msg.read_at && isLastInGroup;
+
                return (
                   <div key={msg.id} style={{ display: 'contents' }}>
                      {showSeparator && msg.created_at && (
@@ -217,6 +253,11 @@ export default function ChatView({
                            </div>
                         )}
                      </div>
+                     {hasReadReceipt && (
+                        <div {...stylex.props(styles.messageRow, styles.messageRowSent)}>
+                           <div {...stylex.props(styles.readReceipt)}>Seen</div>
+                        </div>
+                     )}
                   </div>
                );
             })}
@@ -233,52 +274,20 @@ export default function ChatView({
          ) : (
             <MessageInput
                onSendSticker={async (url: string) => {
-                  const optimisticId = `optimistic-sticker-${Date.now()}`;
-                  const optimisticMsg = {
-                     id: optimisticId,
-                     content: null,
-                     sticker_url: url,
-                     created_at: new Date().toISOString(),
-                     sender_id: authUserId,
-                     is_deleted: false,
-                     reply_to_id: null,
-                     sender: authProfile ?? {
-                        id: authUserId,
-                        username: '',
-                        full_name: null,
-                        avatar_url: null,
-                     },
-                  };
+                  const optimisticMsg = createOptimisticMessage({ sticker_url: url });
                   queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
                      ...(prev ?? []),
                      optimisticMsg,
                   ]);
                   try {
                      await sendSticker(conversationId, url);
+                  } finally {
                      queryClient.invalidateQueries({ queryKey: messagesKey });
                      queryClient.invalidateQueries({ queryKey: ['conversations'] });
-                  } catch {
-                     queryClient.setQueryData(messagesKey, (prev: ConversationMessages) =>
-                        (prev ?? []).filter(m => m.id !== optimisticId),
-                     );
                   }
                }}
                onSend={async text => {
-                  const optimisticId = `optimistic-${Date.now()}`;
-                  const optimisticMsg = {
-                     id: optimisticId,
-                     content: text,
-                     created_at: new Date().toISOString(),
-                     sender_id: authUserId,
-                     is_deleted: false,
-                     reply_to_id: null,
-                     sender: authProfile ?? {
-                        id: authUserId,
-                        username: '',
-                        full_name: null,
-                        avatar_url: null,
-                     },
-                  };
+                  const optimisticMsg = createOptimisticMessage({ content: text });
 
                   queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
                      ...(prev ?? []),
@@ -287,12 +296,9 @@ export default function ChatView({
 
                   try {
                      await sendMessage(conversationId, text);
+                  } finally {
                      queryClient.invalidateQueries({ queryKey: messagesKey });
                      queryClient.invalidateQueries({ queryKey: ['conversations'] });
-                  } catch {
-                     queryClient.setQueryData(messagesKey, (prev: ConversationMessages) =>
-                        (prev ?? []).filter(m => m.id !== optimisticId),
-                     );
                   }
                }}
             />
