@@ -52,6 +52,7 @@ export default function ChatView({
 }: ChatViewProps) {
    const queryClient = useQueryClient();
    const messagesEndRef = useRef<HTMLDivElement>(null);
+   const messagesContainerRef = useRef<HTMLDivElement>(null);
    const messagesKey = ['messages', conversationId];
 
    const { data: messages = initialMessages } = useQuery({
@@ -117,10 +118,43 @@ export default function ChatView({
    }, [conversationId]);
 
    const messagesCount = messages.length;
-   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom when message count changes
+   const lastReadCountRef = useRef(0);
+
+   function markReadIfNeeded() {
+      if (messagesCount === lastReadCountRef.current) return;
+      lastReadCountRef.current = messagesCount;
+      markConversationRead(conversationId);
+      markMessagesRead(conversationId);
+   }
+
+   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom and mark read when count changes
    useEffect(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      const container = messagesContainerRef.current;
+      if (!container) return;
+
+      const atBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+      if (atBottom) {
+         messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+         markReadIfNeeded();
+      }
    }, [messagesCount]);
+
+   // biome-ignore lint/correctness/useExhaustiveDependencies: markReadIfNeeded captures what it needs
+   useEffect(() => {
+      const container = messagesContainerRef.current;
+      if (!container) return;
+
+      const scrollHandler = () => {
+         const atBottom =
+            container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+         if (atBottom) {
+            markReadIfNeeded();
+         }
+      };
+
+      container.addEventListener('scroll', scrollHandler, { passive: true });
+      return () => container.removeEventListener('scroll', scrollHandler);
+   }, [conversationId, messagesCount]);
 
    function createOptimisticMessage(overrides: Partial<ConversationMessage>) {
       const id = `optimistic-${Date.now()}`;
@@ -181,7 +215,7 @@ export default function ChatView({
             </div>
          </div>
 
-         <div {...stylex.props(styles.messagesContainer)}>
+         <div ref={messagesContainerRef} {...stylex.props(styles.messagesContainer)}>
             {!isGroup && otherParticipant && (
                <div {...stylex.props(styles.chatProfileHeader)}>
                   <UserAvatar
