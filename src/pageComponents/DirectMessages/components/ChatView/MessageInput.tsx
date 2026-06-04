@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { IoMicOutline } from 'react-icons/io5';
-import { LuSticker } from 'react-icons/lu';
 import { TbPhoto } from 'react-icons/tb';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { radius } from '../../../../styles/tokens.stylex';
@@ -48,7 +47,6 @@ export default function MessageInput({ onSend, onSendSticker }: MessageInputProp
    const isDark = useThemeStore(s => s.isDark);
    const [sending, setSending] = useState(false);
    const [pickerOpen, setPickerOpen] = useState(false);
-   const [stickerPickerOpen, setStickerPickerOpen] = useState(false);
    const [isEmpty, setIsEmpty] = useState(true);
    const editorRef = useRef<HTMLDivElement>(null);
    const pickerContainerRef = useRef<HTMLDivElement>(null);
@@ -168,21 +166,7 @@ export default function MessageInput({ onSend, onSendSticker }: MessageInputProp
             </div>
             <IoMicOutline {...stylex.props(styles.inputIcon)} />
             <TbPhoto {...stylex.props(styles.inputIcon)} />
-            <div style={{ position: 'relative', display: 'flex' }}>
-               <LuSticker
-                  {...stylex.props(styles.inputIcon)}
-                  onClick={() => setStickerPickerOpen(open => !open)}
-               />
-               {stickerPickerOpen && (
-                  <StickerPicker
-                     onSelect={async url => {
-                        setStickerPickerOpen(false);
-                        await onSendSticker(url);
-                     }}
-                     onClose={() => setStickerPickerOpen(false)}
-                  />
-               )}
-            </div>
+            <StickerPicker onSelect={onSendSticker} />
          </div>
       </div>
    );

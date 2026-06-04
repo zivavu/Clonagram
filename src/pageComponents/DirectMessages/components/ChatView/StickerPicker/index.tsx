@@ -1,35 +1,45 @@
 'use client';
 
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { type DotLottie, DotLottieReact } from '@lottiefiles/dotlottie-react';
+import * as Popover from '@radix-ui/react-popover';
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
+import { LuSticker } from 'react-icons/lu';
 import {
    fetchFeaturedAnimations,
    type LottieAnimation,
    searchAnimations,
 } from '@/src/utils/lottieApi';
+import { styles as inputStyles } from '../../../index.stylex';
 import { styles } from './index.stylex';
+
+function StickerCell({ anim, onSelect }: { anim: LottieAnimation; onSelect: (url: string) => void }) {
+   const lottieRef = useRef<DotLottie | null>(null);
+   return (
+      <button
+         type="button"
+         {...stylex.props(styles.cell)}
+         onClick={() => onSelect(anim.jsonUrl)}
+         onMouseEnter={() => lottieRef.current?.play()}
+         onMouseLeave={() => lottieRef.current?.pause()}
+      >
+         <DotLottieReact
+            src={anim.jsonUrl}
+            dotLottieRefCallback={ref => { lottieRef.current = ref; }}
+            style={{ width: '100%', height: '100%' }}
+         />
+      </button>
+   );
+}
 
 interface StickerPickerProps {
    onSelect: (url: string) => void;
-   onClose: () => void;
 }
 
-export default function StickerPicker({ onSelect, onClose }: StickerPickerProps) {
+export default function StickerPicker({ onSelect }: StickerPickerProps) {
    const [query, setQuery] = useState('');
    const [animations, setAnimations] = useState<LottieAnimation[]>([]);
    const [loading, setLoading] = useState(true);
-   const containerRef = useRef<HTMLDivElement>(null);
-
-   useEffect(() => {
-      function handleClickOutside(e: MouseEvent) {
-         if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-            onClose();
-         }
-      }
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-   }, [onClose]);
 
    useEffect(() => {
       setLoading(true);
@@ -50,34 +60,34 @@ export default function StickerPicker({ onSelect, onClose }: StickerPickerProps)
    }, [query]);
 
    return (
-      <div ref={containerRef} {...stylex.props(styles.popover)}>
-         <div {...stylex.props(styles.searchWrapper)}>
-            <input
-               {...stylex.props(styles.searchInput)}
-               placeholder="Search stickers..."
-               value={query}
-               onChange={e => setQuery(e.target.value)}
-            />
-         </div>
-         <div {...stylex.props(styles.grid)}>
-            {!loading && animations.length === 0 && (
-               <span {...stylex.props(styles.empty)}>No stickers found</span>
-            )}
-            {animations.map(anim => (
-               <button
-                  type="button"
-                  key={anim.id}
-                  {...stylex.props(styles.cell)}
-                  onClick={() => onSelect(anim.jsonUrl)}
-               >
-                  <DotLottieReact
-                     src={anim.jsonUrl}
-                     playOnHover
-                     style={{ width: '100%', height: '100%' }}
-                  />
-               </button>
-            ))}
-         </div>
-      </div>
+      <Popover.Root>
+         <Popover.Trigger asChild>
+            <LuSticker {...stylex.props(inputStyles.inputIcon)} />
+         </Popover.Trigger>
+         <Popover.Portal>
+            <Popover.Content side="top" sideOffset={8} align="end">
+               <div {...stylex.props(styles.popover)}>
+                  <div {...stylex.props(styles.searchWrapper)}>
+                     <input
+                        {...stylex.props(styles.searchInput)}
+                        placeholder="Search stickers..."
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
+                     />
+                  </div>
+                  <div {...stylex.props(styles.grid)}>
+                     {!loading && animations.length === 0 && (
+                        <span {...stylex.props(styles.empty)}>No stickers found</span>
+                     )}
+                     {animations.map(anim => (
+                        <StickerCell key={anim.id} anim={anim} onSelect={url => {
+                           onSelect(url);
+                        }} />
+                     ))}
+                  </div>
+               </div>
+            </Popover.Content>
+         </Popover.Portal>
+      </Popover.Root>
    );
 }

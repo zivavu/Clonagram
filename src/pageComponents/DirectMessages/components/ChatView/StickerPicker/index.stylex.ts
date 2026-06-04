@@ -3,16 +3,10 @@ import { colors, radius, spacing } from '../../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    popover: {
-      position: 'absolute',
-      bottom: '150%',
-      left: 0,
-      transform: 'translateX(-50%)',
-      zIndex: 100,
-      marginBottom: 8,
-      width: 340,
       height: 360,
+      width: 340,
       borderRadius: radius.md,
-      overflow: 'hidden',
+      overflowX: 'hidden',
       backgroundColor: colors.bg,
       borderWidth: 1,
       borderStyle: 'solid',
@@ -45,13 +39,12 @@ export const styles = stylex.create({
       gridTemplateColumns: 'repeat(4, 1fr)',
       gap: spacing.xs,
       padding: spacing.sm,
-      overflowY: 'auto',
       flex: 1,
+      overflowY: 'scroll',
    },
    cell: {
       aspectRatio: '1',
       borderRadius: radius.sm,
-      overflow: 'hidden',
       cursor: 'pointer',
       backgroundColor: colors.bgSecondary,
       ':hover': {
