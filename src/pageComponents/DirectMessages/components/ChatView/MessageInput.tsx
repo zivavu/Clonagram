@@ -28,12 +28,26 @@ const pickerOverrideCSS = `
    }
 `;
 
+function extractText(div: HTMLElement): string {
+   let text = '';
+   for (const node of div.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE) {
+         text += node.textContent ?? '';
+      } else if (node instanceof HTMLImageElement) {
+         text += node.dataset.emoji ?? '';
+      } else if (node instanceof HTMLElement) {
+         text += extractText(node);
+      }
+   }
+   return text;
+}
+
 export default function MessageInput({ conversationId, onSent }: MessageInputProps) {
    const isDark = useThemeStore(s => s.isDark);
-   const [text, setText] = useState('');
    const [sending, setSending] = useState(false);
    const [pickerOpen, setPickerOpen] = useState(false);
-   const inputRef = useRef<HTMLInputElement>(null);
+   const [isEmpty, setIsEmpty] = useState(true);
+   const editorRef = useRef<HTMLDivElement>(null);
    const pickerContainerRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
@@ -48,11 +62,15 @@ export default function MessageInput({ conversationId, onSent }: MessageInputPro
    }, [pickerOpen]);
 
    async function handleSend() {
-      if (!text.trim() || sending) return;
+      const div = editorRef.current;
+      if (!div || sending) return;
+      const text = extractText(div);
+      if (!text.trim()) return;
       setSending(true);
       try {
          await sendMessage(conversationId, text);
-         setText('');
+         div.innerHTML = '';
+         setIsEmpty(true);
          onSent();
       } finally {
          setSending(false);
@@ -60,20 +78,35 @@ export default function MessageInput({ conversationId, onSent }: MessageInputPro
    }
 
    function handleEmojiClick(emojiData: EmojiClickData) {
-      const input = inputRef.current;
-      if (!input) {
-         setText(prev => prev + emojiData.emoji);
-         return;
+      const div = editorRef.current;
+      if (!div) return;
+
+      const img = document.createElement('img');
+      img.src = emojiData.imageUrl;
+      img.dataset.emoji = emojiData.emoji;
+      img.alt = emojiData.emoji;
+      img.style.cssText = 'width:18px;height:18px;vertical-align:middle;display:inline-block;';
+
+      div.focus();
+      const sel = window.getSelection();
+      if (sel?.rangeCount) {
+         const range = sel.getRangeAt(0);
+         range.deleteContents();
+         range.insertNode(img);
+         range.setStartAfter(img);
+         range.collapse(true);
+         sel.removeAllRanges();
+         sel.addRange(range);
+      } else {
+         div.appendChild(img);
       }
-      const start = input.selectionStart ?? text.length;
-      const end = input.selectionEnd ?? text.length;
-      const newText = text.slice(0, start) + emojiData.emoji + text.slice(end);
-      setText(newText);
-      requestAnimationFrame(() => {
-         input.focus();
-         const pos = start + emojiData.emoji.length;
-         input.setSelectionRange(pos, pos);
-      });
+
+      setIsEmpty(false);
+   }
+
+   function handleInput() {
+      const div = editorRef.current;
+      setIsEmpty(!(div?.textContent?.trim() || div?.querySelector('img')));
    }
 
    return (
@@ -113,22 +146,24 @@ export default function MessageInput({ conversationId, onSent }: MessageInputPro
                   </div>
                )}
             </div>
-            <input
-               ref={inputRef}
-               {...stylex.props(styles.inputField)}
-               type="text"
-               placeholder="Message..."
-               value={text}
-               onChange={e => setText(e.target.value)}
-               onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                     e.preventDefault();
-                     handleSend();
-                  }
-                  if (e.key === 'Escape') setPickerOpen(false);
-               }}
-               disabled={sending}
-            />
+            <div {...stylex.props(styles.inputFieldWrapper)}>
+               {isEmpty && <span {...stylex.props(styles.inputPlaceholder)}>Message...</span>}
+               {/* biome-ignore lint/a11y/noStaticElementInteractions: contenteditable is inherently interactive */}
+               <div
+                  ref={editorRef}
+                  contentEditable
+                  suppressContentEditableWarning
+                  {...stylex.props(styles.inputField)}
+                  onInput={handleInput}
+                  onKeyDown={e => {
+                     if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSend();
+                     }
+                     if (e.key === 'Escape') setPickerOpen(false);
+                  }}
+               />
+            </div>
             <IoMicOutline {...stylex.props(styles.inputIcon)} />
             <TbPhoto {...stylex.props(styles.inputIcon)} />
             <LuSticker {...stylex.props(styles.inputIcon)} />

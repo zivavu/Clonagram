@@ -20,6 +20,7 @@ import {
 import { formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
 import MessageInput from './MessageInput';
+import MessageText from './MessageText';
 import RequestActions from './RequestActions';
 
 const MS_PER_DAY = 86_400_000;
@@ -205,7 +206,7 @@ export default function ChatView({
                               isSent ? styles.messageBubbleSent : styles.messageBubbleReceived,
                            )}
                         >
-                           {msg.content}
+                           <MessageText content={msg.content} />
                         </div>
                      </div>
                   </div>

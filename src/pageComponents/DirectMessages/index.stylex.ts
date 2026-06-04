@@ -212,9 +212,21 @@ export const styles = stylex.create({
       fontSize: '0.9375rem',
       color: colors.textPrimary,
       padding: '12px 0',
-      '::placeholder': {
-         color: colors.textSecondary,
-      },
+      lineHeight: '1.4',
+      wordBreak: 'break-word',
+      overflowWrap: 'break-word',
+   },
+   inputFieldWrapper: {
+      flex: 1,
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+   },
+   inputPlaceholder: {
+      position: 'absolute',
+      pointerEvents: 'none',
+      fontSize: '0.9375rem',
+      color: colors.textSecondary,
    },
    inputIcon: {
       fontSize: '1.6rem',
