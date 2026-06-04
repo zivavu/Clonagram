@@ -1,3 +1,5 @@
+'use client';
+
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { BiLink } from 'react-icons/bi';
@@ -6,6 +8,7 @@ import type { ProfileWithPosts } from '@/src/actions/profile/getUserProfileWithP
 import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { FollowState } from '@/src/queries/followStatus';
+import { useFollowListModal } from '@/src/store/followListModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
 import MessageButton from './components/MessageButton';
 import { styles } from './index.stylex';
@@ -39,6 +42,8 @@ export default function ProfileHeader({
    const followingCount =
       (userProfile.following as unknown as [{ count: number }])?.[0]?.count ?? 0;
 
+   const openFollowList = useFollowListModal(state => state.open);
+
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.mainRow)}>
@@ -70,12 +75,24 @@ export default function ProfileHeader({
                   <span {...stylex.props(styles.stat)}>
                      <strong>{postsCount}</strong> posts
                   </span>
-                  <span {...stylex.props(styles.stat)}>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.statButton)}
+                     onClick={() =>
+                        openFollowList('followers', userProfile.id, userProfile.username)
+                     }
+                  >
                      <strong>{followersCount}</strong> followers
-                  </span>
-                  <span {...stylex.props(styles.stat)}>
+                  </button>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.statButton)}
+                     onClick={() =>
+                        openFollowList('following', userProfile.id, userProfile.username)
+                     }
+                  >
                      <strong>{followingCount}</strong> following
-                  </span>
+                  </button>
                </div>
                {parseWebsiteLinks(userProfile.website).map(link => (
                   <Link

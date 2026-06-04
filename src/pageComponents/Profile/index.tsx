@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import type { ProfileWithPosts } from '../../actions/profile/getUserProfileWithPosts';
+import FollowListModal from '../../components/FollowListModal';
 import type { PostWithMedia } from '../../queries/posts';
 import OpenPostOnMount from './components/OpenPostOnMount';
 import ProfileContent from './components/ProfileContent';
@@ -22,6 +23,7 @@ export default function ProfilePage({
    return (
       <div {...stylex.props(styles.root)}>
          {initialPost && <OpenPostOnMount post={initialPost} />}
+         <FollowListModal />
          <div {...stylex.props(styles.topSection)}>
             <ProfileHeader
                userProfile={userProfile}

@@ -8,15 +8,6 @@ export const styles = stylex.create({
       justifyContent: 'space-between',
       width: '100%',
       padding: '8px 16px',
-      cursor: 'pointer',
-      background: 'none',
-      border: 'none',
-      color: 'inherit',
-      textAlign: 'left',
-      borderRadius: radius.sm,
-      ':hover': {
-         backgroundColor: colors.threadHover,
-      },
    },
    info: {
       display: 'flex',

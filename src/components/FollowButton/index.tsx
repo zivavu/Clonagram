@@ -1,4 +1,5 @@
 'use client';
+import type { StyleXStyles } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { cancelFollowRequest } from '@/src/actions/follow/cancelFollowRequest';
@@ -14,6 +15,7 @@ interface FollowButtonProps {
    targetIsPrivate: boolean;
    initialState?: FollowState;
    variant: 'profile' | 'sidebar' | 'card';
+   rootStyle?: StyleXStyles;
 }
 
 export default function FollowButton({
@@ -21,6 +23,7 @@ export default function FollowButton({
    targetIsPrivate,
    initialState,
    variant,
+   rootStyle,
 }: FollowButtonProps) {
    const { data: authUser } = useAuthUser();
    const queryClient = useQueryClient();
@@ -80,6 +83,7 @@ export default function FollowButton({
             variant === 'sidebar' && (isActive ? styles.sidebarSecondary : styles.sidebarFollow),
             variant === 'card' && styles.cardBase,
             variant === 'card' && (isActive ? styles.cardSecondary : styles.cardFollow),
+            rootStyle,
          )}
       >
          {label}

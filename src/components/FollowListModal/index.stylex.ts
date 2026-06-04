@@ -1,0 +1,83 @@
+import * as stylex from '@stylexjs/stylex';
+import { colors, radius } from '../../styles/tokens.stylex';
+
+export const styles = stylex.create({
+   content: {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: colors.bgBubble,
+      borderRadius: radius.md,
+      width: 'min(500px, 90dvw)',
+      maxHeight: '80dvh',
+      display: 'flex',
+      flexDirection: 'column',
+      zIndex: 4,
+      outline: 'none',
+      overflow: 'hidden',
+   },
+   header: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '12px 16px',
+      borderBottom: `1px solid ${colors.border}`,
+      position: 'relative',
+      flexShrink: 0,
+   },
+   title: {
+      fontSize: '16px',
+      fontWeight: 600,
+      color: colors.textPrimary,
+   },
+   closeButton: {
+      position: 'absolute',
+      right: '8px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '36px',
+      height: '36px',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      background: 'none',
+      border: 'none',
+      color: colors.textPrimary,
+      ':hover': {
+         backgroundColor: colors.buttonHover,
+      },
+   },
+   list: {
+      flex: 1,
+      overflowY: 'auto',
+      padding: '4px 0',
+   },
+   sentinel: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '16px',
+   },
+   loader: {
+      width: 24,
+      height: 24,
+      border: `2px solid ${colors.border}`,
+      borderTopColor: colors.accent,
+      borderRadius: '50%',
+      animationName: stylex.keyframes({
+         to: { transform: 'rotate(360deg)' },
+      }),
+      animationDuration: '0.6s',
+      animationTimingFunction: 'linear',
+      animationIterationCount: 'infinite',
+   },
+   emptyState: {
+      padding: '40px 16px',
+      textAlign: 'center',
+      color: colors.textSecondary,
+      fontSize: '14px',
+   },
+});

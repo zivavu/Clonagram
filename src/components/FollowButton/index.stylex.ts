@@ -43,6 +43,7 @@ export const styles = stylex.create({
       fontSize: '0.875rem',
       textAlign: 'center',
       border: 'none',
+      flexShrink: 0,
    },
    cardFollow: {
       backgroundColor: colors.accent,

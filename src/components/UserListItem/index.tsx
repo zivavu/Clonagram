@@ -14,7 +14,6 @@ interface UserListItemProps {
    onClick?: () => void;
    role?: string;
    ariaSelected?: boolean;
-   href?: string;
 }
 
 export function UserListItem({
@@ -24,11 +23,9 @@ export function UserListItem({
    name,
    subtitle,
    rightElement,
-   onClick,
-   role,
 }: UserListItemProps) {
    return (
-      <button type="button" {...stylex.props(styles.row)} onClick={onClick} role={role}>
+      <div {...stylex.props(styles.row)}>
          <div {...stylex.props(styles.info)}>
             <UserAvatar src={avatarUrl} alt={avatarAlt} size={44} userId={userId} />
             <div {...stylex.props(styles.names)}>
@@ -37,7 +34,7 @@ export function UserListItem({
             </div>
          </div>
          {rightElement && <div {...stylex.props(styles.right)}>{rightElement}</div>}
-      </button>
+      </div>
    );
 }
 

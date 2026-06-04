@@ -61,6 +61,16 @@ export const styles = stylex.create({
       fontSize: '14px',
       color: colors.textPrimary,
    },
+   statButton: {
+      fontSize: '14px',
+      color: colors.textPrimary,
+      background: 'none',
+      border: 'none',
+      padding: 0,
+      ':hover': {
+         color: colors.textSecondary,
+      },
+   },
    buttonsRow: {
       display: 'flex',
       gap: spacing.sm,
