@@ -215,6 +215,8 @@ export const styles = stylex.create({
       lineHeight: '1.4',
       wordBreak: 'break-word',
       overflowWrap: 'break-word',
+      maxHeight: '300px',
+      overflowY: 'auto',
    },
    inputFieldWrapper: {
       flex: 1,

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { IoMicOutline } from 'react-icons/io5';
 import { TbPhoto } from 'react-icons/tb';
+import { toast } from '@/src/components/AppToast';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { radius } from '../../../../styles/tokens.stylex';
 import { styles } from '../../index.stylex';
@@ -18,6 +19,7 @@ interface MessageInputProps {
    onSendSticker: (url: string) => Promise<void>;
 }
 
+const MAX_LENGTH = 1000;
 const PICKER_CLASS = 'clonagram-emoji-picker';
 
 const pickerOverrideCSS = `
@@ -67,6 +69,10 @@ export default function MessageInput({ onSend, onSendSticker }: MessageInputProp
       if (!div || sending) return;
       const text = extractText(div);
       if (!text.trim()) return;
+      if (text.length > MAX_LENGTH) {
+         toast('Message is too long');
+         return;
+      }
       setSending(true);
       div.innerHTML = '';
       setIsEmpty(true);
@@ -106,7 +112,25 @@ export default function MessageInput({ onSend, onSendSticker }: MessageInputProp
 
    function handleInput() {
       const div = editorRef.current;
-      setIsEmpty(!(div?.textContent?.trim() || div?.querySelector('img')));
+      if (!div) return;
+      const text = extractText(div);
+      if (text.length > MAX_LENGTH) {
+         toast('Message is too long');
+         const trimmed = text.slice(0, MAX_LENGTH);
+         div.innerHTML = '';
+         div.textContent = trimmed;
+      }
+      setIsEmpty(!(div.textContent?.trim() || div.querySelector('img')));
+   }
+
+   function handleBeforeInput(e: React.InputEvent<HTMLDivElement>) {
+      const div = editorRef.current;
+      if (!div) return;
+      const text = extractText(div);
+      if (text.length >= MAX_LENGTH) {
+         e.preventDefault();
+         toast('Message is too long');
+      }
    }
 
    return (
@@ -155,6 +179,7 @@ export default function MessageInput({ onSend, onSendSticker }: MessageInputProp
                   suppressContentEditableWarning
                   {...stylex.props(styles.inputField)}
                   onInput={handleInput}
+                  onBeforeInput={handleBeforeInput}
                   onKeyDown={e => {
                      if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
