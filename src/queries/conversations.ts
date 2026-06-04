@@ -46,6 +46,7 @@ export function getConversationQuery(supabase: SupabaseClient<Database>, convers
             role,
             is_muted,
             folder,
+            last_read_at,
             user:profiles!user_id(id, username, full_name, avatar_url)
          )`,
       )

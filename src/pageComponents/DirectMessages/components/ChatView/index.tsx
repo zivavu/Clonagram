@@ -6,8 +6,7 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
-import { markConversationRead } from '@/src/actions/dm/markConversationRead';
-import { markMessagesRead } from '@/src/actions/dm/markMessagesRead';
+import { markChatRead } from '@/src/actions/dm/markChatRead';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { sendSticker } from '@/src/actions/dm/sendSticker';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -111,20 +110,26 @@ export default function ChatView({
       };
    }, [conversationId, queryClient]);
 
-   useEffect(() => {
-      markConversationRead(conversationId);
-      markMessagesRead(conversationId);
-      messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
-   }, [conversationId]);
-
    const messagesCount = messages.length;
    const lastReadCountRef = useRef(0);
+
+   // biome-ignore lint/correctness/useExhaustiveDependencies: sync ref on mount so count-based effect skips the initial fire
+   useEffect(() => {
+      lastReadCountRef.current = messagesCount;
+      const self = initialConversation?.participants.find(p => p.user_id === authUserId);
+      const isUnread =
+         !self?.last_read_at ||
+         (initialConversation?.last_message_at &&
+            new Date(initialConversation.last_message_at) > new Date(self.last_read_at));
+      if (isUnread) markChatRead(conversationId);
+      messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+   }, [conversationId]);
 
    function markReadIfNeeded() {
       if (messagesCount === lastReadCountRef.current) return;
       lastReadCountRef.current = messagesCount;
-      markConversationRead(conversationId);
-      markMessagesRead(conversationId);
+      const hasUnread = messages.some(m => m.sender_id !== authUserId && !m.read_at);
+      if (hasUnread) markChatRead(conversationId);
    }
 
    // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom and mark read when count changes

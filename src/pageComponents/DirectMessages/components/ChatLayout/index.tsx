@@ -4,8 +4,8 @@ import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import type { ConversationDetail } from '@/src/queries/conversations';
 import type { ConversationMessages } from '@/src/queries/messages';
+import ChatDetailsPanel from '../ChatDetailsPanel';
 import ChatView from '../ChatView';
-import GroupDetailsPanel from '../GroupDetailsPanel';
 import { styles } from './index.stylex';
 
 interface ChatLayoutProps {
@@ -37,11 +37,12 @@ export default function ChatLayout({
             initialConversation={initialConversation}
             onInfoClick={() => setShowDetails(v => !v)}
          />
-         {isGroup && showDetails && (
-            <GroupDetailsPanel
+         {showDetails && (
+            <ChatDetailsPanel
                conversationId={conversationId}
                authUserId={authUserId}
                initialConversation={initialConversation}
+               isGroup={isGroup}
             />
          )}
       </div>

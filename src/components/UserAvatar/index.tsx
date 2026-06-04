@@ -46,6 +46,7 @@ export default function UserAvatar({
 const styles = stylex.create({
    image: {
       borderRadius: '50%',
+      flexShrink: 0,
       objectFit: 'cover',
    },
    placeholder: {

@@ -15,7 +15,7 @@ export async function updateGroupName(conversationId: string, title: string): Pr
       .eq('conversation_id', conversationId)
       .eq('user_id', user.id)
       .single();
-   if (participant?.role !== 'admin') throw new Error('Only admins can rename the group');
+   if (!participant) throw new Error('Not a participant');
 
    const { error } = await supabase
       .from('conversations')

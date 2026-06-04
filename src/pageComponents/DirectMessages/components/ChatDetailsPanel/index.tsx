@@ -3,9 +3,10 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { IoCloseOutline } from 'react-icons/io5';
+import { IoCloseOutline, IoNotificationsOutline } from 'react-icons/io5';
 import { addParticipants } from '@/src/actions/dm/addParticipants';
 import { deleteConversation } from '@/src/actions/dm/deleteConversation';
 import { leaveConversation } from '@/src/actions/dm/leaveConversation';
@@ -18,19 +19,22 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
 import type { PartialUser } from '@/src/types/global';
+import DeleteChatConfirmModal from '../DeleteChatConfirmModal';
 import { styles } from './index.stylex';
 
-interface GroupDetailsPanelProps {
+interface ChatDetailsPanelProps {
    conversationId: string;
    authUserId: string;
    initialConversation: ConversationDetail;
+   isGroup: boolean;
 }
 
-export default function GroupDetailsPanel({
+export default function ChatDetailsPanel({
    conversationId,
    authUserId,
    initialConversation,
-}: GroupDetailsPanelProps) {
+   isGroup,
+}: ChatDetailsPanelProps) {
    const router = useRouter();
    const queryClient = useQueryClient();
    const convKey = ['conversation', conversationId];
@@ -50,13 +54,16 @@ export default function GroupDetailsPanel({
    const selfParticipant = participants.find(p => p.user_id === authUserId);
    const isAdmin = selfParticipant?.role === 'admin';
    const isMuted = selfParticipant?.is_muted ?? false;
+   const otherParticipant = participants.find(p => p.user_id !== authUserId);
 
    const [showRenameModal, setShowRenameModal] = useState(false);
    const [groupName, setGroupName] = useState(conversation?.title ?? '');
    const [showAddPeople, setShowAddPeople] = useState(false);
    const [pendingAdd, setPendingAdd] = useState<PartialUser[]>([]);
+   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+   const [isNavigating, setIsNavigating] = useState(false);
 
-   const { mutate: saveName } = useMutation({
+   const { mutate: saveName, isPending: isSavingName } = useMutation({
       mutationFn: () => updateGroupName(conversationId, groupName),
       onSuccess: () => {
          queryClient.invalidateQueries({ queryKey: convKey });
@@ -65,7 +72,7 @@ export default function GroupDetailsPanel({
       onError: (e: Error) => toast(e.message),
    });
 
-   const { mutate: muteMutation } = useMutation({
+   const { mutate: muteMutation, isPending: isMuting } = useMutation({
       mutationFn: (muted: boolean) => toggleMute(conversationId, muted),
       onMutate: async muted => {
          await queryClient.cancelQueries({ queryKey: convKey });
@@ -87,13 +94,13 @@ export default function GroupDetailsPanel({
       onSettled: () => queryClient.invalidateQueries({ queryKey: convKey }),
    });
 
-   const { mutate: removeMember } = useMutation({
+   const { mutate: removeMember, isPending: isRemovingMember } = useMutation({
       mutationFn: (userId: string) => removeParticipant(conversationId, userId),
       onSuccess: () => queryClient.invalidateQueries({ queryKey: convKey }),
       onError: (e: Error) => toast(e.message),
    });
 
-   const { mutate: addMembers } = useMutation({
+   const { mutate: addMembers, isPending: isAddingMembers } = useMutation({
       mutationFn: (users: PartialUser[]) =>
          addParticipants(
             conversationId,
@@ -107,23 +114,30 @@ export default function GroupDetailsPanel({
       onError: (e: Error) => toast(e.message),
    });
 
+   const isLoading =
+      isSavingName || isMuting || isRemovingMember || isAddingMembers || isNavigating;
+
    async function handleLeave() {
+      setIsNavigating(true);
       try {
          await leaveConversation(conversationId);
          queryClient.invalidateQueries({ queryKey: ['conversations'] });
          router.push('/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Could not leave chat.');
+         setIsNavigating(false);
       }
    }
 
    async function handleDelete() {
+      setIsNavigating(true);
       try {
          await deleteConversation(conversationId);
          queryClient.invalidateQueries({ queryKey: ['conversations'] });
          router.push('/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Could not delete chat.');
+         setIsNavigating(false);
       }
    }
 
@@ -131,7 +145,7 @@ export default function GroupDetailsPanel({
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.header)}>Details</div>
 
-         {isAdmin && (
+         {isGroup && (
             <>
                <div {...stylex.props(styles.row)}>
                   <span {...stylex.props(styles.rowLabel)}>Change group name</span>
@@ -139,6 +153,7 @@ export default function GroupDetailsPanel({
                      type="button"
                      {...stylex.props(styles.changeButton)}
                      onClick={() => setShowRenameModal(true)}
+                     disabled={isLoading}
                   >
                      Change
                   </button>
@@ -153,38 +168,40 @@ export default function GroupDetailsPanel({
                >
                   <Dialog.Portal>
                      <Dialog.Overlay {...stylex.props(styles.modalOverlay)} />
-                     <Dialog.Content {...stylex.props(styles.modalContent)}>
+                     <Dialog.Content {...stylex.props(styles.renameModalContent)}>
                         <Dialog.Description style={{ display: 'none' }}>
                            Change the group name
                         </Dialog.Description>
-                        <div {...stylex.props(styles.modalHeader)}>
+                        <div {...stylex.props(styles.renameModalHeader)}>
                            <Dialog.Close asChild>
                               <button
                                  type="button"
-                                 {...stylex.props(styles.modalCloseButton)}
+                                 {...stylex.props(styles.renameModalCloseButton)}
                                  aria-label="Close"
                               >
                                  <IoCloseOutline style={{ fontSize: 24 }} />
                               </button>
                            </Dialog.Close>
-                           <Dialog.Title {...stylex.props(styles.modalTitle)}>
+                           <Dialog.Title {...stylex.props(styles.renameModalTitle)}>
                               Change group name
                            </Dialog.Title>
                         </div>
-                        <p {...stylex.props(styles.modalSubtitle)}>
+                        <p {...stylex.props(styles.renameModalSubtitle)}>
                            Changing the name of a group chat changes it for everyone.
                         </p>
                         <input
-                           {...stylex.props(styles.modalInput)}
+                           {...stylex.props(styles.renameModalInput)}
                            value={groupName}
                            onChange={e => setGroupName(e.target.value)}
-                           onKeyDown={e => e.key === 'Enter' && saveName()}
-                           placeholder="example name"
+                           onKeyDown={e => e.key === 'Enter' && !isLoading && saveName()}
+                           placeholder="New group name"
+                           disabled={isLoading}
                         />
                         <button
                            type="button"
-                           {...stylex.props(styles.modalSaveButton)}
+                           {...stylex.props(styles.renameModalSaveButton)}
                            onClick={() => saveName()}
+                           disabled={isLoading}
                         >
                            Save
                         </button>
@@ -195,12 +212,16 @@ export default function GroupDetailsPanel({
          )}
 
          <div {...stylex.props(styles.row)}>
-            <span {...stylex.props(styles.rowLabel)}>Mute messages</span>
+            <div {...stylex.props(styles.rowLeft)}>
+               <IoNotificationsOutline {...stylex.props(styles.rowIcon)} />
+               <span {...stylex.props(styles.rowLabel)}>Mute messages</span>
+            </div>
             <button
                type="button"
                {...stylex.props(styles.toggle, isMuted ? styles.toggleOn : styles.toggleOff)}
                onClick={() => muteMutation(!isMuted)}
                aria-label={isMuted ? 'Unmute' : 'Mute'}
+               disabled={isLoading}
             >
                <span
                   {...stylex.props(
@@ -213,18 +234,19 @@ export default function GroupDetailsPanel({
 
          <div {...stylex.props(styles.sectionHeader)}>
             <span {...stylex.props(styles.sectionTitle)}>Members</span>
-            {isAdmin && (
+            {isGroup && isAdmin && (
                <button
                   type="button"
                   {...stylex.props(styles.addPeopleButton)}
                   onClick={() => setShowAddPeople(true)}
+                  disabled={isLoading}
                >
                   Add people
                </button>
             )}
          </div>
 
-         {showAddPeople && (
+         {isGroup && showAddPeople && (
             <UserAutocomplete
                multiSelect
                selected={pendingAdd}
@@ -245,42 +267,100 @@ export default function GroupDetailsPanel({
             />
          )}
 
-         {participants.map(p => (
-            <div key={p.user_id} {...stylex.props(styles.memberRow)}>
+         {isGroup &&
+            participants.map(p => (
+               <Link
+                  key={p.user_id}
+                  href={`/profile/${p.user.username}`}
+                  {...stylex.props(styles.memberRow)}
+               >
+                  <UserAvatar
+                     src={p.user.avatar_url}
+                     alt={p.user.username}
+                     size={44}
+                     userId={p.user.id}
+                     useHoverCard={false}
+                  />
+                  <div {...stylex.props(styles.memberInfo)}>
+                     <span {...stylex.props(styles.memberName)}>
+                        {p.user.full_name || p.user.username}
+                     </span>
+                     <span {...stylex.props(styles.memberMeta)}>
+                        {p.role === 'admin' ? 'Admin · ' : ''}
+                        {p.user.username}
+                     </span>
+                  </div>
+                  {isAdmin && p.user_id !== authUserId && (
+                     <button
+                        type="button"
+                        {...stylex.props(styles.memberRemoveBtn)}
+                        onClick={() => removeMember(p.user_id)}
+                        disabled={isLoading}
+                     >
+                        ···
+                     </button>
+                  )}
+               </Link>
+            ))}
+
+         {!isGroup && otherParticipant && (
+            <div {...stylex.props(styles.memberRow)}>
                <UserAvatar
-                  src={p.user.avatar_url}
-                  alt={p.user.username}
+                  src={otherParticipant.user.avatar_url}
+                  alt={otherParticipant.user.username}
                   size={44}
-                  userId={p.user.id}
+                  userId={otherParticipant.user.id}
                />
                <div {...stylex.props(styles.memberInfo)}>
                   <span {...stylex.props(styles.memberName)}>
-                     {p.user.full_name || p.user.username}
+                     {otherParticipant.user.full_name || otherParticipant.user.username}
                   </span>
-                  <span {...stylex.props(styles.memberMeta)}>
-                     {p.role === 'admin' ? 'Admin · ' : ''}
-                     {p.user.username}
-                  </span>
+                  <span {...stylex.props(styles.memberMeta)}>{otherParticipant.user.username}</span>
                </div>
-               {isAdmin && p.user_id !== authUserId && (
+            </div>
+         )}
+
+         {isGroup && (
+            <>
+               <button
+                  type="button"
+                  {...stylex.props(styles.dangerButton)}
+                  onClick={handleLeave}
+                  disabled={isLoading}
+               >
+                  Leave chat
+               </button>
+               {isAdmin && (
                   <button
                      type="button"
-                     {...stylex.props(styles.memberRemoveBtn)}
-                     onClick={() => removeMember(p.user_id)}
+                     {...stylex.props(styles.dangerButton)}
+                     onClick={handleDelete}
+                     disabled={isLoading}
                   >
-                     ···
+                     Delete chat
                   </button>
                )}
-            </div>
-         ))}
+            </>
+         )}
 
-         <button type="button" {...stylex.props(styles.dangerButton)} onClick={handleLeave}>
-            Leave chat
-         </button>
-         {isAdmin && (
-            <button type="button" {...stylex.props(styles.dangerButton)} onClick={handleDelete}>
-               Delete chat
-            </button>
+         {!isGroup && (
+            <>
+               <button
+                  type="button"
+                  {...stylex.props(styles.dangerButton)}
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={isLoading}
+               >
+                  Delete chat
+               </button>
+
+               <DeleteChatConfirmModal
+                  open={showDeleteConfirm}
+                  onOpenChange={setShowDeleteConfirm}
+                  onConfirm={handleDelete}
+                  disabled={isLoading}
+               />
+            </>
          )}
       </div>
    );

@@ -228,6 +228,9 @@ export const styles = stylex.create({
    messagesList: {
       display: 'flex',
       flexDirection: 'column',
+      listStyle: 'none',
+      padding: 0,
+      margin: 0,
    },
    threadItem: {
       display: 'flex',

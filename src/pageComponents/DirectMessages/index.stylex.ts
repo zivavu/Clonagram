@@ -201,7 +201,7 @@ export const styles = stylex.create({
       borderStyle: 'solid',
       borderColor: 'rgb(54, 54, 54)',
       borderWidth: 1,
-      borderRadius: radius.full,
+      borderRadius: radius.xl,
       padding: '0 16px',
    },
    inputField: {

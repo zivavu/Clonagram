@@ -2,16 +2,20 @@
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
 
-export async function markConversationRead(conversationId: string): Promise<void> {
+export async function moveConversation(
+   conversationId: string,
+   folder: 'primary' | 'general',
+): Promise<void> {
    const supabase = await createServerClient();
    const {
       data: { user },
    } = await supabase.auth.getUser();
-   if (!user) return;
+   if (!user) throw new Error('Not authenticated');
 
-   await supabase
+   const { error } = await supabase
       .from('conversation_participants')
-      .update({ last_read_at: new Date().toISOString() })
+      .update({ folder })
       .eq('conversation_id', conversationId)
       .eq('user_id', user.id);
+   if (error) throw error;
 }

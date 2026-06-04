@@ -32,9 +32,34 @@ export const styles = stylex.create({
       borderBottomStyle: 'solid',
       borderBottomColor: colors.separator,
    },
+   rowLeft: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+   },
+   rowIcon: {
+      fontSize: '1.25rem',
+      color: colors.textPrimary,
+      flexShrink: 0,
+   },
    rowLabel: {
       fontSize: '0.9rem',
       color: colors.textPrimary,
+   },
+   stubRow: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: '14px 24px',
+      borderBottomWidth: 1,
+      borderBottomStyle: 'solid',
+      borderBottomColor: colors.separator,
+   },
+   stubLabel: {
+      fontSize: '0.9rem',
+      color: colors.textPrimary,
+   },
+   stubLabelDanger: {
+      color: colors.danger,
    },
    modalOverlay: {
       position: 'fixed',
@@ -42,7 +67,7 @@ export const styles = stylex.create({
       backgroundColor: 'rgba(12, 16, 20, 0.7)',
       zIndex: 60,
    },
-   modalContent: {
+   renameModalContent: {
       position: 'fixed',
       top: '50%',
       left: '50%',
@@ -56,12 +81,12 @@ export const styles = stylex.create({
       padding: '24px',
       zIndex: 61,
    },
-   modalHeader: {
+   renameModalHeader: {
       display: 'flex',
       alignItems: 'center',
       gap: '12px',
    },
-   modalCloseButton: {
+   renameModalCloseButton: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -75,7 +100,7 @@ export const styles = stylex.create({
          backgroundColor: colors.buttonHover,
       },
    },
-   modalTitle: {
+   renameModalTitle: {
       fontSize: '1rem',
       fontWeight: 700,
       color: colors.textPrimary,
@@ -83,13 +108,13 @@ export const styles = stylex.create({
       textAlign: 'center',
       paddingRight: '32px',
    },
-   modalSubtitle: {
+   renameModalSubtitle: {
       fontSize: '0.875rem',
       color: colors.textPrimary,
       textAlign: 'center',
       lineHeight: 1.4,
    },
-   modalInput: {
+   renameModalInput: {
       width: '100%',
       borderWidth: 1,
       borderStyle: 'solid',
@@ -107,7 +132,7 @@ export const styles = stylex.create({
          borderColor: colors.textSecondary,
       },
    },
-   modalSaveButton: {
+   renameModalSaveButton: {
       width: '100%',
       padding: '12px',
       borderRadius: radius.sm,
