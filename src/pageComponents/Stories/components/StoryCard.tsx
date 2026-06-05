@@ -45,7 +45,7 @@ export default function StoryCard({
    const currentMedia = story.stories[mediaIndex];
    const isVideo = currentMedia.type === 'video';
 
-   const storyPlayerId = `story-${story.id}-${mediaIndex}`;
+   const storyPlayerId = `story-${story.userId}-${mediaIndex}`;
 
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const [videoDuration, setVideoDuration] = useState<number>(PICTURE_DURATION);
@@ -123,7 +123,7 @@ export default function StoryCard({
          >
             {isVideo ? (
                <MuxPlayer
-                  key={currentMedia.id}
+                  key={currentMedia.userId}
                   ref={muxPlayerRef}
                   disableCookies
                   volume={volume}

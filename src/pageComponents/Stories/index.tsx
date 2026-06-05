@@ -46,9 +46,9 @@ export default function StoriesPage({
    const recordView = (userIdx: number, mediaIdx: number) => {
       const entry = entries[userIdx];
       if (!entry) return;
-      const storyId = entry.stories[mediaIdx]?.id;
+      const storyId = entry.stories[mediaIdx]?.userId;
       if (!storyId) return;
-      if (entry.id === currentUserId) return;
+      if (entry.userId === currentUserId) return;
       if (recordedSet.current.has(storyId)) return;
       recordedSet.current.add(storyId);
       recordStoryView(storyId);
@@ -56,8 +56,8 @@ export default function StoriesPage({
 
    useLayoutEffect(() => {
       const entry = entries[startIndex];
-      const storyId = entry?.stories[0]?.id;
-      if (storyId && entry?.id !== currentUserId && !recordedSet.current.has(storyId)) {
+      const storyId = entry?.stories[0]?.userId;
+      if (storyId && entry?.userId !== currentUserId && !recordedSet.current.has(storyId)) {
          recordedSet.current.add(storyId);
          recordStoryView(storyId);
       }

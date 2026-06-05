@@ -24,12 +24,12 @@ export async function getActiveStories() {
    const grouped = new Map<
       string,
       {
-         id: string;
+         userId: string;
          username: string;
          avatarUrl: string;
          timestamp: string;
          stories: Array<{
-            id: string;
+            userId: string;
             type: 'image' | 'video';
             url: string;
             blurDataUrl: string | null;
@@ -56,7 +56,7 @@ export async function getActiveStories() {
 
       if (!grouped.has(row.user_id)) {
          grouped.set(row.user_id, {
-            id: row.user_id,
+            userId: row.user_id,
             username: profile.username,
             avatarUrl: profile.avatar_url ?? '',
             timestamp: row.created_at ?? '',
@@ -70,7 +70,7 @@ export async function getActiveStories() {
          entry.timestamp = row.created_at;
       }
       entry.stories.push({
-         id: row.id,
+         userId: row.id,
          type: isImage ? 'image' : 'video',
          url: mediaUrl,
          blurDataUrl,

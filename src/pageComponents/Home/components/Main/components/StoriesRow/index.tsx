@@ -169,7 +169,7 @@ export default function StoriesRow({ entries, viewedStoryIds, currentUser }: Sto
             {entries
                .filter(entry => entry.username !== currentUser?.username)
                .map(entry => {
-                  const allViewed = entry.stories.every(s => viewedSet.has(s.id));
+                  const allViewed = entry.stories.every(s => viewedSet.has(s.userId));
                   return (
                      <Link
                         href={`/stories/${entry.username}`}

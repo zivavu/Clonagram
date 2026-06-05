@@ -78,9 +78,9 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
                Open a chat to get more info about who&apos;s messaging you. They won&apos;t know
                you&apos;ve seen it until you accept.
             </p>
-            <a {...stylex.props(styles.infoLink)} href="/accounts/privacy_and_security/">
+            <Link {...stylex.props(styles.infoLink)} href="/direct/requests">
                Decide who can message you
-            </a>
+            </Link>
          </div>
 
          <div {...stylex.props(styles.requestsBody)}>

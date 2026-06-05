@@ -1,7 +1,6 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
 import type React from 'react';
 import { useCallback } from 'react';
 import { LuSend } from 'react-icons/lu';
@@ -9,6 +8,8 @@ import { MdFavoriteBorder, MdMoreHoriz, MdPause, MdPlayArrow } from 'react-icons
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import VolumeControl from '@/src/components/VolumeControl';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
+import UserAvatar from '../../../components/UserAvatar';
+import OtherUserUsername from '../../../components/Username/OtherUserUsername';
 import { styles } from '../index.stylex';
 
 interface ActiveStoryOverlayProps {
@@ -54,7 +55,7 @@ export default function ActiveStoryOverlay({
                      if (!isVideo) {
                         return (
                            <div
-                              key={storyMedia.id}
+                              key={storyMedia.userId}
                               {...stylex.props(styles.storyMediaActiveStoryBarContainer)}
                            >
                               <div {...stylex.props(styles.storyPictureBarTrack)}>
@@ -72,7 +73,7 @@ export default function ActiveStoryOverlay({
                      }
                      return (
                         <div
-                           key={storyMedia.id}
+                           key={storyMedia.userId}
                            {...stylex.props(styles.storyMediaActiveStoryBarContainer)}
                         >
                            <div
@@ -91,7 +92,7 @@ export default function ActiveStoryOverlay({
                   }
                   return (
                      <div
-                        key={storyMedia.id}
+                        key={storyMedia.userId}
                         {...stylex.props(
                            styles.storyMediaBarItem,
                            i < currentStoryMediaIndex && styles.storyMediaBarItemActive,
@@ -103,14 +104,13 @@ export default function ActiveStoryOverlay({
 
             <div {...stylex.props(styles.activeStoryTopNavigation)}>
                <div {...stylex.props(styles.activeStoryTopNavigationLeft)}>
-                  <Image
-                     src={story.avatarUrl}
+                  <UserAvatar
                      alt={story.username}
-                     width={32}
-                     height={32}
-                     {...stylex.props(styles.avatarImage)}
+                     src={story.avatarUrl}
+                     size={32}
+                     userId={story.userId}
                   />
-                  <span {...stylex.props(styles.activeStoryUsername)}>{story.username}</span>
+                  <OtherUserUsername userProfile={{ username: story.username, id: story.userId }} />
                   <span
                      {...stylex.props(styles.activeStoryUploadTimestamp)}
                      suppressHydrationWarning
