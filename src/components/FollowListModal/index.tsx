@@ -76,6 +76,7 @@ export default function FollowListModal() {
                         key={user.id}
                         avatarUrl={user.avatar_url}
                         avatarAlt={user.username}
+                        username={user.username}
                         userId={user.id}
                         name={user.username}
                         subtitle={user.full_name}

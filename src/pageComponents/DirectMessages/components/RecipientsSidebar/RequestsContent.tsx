@@ -111,6 +111,7 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
                         src={avatars[0]?.avatar_url ?? null}
                         alt={displayName}
                         size={56}
+                        username={avatars[0]?.username ?? ''}
                         userId={avatars[0]?.id}
                      />
                      <div {...stylex.props(styles.threadContent)}>

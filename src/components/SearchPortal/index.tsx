@@ -77,6 +77,7 @@ export default function SearchPortal() {
                            key={user.id}
                            avatarUrl={user.avatar_url}
                            avatarAlt={user.username}
+                           username={user.username}
                            name={
                               <span
                                  style={{

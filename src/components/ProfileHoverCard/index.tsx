@@ -80,6 +80,7 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
                            src={profile.avatar_url}
                            alt={profile.username}
                            size={56}
+                           username={profile.username}
                            userId={profile.id}
                            useHoverCard={false}
                         />

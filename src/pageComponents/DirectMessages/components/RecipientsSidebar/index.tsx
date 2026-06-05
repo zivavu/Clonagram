@@ -96,6 +96,7 @@ export default async function RecipientsSidebar({
                         src={profile?.avatar_url ?? null}
                         alt={profile?.username ?? ''}
                         size={74}
+                        username={profile?.username ?? ''}
                         userId={profile?.id}
                         useHoverCard={false}
                      />

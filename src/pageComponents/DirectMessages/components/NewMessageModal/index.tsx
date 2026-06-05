@@ -156,6 +156,7 @@ export default function NewMessageModal() {
                                  key={user.id}
                                  avatarUrl={user.avatar_url}
                                  avatarAlt={user.full_name || user.username}
+                                 username={user.username}
                                  name={user.full_name || user.username}
                                  subtitle={user.username}
                                  rightElement={

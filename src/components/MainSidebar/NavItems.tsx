@@ -80,6 +80,7 @@ export function NavItems({ mainSidebarStyles, profile }: NavItemsProps) {
                      src={profile?.avatar_url ?? null}
                      alt={profile?.username ?? ''}
                      size={28}
+                     username={profile?.username ?? ''}
                   />
                ) : (
                   IconComponent && <IconComponent style={{ fontSize: 28 }} />

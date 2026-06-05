@@ -149,6 +149,7 @@ function NotificationRowComponent({ notification }: { notification: GroupedNotif
                src={firstActor.avatar_url}
                alt={firstActor.username}
                size={44}
+               username={firstActor.username}
                userId={firstActor.id}
             />
          </div>

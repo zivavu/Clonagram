@@ -98,6 +98,7 @@ export default function ConversationItem({
                src={avatars[0]?.avatar_url ?? null}
                alt={displayName}
                size={56}
+               username={avatars[0]?.username ?? ''}
                userId={avatars[0]?.id}
                useHoverCard={false}
             />

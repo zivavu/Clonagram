@@ -13,6 +13,7 @@ interface UserAvatarProps extends Omit<ImageProps, 'src'> {
    alt: string;
    size: number;
    userId?: string;
+   username: string;
    useHoverCard?: boolean;
    showStoryRing?: boolean;
    href?: string;
@@ -22,12 +23,15 @@ export default function UserAvatar({
    src,
    size,
    userId,
+   username,
    useHoverCard = true,
    showStoryRing = true,
    href,
    ...props
 }: UserAvatarProps) {
    const { data: storyStatus } = useStoryStatus(showStoryRing ? userId : undefined);
+
+   const resolvedHref = href ?? (storyStatus?.hasStories && username ? `/stories/${username}` : undefined);
 
    let content = src ? (
       <Image
@@ -56,9 +60,9 @@ export default function UserAvatar({
       );
    }
 
-   if (href) {
+   if (resolvedHref) {
       content = (
-         <Link href={href} {...stylex.props(styles.link)}>
+         <Link href={resolvedHref} {...stylex.props(styles.link)}>
             {content}
          </Link>
       );

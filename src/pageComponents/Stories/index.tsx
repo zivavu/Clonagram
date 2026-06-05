@@ -12,12 +12,7 @@ import { styles } from './index.stylex';
 import type { Layout, StoriesPageProps } from './types';
 import { computeLayout } from './utils';
 
-export default function StoriesPage({
-   username,
-   entries,
-   viewedStoryIds,
-   currentUserId,
-}: StoriesPageProps) {
+export default function StoriesPage({ username, entries, viewedStoryIds }: StoriesPageProps) {
    const startIndex = Math.max(
       0,
       entries.findIndex(s => s.username === username),
@@ -60,7 +55,7 @@ export default function StoriesPage({
          recordedSet.current.add(storyId);
          recordStoryView(storyId);
       }
-   }, [currentUserId, entries, startIndex]);
+   }, [entries, startIndex]);
 
    useLayoutEffect(() => {
       const apply = () => setLayout(computeLayout(currentUserIndexRef.current));

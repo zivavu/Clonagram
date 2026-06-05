@@ -83,6 +83,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                src={post.user.avatar_url}
                alt={post.user.username}
                size={32}
+               username={post.user.username}
                userId={post.user.id}
             />
             <OtherUserUsername style={styles.topUsername} userProfile={post.user} />

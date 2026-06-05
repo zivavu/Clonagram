@@ -139,6 +139,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                      src={post.user.avatar_url}
                      alt={post.user.username}
                      size={32}
+                     username={post.user.username}
                      userId={post.user.id}
                   />
                   <OtherUserUsername style={styles.postHeaderUsername} userProfile={post.user} />
@@ -159,6 +160,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                         src={post.user.avatar_url}
                         alt={post.user.username}
                         size={32}
+                        username={post.user.username}
                         userId={post.user.id}
                      />
                      <div {...stylex.props(styles.captionContent)}>

@@ -278,6 +278,7 @@ export default function ChatDetailsPanel({
                      src={p.user.avatar_url}
                      alt={p.user.username}
                      size={44}
+                     username={p.user.username}
                      userId={p.user.id}
                      useHoverCard={false}
                   />
@@ -309,6 +310,7 @@ export default function ChatDetailsPanel({
                   src={otherParticipant.user.avatar_url}
                   alt={otherParticipant.user.username}
                   size={44}
+                  username={otherParticipant.user.username}
                   userId={otherParticipant.user.id}
                />
                <div {...stylex.props(styles.memberInfo)}>

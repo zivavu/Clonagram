@@ -55,6 +55,7 @@ export default function ReelItem({
                      src={reel.user.avatar_url}
                      alt={reel.user.username}
                      size={32}
+                     username={reel.user.username}
                      userId={reel.user.id}
                   />
                   <Link href={`/profile/${reel.user.username}`} {...stylex.props(styles.username)}>

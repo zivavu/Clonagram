@@ -67,6 +67,7 @@ export default function UserAutocomplete({
             <UserListItem
                avatarUrl={user.avatar_url}
                avatarAlt={user.username}
+               username={user.username}
                name={user.username}
                subtitle={user.full_name ?? ''}
                rightElement={

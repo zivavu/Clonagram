@@ -147,6 +147,7 @@ export default function ChatView({
                   src={avatars[0]?.avatar_url ?? null}
                   alt={displayName}
                   size={44}
+                  username={avatars[0]?.username ?? ''}
                   userId={avatars[0]?.id}
                />
                <div>
@@ -183,6 +184,7 @@ export default function ChatView({
                      src={otherParticipant.avatar_url}
                      alt={otherParticipant.username}
                      size={96}
+                     username={otherParticipant.username}
                      userId={otherParticipant.id}
                   />
                   <OtherUserUsername
@@ -234,6 +236,7 @@ export default function ChatView({
                                     src={msg.sender.avatar_url}
                                     alt={msg.sender.username}
                                     size={28}
+                                    username={msg.sender.username}
                                     userId={msg.sender.id}
                                  />
                               )}

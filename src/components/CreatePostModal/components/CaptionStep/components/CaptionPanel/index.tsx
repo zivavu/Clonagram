@@ -69,6 +69,7 @@ export default function CaptionPanel({
                   alt="Your profile image"
                   size={30}
                   src={userData?.avatar_url ?? null}
+                  username={userData?.username ?? ''}
                   userId={userData?.id}
                />
                <span>{}</span>
@@ -118,6 +119,7 @@ export default function CaptionPanel({
                                  src={c.avatar_url}
                                  alt={c.username}
                                  size={28}
+                                 username={c.username}
                                  userId={c.id}
                               />
                            </div>
@@ -145,6 +147,7 @@ export default function CaptionPanel({
                   src={userData?.avatar_url ?? null}
                   alt={userData?.username ?? 'User profile image'}
                   size={36}
+                  username={userData?.username ?? ''}
                   userId={userData?.id}
                />
                <div {...stylex.props(styles.shareInfo)}>

@@ -17,7 +17,7 @@ export default function AvatarCard({
 }: AvatarCardProps) {
    return (
       <div {...stylex.props(styles.root)}>
-         <UserAvatar src={avatarUrl} alt={username} size={56} />
+         <UserAvatar src={avatarUrl} alt={username} size={56} username={username} />
          <div {...stylex.props(styles.info)}>
             <span {...stylex.props(styles.username)}>{username}</span>
             {fullName && <span {...stylex.props(styles.fullName)}>{fullName}</span>}

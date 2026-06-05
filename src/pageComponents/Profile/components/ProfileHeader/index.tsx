@@ -52,6 +52,7 @@ export default function ProfileHeader({
                   src={userProfile.avatar_url}
                   alt={userProfile.username}
                   size={150}
+                  username={userProfile.username}
                   userId={userProfile.id}
                   useHoverCard={false}
                />

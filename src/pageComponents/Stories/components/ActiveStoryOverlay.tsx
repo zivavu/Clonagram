@@ -108,6 +108,7 @@ export default function ActiveStoryOverlay({
                      alt={story.username}
                      src={story.avatarUrl}
                      size={32}
+                     username={story.username}
                      userId={story.userId}
                   />
                   <OtherUserUsername userProfile={{ username: story.username, id: story.userId }} />

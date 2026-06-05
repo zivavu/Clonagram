@@ -92,6 +92,7 @@ export default function CommentItem({
                   src={comment.user.avatar_url}
                   alt={comment.user.username}
                   size={32}
+                  username={comment.user.username}
                   userId={comment.user.id}
                />
             </div>

@@ -39,6 +39,7 @@ export default async function RightSidebar() {
                src={profile?.avatar_url ?? null}
                alt={profile?.username ?? ''}
                size={44}
+               username={profile?.username ?? ''}
                userId={profile?.id}
             />
             <div {...stylex.props(styles.profileInfo)}>
@@ -64,6 +65,7 @@ export default async function RightSidebar() {
                      src={user.avatar_url}
                      alt={user.username}
                      size={44}
+                     username={user.username}
                      userId={user.id}
                   />
                   <div {...stylex.props(styles.suggestionInfo)}>
