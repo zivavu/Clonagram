@@ -1,10 +1,13 @@
-const MAX_DIM = 1920;
+const MAX_DIM = 2048;
 
 export async function compressMessageImage(file: File): Promise<Blob> {
    const bitmap = await createImageBitmap(file);
-   const scale = Math.min(1, MAX_DIM / Math.max(bitmap.width, bitmap.height));
-   const outW = Math.round(bitmap.width * scale);
-   const outH = Math.round(bitmap.height * scale);
+   const { width, height } = bitmap;
+
+   const longer = Math.max(width, height);
+   const scale = longer <= MAX_DIM ? 1 : MAX_DIM / longer;
+   const outW = Math.round(width * scale);
+   const outH = Math.round(height * scale);
 
    const canvas = new OffscreenCanvas(outW, outH);
    const ctx = canvas.getContext('2d');
@@ -12,5 +15,5 @@ export async function compressMessageImage(file: File): Promise<Blob> {
    ctx.drawImage(bitmap, 0, 0, outW, outH);
    bitmap.close();
 
-   return canvas.convertToBlob({ type: 'image/webp', quality: 0.85 });
+   return canvas.convertToBlob({ type: 'image/webp', quality: 0.75 });
 }
