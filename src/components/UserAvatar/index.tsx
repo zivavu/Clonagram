@@ -31,7 +31,8 @@ export default function UserAvatar({
 }: UserAvatarProps) {
    const { data: storyStatus } = useStoryStatus(showStoryRing ? userId : undefined);
 
-   const resolvedHref = href ?? (storyStatus?.hasStories && username ? `/stories/${username}` : undefined);
+   const resolvedHref =
+      href ?? (storyStatus?.hasStories && username ? `/stories/${username}` : undefined);
 
    let content = src ? (
       <Image

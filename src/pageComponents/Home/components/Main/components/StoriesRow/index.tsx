@@ -128,7 +128,12 @@ export default function StoriesRow({ entries, viewedStoryIds, currentUser }: Sto
                   styleProps={styles.addStoryRingWrapper}
                >
                   {currentUser?.avatar_url ? (
-                     <div {...stylex.props(styles.storyRing, allOwnStoriesViewed && styles.storyRingViewed)}>
+                     <div
+                        {...stylex.props(
+                           styles.storyRing,
+                           allOwnStoriesViewed && styles.storyRingViewed,
+                        )}
+                     >
                         <div {...stylex.props(styles.storyRingInner)}>
                            <Image
                               src={currentUser?.avatar_url}

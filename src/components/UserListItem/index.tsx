@@ -29,7 +29,13 @@ export function UserListItem({
    return (
       <div {...stylex.props(styles.row)}>
          <div {...stylex.props(styles.info)}>
-            <UserAvatar src={avatarUrl} alt={avatarAlt} size={44} username={username} userId={userId} />
+            <UserAvatar
+               src={avatarUrl}
+               alt={avatarAlt}
+               size={44}
+               username={username}
+               userId={userId}
+            />
             <div {...stylex.props(styles.names)}>
                <div {...stylex.props(styles.name)}>{name}</div>
                <div {...stylex.props(styles.subtitle)}>{subtitle}</div>

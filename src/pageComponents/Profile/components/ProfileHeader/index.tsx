@@ -118,7 +118,10 @@ export default function ProfileHeader({
                   >
                      Edit profile
                   </Link>
-                  <Link href="/archive" {...stylex.props(styles.button, styles.buttonSecondary)}>
+                  <Link
+                     href="/archive/stories"
+                     {...stylex.props(styles.button, styles.buttonSecondary)}
+                  >
                      View archive
                   </Link>
                </>
