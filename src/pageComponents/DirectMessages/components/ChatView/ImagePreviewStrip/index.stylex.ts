@@ -22,12 +22,13 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: radius.md,
-      borderWidth: 1,
-      borderStyle: 'dashed',
-      borderColor: colors.textSecondary,
-      color: colors.textSecondary,
-      fontSize: '1.8rem',
+      backgroundColor: 'rgba(134, 142, 153, 0.25)',
+      border: 'none',
+      color: 'rgb(245, 245, 245)',
+      fontSize: '1.5rem',
       position: 'relative',
+      padding: '8px',
+      transition: 'background-color 0.15s',
    },
    tooltip: {
       position: 'absolute',
@@ -46,8 +47,7 @@ export const styles = stylex.create({
    },
    addButtonHovered: {
       ':hover': {
-         borderColor: colors.textPrimary,
-         color: colors.textPrimary,
+         backgroundColor: 'rgba(134, 142, 153, 0.4)',
       },
    },
    showTooltip: {
