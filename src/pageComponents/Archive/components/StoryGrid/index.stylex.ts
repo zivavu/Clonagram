@@ -14,7 +14,7 @@ export const styles = stylex.create({
    grid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(3, 1fr)',
-      gap: '16px',
+      gap: '24px',
    },
    thumbnail: {
       position: 'relative',
@@ -23,9 +23,10 @@ export const styles = stylex.create({
       overflow: 'hidden',
       backgroundColor: colors.bgSecondary,
       display: 'block',
-      transition: 'opacity 0.15s ease',
+      transition: 'all 0.15s ease',
       ':hover': {
          opacity: 0.9,
+         scale: 1.025,
       },
    },
 });
