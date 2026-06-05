@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import EmojiPicker, { type EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { IoMicOutline } from 'react-icons/io5';
 import { TbPhoto } from 'react-icons/tb';
@@ -19,6 +19,10 @@ interface MessageInputProps {
    onSend: (text: string) => Promise<void>;
    onSendSticker: (url: string) => Promise<void>;
    onSendImages: (files: File[]) => Promise<void>;
+}
+
+export interface MessageInputHandle {
+   addFiles: (files: File[]) => void;
 }
 
 const MAX_LENGTH = 1000;
@@ -47,7 +51,10 @@ function extractText(div: HTMLElement): string {
    return text;
 }
 
-export default function MessageInput({ onSend, onSendSticker, onSendImages }: MessageInputProps) {
+const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function MessageInput(
+   { onSend, onSendSticker, onSendImages }: MessageInputProps,
+   ref,
+) {
    const isDark = useThemeStore(s => s.isDark);
    const [sending, setSending] = useState(false);
    const [pickerOpen, setPickerOpen] = useState(false);
@@ -56,6 +63,8 @@ export default function MessageInput({ onSend, onSendSticker, onSendImages }: Me
    const editorRef = useRef<HTMLDivElement>(null);
    const pickerContainerRef = useRef<HTMLDivElement>(null);
    const fileInputRef = useRef<HTMLInputElement>(null);
+
+   useImperativeHandle(ref, () => ({ addFiles: addImageFiles }));
 
    useEffect(() => {
       if (!pickerOpen) return;
@@ -274,4 +283,6 @@ export default function MessageInput({ onSend, onSendSticker, onSendImages }: Me
          </div>
       </div>
    );
-}
+});
+
+export default MessageInput;

@@ -70,6 +70,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
+      position: 'relative',
    },
    chatTopBar: {
       display: 'flex',
@@ -316,6 +317,27 @@ export const styles = stylex.create({
       height: '100%',
       backgroundColor: colors.separator,
       flexShrink: 0,
+   },
+   dropOverlay: {
+      position: 'absolute',
+      inset: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      zIndex: 10,
+      pointerEvents: 'none',
+   },
+   dropTitle: {
+      fontSize: '1.5rem',
+      fontWeight: '700',
+      color: colors.white,
+   },
+   dropSubtitle: {
+      fontSize: '0.875rem',
+      color: 'rgba(255,255,255,0.6)',
    },
    readReceipt: {
       fontSize: '0.6875rem',

@@ -4,12 +4,14 @@ import * as stylex from '@stylexjs/stylex';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { markChatRead } from '@/src/actions/dm/markChatRead';
 import { sendImage } from '@/src/actions/dm/sendImage';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { sendSticker } from '@/src/actions/dm/sendSticker';
+import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { supabase } from '@/src/lib/supabase/client';
@@ -29,7 +31,7 @@ import { formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
 import ImageMessage from './ImageMessage';
 import ImageViewModal from './ImageViewModal';
-import MessageInput from './MessageInput';
+import MessageInput, { type MessageInputHandle } from './MessageInput';
 import MessageText from './MessageText';
 import RequestActions from './RequestActions';
 import StickerMessage from './StickerMessage';
@@ -56,8 +58,22 @@ export default function ChatView({
    const queryClient = useQueryClient();
    const messagesEndRef = useRef<HTMLDivElement>(null);
    const messagesContainerRef = useRef<HTMLDivElement>(null);
+   const inputRef = useRef<MessageInputHandle>(null);
    const messagesKey = ['messages', conversationId];
    const [viewingImage, setViewingImage] = useState<string | null>(null);
+
+   const { getRootProps, isDragActive } = useDropzone({
+      noClick: true,
+      noKeyboard: true,
+      accept: { 'image/*': [] },
+      maxSize: 25 * 1024 * 1024,
+      onDrop: accepted => {
+         if (accepted.length) inputRef.current?.addFiles(accepted);
+      },
+      onDropRejected: rejections => {
+         for (const r of rejections) toast(`${r.file.name} is too large or not an image`);
+      },
+   });
 
    const { data: messages = initialMessages } = useQuery({
       queryKey: messagesKey,
@@ -197,7 +213,7 @@ export default function ChatView({
    const otherParticipant = participants.find(p => p.user_id !== authUserId)?.user;
 
    return (
-      <div {...stylex.props(styles.chatViewRoot)}>
+      <div {...getRootProps()} {...stylex.props(styles.chatViewRoot)}>
          <div {...stylex.props(styles.chatTopBar)}>
             <div {...stylex.props(styles.chatTopBarRecipient)}>
                <UserAvatar
@@ -225,6 +241,13 @@ export default function ChatView({
                />
             </div>
          </div>
+
+         {isDragActive && (
+            <div {...stylex.props(styles.dropOverlay)}>
+               <span {...stylex.props(styles.dropTitle)}>Drop files here</span>
+               <span {...stylex.props(styles.dropSubtitle)}>max 25 MB</span>
+            </div>
+         )}
 
          <div ref={messagesContainerRef} {...stylex.props(styles.messagesContainer)}>
             {!isGroup && otherParticipant && (
@@ -324,6 +347,7 @@ export default function ChatView({
             />
          ) : (
             <MessageInput
+               ref={inputRef}
                onSendSticker={async (url: string) => {
                   const optimisticMsg = createOptimisticMessage({ sticker_url: url });
                   queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
