@@ -11,8 +11,8 @@ export default async function StoriesRoute({ params }: { params: Promise<{ usern
 
    return (
       <StoriesPage
-         username={username}
-         storyId={null}
+         startSlug={username}
+         basePath="/stories"
          entries={entries}
          viewedStoryIds={viewedStoryIds}
          currentUserId={profile?.id ?? null}

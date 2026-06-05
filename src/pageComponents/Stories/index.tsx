@@ -12,10 +12,17 @@ import { styles } from './index.stylex';
 import type { Layout, StoriesPageProps } from './types';
 import { computeLayout } from './utils';
 
-export default function StoriesPage({ username, entries, viewedStoryIds }: StoriesPageProps) {
+export default function StoriesPage({
+   startSlug,
+   basePath,
+   showReply = true,
+   closeHref = '/',
+   entries,
+   viewedStoryIds,
+}: StoriesPageProps) {
    const startIndex = Math.max(
       0,
-      entries.findIndex(s => s.username === username),
+      entries.findIndex(s => s.slug === startSlug),
    );
 
    const [currentUserIndex, setCurrentUserIndex] = useState(startIndex);
@@ -71,7 +78,7 @@ export default function StoriesPage({ username, entries, viewedStoryIds }: Stori
       setCurrentUserIndex(index);
       setCurrentStoryMediaIndex(0);
       setLayout(computeLayout(index));
-      window.history.replaceState(null, '', `/stories/${entries[index].username}`);
+      window.history.replaceState(null, '', `${basePath}/${entries[index].slug}`);
       setIsMoving(true);
       recordView(index, 0);
       if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
@@ -115,7 +122,7 @@ export default function StoriesPage({ username, entries, viewedStoryIds }: Stori
          <Link href="/" {...stylex.props(styles.titleLink)}>
             <h1 {...stylex.props(styles.titleLinkText)}>Clonagram</h1>
          </Link>
-         <Link href="/" {...stylex.props(styles.closeLink)}>
+         <Link href={closeHref} {...stylex.props(styles.closeLink)}>
             <MdClose size={38} />
          </Link>
          {ready && (
@@ -137,13 +144,14 @@ export default function StoriesPage({ username, entries, viewedStoryIds }: Stori
                >
                   {entries.map((entry, i) => (
                      <StoryCard
-                        key={entry.username}
+                        key={entry.slug}
                         story={entry}
                         isCurrent={i === currentUserIndex}
                         layout={layout}
                         onClick={() => goToStoryUserCard(i)}
                         currentStoryMediaIndex={currentStoryMediaIndex}
                         goToNextStoryMedia={goToNextStoryMedia}
+                        showReply={showReply}
                      />
                   ))}
                </div>

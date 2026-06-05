@@ -25,6 +25,7 @@ export async function getActiveStories() {
       string,
       {
          userId: string;
+         slug: string;
          username: string;
          avatarUrl: string;
          timestamp: string;
@@ -57,6 +58,7 @@ export async function getActiveStories() {
       if (!grouped.has(row.user_id)) {
          grouped.set(row.user_id, {
             userId: row.user_id,
+            slug: profile.username,
             username: profile.username,
             avatarUrl: profile.avatar_url ?? '',
             timestamp: row.created_at ?? '',

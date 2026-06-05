@@ -13,8 +13,10 @@ export interface Layout {
 }
 
 export interface StoriesPageProps {
-   username: string;
-   storyId: string | null;
+   startSlug: string;
+   basePath: string;
+   showReply?: boolean;
+   closeHref?: string;
    entries: Awaited<ReturnType<typeof getActiveStories>>['entries'];
    viewedStoryIds: string[];
    currentUserId: string | null;

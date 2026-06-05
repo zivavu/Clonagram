@@ -22,6 +22,7 @@ interface ActiveStoryOverlayProps {
    isPlaying: boolean;
    onTogglePlay: (e: React.MouseEvent) => void;
    currentStoryMediaIndex: number;
+   showReply?: boolean;
 }
 
 export default function ActiveStoryOverlay({
@@ -34,6 +35,7 @@ export default function ActiveStoryOverlay({
    isPlaying,
    onTogglePlay,
    currentStoryMediaIndex,
+   showReply = true,
 }: ActiveStoryOverlayProps) {
    const onPictureAnimationEnd = useCallback(
       (e: React.AnimationEvent<HTMLDivElement>) => {
@@ -139,19 +141,21 @@ export default function ActiveStoryOverlay({
                </div>
             </div>
          </div>
-         <div {...stylex.props(styles.activeStoryBottomBar)}>
-            <input
-               type="text"
-               placeholder={`Reply to ${story.username}...`}
-               {...stylex.props(styles.activeStoryReplyToInput)}
-            />
-            <button type="button">
-               <MdFavoriteBorder size={26} />
-            </button>
-            <button type="button">
-               <LuSend size={24} />
-            </button>
-         </div>
+         {showReply && (
+            <div {...stylex.props(styles.activeStoryBottomBar)}>
+               <input
+                  type="text"
+                  placeholder={`Reply to ${story.username}...`}
+                  {...stylex.props(styles.activeStoryReplyToInput)}
+               />
+               <button type="button">
+                  <MdFavoriteBorder size={26} />
+               </button>
+               <button type="button">
+                  <LuSend size={24} />
+               </button>
+            </div>
+         )}
       </div>
    );
 }

@@ -38,7 +38,16 @@ export default function ArchivePage({ stories }: { stories: ArchivedStory[] }) {
                </div>
             </div>
             <div {...stylex.props(styles.separator)} />
-            {stories.length === 0 ? <EmptyState /> : <StoryGrid groups={groups} />}
+            {stories.length === 0 ? (
+               <EmptyState />
+            ) : (
+               <>
+                  <p {...stylex.props(styles.subtitle)}>
+                     Only you can see your archived stories unless you choose to share them.
+                  </p>
+                  <StoryGrid groups={groups} />
+               </>
+            )}
          </div>
       </div>
    );

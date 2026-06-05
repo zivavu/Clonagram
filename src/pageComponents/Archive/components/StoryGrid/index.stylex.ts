@@ -9,24 +9,23 @@ export const styles = stylex.create({
       fontSize: '1rem',
       fontWeight: 600,
       color: colors.textPrimary,
-      marginBottom: '12px',
+      marginBottom: '16px',
    },
    grid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(3, 1fr)',
-      gap: '3px',
+      gap: '16px',
    },
    thumbnail: {
       position: 'relative',
       width: '100%',
-      aspectRatio: '1',
+      aspectRatio: '9 / 16',
       overflow: 'hidden',
-      padding: 0,
       backgroundColor: colors.bgSecondary,
       display: 'block',
       transition: 'opacity 0.15s ease',
       ':hover': {
-         opacity: 0.85,
+         opacity: 0.9,
       },
    },
 });

@@ -7,7 +7,7 @@ export default async function StoriesRoute({
 }: {
    params: Promise<{ username: string; id: string }>;
 }) {
-   const { username, id } = await params;
+   const { username } = await params;
    const [{ entries, viewedStoryIds }, profile] = await Promise.all([
       getActiveStories(),
       getAuthProfile(),
@@ -15,8 +15,8 @@ export default async function StoriesRoute({
 
    return (
       <StoriesPage
-         username={username}
-         storyId={id}
+         startSlug={username}
+         basePath="/stories"
          entries={entries}
          viewedStoryIds={viewedStoryIds}
          currentUserId={profile?.id ?? null}

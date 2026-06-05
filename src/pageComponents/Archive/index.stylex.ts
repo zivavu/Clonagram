@@ -56,4 +56,10 @@ export const styles = stylex.create({
       backgroundColor: colors.separator,
       marginBottom: '24px',
    },
+   subtitle: {
+      fontSize: '0.875rem',
+      color: colors.textSecondary,
+      textAlign: 'center',
+      marginBottom: '32px',
+   },
 });

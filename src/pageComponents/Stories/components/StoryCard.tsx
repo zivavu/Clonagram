@@ -21,6 +21,7 @@ interface StoryCardProps {
    onClick: () => void;
    currentStoryMediaIndex: number;
    goToNextStoryMedia: () => void;
+   showReply?: boolean;
 }
 
 export default function StoryCard({
@@ -30,6 +31,7 @@ export default function StoryCard({
    onClick,
    currentStoryMediaIndex,
    goToNextStoryMedia,
+   showReply = true,
 }: StoryCardProps) {
    const [displayedIndex, setDisplayedIndex] = useState(0);
    useEffect(() => {
@@ -45,7 +47,7 @@ export default function StoryCard({
    const currentMedia = story.stories[mediaIndex];
    const isVideo = currentMedia.type === 'video';
 
-   const storyPlayerId = `story-${story.userId}-${mediaIndex}`;
+   const storyPlayerId = `story-${story.slug}-${mediaIndex}`;
 
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const [videoDuration, setVideoDuration] = useState<number>(PICTURE_DURATION);
@@ -108,6 +110,7 @@ export default function StoryCard({
                isPlaying={isPlaying}
                onTogglePlay={togglePlay}
                currentStoryMediaIndex={currentStoryMediaIndex}
+               showReply={showReply}
             />
          )}
 
