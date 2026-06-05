@@ -3,11 +3,10 @@
 import * as stylex from '@stylexjs/stylex';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
-import { markChatRead } from '@/src/actions/dm/markChatRead';
 import { sendImage } from '@/src/actions/dm/sendImage';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { sendSticker } from '@/src/actions/dm/sendSticker';
@@ -29,6 +28,8 @@ import {
 } from '@/src/utils/conversations';
 import { formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
+import { useChatScrollAndRead } from './hooks/useChatScrollAndRead';
+import { useRealtimeChat } from './hooks/useRealtimeChat';
 import ImageMessage from './ImageMessage';
 import ImageViewModal from './ImageViewModal';
 import MessageInput, { type MessageInputHandle } from './MessageInput';
@@ -97,90 +98,16 @@ export default function ChatView({
       staleTime: Infinity,
    });
 
-   useEffect(() => {
-      const channel = supabase
-         .channel(`messages-${conversationId}`)
-         .on(
-            'postgres_changes',
-            {
-               event: 'INSERT',
-               schema: 'public',
-               table: 'messages',
-               filter: `conversation_id=eq.${conversationId}`,
-            },
-            () => {
-               queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
-               queryClient.invalidateQueries({ queryKey: ['conversations'] });
-            },
-         )
-         .on(
-            'postgres_changes',
-            {
-               event: 'UPDATE',
-               schema: 'public',
-               table: 'messages',
-               filter: `conversation_id=eq.${conversationId}`,
-            },
-            () => {
-               queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
-            },
-         )
-         .subscribe();
-      return () => {
-         supabase.removeChannel(channel);
-      };
-   }, [conversationId, queryClient]);
+   useRealtimeChat(conversationId, queryClient);
 
-   const messagesCount = messages.length;
-   const lastReadCountRef = useRef(0);
-
-   // biome-ignore lint/correctness/useExhaustiveDependencies: sync ref on mount so count-based effect skips the initial fire
-   useEffect(() => {
-      lastReadCountRef.current = messagesCount;
-      const self = initialConversation?.participants.find(p => p.user_id === authUserId);
-      const isUnread =
-         !self?.last_read_at ||
-         (initialConversation?.last_message_at &&
-            new Date(initialConversation.last_message_at) > new Date(self.last_read_at));
-      if (isUnread) markChatRead(conversationId);
-      messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
-   }, [conversationId]);
-
-   function markReadIfNeeded() {
-      if (messagesCount === lastReadCountRef.current) return;
-      lastReadCountRef.current = messagesCount;
-      const hasUnread = messages.some(m => m.sender_id !== authUserId && !m.read_at);
-      if (hasUnread) markChatRead(conversationId);
-   }
-
-   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom and mark read when count changes
-   useEffect(() => {
-      const container = messagesContainerRef.current;
-      if (!container) return;
-
-      const atBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
-      if (atBottom) {
-         messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
-         markReadIfNeeded();
-      }
-   }, [messagesCount]);
-
-   // biome-ignore lint/correctness/useExhaustiveDependencies: markReadIfNeeded captures what it needs
-   useEffect(() => {
-      const container = messagesContainerRef.current;
-      if (!container) return;
-
-      const scrollHandler = () => {
-         const atBottom =
-            container.scrollHeight - container.scrollTop - container.clientHeight < 150;
-         if (atBottom) {
-            markReadIfNeeded();
-         }
-      };
-
-      container.addEventListener('scroll', scrollHandler, { passive: true });
-      return () => container.removeEventListener('scroll', scrollHandler);
-   }, [conversationId, messagesCount]);
+   useChatScrollAndRead({
+      containerRef: messagesContainerRef,
+      endRef: messagesEndRef,
+      messages,
+      conversationId,
+      authUserId,
+      initialConversation,
+   });
 
    function createOptimisticMessage(overrides: Partial<ConversationMessage>) {
       const id = `optimistic-${Date.now()}`;
