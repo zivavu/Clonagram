@@ -3,10 +3,11 @@
 import * as stylex from '@stylexjs/stylex';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { markChatRead } from '@/src/actions/dm/markChatRead';
+import { sendImage } from '@/src/actions/dm/sendImage';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { sendSticker } from '@/src/actions/dm/sendSticker';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -18,6 +19,7 @@ import {
    type ConversationMessages,
    getMessagesQuery,
 } from '@/src/queries/messages';
+import { compressMessageImage } from '@/src/utils/compressMessageImage';
 import {
    getConversationAvatars,
    getConversationDisplayName,
@@ -25,6 +27,8 @@ import {
 } from '@/src/utils/conversations';
 import { formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
+import ImageMessage from './ImageMessage';
+import ImageViewModal from './ImageViewModal';
 import MessageInput from './MessageInput';
 import MessageText from './MessageText';
 import RequestActions from './RequestActions';
@@ -53,6 +57,7 @@ export default function ChatView({
    const messagesEndRef = useRef<HTMLDivElement>(null);
    const messagesContainerRef = useRef<HTMLDivElement>(null);
    const messagesKey = ['messages', conversationId];
+   const [viewingImage, setViewingImage] = useState<string | null>(null);
 
    const { data: messages = initialMessages } = useQuery({
       queryKey: messagesKey,
@@ -167,6 +172,7 @@ export default function ChatView({
          id,
          content: null,
          sticker_url: null,
+         media_url: null,
          created_at: new Date().toISOString(),
          sender_id: authUserId,
          is_deleted: false,
@@ -285,6 +291,8 @@ export default function ChatView({
                         )}
                         {msg.sticker_url ? (
                            <StickerMessage src={msg.sticker_url} />
+                        ) : msg.media_url ? (
+                           <ImageMessage src={msg.media_url} onOpen={setViewingImage} />
                         ) : (
                            <div
                               {...stylex.props(
@@ -344,7 +352,39 @@ export default function ChatView({
                      queryClient.invalidateQueries({ queryKey: ['conversations'] });
                   }
                }}
+               onSendImages={async (files: File[]) => {
+                  for (const file of files) {
+                     const previewUrl = URL.createObjectURL(file);
+                     const optimisticMsg = createOptimisticMessage({ media_url: previewUrl });
+                     queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
+                        ...(prev ?? []),
+                        optimisticMsg,
+                     ]);
+
+                     try {
+                        const blob = await compressMessageImage(file);
+                        const fileName = `${crypto.randomUUID()}.webp`;
+                        const compressed = new File([blob], fileName, { type: 'image/webp' });
+                        const { error: uploadError } = await supabase.storage
+                           .from('messages')
+                           .upload(fileName, compressed);
+                        if (uploadError) throw uploadError;
+                        const { data: urlData } = supabase.storage
+                           .from('messages')
+                           .getPublicUrl(fileName);
+                        await sendImage(conversationId, urlData.publicUrl);
+                     } finally {
+                        URL.revokeObjectURL(previewUrl);
+                        queryClient.invalidateQueries({ queryKey: messagesKey });
+                        queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                     }
+                  }
+               }}
             />
+         )}
+
+         {viewingImage && (
+            <ImageViewModal src={viewingImage} onClose={() => setViewingImage(null)} />
          )}
       </div>
    );

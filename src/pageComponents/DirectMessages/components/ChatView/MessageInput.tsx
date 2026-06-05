@@ -11,12 +11,14 @@ import { toast } from '@/src/components/AppToast';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { radius } from '../../../../styles/tokens.stylex';
 import { styles } from '../../index.stylex';
+import ImagePreviewStrip, { type PendingImage } from './ImagePreviewStrip';
 
 const StickerPicker = dynamic(() => import('./StickerPicker'), { ssr: false });
 
 interface MessageInputProps {
    onSend: (text: string) => Promise<void>;
    onSendSticker: (url: string) => Promise<void>;
+   onSendImages: (files: File[]) => Promise<void>;
 }
 
 const MAX_LENGTH = 1000;
@@ -45,13 +47,15 @@ function extractText(div: HTMLElement): string {
    return text;
 }
 
-export default function MessageInput({ onSend, onSendSticker }: MessageInputProps) {
+export default function MessageInput({ onSend, onSendSticker, onSendImages }: MessageInputProps) {
    const isDark = useThemeStore(s => s.isDark);
    const [sending, setSending] = useState(false);
    const [pickerOpen, setPickerOpen] = useState(false);
    const [isEmpty, setIsEmpty] = useState(true);
+   const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
    const editorRef = useRef<HTMLDivElement>(null);
    const pickerContainerRef = useRef<HTMLDivElement>(null);
+   const fileInputRef = useRef<HTMLInputElement>(null);
 
    useEffect(() => {
       if (!pickerOpen) return;
@@ -64,20 +68,46 @@ export default function MessageInput({ onSend, onSendSticker }: MessageInputProp
       return () => document.removeEventListener('mousedown', handleClickOutside);
    }, [pickerOpen]);
 
+   function addImageFiles(files: File[]) {
+      const imageFiles = files.filter(f => f.type.startsWith('image/'));
+      if (!imageFiles.length) return;
+      const newItems: PendingImage[] = imageFiles.map(file => ({
+         file,
+         previewUrl: URL.createObjectURL(file),
+      }));
+      setPendingImages(prev => [...prev, ...newItems]);
+   }
+
+   function removeImage(index: number) {
+      setPendingImages(prev => {
+         URL.revokeObjectURL(prev[index].previewUrl);
+         return prev.filter((_, i) => i !== index);
+      });
+   }
+
    async function handleSend() {
       const div = editorRef.current;
       if (!div || sending) return;
+      if (pendingImages.length === 0 && isEmpty) return;
+
       const text = extractText(div);
-      if (!text.trim()) return;
       if (text.length > MAX_LENGTH) {
          toast('Message is too long');
          return;
       }
+
       setSending(true);
+      const imagesToSend = pendingImages;
+      setPendingImages([]);
       div.innerHTML = '';
       setIsEmpty(true);
+
       try {
-         await onSend(text);
+         if (text.trim()) await onSend(text);
+         if (imagesToSend.length) {
+            await onSendImages(imagesToSend.map(i => i.file));
+            for (const img of imagesToSend) URL.revokeObjectURL(img.previewUrl);
+         }
       } finally {
          setSending(false);
       }
@@ -123,7 +153,7 @@ export default function MessageInput({ onSend, onSendSticker }: MessageInputProp
       setIsEmpty(!(div.textContent?.trim() || div.querySelector('img')));
    }
 
-   function handleBeforeInput(e: React.InputEvent<HTMLDivElement>) {
+   function handleBeforeInput(e: React.FormEvent<HTMLDivElement>) {
       const div = editorRef.current;
       if (!div) return;
       const text = extractText(div);
@@ -133,65 +163,114 @@ export default function MessageInput({ onSend, onSendSticker }: MessageInputProp
       }
    }
 
+   function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
+      const imageFiles = Array.from(e.clipboardData.files).filter(f => f.type.startsWith('image/'));
+      if (imageFiles.length) {
+         e.preventDefault();
+         addImageFiles(imageFiles);
+      }
+   }
+
+   function handleFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+      addImageFiles(Array.from(e.target.files ?? []));
+      e.target.value = '';
+   }
+
+   const hasContent = !isEmpty || pendingImages.length > 0;
+
    return (
       <div {...stylex.props(styles.inputContainer)}>
+         <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            style={{ display: 'none' }}
+            onChange={handleFileInputChange}
+         />
          <div {...stylex.props(styles.inputWrapper)}>
-            <div ref={pickerContainerRef} style={{ position: 'relative', display: 'flex' }}>
-               <AiOutlineSmile
-                  {...stylex.props(styles.inputIcon)}
-                  onClick={() => setPickerOpen(open => !open)}
+            {pendingImages.length > 0 && (
+               <ImagePreviewStrip
+                  images={pendingImages}
+                  onRemove={removeImage}
+                  onAdd={addImageFiles}
                />
-               {pickerOpen && (
+            )}
+            <div {...stylex.props(styles.inputRow)}>
+               <div ref={pickerContainerRef} style={{ position: 'relative', display: 'flex' }}>
+                  <AiOutlineSmile
+                     {...stylex.props(styles.inputIcon)}
+                     onClick={() => setPickerOpen(open => !open)}
+                  />
+                  {pickerOpen && (
+                     <div
+                        style={{
+                           position: 'absolute',
+                           bottom: '150%',
+                           left: 0,
+                           transform: 'translateX(-50%)',
+                           zIndex: 100,
+                           marginBottom: 8,
+                           borderRadius: radius.sm,
+                           overflow: 'hidden',
+                           boxShadow: '0 2px 8px 1px rgba(0, 0, 0, 0.2)',
+                        }}
+                     >
+                        <style href="clonagram-emoji-picker-override" precedence="default">
+                           {pickerOverrideCSS}
+                        </style>
+                        <EmojiPicker
+                           onEmojiClick={handleEmojiClick}
+                           theme={isDark ? Theme.DARK : Theme.LIGHT}
+                           emojiStyle={EmojiStyle.FACEBOOK}
+                           className={PICKER_CLASS}
+                           width={400}
+                           height={400}
+                           previewConfig={{ showPreview: false }}
+                        />
+                     </div>
+                  )}
+               </div>
+               <div {...stylex.props(styles.inputFieldWrapper)}>
+                  {isEmpty && <span {...stylex.props(styles.inputPlaceholder)}>Message...</span>}
+                  {/* biome-ignore lint/a11y/noStaticElementInteractions: contenteditable is inherently interactive */}
                   <div
-                     style={{
-                        position: 'absolute',
-                        bottom: '150%',
-                        left: 0,
-                        transform: 'translateX(-50%)',
-                        zIndex: 100,
-                        marginBottom: 8,
-                        borderRadius: radius.sm,
-                        overflow: 'hidden',
-                        boxShadow: '0 2px 8px 1px rgba(0, 0, 0, 0.2)',
+                     ref={editorRef}
+                     contentEditable
+                     suppressContentEditableWarning
+                     {...stylex.props(styles.inputField)}
+                     onInput={handleInput}
+                     onBeforeInput={handleBeforeInput}
+                     onPaste={handlePaste}
+                     onKeyDown={e => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                           e.preventDefault();
+                           handleSend();
+                        }
+                        if (e.key === 'Escape') setPickerOpen(false);
                      }}
+                  />
+               </div>
+               {hasContent ? (
+                  <button
+                     type="button"
+                     {...stylex.props(styles.sendButton)}
+                     onClick={handleSend}
+                     disabled={sending}
                   >
-                     <style href="clonagram-emoji-picker-override" precedence="default">
-                        {pickerOverrideCSS}
-                     </style>
-                     <EmojiPicker
-                        onEmojiClick={handleEmojiClick}
-                        theme={isDark ? Theme.DARK : Theme.LIGHT}
-                        emojiStyle={EmojiStyle.FACEBOOK}
-                        className={PICKER_CLASS}
-                        width={400}
-                        height={400}
-                        previewConfig={{ showPreview: false }}
+                     Send
+                  </button>
+               ) : (
+                  <>
+                     <IoMicOutline {...stylex.props(styles.inputIcon)} />
+                     <TbPhoto
+                        {...stylex.props(styles.inputIcon)}
+                        onClick={() => fileInputRef.current?.click()}
                      />
-                  </div>
+                     <StickerPicker onSelect={onSendSticker} />
+                  </>
                )}
             </div>
-            <div {...stylex.props(styles.inputFieldWrapper)}>
-               {isEmpty && <span {...stylex.props(styles.inputPlaceholder)}>Message...</span>}
-               {/* biome-ignore lint/a11y/noStaticElementInteractions: contenteditable is inherently interactive */}
-               <div
-                  ref={editorRef}
-                  contentEditable
-                  suppressContentEditableWarning
-                  {...stylex.props(styles.inputField)}
-                  onInput={handleInput}
-                  onBeforeInput={handleBeforeInput}
-                  onKeyDown={e => {
-                     if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSend();
-                     }
-                     if (e.key === 'Escape') setPickerOpen(false);
-                  }}
-               />
-            </div>
-            <IoMicOutline {...stylex.props(styles.inputIcon)} />
-            <TbPhoto {...stylex.props(styles.inputIcon)} />
-            <StickerPicker onSelect={onSendSticker} />
          </div>
       </div>
    );

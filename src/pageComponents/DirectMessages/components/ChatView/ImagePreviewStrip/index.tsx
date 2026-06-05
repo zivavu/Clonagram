@@ -36,19 +36,25 @@ export default function ImagePreviewStrip({ images, onRemove, onAdd }: ImagePrev
             style={{ display: 'none' }}
             onChange={handleFileChange}
          />
-         <div
+         <button
+            type="button"
             {...stylex.props(styles.addButton, styles.addButtonHovered, styles.showTooltip)}
             onClick={() => fileInputRef.current?.click()}
          >
             <TbPhoto />
             <span {...stylex.props(styles.tooltip)}>Upload another photo/video</span>
-         </div>
+         </button>
          {images.map((img, i) => (
             <div key={img.previewUrl} {...stylex.props(styles.thumbnail)}>
+               {/* biome-ignore lint/performance/noImgElement: blob URL, Next Image does not support it */}
                <img src={img.previewUrl} alt="" {...stylex.props(styles.thumbnailImg)} />
-               <div {...stylex.props(styles.removeButton)} onClick={() => onRemove(i)}>
+               <button
+                  type="button"
+                  {...stylex.props(styles.removeButton)}
+                  onClick={() => onRemove(i)}
+               >
                   <IoCloseOutline />
-               </div>
+               </button>
             </div>
          ))}
       </div>
