@@ -2,9 +2,11 @@
 
 import * as stylex from '@stylexjs/stylex';
 import Image, { type ImageProps } from 'next/image';
+import Link from 'next/link';
 import { MdPerson } from 'react-icons/md';
 import ProfileHoverCard from '@/src/components/ProfileHoverCard';
-import { colors } from '../../styles/tokens.stylex';
+import { useStoryStatus } from '@/src/hooks/useStoryStatus';
+import { styles } from './index.stylex';
 
 interface UserAvatarProps extends Omit<ImageProps, 'src'> {
    src: string | null;
@@ -12,6 +14,8 @@ interface UserAvatarProps extends Omit<ImageProps, 'src'> {
    size: number;
    userId?: string;
    useHoverCard?: boolean;
+   showStoryRing?: boolean;
+   href?: string;
 }
 
 export default function UserAvatar({
@@ -19,9 +23,13 @@ export default function UserAvatar({
    size,
    userId,
    useHoverCard = true,
+   showStoryRing = true,
+   href,
    ...props
 }: UserAvatarProps) {
-   const avatar = src ? (
+   const { data: storyStatus } = useStoryStatus(showStoryRing ? userId : undefined);
+
+   let content = src ? (
       <Image
          src={src}
          width={size}
@@ -36,30 +44,25 @@ export default function UserAvatar({
       </div>
    );
 
-   if (!userId) return avatar;
+   if (userId && useHoverCard) {
+      content = <ProfileHoverCard userId={userId}>{content}</ProfileHoverCard>;
+   }
 
-   if (!useHoverCard) return avatar;
+   if (storyStatus?.hasStories) {
+      content = (
+         <div {...stylex.props(styles.ring, storyStatus.allStoriesViewed && styles.ringViewed)}>
+            <div {...stylex.props(styles.ringInner)}>{content}</div>
+         </div>
+      );
+   }
 
-   return <ProfileHoverCard userId={userId}>{avatar}</ProfileHoverCard>;
+   if (href) {
+      content = (
+         <Link href={href} {...stylex.props(styles.link)}>
+            {content}
+         </Link>
+      );
+   }
+
+   return content;
 }
-
-const styles = stylex.create({
-   image: {
-      borderRadius: '50%',
-      flexShrink: 0,
-      objectFit: 'cover',
-   },
-   placeholder: {
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.buttonHover,
-      color: colors.textSecondary,
-      flexShrink: 0,
-   },
-   placeholderIcon: {
-      width: '60%',
-      height: '60%',
-   },
-});

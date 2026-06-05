@@ -79,20 +79,6 @@ export const styles = stylex.create({
       display: 'grid',
       gridTemplateColumns: 'repeat(3, 1fr)',
    },
-   profileAvatar: {
-      borderRadius: '50%',
-      objectFit: 'cover',
-      flexShrink: 0,
-   },
-   profileAvatarPlaceholder: {
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.buttonHover,
-      color: colors.textSecondary,
-      flexShrink: 0,
-   },
    emptyState: {
       display: 'flex',
       flexDirection: 'column',

@@ -6,8 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiUser } from 'react-icons/fi';
 import { TbCamera } from 'react-icons/tb';
+import UserAvatar from '@/src/components/UserAvatar';
 import { supabase } from '@/src/lib/supabase/client';
 import { userRecentPostsQuery } from '@/src/queries/posts';
 import { userProfileCardQuery } from '@/src/queries/userProfiles';
@@ -76,22 +76,13 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
                ) : (
                   <>
                      <div {...stylex.props(styles.header)}>
-                        {profile.avatar_url ? (
-                           <Image
-                              src={profile.avatar_url}
-                              alt={profile.username}
-                              width={56}
-                              height={56}
-                              {...stylex.props(styles.profileAvatar)}
-                           />
-                        ) : (
-                           <div
-                              {...stylex.props(styles.profileAvatarPlaceholder)}
-                              style={{ width: 56, height: 56 }}
-                           >
-                              <FiUser size={34} />
-                           </div>
-                        )}
+                        <UserAvatar
+                           src={profile.avatar_url}
+                           alt={profile.username}
+                           size={56}
+                           userId={profile.id}
+                           useHoverCard={false}
+                        />
                         <div {...stylex.props(styles.nameBlock)}>
                            <OtherUserUsername
                               userProfile={{ username: profile.username, id: profile.id }}

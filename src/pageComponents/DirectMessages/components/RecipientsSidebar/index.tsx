@@ -97,6 +97,7 @@ export default async function RecipientsSidebar({
                         alt={profile?.username ?? ''}
                         size={74}
                         userId={profile?.id}
+                        useHoverCard={false}
                      />
                      <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
                      <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>

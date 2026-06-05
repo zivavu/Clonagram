@@ -99,6 +99,7 @@ export default function ConversationItem({
                alt={displayName}
                size={56}
                userId={avatars[0]?.id}
+               useHoverCard={false}
             />
             <div {...stylex.props(sidebarStyles.threadContent)}>
                <span

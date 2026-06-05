@@ -3,9 +3,9 @@ import { markChatRead } from '@/src/actions/dm/markChatRead';
 import type { ConversationDetail } from '@/src/queries/conversations';
 import type { ConversationMessages } from '@/src/queries/messages';
 
-const AT_BOTTOM_THRESHOLD = 300;
+const AT_BOTTOM_THRESHOLD = 100;
 
-interface Params {
+interface useChatScrollAndReadParams {
    containerRef: React.RefObject<HTMLDivElement | null>;
    endRef: React.RefObject<HTMLDivElement | null>;
    messages: ConversationMessages;
@@ -20,6 +20,10 @@ function isAtBottom(container: HTMLDivElement) {
    );
 }
 
+function isLastMessageOwnedByUser(messages: ConversationMessages, authUserId: string) {
+   return messages[messages.length - 1]?.sender_id === authUserId;
+}
+
 export function useChatScrollAndRead({
    containerRef,
    endRef,
@@ -27,7 +31,7 @@ export function useChatScrollAndRead({
    conversationId,
    authUserId,
    initialConversation,
-}: Params) {
+}: useChatScrollAndReadParams) {
    const messagesCount = messages.length;
    const lastReadCountRef = useRef(0);
 
@@ -66,7 +70,7 @@ export function useChatScrollAndRead({
    useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
-      if (isAtBottom(container)) {
+      if (isAtBottom(container) || isLastMessageOwnedByUser(messages, authUserId)) {
          endRef.current?.scrollIntoView({ behavior: 'instant' });
          markReadIfNeededRef.current();
       }
