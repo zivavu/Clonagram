@@ -54,6 +54,8 @@ export default function StoriesRow({ entries, viewedStoryIds, currentUser }: Sto
    const viewedSet = new Set(viewedStoryIds);
 
    const currentUserStory = entries.find(entry => entry.username === currentUser?.username);
+   const allOwnStoriesViewed =
+      !currentUserStory || currentUserStory.stories.every(s => viewedSet.has(s.userId));
 
    useEffect(() => {
       return () => {
@@ -126,7 +128,7 @@ export default function StoriesRow({ entries, viewedStoryIds, currentUser }: Sto
                   styleProps={styles.addStoryRingWrapper}
                >
                   {currentUser?.avatar_url ? (
-                     <div {...stylex.props(styles.storyRing, styles.storyRingViewed)}>
+                     <div {...stylex.props(styles.storyRing, allOwnStoriesViewed && styles.storyRingViewed)}>
                         <div {...stylex.props(styles.storyRingInner)}>
                            <Image
                               src={currentUser?.avatar_url}
