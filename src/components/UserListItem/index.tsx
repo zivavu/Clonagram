@@ -25,9 +25,12 @@ export function UserListItem({
    name,
    subtitle,
    rightElement,
+   onClick,
+   role,
+   ariaSelected,
 }: UserListItemProps) {
    return (
-      <div {...stylex.props(styles.row)}>
+      <button {...stylex.props(styles.row)} onClick={onClick}>
          <div {...stylex.props(styles.info)}>
             <UserAvatar
                src={avatarUrl}
@@ -42,7 +45,7 @@ export function UserListItem({
             </div>
          </div>
          {rightElement && <div {...stylex.props(styles.right)}>{rightElement}</div>}
-      </div>
+      </button>
    );
 }
 

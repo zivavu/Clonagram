@@ -101,6 +101,7 @@ export default function ConversationItem({
                username={avatars[0]?.username ?? ''}
                userId={avatars[0]?.id}
                useHoverCard={false}
+               disableLink={true}
             />
             <div {...stylex.props(sidebarStyles.threadContent)}>
                <span

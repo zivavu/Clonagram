@@ -1,7 +1,7 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
+import Image, { type ImageProps } from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { PostWithMedia } from '../../queries/posts';
 import { usePostViewModal } from '../../store/postViewModalStore';
@@ -50,6 +50,7 @@ export interface PostMediaCarouselProps {
    playerIdPrefix?: string;
    onImageChange?: (index: number) => void;
    onImageClick?: (post: PostWithMedia, index: number) => void;
+   imageProps?: Partial<ImageProps>;
 }
 
 export default function PostMediaCarousel({
@@ -63,6 +64,7 @@ export default function PostMediaCarousel({
    playerIdPrefix = 'feed',
    onImageChange,
    onImageClick,
+   imageProps,
 }: PostMediaCarouselProps) {
    const { open: openPostFullViewModal, isOpen: isPostFullViewModalOpen } = usePostViewModal();
    const { activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
@@ -176,6 +178,7 @@ export default function PostMediaCarousel({
                         placeholder={item.blurDataURL ? 'blur' : 'empty'}
                         blurDataURL={item.blurDataURL}
                         style={{ objectFit: 'cover' }}
+                        {...imageProps}
                      />
                   </button>
                );

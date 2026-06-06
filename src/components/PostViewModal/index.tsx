@@ -81,6 +81,7 @@ export default function PostFullViewModal() {
                   width={'auto'}
                   aspectRatio={aspectRatio}
                   sizes="70vw"
+                  imageProps={{ unoptimized: true }}
                   omitRightBorderRadius={true}
                   playerIdPrefix="modal"
                />

@@ -151,6 +151,7 @@ function NotificationRowComponent({ notification }: { notification: GroupedNotif
                size={44}
                username={firstActor.username}
                userId={firstActor.id}
+               disableLink
             />
          </div>
          <div {...stylex.props(styles.notificationBody)}>

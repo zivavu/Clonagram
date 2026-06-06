@@ -16,6 +16,7 @@ interface UserAvatarProps extends Omit<ImageProps, 'src'> {
    username: string;
    useHoverCard?: boolean;
    showStoryRing?: boolean;
+   disableLink?: boolean;
    href?: string;
 }
 
@@ -26,13 +27,15 @@ export default function UserAvatar({
    username,
    useHoverCard = true,
    showStoryRing = true,
+   disableLink = false,
    href,
    ...props
 }: UserAvatarProps) {
    const { data: storyStatus } = useStoryStatus(showStoryRing ? userId : undefined);
 
-   const resolvedHref =
-      href ?? (storyStatus?.hasStories && username ? `/stories/${username}` : undefined);
+   const resolvedHref = disableLink
+      ? undefined
+      : (href ?? (storyStatus?.hasStories && username ? `/stories/${username}` : undefined));
 
    let content = src ? (
       <Image
