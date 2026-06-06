@@ -1,7 +1,7 @@
 'use server';
 import 'server-only';
 import { revalidatePath } from 'next/cache';
-import { getAuthUser } from '../getAuthUser';
+import { getAuthUser } from '../actions/getAuthUser';
 
 export async function deleteCommentAction(params: { commentId: string }) {
    const { supabase, user } = await getAuthUser();

@@ -1,5 +1,5 @@
 import { type QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCommentAction } from '@/src/actions/comments/createComment';
+import { createCommentAction } from '@/src/comments/createComment';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import type { PostComment, PostComments } from '@/src/queries/comments';
 

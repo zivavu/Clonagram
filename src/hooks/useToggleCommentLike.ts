@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleCommentLikeAction } from '@/src/actions/comments/toggleCommentLike';
+import { toggleCommentLikeAction } from '@/src/comments/toggleCommentLike';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import type { PostComment, PostComments } from '@/src/queries/comments';
 

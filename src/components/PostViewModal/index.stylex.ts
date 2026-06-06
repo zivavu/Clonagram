@@ -21,6 +21,7 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'center',
       height: '95dvh',
+      maxWidth: '90dvw',
       zIndex: 4,
    },
    noAnimation: {

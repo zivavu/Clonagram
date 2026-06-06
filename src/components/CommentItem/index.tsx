@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots } from 'react-icons/tb';
-import { deleteCommentAction } from '@/src/actions/comments/deleteComment';
+import { deleteCommentAction } from '@/src/comments/deleteComment';
 import Skeleton from '@/src/components/Skeleton';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
