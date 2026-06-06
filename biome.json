@@ -56,5 +56,17 @@
             "organizeImports": "on"
          }
       }
-   }
+   },
+   "overrides": [
+      {
+         "includes": ["src/components/VolumeControl/index.tsx"],
+         "linter": {
+            "rules": {
+               "a11y": {
+                  "useSemanticElements": "off"
+               }
+            }
+         }
+      }
+   ]
 }

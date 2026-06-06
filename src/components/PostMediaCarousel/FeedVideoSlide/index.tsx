@@ -60,7 +60,7 @@ export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: Feed
          />
          {
             <div {...stylex.props(styles.controls)}>
-               <VolumeControl side="top" vertical />
+               <VolumeControl side="top" />
             </div>
          }
       </div>

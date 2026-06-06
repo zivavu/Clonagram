@@ -90,7 +90,7 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
             {...stylex.props(styles.playPauseOverlay)}
          />
          <div {...stylex.props(styles.volumeControl)}>
-            <VolumeControl side="bottom" align="end" vertical />
+            <VolumeControl side="bottom" />
          </div>
       </div>
    );

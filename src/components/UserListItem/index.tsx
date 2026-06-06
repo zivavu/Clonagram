@@ -14,6 +14,7 @@ interface UserListItemProps {
    rightElement?: React.ReactNode;
    onClick?: () => void;
    role?: string;
+   ariaSelected?: boolean;
 }
 
 export function UserListItem({
@@ -26,9 +27,16 @@ export function UserListItem({
    rightElement,
    onClick,
    role,
+   ariaSelected,
 }: UserListItemProps) {
    return (
-      <button {...stylex.props(styles.row)} onClick={onClick} role={role}>
+      // biome-ignore lint/a11y/useAriaPropsSupportedByRole: role is passed dynamically and can be option
+      <button
+         {...stylex.props(styles.row)}
+         onClick={onClick}
+         role={role}
+         aria-selected={ariaSelected}
+      >
          <div {...stylex.props(styles.info)}>
             <UserAvatar
                src={avatarUrl}

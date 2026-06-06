@@ -1,6 +1,6 @@
 'use client';
 
-import * as Popover from '@radix-ui/react-popover';
+import type { StyleXStyles } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import { MdVolumeDown, MdVolumeOff, MdVolumeUp } from 'react-icons/md';
@@ -8,67 +8,69 @@ import { usePlayerStore } from '@/src/store/usePlayerStore';
 import { styles } from './index.stylex';
 
 interface VolumeControlProps {
-   side?: 'top' | 'bottom' | 'left' | 'right';
-   align?: 'start' | 'center' | 'end';
-   vertical?: boolean;
+   side?: 'top' | 'bottom';
+   style?: StyleXStyles;
 }
 
-export default function VolumeControl({ side, align, vertical }: VolumeControlProps) {
+export default function VolumeControl({ side = 'bottom', style }: VolumeControlProps) {
    const { volume, setVolume } = usePlayerStore();
+   const [previousVolume, setPreviousVolume] = useState(1);
    const [open, setOpen] = useState(false);
 
+   const handleToggleMute = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      if (volume === 0) {
+         setVolume(previousVolume || 1);
+      } else {
+         setPreviousVolume(volume);
+         setVolume(0);
+      }
+   };
+
    return (
-      <Popover.Root open={open} onOpenChange={setOpen}>
-         <Popover.Trigger asChild>
-            <button
-               type="button"
+      <div
+         role="group"
+         onMouseEnter={() => setOpen(true)}
+         onMouseLeave={() => setOpen(false)}
+         {...stylex.props(styles.container, open && styles.containerOpen, style)}
+      >
+         <div
+            {...stylex.props(
+               styles.sliderWrapper,
+               side === 'top' && styles.sliderWrapperTop,
+               side !== 'top' && styles.sliderWrapperBottom,
+               open && styles.sliderWrapperOpen,
+               open && styles.sliderWrapperOpenHeight,
+            )}
+         >
+            <input
+               type="range"
+               min="0"
+               max="1"
+               step="0.01"
+               value={volume}
+               onChange={e => setVolume(Number(e.target.value))}
                onClick={e => e.stopPropagation()}
-               onDoubleClick={() => {
-                  setVolume(volume === 0 ? 1 : 0);
-               }}
-               {...stylex.props(styles.button)}
-            >
-               {volume === 0 ? (
-                  <MdVolumeOff size={20} />
-               ) : volume < 0.5 ? (
-                  <MdVolumeDown size={20} />
-               ) : (
-                  <MdVolumeUp size={20} />
+               {...stylex.props(
+                  styles.slider,
+                  side === 'top' && styles.sliderTop,
+                  side !== 'top' && styles.sliderBottom,
                )}
-            </button>
-         </Popover.Trigger>
-         <Popover.Portal>
-            <Popover.Content
-               side={side ?? 'bottom'}
-               align={align ?? 'center'}
-               sideOffset={4}
-               {...stylex.props(styles.paper, vertical && styles.verticalPaper)}
-            >
-               {vertical ? (
-                  <div {...stylex.props(styles.verticalSliderWrapper)}>
-                     <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        value={volume}
-                        onChange={e => setVolume(Number(e.target.value))}
-                        {...stylex.props(styles.slider, styles.verticalSlider)}
-                     />
-                  </div>
-               ) : (
-                  <input
-                     type="range"
-                     min="0"
-                     max="1"
-                     step="0.01"
-                     value={volume}
-                     onChange={e => setVolume(Number(e.target.value))}
-                     {...stylex.props(styles.slider)}
-                  />
-               )}
-            </Popover.Content>
-         </Popover.Portal>
-      </Popover.Root>
+            />
+         </div>
+         <button
+            type="button"
+            onClick={handleToggleMute}
+            {...stylex.props(styles.button, open && styles.buttonOpen)}
+         >
+            {volume === 0 ? (
+               <MdVolumeOff size={20} />
+            ) : volume < 0.5 ? (
+               <MdVolumeDown size={20} />
+            ) : (
+               <MdVolumeUp size={20} />
+            )}
+         </button>
+      </div>
    );
 }

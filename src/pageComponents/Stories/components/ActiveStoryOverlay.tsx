@@ -123,7 +123,7 @@ export default function ActiveStoryOverlay({
                </div>
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>
                   <span {...stylex.props(styles.activeStoryTopNavigationRightButton)}>
-                     <VolumeControl />
+                     <VolumeControl side="bottom" />
                   </span>
                   <button
                      type="button"

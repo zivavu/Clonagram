@@ -220,7 +220,7 @@ export default function CaptionPreview({
                />
                <VideoPlayOverlay isPlaying={isPlaying} onClick={handleVideoClick} />
                <div {...stylex.props(styles.volumeControl)}>
-                  <VolumeControl side="bottom" vertical />
+                  <VolumeControl side="bottom" />
                </div>
             </div>
          )}
