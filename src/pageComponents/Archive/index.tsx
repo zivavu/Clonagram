@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
-import { MdChevronLeft, MdHistory } from 'react-icons/md';
+import { GoArrowLeft } from 'react-icons/go';
+import { MdHistory } from 'react-icons/md';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
 import EmptyState from './components/EmptyState';
 import StoryGrid from './components/StoryGrid';
@@ -27,7 +28,7 @@ export default function ArchivePage({ stories }: { stories: ArchivedStory[] }) {
          <div {...stylex.props(styles.content)}>
             <div {...stylex.props(styles.header)}>
                <Link href="/profile" {...stylex.props(styles.backLink)}>
-                  <MdChevronLeft size={24} />
+                  <GoArrowLeft size={24} />
                   Archive
                </Link>
             </div>

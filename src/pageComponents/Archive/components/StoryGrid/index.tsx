@@ -16,7 +16,6 @@ export default function StoryGrid({ groups }: { groups: MonthGroup[] }) {
       <>
          {groups.map(group => (
             <div key={group.label} {...stylex.props(styles.group)}>
-               <h3 {...stylex.props(styles.monthLabel)}>{group.label}</h3>
                <div {...stylex.props(styles.grid)}>
                   {group.stories.map(story => (
                      <Link

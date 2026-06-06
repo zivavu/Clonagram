@@ -15,7 +15,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       width: '100%',
-      maxWidth: '935px',
+      maxWidth: '1160px',
       paddingLeft: '16px',
       paddingRight: '16px',
    },
@@ -25,10 +25,9 @@ export const styles = stylex.create({
    backLink: {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '4px',
+      gap: '16px',
       color: colors.textPrimary,
-      fontSize: '1rem',
-      fontWeight: 600,
+      fontSize: '1.2rem',
    },
    tabBar: {
       display: 'flex',
@@ -42,8 +41,9 @@ export const styles = stylex.create({
       paddingBottom: '12px',
       borderBottomWidth: '1px',
       borderBottomStyle: 'solid',
-      borderBottomColor: colors.textPrimary,
+      borderBottomColor: colors.whiteBlack,
       marginBottom: '-1px',
+      zIndex: 1,
    },
    tabText: {
       fontSize: '0.75rem',
@@ -59,7 +59,6 @@ export const styles = stylex.create({
    subtitle: {
       fontSize: '0.875rem',
       color: colors.textSecondary,
-      textAlign: 'center',
       marginBottom: '32px',
    },
 });

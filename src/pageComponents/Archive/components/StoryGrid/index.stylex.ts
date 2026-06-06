@@ -5,15 +5,10 @@ export const styles = stylex.create({
    group: {
       marginBottom: '32px',
    },
-   monthLabel: {
-      fontSize: '1rem',
-      fontWeight: 600,
-      color: colors.textPrimary,
-      marginBottom: '16px',
-   },
+
    grid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
+      gridTemplateColumns: 'repeat(4, 1fr)',
       gap: '24px',
    },
    thumbnail: {
