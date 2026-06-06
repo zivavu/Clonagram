@@ -36,21 +36,6 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'center',
    },
-   videoOverlayBtn: {
-      position: 'absolute',
-      inset: 0,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-   },
-   playButton: {
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      fontSize: '22px',
-   },
    panel: {
       width: '340px',
       flexShrink: 0,
@@ -60,5 +45,11 @@ export const styles = stylex.create({
       borderLeftWidth: '1px',
       borderLeftStyle: 'solid',
       borderLeftColor: colors.border,
+   },
+   volumeControl: {
+      position: 'absolute',
+      top: 12,
+      right: 12,
+      zIndex: 10,
    },
 });

@@ -24,21 +24,6 @@ export const styles = stylex.create({
    cropContainerVideo: {
       cursor: 'default',
    },
-   videoOverlayBtn: {
-      position: 'absolute',
-      inset: 0,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-   },
-   playButton: {
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      fontSize: '22px',
-   },
    previewImage: {
       flexShrink: 0,
       objectFit: 'cover',
@@ -69,5 +54,11 @@ export const styles = stylex.create({
       overflow: 'hidden',
       width: '260px',
       boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+   },
+   volumeControl: {
+      position: 'absolute',
+      top: 12,
+      right: 12,
+      zIndex: 10,
    },
 });

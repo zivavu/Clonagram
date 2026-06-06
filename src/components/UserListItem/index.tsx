@@ -14,7 +14,6 @@ interface UserListItemProps {
    rightElement?: React.ReactNode;
    onClick?: () => void;
    role?: string;
-   ariaSelected?: boolean;
 }
 
 export function UserListItem({
@@ -27,10 +26,9 @@ export function UserListItem({
    rightElement,
    onClick,
    role,
-   ariaSelected,
 }: UserListItemProps) {
    return (
-      <button {...stylex.props(styles.row)} onClick={onClick}>
+      <button {...stylex.props(styles.row)} onClick={onClick} role={role}>
          <div {...stylex.props(styles.info)}>
             <UserAvatar
                src={avatarUrl}

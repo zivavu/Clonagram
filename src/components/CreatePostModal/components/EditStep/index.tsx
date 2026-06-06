@@ -2,7 +2,8 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
-import { IoPlay } from 'react-icons/io5';
+import VolumeControl from '@/src/components/VolumeControl';
+import { usePlayerStore } from '@/src/store/usePlayerStore';
 import { captureVideoFrame } from '@/src/utils/captureVideoFrame';
 import { useContainerSize } from '../../hooks/useContainerSize';
 import { useCropDimensions } from '../../hooks/useCropDimensions';
@@ -10,6 +11,7 @@ import { useMediaNaturalSize } from '../../hooks/useMediaNaturalSize';
 import type { AspectRatio, PostMedia } from '../../types';
 import PreviewArrows from '../PreviewArrows';
 import StepHeader, { StepHeaderAction } from '../StepHeader';
+import VideoPlayOverlay from '../VideoPlayOverlay';
 import FilteredCanvas from './components/FilteredCanvas';
 import ImageEditPanel from './components/ImageEditPanel';
 import VideoEditPanel from './components/VideoEditPanel';
@@ -42,6 +44,7 @@ export default function EditStep({
    const posterRef = useRef<string | null>(null);
    const [videoPoster, setVideoPoster] = useState<string | null>(null);
    const [isPlaying, setIsPlaying] = useState(false);
+   const { volume } = usePlayerStore();
 
    const coverTimeRef = useRef(currentFile.coverTime);
    const trimStartRef = useRef(currentFile.trimStart);
@@ -80,6 +83,12 @@ export default function EditStep({
          cancelled = true;
       };
    }, [currentFile.preview, currentFile.coverTime, currentFile.type]);
+
+   useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
+      video.volume = volume;
+   }, [volume]);
 
    const handleVideoClick = () => {
       const video = videoRef.current;
@@ -137,7 +146,7 @@ export default function EditStep({
                            ref={videoRef}
                            key={currentFile.preview}
                            src={currentFile.preview}
-                           muted={currentFile.muted}
+                           muted={currentFile.muted || volume === 0}
                            playsInline
                            poster={videoPoster ?? undefined}
                            draggable={false}
@@ -146,23 +155,18 @@ export default function EditStep({
                            onTimeUpdate={handleVideoTimeUpdate}
                            onLoadedData={() => {
                               const v = videoRef.current;
-                              if (v) v.currentTime = coverTimeRef.current;
+                              if (v) {
+                                 v.currentTime = coverTimeRef.current;
+                                 v.volume = volume;
+                              }
                            }}
                            {...stylex.props(styles.previewImage)}
                            style={previewTransform}
                         />
-                        <button
-                           type="button"
-                           {...stylex.props(styles.videoOverlayBtn)}
-                           onClick={handleVideoClick}
-                           aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                        >
-                           {!isPlaying && (
-                              <div {...stylex.props(styles.playButton)}>
-                                 <IoPlay fontSize={80} />
-                              </div>
-                           )}
-                        </button>
+                        <VideoPlayOverlay isPlaying={isPlaying} onClick={handleVideoClick} />
+                        <div {...stylex.props(styles.volumeControl)}>
+                           <VolumeControl side="bottom" vertical />
+                        </div>
                      </>
                   ) : (
                      <FilteredCanvas

@@ -1,9 +1,12 @@
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
+import VolumeControl from '@/src/components/VolumeControl';
+import { usePlayerStore } from '@/src/store/usePlayerStore';
 import { useContainerSize } from '../../../../hooks/useContainerSize';
 import { useCropDimensions } from '../../../../hooks/useCropDimensions';
 import type { AspectRatio, PostMedia } from '../../../../types';
 import PreviewArrows from '../../../PreviewArrows';
+import VideoPlayOverlay from '../../../VideoPlayOverlay';
 import { styles } from './index.stylex';
 
 const GRID_LINES: [number, number, number, number][] = [
@@ -37,11 +40,37 @@ export default function CropPreview({
 }: CropPreviewProps) {
    const currentFile = files[currentIndex];
    const previewRef = useRef<HTMLDivElement>(null);
+   const videoRef = useRef<HTMLVideoElement>(null);
    const dragRef = useRef<DragState | null>(null);
    const containerSize = useContainerSize(previewRef);
    const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
    const [isDragging, setIsDragging] = useState(false);
+   const [isPlaying, setIsPlaying] = useState(false);
    const { cropBox, imageDisplaySize } = useCropDimensions(containerSize, naturalSize, aspectRatio);
+   const { volume } = usePlayerStore();
+
+   useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
+      video.volume = volume;
+   }, [volume]);
+
+   const handleVideoClick = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      if (video.paused) {
+         video.play().catch(() => {});
+      } else {
+         video.pause();
+      }
+   };
+
+   const handleVideoEnded = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      video.currentTime = 0;
+      video.play().catch(() => {});
+   };
 
    // biome-ignore lint/correctness/useExhaustiveDependencies: onUpdateFile omitted — primitives in deps prevent loops
    useEffect(() => {
@@ -110,23 +139,35 @@ export default function CropPreview({
             onPointerCancel={handlePointerUp}
          >
             {currentFile.type === 'video' ? (
-               <video
-                  key={currentFile.preview}
-                  src={currentFile.preview}
-                  muted
-                  loop
-                  autoPlay
-                  playsInline
-                  draggable={false}
-                  onLoadedMetadata={e =>
-                     setNaturalSize({
-                        w: e.currentTarget.videoWidth,
-                        h: e.currentTarget.videoHeight,
-                     })
-                  }
-                  {...stylex.props(styles.previewImage)}
-                  style={transformStyle}
-               />
+               <>
+                  <video
+                     ref={videoRef}
+                     key={currentFile.preview}
+                     src={currentFile.preview}
+                     muted={currentFile.muted || volume === 0}
+                     loop
+                     autoPlay
+                     playsInline
+                     draggable={false}
+                     onPlay={() => setIsPlaying(true)}
+                     onPause={() => setIsPlaying(false)}
+                     onEnded={handleVideoEnded}
+                     onLoadedMetadata={e => {
+                        setNaturalSize({
+                           w: e.currentTarget.videoWidth,
+                           h: e.currentTarget.videoHeight,
+                        });
+                        const video = videoRef.current;
+                        if (video) video.volume = volume;
+                     }}
+                     {...stylex.props(styles.previewImage)}
+                     style={transformStyle}
+                  />
+                  <VideoPlayOverlay isPlaying={isPlaying} onClick={handleVideoClick} />
+                  <div {...stylex.props(styles.volumeControl)}>
+                     <VolumeControl side="bottom" vertical />
+                  </div>
+               </>
             ) : (
                /* biome-ignore lint/performance/noImgElement: crop preview needs raw img for panning */
                <img

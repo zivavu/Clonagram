@@ -1,9 +1,10 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useRef, useState } from 'react';
-import { IoPlay } from 'react-icons/io5';
+import { useEffect, useRef, useState } from 'react';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
+import VolumeControl from '@/src/components/VolumeControl';
+import { usePlayerStore } from '@/src/store/usePlayerStore';
 import type { PartialUser } from '@/src/types/global';
 import { useContainerSize } from '../../../../hooks/useContainerSize';
 import { useCropDimensions } from '../../../../hooks/useCropDimensions';
@@ -11,6 +12,7 @@ import { useMediaNaturalSize } from '../../../../hooks/useMediaNaturalSize';
 import { useWebGLFilter } from '../../../../hooks/useWebGLFilter';
 import type { AspectRatio, PostMedia } from '../../../../types';
 import PreviewArrows from '../../../PreviewArrows';
+import VideoPlayOverlay from '../../../VideoPlayOverlay';
 import TagPin from '../TagPin';
 
 import { styles } from './index.stylex';
@@ -86,11 +88,18 @@ export default function CaptionPreview({
    const activePopper = tagPopper?.previewKey === currentFile.preview ? tagPopper : null;
 
    const [isPlaying, setIsPlaying] = useState(false);
+   const { volume } = usePlayerStore();
 
    const trimStartRef = useRef(currentFile.trimStart);
    const trimEndRef = useRef(currentFile.trimEnd);
    trimStartRef.current = currentFile.trimStart;
    trimEndRef.current = currentFile.trimEnd;
+
+   useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
+      video.volume = volume;
+   }, [volume]);
 
    const handleVideoClick = () => {
       const video = videoRef.current;
@@ -187,14 +196,17 @@ export default function CaptionPreview({
                   ref={videoRef}
                   key={currentFile.preview}
                   src={currentFile.preview}
-                  muted={currentFile.muted}
+                  muted={currentFile.muted || volume === 0}
                   playsInline
                   poster={currentFile.poster ?? undefined}
                   draggable={false}
                   onPlay={() => setIsPlaying(true)}
                   onLoadedData={() => {
                      const video = videoRef.current;
-                     if (video) video.currentTime = trimStartRef.current;
+                     if (video) {
+                        video.currentTime = trimStartRef.current;
+                        video.volume = volume;
+                     }
                   }}
                   onTimeUpdate={() => {
                      const video = videoRef.current;
@@ -206,18 +218,10 @@ export default function CaptionPreview({
                   {...stylex.props(styles.previewImage)}
                   style={previewStyle}
                />
-               <button
-                  type="button"
-                  {...stylex.props(styles.videoOverlayBtn)}
-                  onClick={handleVideoClick}
-                  aria-label={isPlaying ? 'Pause video' : 'Play video'}
-               >
-                  {!isPlaying && (
-                     <div {...stylex.props(styles.playButton)}>
-                        <IoPlay fontSize={80} />
-                     </div>
-                  )}
-               </button>
+               <VideoPlayOverlay isPlaying={isPlaying} onClick={handleVideoClick} />
+               <div {...stylex.props(styles.volumeControl)}>
+                  <VolumeControl side="bottom" vertical />
+               </div>
             </div>
          )}
 

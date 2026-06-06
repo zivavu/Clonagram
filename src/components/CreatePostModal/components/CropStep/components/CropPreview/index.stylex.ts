@@ -31,4 +31,10 @@ export const styles = stylex.create({
       height: '100%',
       pointerEvents: 'none',
    },
+   volumeControl: {
+      position: 'absolute',
+      top: 12,
+      right: 12,
+      zIndex: 10,
+   },
 });
