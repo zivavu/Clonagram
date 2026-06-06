@@ -22,6 +22,7 @@ export const styles = stylex.create({
       flexShrink: 0,
       objectFit: 'cover',
       pointerEvents: 'none',
+      maxWidth: 'none',
    },
    gridOverlay: {
       position: 'absolute',

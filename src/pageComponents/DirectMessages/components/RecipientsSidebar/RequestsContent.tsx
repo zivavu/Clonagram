@@ -113,6 +113,7 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
                         size={56}
                         username={avatars[0]?.username ?? ''}
                         userId={avatars[0]?.id}
+                        disableLink
                      />
                      <div {...stylex.props(styles.threadContent)}>
                         <span {...stylex.props(styles.threadName)}>{displayName}</span>

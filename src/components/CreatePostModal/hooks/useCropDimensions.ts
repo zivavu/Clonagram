@@ -39,9 +39,13 @@ export function useCropDimensions(
    const imgRatio = natural.w / natural.h;
    const cropRatio = cropBox.width / cropBox.height;
    const imageDisplaySize =
-      imgRatio >= cropRatio
-         ? { w: cropBox.height * imgRatio, h: cropBox.height }
-         : { w: cropBox.width, h: cropBox.width / imgRatio };
+      aspectRatio === 'original'
+         ? imgRatio >= cropRatio
+            ? { w: cropBox.width, h: cropBox.width / imgRatio }
+            : { w: cropBox.height * imgRatio, h: cropBox.height }
+         : imgRatio >= cropRatio
+           ? { w: cropBox.height * imgRatio, h: cropBox.height }
+           : { w: cropBox.width, h: cropBox.width / imgRatio };
 
    return { cropBox, imageDisplaySize };
 }
