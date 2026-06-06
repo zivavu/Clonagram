@@ -113,6 +113,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                currentImageIndex.current = index;
             }}
             onImageClick={(clickedPost, index) => handleOpenPostModal(clickedPost, index)}
+            dotsBelow
          />
          <div {...stylex.props(styles.iconsBar)}>
             <div {...stylex.props(styles.iconBarItem)}>
@@ -124,9 +125,9 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   {...stylex.props(styles.iconBarItemButton)}
                >
                   {isLiked ? (
-                     <MdFavorite size={24} color={colors.textPrimary} />
+                     <MdFavorite size={26} color={colors.textPrimary} />
                   ) : (
-                     <MdFavoriteBorder size={24} color={colors.textPrimary} />
+                     <MdFavoriteBorder size={26} color={colors.textPrimary} />
                   )}
                   {(post.likes.length ?? 0) > 0 && <span>{post.likes.length}</span>}
                </button>
@@ -138,20 +139,20 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   onClick={() => handleOpenPostModal(post, currentImageIndex.current)}
                   {...stylex.props(styles.iconBarItemButton)}
                >
-                  <FiMessageCircle size={24} color={colors.textPrimary} />
+                  <FiMessageCircle size={26} color={colors.textPrimary} />
                   {(post.comments[0]?.count ?? 0) > 0 && <span>{post.comments[0]?.count}</span>}
                </button>
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
                <button type="button" aria-label="Repost">
-                  <TbRepeat size={24} color={colors.textPrimary} />
+                  <TbRepeat size={26} color={colors.textPrimary} />
                </button>
             </div>
             <button type="button" aria-label="Share">
-               <LuSend size={20} color={colors.textPrimary} />
+               <LuSend size={24} color={colors.textPrimary} />
             </button>
             <button type="button" aria-label="Bookmark" style={{ marginLeft: 'auto' }}>
-               <MdBookmarkBorder size={24} color={colors.textPrimary} />
+               <MdBookmarkBorder size={26} color={colors.textPrimary} />
             </button>
          </div>
          <div {...stylex.props(styles.descriptionContainer)}>

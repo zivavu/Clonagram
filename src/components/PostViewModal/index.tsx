@@ -44,14 +44,6 @@ export default function PostFullViewModal() {
       }
    }
 
-   const aspectRatio = (() => {
-      if (post.aspect_ratio === 'original') {
-         const media = post.images?.[0] ?? post.videos?.[0];
-         return media?.width && media?.height ? `${media.width} / ${media.height}` : undefined;
-      }
-      return post.aspect_ratio.split(':').join(' / ');
-   })();
-
    return (
       <Dialog.Root open={isOpen} onOpenChange={() => handleClose()}>
          <Dialog.Portal>
@@ -74,17 +66,18 @@ export default function PostFullViewModal() {
                <Dialog.Description style={{ display: 'none' }}>
                   {post.caption ?? 'Post has no caption'}
                </Dialog.Description>
-               <PostMediaCarousel
-                  post={post}
-                  initialImageIndex={initialImageIndex}
-                  height={'100%'}
-                  width={'auto'}
-                  aspectRatio={aspectRatio}
-                  sizes="80vw"
-                  imageProps={{ style: { objectFit: 'contain' } }}
-                  omitRightBorderRadius={true}
-                  playerIdPrefix="modal"
-               />
+               <div {...stylex.props(styles.carouselWrapper)}>
+                  <PostMediaCarousel
+                     post={post}
+                     initialImageIndex={initialImageIndex}
+                     height={'100%'}
+                     width={'100%'}
+                     sizes="80vw"
+                     imageProps={{ style: { objectFit: 'contain' } }}
+                     omitRightBorderRadius={true}
+                     playerIdPrefix="modal"
+                  />
+               </div>
                <PostModalComments initialPost={post} />
             </Dialog.Content>
          </Dialog.Portal>

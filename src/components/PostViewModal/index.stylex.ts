@@ -21,12 +21,18 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'center',
       height: '95dvh',
-      maxWidth: '90dvw',
+      width: '88dvw',
       zIndex: 4,
    },
    noAnimation: {
       animationName: 'none',
       animationDuration: '0s',
+   },
+   carouselWrapper: {
+      flex: 1,
+      minWidth: 0,
+      height: '100%',
+      overflow: 'hidden',
    },
    closeOverlayLayer: {
       position: 'fixed',
