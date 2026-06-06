@@ -12,6 +12,7 @@ export const styles = stylex.create({
    info: {
       display: 'flex',
       alignItems: 'center',
+      textAlign: 'left',
       gap: '12px',
       flex: 1,
       minWidth: 0,

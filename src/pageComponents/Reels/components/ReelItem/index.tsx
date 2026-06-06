@@ -2,13 +2,13 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
 import { MdLocationOn, MdVerified } from 'react-icons/md';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
 import type { Reel } from '@/src/queries/posts';
+import OtherUserUsername from '../../../../components/Username/OtherUserUsername';
 import ReelActionRail from '../ReelActionRail';
 import ReelComments from '../ReelComments';
 import ReelVideo from '../ReelVideo';
@@ -58,9 +58,7 @@ export default function ReelItem({
                      username={reel.user.username}
                      userId={reel.user.id}
                   />
-                  <Link href={`/profile/${reel.user.username}`} {...stylex.props(styles.username)}>
-                     {reel.user.username}
-                  </Link>
+                  <OtherUserUsername userProfile={reel.user} />
                   {reel.user.is_verified && (
                      <span {...stylex.props(styles.verified)}>
                         <MdVerified size={14} />

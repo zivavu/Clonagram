@@ -85,17 +85,25 @@ export const styles = stylex.create({
       fontSize: '14px',
       fontWeight: 600,
       border: 'none',
+
+      ':hover': {
+         backgroundColor: colors.secondaryButtonHover,
+      },
    },
    buttonPrimary: {
       backgroundColor: colors.primaryButton,
       color: colors.white,
    },
    buttonSecondary: {
-      backgroundColor: colors.bgSecondary,
+      backgroundColor: colors.secondaryButton,
       color: colors.textPrimary,
+
+      ':hover': {
+         backgroundColor: colors.secondaryButtonHover,
+      },
    },
    buttonIcon: {
-      backgroundColor: colors.bgSecondary,
+      backgroundColor: colors.secondaryButton,
       color: colors.textPrimary,
       padding: '14px',
    },

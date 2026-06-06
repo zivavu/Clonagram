@@ -18,8 +18,12 @@ export const styles = stylex.create({
       color: colors.white,
    },
    profileSecondary: {
-      backgroundColor: colors.bgSecondary,
+      backgroundColor: colors.secondaryButton,
       color: colors.textPrimary,
+
+      ':hover': {
+         backgroundColor: colors.secondaryButtonHover,
+      },
    },
    sidebarFollow: {
       fontSize: '0.8rem',

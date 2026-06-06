@@ -4,6 +4,7 @@ import type { StyleXStyles } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import ProfileHoverCard from '@/src/components/ProfileHoverCard';
+import { styles } from '../username.stylex';
 
 export type OtherUserUsernameProps = {
    style?: StyleXStyles;
@@ -19,7 +20,10 @@ export default function OtherUserUsername({
    const username = userProfile?.username;
 
    const link = (
-      <Link href={`/profile/${userProfile.username ?? ''}`} {...stylex.props(style)}>
+      <Link
+         href={`/profile/${userProfile.username ?? ''}`}
+         {...stylex.props(styles.username, style)}
+      >
          {username}
       </Link>
    );

@@ -10,7 +10,7 @@ export const styles = stylex.create({
       padding: '10px 16px',
       borderBottomWidth: 1,
       borderBottomStyle: 'solid',
-      borderBottomColor: 'rgb(54, 54, 54)',
+      borderBottomColor: colors.lightBorder,
       overflowX: 'auto',
       flexShrink: 0,
    },

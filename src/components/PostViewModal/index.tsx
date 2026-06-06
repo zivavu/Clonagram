@@ -44,6 +44,14 @@ export default function PostFullViewModal() {
       }
    }
 
+   const aspectRatio = (() => {
+      if (post.aspect_ratio === 'original') {
+         const media = post.images?.[0] ?? post.videos?.[0];
+         return media?.width && media?.height ? `${media.width} / ${media.height}` : '1 / 1';
+      }
+      return post.aspect_ratio.split(':').join(' / ');
+   })();
+
    return (
       <Dialog.Root open={isOpen} onOpenChange={() => handleClose()}>
          <Dialog.Portal>
@@ -66,7 +74,7 @@ export default function PostFullViewModal() {
                <Dialog.Description style={{ display: 'none' }}>
                   {post.caption ?? 'Post has no caption'}
                </Dialog.Description>
-               <div {...stylex.props(styles.carouselWrapper)}>
+               <div {...stylex.props(styles.carouselWrapper)} style={{ aspectRatio }}>
                   <PostMediaCarousel
                      post={post}
                      initialImageIndex={initialImageIndex}

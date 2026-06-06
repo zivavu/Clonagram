@@ -46,7 +46,7 @@ export const styles = stylex.create({
       flexWrap: 'wrap',
    },
    username: {
-      color: colors.white,
+      color: colors.textPrimary,
       fontSize: '14px',
       fontWeight: 600,
    },
@@ -55,7 +55,7 @@ export const styles = stylex.create({
       display: 'flex',
    },
    follow: {
-      color: colors.white,
+      color: colors.textPrimary,
       fontSize: '14px',
       fontWeight: 600,
       background: 'none',
@@ -66,11 +66,11 @@ export const styles = stylex.create({
       display: 'flex',
       alignItems: 'center',
       gap: '4px',
-      color: colors.white,
+      color: colors.textPrimary,
       fontSize: '13px',
    },
    caption: {
-      color: colors.white,
+      color: colors.textPrimary,
       fontSize: '14px',
       display: '-webkit-box',
       WebkitLineClamp: 3,

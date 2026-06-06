@@ -116,7 +116,7 @@ export const styles = stylex.create({
    },
    divider: {
       height: 1,
-      backgroundColor: 'rgb(54, 54, 54)',
+      backgroundColor: colors.lightBorder,
       borderWidth: 0,
       flexShrink: 0,
    },

@@ -4,7 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { BsEmojiSmile } from 'react-icons/bs';
+import { FaRegFaceSmile } from 'react-icons/fa6';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
@@ -221,7 +221,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                </div>
                <form onSubmit={handleCommentSubmit} {...stylex.props(styles.commentInputRow)}>
                   <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
-                     <BsEmojiSmile size={24} />
+                     <FaRegFaceSmile size={20} style={{ overflow: 'visible' }} />
                   </button>
                   <input
                      ref={commentInputRef}

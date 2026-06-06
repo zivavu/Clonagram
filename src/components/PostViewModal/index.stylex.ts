@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import { colors } from '../../styles/tokens.stylex';
 
 const scaleIn = stylex.keyframes({
    from: { transform: 'translate(-50%, -50%) scale(0.9)', opacity: 0 },
@@ -19,9 +20,9 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       height: '95dvh',
-      width: '88dvw',
+      maxWidth: '88dvw',
       zIndex: 4,
    },
    noAnimation: {
@@ -29,10 +30,11 @@ export const styles = stylex.create({
       animationDuration: '0s',
    },
    carouselWrapper: {
-      flex: 1,
-      minWidth: 0,
       height: '100%',
+      maxWidth: 'calc(88dvw - 500px)',
       overflow: 'hidden',
+      backgroundColor: colors.black,
+      flexShrink: 0,
    },
    closeOverlayLayer: {
       position: 'fixed',

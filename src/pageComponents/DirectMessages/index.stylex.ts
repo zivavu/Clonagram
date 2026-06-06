@@ -199,7 +199,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       borderStyle: 'solid',
-      borderColor: 'rgb(54, 54, 54)',
+      borderColor: colors.lightBorder,
       borderWidth: 1,
       borderRadius: radius.xl,
       overflow: 'hidden',
