@@ -21,6 +21,7 @@ interface StoryCardProps {
    onClick: () => void;
    currentStoryMediaIndex: number;
    goToNextStoryMedia: () => void;
+   closeHref: string;
    showReply?: boolean;
 }
 
@@ -31,6 +32,7 @@ export default function StoryCard({
    onClick,
    currentStoryMediaIndex,
    goToNextStoryMedia,
+   closeHref,
    showReply = true,
 }: StoryCardProps) {
    const [displayedIndex, setDisplayedIndex] = useState(0);
@@ -110,6 +112,7 @@ export default function StoryCard({
                isPlaying={isPlaying}
                onTogglePlay={togglePlay}
                currentStoryMediaIndex={currentStoryMediaIndex}
+               closeHref={closeHref}
                showReply={showReply}
             />
          )}

@@ -33,6 +33,15 @@ export const styles = stylex.create({
       top: '16px',
       right: '16px',
       zIndex: 10,
+      '@media (max-width: 639px)': {
+         display: 'none',
+      },
+   },
+   mobileCloseButton: {
+      display: 'none',
+      '@media (max-width: 639px)': {
+         display: 'flex',
+      },
    },
    strip: {
       display: 'flex',

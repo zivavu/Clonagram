@@ -159,6 +159,7 @@ export default function StoriesPage({
                         onClick={() => goToStoryUserCard(i)}
                         currentStoryMediaIndex={currentStoryMediaIndex}
                         goToNextStoryMedia={goToNextStoryMedia}
+                        closeHref={closeHref}
                         showReply={showReply}
                      />
                   ))}

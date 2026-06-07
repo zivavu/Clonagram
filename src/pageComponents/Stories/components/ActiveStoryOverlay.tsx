@@ -1,10 +1,11 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
+import Link from 'next/link';
 import type React from 'react';
 import { useCallback } from 'react';
 import { LuSend } from 'react-icons/lu';
-import { MdFavoriteBorder, MdMoreHoriz, MdPause, MdPlayArrow } from 'react-icons/md';
+import { MdClose, MdFavoriteBorder, MdMoreHoriz, MdPause, MdPlayArrow } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import VolumeControl from '@/src/components/VolumeControl';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
@@ -22,6 +23,7 @@ interface ActiveStoryOverlayProps {
    isPlaying: boolean;
    onTogglePlay: (e: React.MouseEvent) => void;
    currentStoryMediaIndex: number;
+   closeHref: string;
    showReply?: boolean;
 }
 
@@ -35,6 +37,7 @@ export default function ActiveStoryOverlay({
    isPlaying,
    onTogglePlay,
    currentStoryMediaIndex,
+   closeHref,
    showReply = true,
 }: ActiveStoryOverlayProps) {
    const onPictureAnimationEnd = useCallback(
@@ -138,6 +141,15 @@ export default function ActiveStoryOverlay({
                   >
                      <MdMoreHoriz size={20} />
                   </button>
+                  <Link
+                     href={closeHref}
+                     {...stylex.props(
+                        styles.activeStoryTopNavigationRightButton,
+                        styles.mobileCloseButton,
+                     )}
+                  >
+                     <MdClose size={24} />
+                  </Link>
                </div>
             </div>
          </div>
