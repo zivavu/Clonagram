@@ -11,7 +11,7 @@ export const styles = stylex.create({
    content: {
       position: 'fixed',
       inset: 0,
-      width: '460px',
+      width: 'min(460px, 100vw)',
       display: 'flex',
       flexDirection: 'column',
       padding: '16px',

@@ -15,5 +15,14 @@ export const styles = stylex.create({
       borderRadius: '24px',
       overflow: 'hidden',
       zIndex: 51,
+      '@media (max-width: 767px)': {
+         top: 0,
+         left: 0,
+         transform: 'none',
+         width: '100vw',
+         height: '100dvh',
+         aspectRatio: 'auto',
+         borderRadius: 0,
+      },
    },
 });

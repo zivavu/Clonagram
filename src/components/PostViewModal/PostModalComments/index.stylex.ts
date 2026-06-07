@@ -11,6 +11,15 @@ export const styles = stylex.create({
       height: '100%',
       backgroundColor: colors.bgBubble,
       borderLeft: `1px solid ${colors.separator}`,
+      '@media (max-width: 767px)': {
+         width: '100%',
+         height: 'auto',
+         flex: 1,
+         borderLeftWidth: 0,
+         borderTopWidth: '1px',
+         borderTopStyle: 'solid',
+         borderTopColor: colors.separator,
+      },
    },
    scrollArea: {
       display: 'flex',

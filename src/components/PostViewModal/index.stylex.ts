@@ -24,6 +24,18 @@ export const styles = stylex.create({
       height: '95dvh',
       maxWidth: '88dvw',
       zIndex: 4,
+      '@media (max-width: 767px)': {
+         top: 0,
+         left: 0,
+         transform: 'none',
+         animationName: 'none',
+         animationDuration: '0s',
+         width: '100vw',
+         height: '100dvh',
+         maxWidth: '100vw',
+         flexDirection: 'column',
+         alignItems: 'flex-start',
+      },
    },
    noAnimation: {
       animationName: 'none',
@@ -35,6 +47,13 @@ export const styles = stylex.create({
       overflow: 'hidden',
       backgroundColor: colors.black,
       flexShrink: 0,
+      '@media (max-width: 767px)': {
+         width: '100%',
+         maxWidth: '100%',
+         height: 'auto',
+         maxHeight: '65dvh',
+         flexShrink: 0,
+      },
    },
    closeOverlayLayer: {
       position: 'fixed',

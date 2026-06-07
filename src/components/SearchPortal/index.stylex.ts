@@ -13,7 +13,7 @@ export const styles = stylex.create({
       top: 0,
       left: 0,
       bottom: 0,
-      width: '460px',
+      width: 'min(460px, 100vw)',
       display: 'flex',
       flexDirection: 'column',
       padding: '16px',
