@@ -4,7 +4,7 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { revalidatePath } from 'next/cache';
 import type { Database } from '@/src/types/database';
-import type { CreatePostParams } from '../../components/CreatePostModal/types';
+import type { CreatePostParams, TaggedPerson } from '../../components/CreatePostModal/types';
 import { getAuthUser } from '../getAuthUser';
 
 function extractHashtags(caption: string | null): string[] {
@@ -28,6 +28,7 @@ async function saveMedia(
       blur_data_url: string | null;
       alt_text: string | null;
    }> = [];
+   const imageTags: Array<{ positionIndex: number; tags: TaggedPerson[] }> = [];
    const videoInserts: Array<{
       post_id: string;
       position: number;
@@ -51,6 +52,9 @@ async function saveMedia(
             blur_data_url: result.blurDataURL ?? null,
             alt_text: result.alt ?? null,
          });
+         if (result.tags.length > 0) {
+            imageTags.push({ positionIndex: imageInserts.length - 1, tags: result.tags });
+         }
       } else {
          videoInserts.push({
             post_id: postId,
@@ -66,14 +70,37 @@ async function saveMedia(
    }
 
    if (imageInserts.length > 0) {
-      const { error } = await supabase.from('post_images').insert(imageInserts);
-      if (error) throw new Error(`Failed to insert images: ${error.message}`);
+      const { data: insertedImages, error } = await supabase
+         .from('post_images')
+         .insert(imageInserts)
+         .select('id');
+      if (error || !insertedImages) throw new Error(`Failed to insert images: ${error?.message}`);
+
+      if (imageTags.length > 0) {
+         await saveImageTags(supabase, insertedImages, imageTags);
+      }
    }
 
    if (videoInserts.length > 0) {
       const { error } = await supabase.from('post_videos').insert(videoInserts);
       if (error) throw new Error(`Failed to insert videos: ${error.message}`);
    }
+}
+
+async function saveImageTags(
+   supabase: SupabaseClient<Database>,
+   insertedImages: { id: string }[],
+   imageTags: Array<{ positionIndex: number; tags: TaggedPerson[] }>,
+) {
+   const tagInserts = imageTags.flatMap(({ positionIndex, tags }) => {
+      const imageId = insertedImages[positionIndex]?.id;
+      if (!imageId) return [];
+      return tags.map(tag => ({ image_id: imageId, user_id: tag.user.id, x: tag.x, y: tag.y }));
+   });
+
+   if (tagInserts.length === 0) return;
+   const { error } = await supabase.from('post_image_tags').insert(tagInserts);
+   if (error) throw new Error(`Failed to insert image tags: ${error.message}`);
 }
 
 async function saveCollaborators(

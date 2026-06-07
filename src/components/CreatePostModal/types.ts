@@ -77,6 +77,7 @@ export type MediaResult =
         height: number;
         blurDataURL?: string;
         alt?: string;
+        tags: TaggedPerson[];
      }
    | {
         type: 'video';

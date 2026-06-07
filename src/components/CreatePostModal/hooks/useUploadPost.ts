@@ -46,6 +46,7 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
          height,
          blurDataURL,
          alt: media.alt || undefined,
+         tags: media.tags,
       };
    }
 
