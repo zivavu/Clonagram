@@ -8,6 +8,10 @@ export const styles = stylex.create({
       gap: spacing.lg,
       paddingBottom: spacing.lg,
       borderBottom: `1px solid ${colors.separator}`,
+
+      '@media (max-width: 960px)': {
+         width: '100%',
+      },
    },
    mainRow: {
       display: 'flex',
