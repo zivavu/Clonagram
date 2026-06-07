@@ -24,24 +24,26 @@ export async function updateSession(request: NextRequest) {
       cookies: cookieMethods,
    });
 
-   // Refresh the session — do not add logic between createServerClient and
+   // Validate the session — do not add logic between createServerClient and
    // getUser(), as it may cause hard-to-debug session issues.
    const {
-      data: { session },
-   } = await supabase.auth.getSession();
+      data: { user },
+   } = await supabase.auth.getUser();
 
-   if (
-      !session?.user &&
-      !request.nextUrl.pathname.startsWith('/login') &&
-      !request.nextUrl.pathname.startsWith('/emailsignup') &&
-      !request.nextUrl.pathname.startsWith('/auth/callback')
-   ) {
+   const protectedPrefixes = ['/direct', '/accounts', '/dashboard', '/archive'];
+   const isProtected = protectedPrefixes.some(prefix =>
+      request.nextUrl.pathname.startsWith(prefix),
+   );
+   const isOwnProfile = request.nextUrl.pathname === '/profile';
+
+   if ((!user || user.is_anonymous) && (isProtected || isOwnProfile)) {
       const url = request.nextUrl.clone();
       url.pathname = '/login';
       return NextResponse.redirect(url);
    }
    if (
-      session?.user &&
+      user &&
+      !user.is_anonymous &&
       (request.nextUrl.pathname.startsWith('/login') ||
          request.nextUrl.pathname.startsWith('/emailsignup'))
    ) {

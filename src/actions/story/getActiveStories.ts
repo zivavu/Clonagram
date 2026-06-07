@@ -1,11 +1,14 @@
 'use server';
 import 'server-only';
 
-import { getAuthUser } from '../getAuthUser';
+import { createServerClient } from '../../lib/supabase/server';
 
 export async function getActiveStories() {
-   const { supabase, user } = await getAuthUser();
-   const currentUserId = user.id;
+   const supabase = await createServerClient();
+   const {
+      data: { user },
+   } = await supabase.auth.getUser();
+   const currentUserId = user?.id ?? null;
 
    const { data, error } = await supabase
       .from('stories')
@@ -52,7 +55,7 @@ export async function getActiveStories() {
       const mediaUrl = isImage ? images[0].url : (videos[0]?.mux_playback_id ?? '');
       const blurDataUrl = isImage ? (images[0].blur_data_url ?? null) : null;
 
-      const isViewed = views.some(v => v.viewer_id === currentUserId);
+      const isViewed = currentUserId !== null && views.some(v => v.viewer_id === currentUserId);
       if (isViewed) viewedStoryIds.push(row.id);
 
       if (!grouped.has(row.user_id)) {

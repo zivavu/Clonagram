@@ -42,9 +42,15 @@ interface StoriesRowProps {
    entries: StoryEntry[];
    viewedStoryIds: string[];
    currentUser: Profile | undefined;
+   isAnonymous: boolean;
 }
 
-export default function StoriesRow({ entries, viewedStoryIds, currentUser }: StoriesRowProps) {
+export default function StoriesRow({
+   entries,
+   viewedStoryIds,
+   currentUser,
+   isAnonymous,
+}: StoriesRowProps) {
    const { open: openCreateStory } = useCreateStoryModalStore();
    const storiesRowRef = useRef<HTMLDivElement>(null);
    const [isScrolling, setIsScrolling] = useState(false);
@@ -122,56 +128,58 @@ export default function StoriesRow({ entries, viewedStoryIds, currentUser }: Sto
             <MdExpandCircleDown {...stylex.props(styles.navIcon, styles.navIconRight)} />
          </button>
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef} onScroll={handleScroll}>
-            <div {...stylex.props(styles.addStoryCard)}>
-               <OptionalLink
-                  href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}
-                  styleProps={styles.addStoryRingWrapper}
-               >
-                  {currentUser?.avatar_url ? (
-                     <div
-                        {...stylex.props(
-                           styles.storyRing,
-                           allOwnStoriesViewed && styles.storyRingViewed,
-                        )}
-                     >
-                        <div {...stylex.props(styles.storyRingInner)}>
-                           <Image
-                              src={currentUser?.avatar_url}
-                              alt="Your story"
-                              width={74}
-                              height={74}
-                              {...stylex.props(styles.addStoryAvatar)}
-                           />
+            {!isAnonymous && (
+               <div {...stylex.props(styles.addStoryCard)}>
+                  <OptionalLink
+                     href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}
+                     styleProps={styles.addStoryRingWrapper}
+                  >
+                     {currentUser?.avatar_url ? (
+                        <div
+                           {...stylex.props(
+                              styles.storyRing,
+                              allOwnStoriesViewed && styles.storyRingViewed,
+                           )}
+                        >
+                           <div {...stylex.props(styles.storyRingInner)}>
+                              <Image
+                                 src={currentUser?.avatar_url}
+                                 alt="Your story"
+                                 width={74}
+                                 height={74}
+                                 {...stylex.props(styles.addStoryAvatar)}
+                              />
+                           </div>
                         </div>
-                     </div>
-                  ) : (
-                     <div
-                        style={{
-                           width: 74,
-                           height: 74,
-                           borderRadius: '50%',
-                           background: '#888',
-                        }}
-                     />
-                  )}
-               </OptionalLink>
-               <button
-                  type="button"
-                  {...stylex.props(styles.addStoryPlusBadge)}
-                  onClick={
-                     currentUserStory
-                        ? e => {
-                             e.stopPropagation();
-                             openCreateStory();
-                          }
-                        : openCreateStory
-                  }
-                  aria-label="Add story"
-               >
-                  <BsPlus fontSize={22} />
-               </button>
-               <span {...stylex.props(styles.storyUsername)}>Your story</span>
-            </div>
+                     ) : (
+                        <div
+                           style={{
+                              width: 74,
+                              height: 74,
+                              borderRadius: '50%',
+                              background: '#888',
+                           }}
+                        />
+                     )}
+                  </OptionalLink>
+                  <button
+                     type="button"
+                     {...stylex.props(styles.addStoryPlusBadge)}
+                     onClick={
+                        currentUserStory
+                           ? e => {
+                                e.stopPropagation();
+                                openCreateStory();
+                             }
+                           : openCreateStory
+                     }
+                     aria-label="Add story"
+                  >
+                     <BsPlus fontSize={22} />
+                  </button>
+                  <span {...stylex.props(styles.storyUsername)}>Your story</span>
+               </div>
+            )}
 
             {entries
                .filter(entry => entry.username !== currentUser?.username)

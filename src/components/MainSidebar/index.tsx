@@ -3,12 +3,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MdGridView } from 'react-icons/md';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
+import { createServerClient } from '@/src/lib/supabase/server';
 import { SettingsPopoverButton } from '../SettingsPopover';
 import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 
 export default async function MainSidebar() {
-   const profile = await getAuthProfile();
+   const supabase = await createServerClient();
+   const profile = await getAuthProfile(supabase);
+   const {
+      data: { user },
+   } = await supabase.auth.getUser();
+   const isAnonymous = user?.is_anonymous ?? false;
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -28,7 +34,7 @@ export default async function MainSidebar() {
          </Link>
 
          <nav {...stylex.props(styles.nav)}>
-            <NavItems mainSidebarStyles={styles} profile={profile} />
+            <NavItems mainSidebarStyles={styles} profile={profile} isAnonymous={isAnonymous} />
          </nav>
 
          <div {...stylex.props(styles.nav)}>

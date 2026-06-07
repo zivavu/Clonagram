@@ -2,6 +2,7 @@
 
 import * as Popover from '@radix-ui/react-popover';
 import * as stylex from '@stylexjs/stylex';
+import Link from 'next/link';
 import { useState } from 'react';
 import { BsImages } from 'react-icons/bs';
 import { FaRegSquarePlus, FaSquarePlus } from 'react-icons/fa6';
@@ -14,9 +15,10 @@ import { styles } from './index.stylex';
 
 interface CreateMenuPopoverProps {
    mainSidebarStyles: MainSidebarStyles;
+   isAnonymous: boolean;
 }
 
-export function CreateMenuPopover({ mainSidebarStyles }: CreateMenuPopoverProps) {
+export function CreateMenuPopover({ mainSidebarStyles, isAnonymous }: CreateMenuPopoverProps) {
    const openCreate = useCreatePostModalStore(state => state.open);
    const { open: openStoryCreate } = useCreateStoryModalStore();
    const [isOpen, setIsOpen] = useState(false);
@@ -59,18 +61,29 @@ export function CreateMenuPopover({ mainSidebarStyles }: CreateMenuPopoverProps)
             align="start"
             {...stylex.props(styles.content)}
          >
-            <button type="button" onClick={handlePost} {...stylex.props(styles.item)}>
-               Post
-               <BsImages style={{ fontSize: 18 }} />
-            </button>
-            <button type="button" onClick={handleReels} {...stylex.props(styles.item)}>
-               Reel
-               <MdOutlineSmartDisplay style={{ fontSize: 18 }} />
-            </button>
-            <button type="button" onClick={handleStory} {...stylex.props(styles.item)}>
-               Story
-               <LuCircleFadingPlus style={{ fontSize: 18 }} />
-            </button>
+            {isAnonymous ? (
+               <div {...stylex.props(styles.anonMessage)}>
+                  Log in to create posts, reels, and stories.
+                  <Link href="/login" {...stylex.props(styles.anonLoginLink)}>
+                     Log in
+                  </Link>
+               </div>
+            ) : (
+               <>
+                  <button type="button" onClick={handlePost} {...stylex.props(styles.item)}>
+                     Post
+                     <BsImages style={{ fontSize: 18 }} />
+                  </button>
+                  <button type="button" onClick={handleReels} {...stylex.props(styles.item)}>
+                     Reel
+                     <MdOutlineSmartDisplay style={{ fontSize: 18 }} />
+                  </button>
+                  <button type="button" onClick={handleStory} {...stylex.props(styles.item)}>
+                     Story
+                     <LuCircleFadingPlus style={{ fontSize: 18 }} />
+                  </button>
+               </>
+            )}
          </Popover.Content>
       </Popover.Root>
    );

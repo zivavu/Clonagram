@@ -53,9 +53,10 @@ const navItemsConfig: NavItemConfig[] = [
 interface NavItemsProps {
    mainSidebarStyles: MainSidebarStyles;
    profile: { id: string; avatar_url: string | null; username: string } | null;
+   isAnonymous: boolean;
 }
 
-export function NavItems({ mainSidebarStyles, profile }: NavItemsProps) {
+export function NavItems({ mainSidebarStyles, profile, isAnonymous }: NavItemsProps) {
    const pathname = usePathname();
    const openSearch = useSearchPortalStore(state => state.open);
    const isSearchOpen = useSearchPortalStore(state => state.isOpen);
@@ -65,6 +66,7 @@ export function NavItems({ mainSidebarStyles, profile }: NavItemsProps) {
    return (
       <>
          {navItemsConfig.map(({ href, icon: Icon, activeIcon: ActiveIcon, label, action }) => {
+            if (isAnonymous && (label === 'Messages' || label === 'Profile')) return null;
             const isActive = (() => {
                if (action === 'search') return isSearchOpen;
                if (action === 'notifications') return isNotificationsOpen;
@@ -133,7 +135,13 @@ export function NavItems({ mainSidebarStyles, profile }: NavItemsProps) {
             }
 
             if (action === 'create') {
-               return <CreateMenuPopover key={label} mainSidebarStyles={mainSidebarStyles} />;
+               return (
+                  <CreateMenuPopover
+                     key={label}
+                     mainSidebarStyles={mainSidebarStyles}
+                     isAnonymous={isAnonymous}
+                  />
+               );
             }
 
             if (!href) return <div {...stylex.props(mainSidebarStyles.navItem)}>{content}</div>;

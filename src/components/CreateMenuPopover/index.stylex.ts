@@ -26,4 +26,18 @@ export const styles = stylex.create({
          backgroundColor: colors.buttonHover,
       },
    },
+   anonMessage: {
+      padding: `${spacing.md} ${spacing.md}`,
+      fontSize: '14px',
+      color: colors.textSecondary,
+      textAlign: 'center',
+   },
+   anonLoginLink: {
+      display: 'block',
+      marginTop: spacing.xs,
+      fontSize: '14px',
+      color: colors.accent,
+      textAlign: 'center',
+      fontWeight: 600,
+   },
 });

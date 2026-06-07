@@ -34,22 +34,36 @@ export default async function RightSidebar() {
 
    return (
       <aside {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.profileCard)}>
-            <UserAvatar
-               src={profile?.avatar_url ?? null}
-               alt={profile?.username ?? ''}
-               size={44}
-               username={profile?.username ?? ''}
-               userId={profile?.id}
-            />
-            <div {...stylex.props(styles.profileInfo)}>
-               {profile && (
+         {profile ? (
+            <div {...stylex.props(styles.profileCard)}>
+               <UserAvatar
+                  src={profile.avatar_url}
+                  alt={profile.username}
+                  size={44}
+                  username={profile.username}
+                  userId={profile.id}
+               />
+               <div {...stylex.props(styles.profileInfo)}>
                   <OtherUserUsername style={styles.profileUsername} userProfile={profile} />
-               )}
-               <span {...stylex.props(styles.profileName)}>{profile?.full_name}</span>
+                  <span {...stylex.props(styles.profileName)}>{profile.full_name}</span>
+               </div>
+               <LogoutButton />
             </div>
-            <LogoutButton />
-         </div>
+         ) : (
+            <div {...stylex.props(styles.anonCard)}>
+               <span {...stylex.props(styles.anonText)}>
+                  Log in to follow people and see your feed.
+               </span>
+               <div {...stylex.props(styles.anonActions)}>
+                  <Link href="/login" {...stylex.props(styles.switchLink)}>
+                     Log in
+                  </Link>
+                  <Link href="/emailsignup" {...stylex.props(styles.switchLink)}>
+                     Sign up
+                  </Link>
+               </div>
+            </div>
+         )}
 
          <div {...stylex.props(styles.suggestionsHeader)}>
             <span {...stylex.props(styles.suggestionsLabel)}>Suggested for you</span>

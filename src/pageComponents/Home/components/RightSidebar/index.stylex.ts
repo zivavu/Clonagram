@@ -34,6 +34,20 @@ export const styles = stylex.create({
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
    },
+   anonCard: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      padding: '8px 0',
+   },
+   anonText: {
+      fontSize: '0.875rem',
+      color: colors.textSecondary,
+   },
+   anonActions: {
+      display: 'flex',
+      gap: '12px',
+   },
    switchLink: {
       fontSize: '0.8rem',
       fontWeight: 600,
