@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { IconType } from 'react-icons';
 import { BsSend, BsSendFill } from 'react-icons/bs';
+import { FiPlus } from 'react-icons/fi';
 import { GoHome, GoHomeFill } from 'react-icons/go';
 import {
    MdExplore,
@@ -26,28 +27,36 @@ interface NavItemConfig {
    label: string;
    href?: string;
    action?: 'search' | 'notifications' | 'create';
+   mobileOrder: number;
 }
 
 const navItemsConfig: NavItemConfig[] = [
-   { href: '/', icon: GoHome, activeIcon: GoHomeFill, label: 'Home' },
-   { href: '/reels', icon: MdOutlineSmartDisplay, activeIcon: MdSmartDisplay, label: 'Reels' },
-   { href: '/direct', icon: BsSend, activeIcon: BsSendFill, label: 'Messages' },
-   { icon: MdSearch, activeIcon: MdSearch, label: 'Search', action: 'search' },
-   { href: '/explore', icon: MdOutlineExplore, activeIcon: MdExplore, label: 'Explore' },
+   { href: '/', icon: GoHome, activeIcon: GoHomeFill, label: 'Home', mobileOrder: 0 },
+   {
+      href: '/reels',
+      icon: MdOutlineSmartDisplay,
+      activeIcon: MdSmartDisplay,
+      label: 'Reels',
+      mobileOrder: 2,
+   },
+   { href: '/direct', icon: BsSend, activeIcon: BsSendFill, label: 'Messages', mobileOrder: 4 },
+   { icon: MdSearch, activeIcon: MdSearch, label: 'Search', action: 'search', mobileOrder: 1 },
+   {
+      href: '/explore',
+      icon: MdOutlineExplore,
+      activeIcon: MdExplore,
+      label: 'Explore',
+      mobileOrder: 5,
+   },
    {
       icon: MdFavoriteBorder,
       activeIcon: MdFavorite,
       label: 'Notifications',
       action: 'notifications',
+      mobileOrder: 6,
    },
-   { icon: MdSearch, activeIcon: MdSearch, label: 'Create', action: 'create' },
-   // {
-   //    href: '/dashboard',
-   //    icon: RiBarChartBoxLine,
-   //    activeIcon: RiBarChartBoxFill,
-   //    label: 'Dashboard',
-   // },
-   { href: '/profile', label: 'Profile' },
+   { icon: FiPlus, activeIcon: FiPlus, label: 'Create', action: 'create', mobileOrder: 3 },
+   { href: '/profile', label: 'Profile', mobileOrder: 7 },
 ];
 
 interface NavItemsProps {
@@ -65,100 +74,115 @@ export function NavItems({ mainSidebarStyles, profile, isAnonymous }: NavItemsPr
 
    return (
       <>
-         {navItemsConfig.map(({ href, icon: Icon, activeIcon: ActiveIcon, label, action }) => {
-            if (isAnonymous && (label === 'Messages' || label === 'Profile')) return null;
-            const isActive = (() => {
-               if (action === 'search') return isSearchOpen;
-               if (action === 'notifications') return isNotificationsOpen;
-               if (action === 'create') return false;
-               return pathname.split('/')[1] === href?.split('/')[1];
-            })();
+         {navItemsConfig.map(
+            ({ href, icon: Icon, activeIcon: ActiveIcon, label, action, mobileOrder }) => {
+               if (isAnonymous && (label === 'Messages' || label === 'Profile')) return null;
+               const isActive = (() => {
+                  if (action === 'search') return isSearchOpen;
+                  if (action === 'notifications') return isNotificationsOpen;
+                  if (action === 'create') return false;
+                  return pathname.split('/')[1] === href?.split('/')[1];
+               })();
 
-            const IconComponent = isActive ? ActiveIcon : Icon;
+               const IconComponent = isActive ? ActiveIcon : Icon;
 
-            const iconElement =
-               label === 'Profile' ? (
-                  <UserAvatar
-                     src={profile?.avatar_url ?? null}
-                     alt={profile?.username ?? ''}
-                     size={28}
-                     username={profile?.username ?? ''}
-                  />
-               ) : (
-                  IconComponent && <IconComponent style={{ fontSize: 28 }} />
+               const iconElement =
+                  label === 'Profile' ? (
+                     <UserAvatar
+                        src={profile?.avatar_url ?? null}
+                        alt={profile?.username ?? ''}
+                        size={28}
+                        username={profile?.username ?? ''}
+                     />
+                  ) : (
+                     IconComponent && <IconComponent style={{ fontSize: 28 }} />
+                  );
+
+               const content = (
+                  <>
+                     {iconElement}
+                     <span
+                        {...stylex.props(mainSidebarStyles.navItemLabel)}
+                        style={{ fontWeight: isActive ? 700 : 400 }}
+                     >
+                        {label}
+                     </span>
+                  </>
                );
 
-            const content = (
-               <>
-                  {iconElement}
-                  <span
-                     {...stylex.props(mainSidebarStyles.navItemLabel)}
-                     style={{ fontWeight: isActive ? 700 : 400 }}
-                  >
-                     {label}
-                  </span>
-               </>
-            );
+               if (action === 'search') {
+                  return (
+                     <button
+                        key={label}
+                        type="button"
+                        onClick={openSearch}
+                        aria-label={label}
+                        style={{ order: mobileOrder }}
+                        {...stylex.props(
+                           mainSidebarStyles.navItem,
+                           isActive && mainSidebarStyles.navItemActive,
+                        )}
+                     >
+                        {content}
+                     </button>
+                  );
+               }
 
-            if (action === 'search') {
+               if (action === 'notifications') {
+                  return (
+                     <button
+                        key={label}
+                        type="button"
+                        onClick={openNotifications}
+                        aria-label={label}
+                        style={{ order: mobileOrder }}
+                        {...stylex.props(
+                           mainSidebarStyles.navItem,
+                           isActive && mainSidebarStyles.navItemActive,
+                           mainSidebarStyles.mobileHidden,
+                        )}
+                     >
+                        {content}
+                     </button>
+                  );
+               }
+
+               if (action === 'create') {
+                  return (
+                     <CreateMenuPopover
+                        key={label}
+                        mainSidebarStyles={mainSidebarStyles}
+                        isAnonymous={isAnonymous}
+                        mobileOrder={mobileOrder}
+                     />
+                  );
+               }
+
+               if (!href)
+                  return (
+                     <div
+                        {...stylex.props(mainSidebarStyles.navItem)}
+                        style={{ order: mobileOrder }}
+                     >
+                        {content}
+                     </div>
+                  );
                return (
-                  <button
-                     key={label}
-                     type="button"
-                     onClick={openSearch}
+                  <Link
+                     key={href}
+                     href={href}
                      aria-label={label}
+                     style={{ order: mobileOrder }}
                      {...stylex.props(
                         mainSidebarStyles.navItem,
                         isActive && mainSidebarStyles.navItemActive,
                      )}
                   >
                      {content}
-                  </button>
+                  </Link>
                );
-            }
-
-            if (action === 'notifications') {
-               return (
-                  <button
-                     key={label}
-                     type="button"
-                     onClick={openNotifications}
-                     aria-label={label}
-                     {...stylex.props(
-                        mainSidebarStyles.navItem,
-                        isActive && mainSidebarStyles.navItemActive,
-                     )}
-                  >
-                     {content}
-                  </button>
-               );
-            }
-
-            if (action === 'create') {
-               return (
-                  <CreateMenuPopover
-                     key={label}
-                     mainSidebarStyles={mainSidebarStyles}
-                     isAnonymous={isAnonymous}
-                  />
-               );
-            }
-
-            if (!href) return <div {...stylex.props(mainSidebarStyles.navItem)}>{content}</div>;
-            return (
-               <Link
-                  key={href}
-                  href={href}
-                  aria-label={label}
-                  {...stylex.props(
-                     mainSidebarStyles.navItem,
-                     isActive && mainSidebarStyles.navItemActive,
-                  )}
-               >
-                  {content}
-               </Link>
-            );
-         })}
+            },
+         )}
       </>
    );
 }

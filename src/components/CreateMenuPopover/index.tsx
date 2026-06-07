@@ -16,9 +16,14 @@ import { styles } from './index.stylex';
 interface CreateMenuPopoverProps {
    mainSidebarStyles: MainSidebarStyles;
    isAnonymous: boolean;
+   mobileOrder?: number;
 }
 
-export function CreateMenuPopover({ mainSidebarStyles, isAnonymous }: CreateMenuPopoverProps) {
+export function CreateMenuPopover({
+   mainSidebarStyles,
+   isAnonymous,
+   mobileOrder,
+}: CreateMenuPopoverProps) {
    const openCreate = useCreatePostModalStore(state => state.open);
    const { open: openStoryCreate } = useCreateStoryModalStore();
    const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +46,12 @@ export function CreateMenuPopover({ mainSidebarStyles, isAnonymous }: CreateMenu
    return (
       <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
          <Popover.Trigger asChild>
-            <button type="button" aria-label="Create" {...stylex.props(mainSidebarStyles.navItem)}>
+            <button
+               type="button"
+               aria-label="Create"
+               style={{ order: mobileOrder }}
+               {...stylex.props(mainSidebarStyles.navItem)}
+            >
                {isOpen ? (
                   <FaSquarePlus style={{ fontSize: 28 }} />
                ) : (
@@ -56,9 +66,9 @@ export function CreateMenuPopover({ mainSidebarStyles, isAnonymous }: CreateMenu
             </button>
          </Popover.Trigger>
          <Popover.Content
-            side="bottom"
+            side="top"
             sideOffset={8}
-            align="start"
+            align="center"
             {...stylex.props(styles.content)}
          >
             {isAnonymous ? (

@@ -8,6 +8,9 @@ export const styles = stylex.create({
       height: '100%',
       width: '100%',
       marginLeft: 'var(--main-sidebar-width)',
+      '@media (max-width: 767px)': {
+         marginLeft: 0,
+      },
    },
    chatContainer: {
       width: '100%',

@@ -10,6 +10,9 @@ export const styles = stylex.create({
       paddingBottom: '48px',
       marginLeft: 'calc(var(--main-sidebar-width) / 2)',
       minHeight: '100dvh',
+      '@media (max-width: 767px)': {
+         marginLeft: 0,
+      },
    },
    content: {
       display: 'flex',

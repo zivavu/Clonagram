@@ -10,6 +10,9 @@ export const styles = stylex.create({
       maxWidth: '1255px',
       padding: '58px 0',
       margin: '0 auto',
+      '@media (max-width: 767px)': {
+         padding: '24px 0',
+      },
    },
    topSection: {
       width: 'min(680px, 90dvw)',

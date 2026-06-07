@@ -20,7 +20,7 @@ export default async function MainSidebar() {
       <div {...stylex.props(styles.root)}>
          <Link
             href="/"
-            {...stylex.props(styles.navItem)}
+            {...stylex.props(styles.logo, styles.navItem)}
             style={{ width: 'fit-content', padding: '8px' }}
          >
             <Image
@@ -37,7 +37,7 @@ export default async function MainSidebar() {
             <NavItems mainSidebarStyles={styles} profile={profile} isAnonymous={isAnonymous} />
          </nav>
 
-         <div {...stylex.props(styles.nav)}>
+         <div {...stylex.props(styles.bottomSection)}>
             <SettingsPopoverButton />
             <button aria-label="Other apps from Zeta" {...stylex.props(styles.navItem)}>
                <MdGridView style={{ fontSize: 28 }} />

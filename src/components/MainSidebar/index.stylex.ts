@@ -18,12 +18,37 @@ export const styles = stylex.create({
          width: 'auto',
          '--label-display': 'block',
       },
-      zIndex: '3',
+      zIndex: 3,
+      '@media (max-width: 767px)': {
+         flexDirection: 'row',
+         height: 'auto',
+         width: '100%',
+         bottom: 0,
+         top: 'auto',
+         left: 0,
+         right: 0,
+         padding: '0',
+         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+         justifyContent: 'center',
+         borderTopStyle: 'solid',
+         borderTopColor: colors.border,
+         borderTopWidth: '1px',
+         ':hover': {
+            width: '100%',
+         },
+      },
    },
    nav: {
       display: 'flex',
       flexDirection: 'column',
       gap: '4px',
+      '@media (max-width: 767px)': {
+         flexDirection: 'row',
+         justifyContent: 'space-around',
+         alignItems: 'center',
+         width: '100%',
+         gap: 0,
+      },
    },
    navItem: {
       display: 'flex',
@@ -40,6 +65,21 @@ export const styles = stylex.create({
       ':hover': {
          backgroundColor: colors.buttonHover,
       },
+      '@media (max-width: 767px)': {
+         flexDirection: 'column',
+         alignItems: 'center',
+         justifyContent: 'center',
+         padding: '8px 0px',
+         paddingLeft: 0,
+         width: 'min-content',
+         gap: '0px',
+         borderRadius: 0,
+         flex: 1,
+         minWidth: 0,
+         ':hover': {
+            backgroundColor: 'transparent',
+         },
+      },
    },
    navItemLabel: {
       fontSize: '1rem',
@@ -48,9 +88,31 @@ export const styles = stylex.create({
       textAlign: 'left',
       color: colors.textPrimary,
       display: 'var(--label-display)',
+      '@media (max-width: 767px)': {
+         display: 'none',
+      },
    },
    navItemActive: {
       fontWeight: 600,
+   },
+   logo: {
+      display: 'flex',
+      '@media (max-width: 767px)': {
+         display: 'none',
+      },
+   },
+   bottomSection: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '4px',
+      '@media (max-width: 767px)': {
+         display: 'none',
+      },
+   },
+   mobileHidden: {
+      '@media (max-width: 767px)': {
+         display: 'none',
+      },
    },
 });
 
