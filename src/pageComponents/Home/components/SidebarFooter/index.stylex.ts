@@ -19,7 +19,7 @@ export const styles = stylex.create({
    copyright: {
       fontSize: '0.75rem',
       color: colors.textSecondary,
-      marginTop: '6px',
+      marginTop: '16px',
       textTransform: 'uppercase',
    },
 });

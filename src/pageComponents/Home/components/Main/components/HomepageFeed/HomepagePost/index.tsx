@@ -26,21 +26,21 @@ interface HomepagePostProps {
    index: number;
 }
 
-function containerHeight(post: PostWithMedia): string {
+function getAspectRatio(post: PostWithMedia): string {
    switch (post.aspect_ratio) {
       case '16:9':
-         return '263.25px';
+         return '16 / 9';
       case '1:1':
-         return '468px';
+         return '1 / 1';
       case 'original': {
          const media = post.images?.[0] ?? post.videos?.[0];
          if (media?.width && media?.height) {
-            return `${Math.min(585, Math.round((468 * media.height) / media.width))}px`;
+            return `${media.width} / ${media.height}`;
          }
-         return '468px';
+         return '1 / 1';
       }
       default:
-         return '585px';
+         return '4 / 5';
    }
 }
 
@@ -106,9 +106,10 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
          </div>
          <PostMediaCarousel
             post={post}
-            width="468px"
-            sizes="468px"
-            height={containerHeight(post)}
+            width="100%"
+            height="auto"
+            sizes="(max-width: 767px) calc(100vw - 32px), 468px"
+            aspectRatio={getAspectRatio(post)}
             onImageChange={index => {
                currentImageIndex.current = index;
             }}

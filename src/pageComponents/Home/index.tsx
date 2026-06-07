@@ -14,48 +14,46 @@ export default async function HomePage({ variant }: { variant: 'following' | 'ho
 
    return (
       <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.forYouFollowingContainer)}>
-            <div {...stylex.props(styles.forYouFollowingSwitch)}>
-               <Link
-                  href="?variant=home"
-                  aria-label="For You"
-                  {...stylex.props(styles.forYouFollowingLink)}
+         <div {...stylex.props(styles.forYouFollowingSwitch)}>
+            <Link
+               href="?variant=home"
+               aria-label="For You"
+               {...stylex.props(styles.forYouFollowingLink)}
+            >
+               <span
+                  {...stylex.props(
+                     styles.forYouFollowingSwitchButtonLabel,
+                     !isFollowingSelected && styles.forYouFollowingTextActive,
+                  )}
                >
-                  <span
-                     {...stylex.props(
-                        styles.forYouFollowingSwitchButtonLabel,
-                        !isFollowingSelected && styles.forYouFollowingTextActive,
-                     )}
-                  >
-                     For you
-                  </span>
-               </Link>
-               <Link
-                  href="?variant=following"
-                  aria-label="Following"
-                  {...stylex.props(styles.forYouFollowingLink)}
+                  For you
+               </span>
+            </Link>
+            <Link
+               href="?variant=following"
+               aria-label="Following"
+               {...stylex.props(styles.forYouFollowingLink)}
+            >
+               <span
+                  {...stylex.props(
+                     styles.forYouFollowingSwitchButtonLabel,
+                     isFollowingSelected && styles.forYouFollowingTextActive,
+                  )}
                >
-                  <span
-                     {...stylex.props(
-                        styles.forYouFollowingSwitchButtonLabel,
-                        isFollowingSelected && styles.forYouFollowingTextActive,
-                     )}
-                  >
-                     Following
-                  </span>
-               </Link>
-            </div>
-            <Separator {...stylex.props(styles.separator)} />
-            <div {...stylex.props(styles.mainContainer)}>
-               <Suspense fallback={<MainSkeleton />}>
-                  <Main />
+                  Following
+               </span>
+            </Link>
+         </div>
+         <Separator {...stylex.props(styles.separator)} />
+         <div {...stylex.props(styles.mainContainer)}>
+            <Suspense fallback={<MainSkeleton />}>
+               <Main />
+            </Suspense>
+            <div {...stylex.props(styles.sidebarSlot)}>
+               <Suspense fallback={<RightSidebarSkeleton />}>
+                  <RightSidebar />
                </Suspense>
-               <div {...stylex.props(styles.sidebarSlot)}>
-                  <Suspense fallback={<RightSidebarSkeleton />}>
-                     <RightSidebar />
-                  </Suspense>
-                  <SidebarFooter />
-               </div>
+               <SidebarFooter />
             </div>
          </div>
       </div>

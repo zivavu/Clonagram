@@ -6,7 +6,8 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       margin: '0 auto',
-      width: '468px',
+      width: '100%',
+      maxWidth: '468px',
    },
    header: {
       display: 'flex',

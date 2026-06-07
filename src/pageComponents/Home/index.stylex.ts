@@ -3,25 +3,28 @@ import { colors } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
-      gap: '12px',
-      backgroundColor: colors.bg,
-      display: 'flex',
-      flexDirection: 'row',
       position: 'relative',
-      margin: '0 auto',
-   },
-   forYouFollowingContainer: {
       display: 'flex',
       flexDirection: 'column',
+      alignItems: 'center',
+      margin: '0 auto',
       gap: '12px',
-      padding: '36px',
-      paddingTop: '44px',
-      paddingBottom: '26px',
+      padding: '44px',
+      paddingLeft: 'var(--main-sidebar-width)',
+
+      '@media (max-width: 767px)': {
+         padding: '0',
+         paddingLeft: '0',
+         paddingTop: '16px',
+         paddingBottom: '16px',
+      },
    },
    forYouFollowingSwitch: {
       display: 'flex',
       flexDirection: 'row',
+      alignSelf: 'flex-start',
       gap: '12px',
+      padding: '0 12px',
    },
    forYouFollowingLink: {
       display: 'flex',
@@ -50,5 +53,8 @@ export const styles = stylex.create({
       width: '287px',
       marginLeft: '80px',
       flexShrink: 0,
+      '@media (max-width: 1200px)': {
+         display: 'none',
+      },
    },
 });
