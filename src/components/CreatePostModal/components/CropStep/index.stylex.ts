@@ -5,7 +5,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
-      width: '730px',
+      width: '100%',
       userSelect: 'none',
       position: 'relative',
    },

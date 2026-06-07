@@ -8,6 +8,7 @@ export const styles = stylex.create({
       justifyContent: 'center',
       paddingTop: '8px',
       paddingBottom: '16px',
+      overflowY: 'scroll',
    },
    thumbButton: {
       display: 'flex',

@@ -9,7 +9,12 @@ export const styles = stylex.create({
    body: {
       display: 'flex',
       flex: 1,
-      overflow: 'hidden',
+      overflowX: 'hidden',
+      overflowY: 'hidden',
       position: 'relative',
+      '@media (max-width: 767px)': {
+         flexDirection: 'column',
+         overflowY: 'auto',
+      },
    },
 });

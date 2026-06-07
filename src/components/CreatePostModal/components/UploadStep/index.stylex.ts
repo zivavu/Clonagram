@@ -11,6 +11,10 @@ export const styles = stylex.create({
       height: '100%',
       padding: '80px 40px',
       transition: 'background-color 0.2s ease',
+
+      '@media (max-width: 767px)': {
+         padding: '20px 20px',
+      },
    },
    dropZoneActive: {
       backgroundColor: 'rgba(74, 93, 249, 0.05)',

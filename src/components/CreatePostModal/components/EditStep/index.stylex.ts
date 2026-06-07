@@ -10,7 +10,12 @@ export const styles = stylex.create({
    body: {
       display: 'flex',
       flex: 1,
-      overflow: 'hidden',
+      overflowX: 'hidden',
+      overflowY: 'hidden',
+      '@media (max-width: 767px)': {
+         flexDirection: 'column',
+         overflowY: 'auto',
+      },
    },
    previewSection: {
       flex: 1,
@@ -21,7 +26,10 @@ export const styles = stylex.create({
       backgroundColor: colors.bgSecondary,
       overflow: 'hidden',
       userSelect: 'none',
-      width: '700px',
+      '@media (max-width: 767px)': {
+         flexShrink: 0,
+         height: 'min(300px, 40dvh)',
+      },
    },
    previewImage: {
       flexShrink: 0,
@@ -35,6 +43,13 @@ export const styles = stylex.create({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      minWidth: '320px',
+      minHeight: '320px',
+      flexShrink: 0,
+      '@media (max-width: 767px)': {
+         minWidth: 0,
+         minHeight: 0,
+      },
    },
    panel: {
       width: '340px',
@@ -45,6 +60,15 @@ export const styles = stylex.create({
       borderLeftWidth: '1px',
       borderLeftStyle: 'solid',
       borderLeftColor: colors.border,
+      '@media (max-width: 767px)': {
+         width: '100%',
+         flex: 1,
+         flexShrink: 1,
+         borderLeftWidth: 0,
+         borderTopWidth: '1px',
+         borderTopStyle: 'solid',
+         borderTopColor: colors.border,
+      },
    },
    volumeControl: {
       position: 'absolute',

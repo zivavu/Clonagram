@@ -11,7 +11,10 @@ export const styles = stylex.create({
       backgroundColor: colors.bgSecondary,
       overflow: 'hidden',
       userSelect: 'none',
-      width: '700px',
+      '@media (max-width: 767px)': {
+         flexShrink: 0,
+         height: 'min(280px, 38dvh)',
+      },
    },
    cropContainer: {
       position: 'relative',

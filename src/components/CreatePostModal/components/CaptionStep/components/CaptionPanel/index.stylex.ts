@@ -11,6 +11,15 @@ export const styles = stylex.create({
       borderLeftWidth: '1px',
       borderLeftStyle: 'solid',
       borderLeftColor: colors.border,
+      '@media (max-width: 767px)': {
+         width: '100%',
+         flex: 1,
+         flexShrink: 1,
+         borderLeftWidth: 0,
+         borderTopWidth: '1px',
+         borderTopStyle: 'solid',
+         borderTopColor: colors.border,
+      },
    },
    captionSection: {
       padding: '12px 16px',
