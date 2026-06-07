@@ -88,6 +88,9 @@ export default function PostMediaCarousel({
    const [isInViewport, setIsInViewport] = useState(false);
    const [tagsVisible, setTagsVisible] = useState(false);
    const rootRef = useRef<HTMLDivElement>(null);
+   const touchStartX = useRef(0);
+   const touchStartY = useRef(0);
+   const didSwipe = useRef(false);
 
    const media = mergeMedia(post);
    const hasMultipleMedia = media.length > 1;
@@ -131,7 +134,23 @@ export default function PostMediaCarousel({
       if (currentImageIndex < media.length - 1) navigateTo(currentImageIndex + 1);
    };
 
+   const handleTouchStart = (e: React.TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      didSwipe.current = false;
+   };
+
+   const handleTouchEnd = (e: React.TouchEvent) => {
+      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+      const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+      if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+      didSwipe.current = true;
+      if (deltaX < 0) handleNext();
+      else handlePrevious();
+   };
+
    const handleImageClick = (item: UnifiedMedia) => {
+      if (didSwipe.current) return;
       if (item.tags.length > 0) {
          setTagsVisible(v => !v);
          return;
@@ -157,6 +176,8 @@ export default function PostMediaCarousel({
                height: `${height}`,
                aspectRatio,
             }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
          >
             <div
                {...stylex.props(styles.carouselTrack)}
