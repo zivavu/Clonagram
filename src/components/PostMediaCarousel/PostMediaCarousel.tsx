@@ -16,6 +16,7 @@ interface UnifiedMedia {
    url: string;
    position: number;
    blurDataURL?: string;
+   altText?: string;
 }
 
 function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
@@ -26,6 +27,7 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
          url: img.url,
          position: img.position,
          blurDataURL: img.blur_data_url ?? undefined,
+         altText: img.alt_text ?? undefined,
       })) ?? [];
 
    const videos: UnifiedMedia[] =
@@ -179,7 +181,7 @@ export default function PostMediaCarousel({
                      >
                         <Image
                            src={item.url}
-                           alt="post"
+                           alt={item.altText ?? 'post'}
                            fill
                            sizes={sizes}
                            placeholder={item.blurDataURL ? 'blur' : 'empty'}

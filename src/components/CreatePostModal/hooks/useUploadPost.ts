@@ -39,7 +39,14 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
          throw new Error(`Image upload failed: ${uploadError.message}`);
       }
       const { data: urlData } = supabase.storage.from('posts').getPublicUrl(fileName);
-      return { type: 'image', path: urlData.publicUrl, width, height, blurDataURL };
+      return {
+         type: 'image',
+         path: urlData.publicUrl,
+         width,
+         height,
+         blurDataURL,
+         alt: media.alt || undefined,
+      };
    }
 
    const [processedFile, { width, height }] = await Promise.all([

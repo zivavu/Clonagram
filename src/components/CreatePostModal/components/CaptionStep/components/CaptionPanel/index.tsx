@@ -26,6 +26,7 @@ interface CaptionPanelProps {
    postSettings: PostSettings;
    onPostSettingsChange: (settings: PostSettings) => void;
    files?: PostMedia[];
+   onUpdateFile?: (index: number, updates: Partial<PostMedia>) => void;
 }
 
 export default function CaptionPanel({
@@ -38,6 +39,7 @@ export default function CaptionPanel({
    postSettings,
    onPostSettingsChange,
    files,
+   onUpdateFile,
 }: CaptionPanelProps) {
    const { data: userData } = useAuthUser();
 
@@ -172,8 +174,9 @@ export default function CaptionPanel({
                   be automatically created for your photos or you can choose to write your own.
                </p>
                {files
-                  .filter(file => file.type === 'image')
-                  .map((file, idx) => (
+                  .map((file, fileIndex) => ({ file, fileIndex }))
+                  .filter(({ file }) => file.type === 'image')
+                  .map(({ file, fileIndex }, idx) => (
                      <div key={file.preview} {...stylex.props(styles.altRow)}>
                         {/* biome-ignore lint/performance/noImgElement: small fixed-size thumbnail */}
                         <img
@@ -184,6 +187,8 @@ export default function CaptionPanel({
                         <input
                            type="text"
                            placeholder="Write alt text..."
+                           value={file.alt}
+                           onChange={e => onUpdateFile?.(fileIndex, { alt: e.target.value })}
                            {...stylex.props(styles.altInput)}
                         />
                      </div>

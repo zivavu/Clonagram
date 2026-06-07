@@ -44,6 +44,7 @@ export interface PostMedia {
    filterStrength: number;
    adjustments: Adjustments;
    tags: TaggedPerson[];
+   alt: string;
    duration: number;
    coverTime: number;
    trimStart: number;
@@ -69,7 +70,14 @@ export interface PostData {
 }
 
 export type MediaResult =
-   | { type: 'image'; path: string; width: number; height: number; blurDataURL?: string }
+   | {
+        type: 'image';
+        path: string;
+        width: number;
+        height: number;
+        blurDataURL?: string;
+        alt?: string;
+     }
    | {
         type: 'video';
         assetId: string;
@@ -115,6 +123,7 @@ export function createPostMedia(file: File): PostMedia {
       filterStrength: 100,
       adjustments: { ...DEFAULT_ADJUSTMENTS },
       tags: [],
+      alt: '',
       duration: 0,
       coverTime: 0,
       trimStart: 0,

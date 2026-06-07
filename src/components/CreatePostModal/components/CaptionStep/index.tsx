@@ -70,6 +70,7 @@ export default function CaptionStep({
                postSettings={postSettings}
                onPostSettingsChange={onPostSettingsChange}
                files={files}
+               onUpdateFile={onUpdateFile}
             />
          </div>
       </div>

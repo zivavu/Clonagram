@@ -8,7 +8,7 @@ const EXPLORE_SELECT = `
    likes(user_id),
    comments(count),
    user:profiles!user_id(id, username, avatar_url),
-   images:post_images(id, url, position, width, height, blur_data_url),
+   images:post_images(id, url, position, width, height, blur_data_url, alt_text),
    videos:post_videos(id, mux_playback_id, duration, position, width, height)
 `;
 

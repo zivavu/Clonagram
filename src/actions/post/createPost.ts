@@ -26,6 +26,7 @@ async function saveMedia(
       width: number;
       height: number;
       blur_data_url: string | null;
+      alt_text: string | null;
    }> = [];
    const videoInserts: Array<{
       post_id: string;
@@ -48,6 +49,7 @@ async function saveMedia(
             width: result.width,
             height: result.height,
             blur_data_url: result.blurDataURL ?? null,
+            alt_text: result.alt ?? null,
          });
       } else {
          videoInserts.push({
