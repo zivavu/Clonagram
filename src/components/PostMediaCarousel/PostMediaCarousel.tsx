@@ -7,8 +7,16 @@ import type { PostWithMedia } from '../../queries/posts';
 import { usePostViewModal } from '../../store/postViewModalStore';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import CarouselArrow from '../CarouselArrow';
+import ImageTagPin from './components/ImageTagPin';
 import FeedVideoSlide from './FeedVideoSlide';
 import { styles } from './PostMediaCarousel.stylex';
+
+interface ImageTag {
+   id: string;
+   x: number;
+   y: number;
+   username: string;
+}
 
 interface UnifiedMedia {
    id: string;
@@ -17,6 +25,7 @@ interface UnifiedMedia {
    position: number;
    blurDataURL?: string;
    altText?: string;
+   tags: ImageTag[];
 }
 
 function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
@@ -28,6 +37,7 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
          position: img.position,
          blurDataURL: img.blur_data_url ?? undefined,
          altText: img.alt_text ?? undefined,
+         tags: img.tags?.map(t => ({ id: t.id, x: t.x, y: t.y, username: t.user.username })) ?? [],
       })) ?? [];
 
    const videos: UnifiedMedia[] =
@@ -36,6 +46,7 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
          type: 'video' as const,
          url: vid.mux_playback_id ?? '',
          position: vid.position,
+         tags: [],
       })) ?? [];
 
    return [...images, ...videos].sort((a, b) => a.position - b.position);
@@ -75,6 +86,7 @@ export default function PostMediaCarousel({
 
    const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex ?? 0);
    const [isInViewport, setIsInViewport] = useState(false);
+   const [tagsVisible, setTagsVisible] = useState(false);
    const rootRef = useRef<HTMLDivElement>(null);
 
    const media = mergeMedia(post);
@@ -105,17 +117,31 @@ export default function PostMediaCarousel({
       return () => releasePlayback(currentVideoId);
    }, [currentVideoId, isInViewport, claimPlayback, releasePlayback]);
 
+   const navigateTo = (newIndex: number) => {
+      setCurrentImageIndex(newIndex);
+      setTagsVisible(false);
+      onImageChange?.(newIndex);
+   };
+
    const handlePrevious = () => {
-      const newImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : currentImageIndex;
-      setCurrentImageIndex(newImageIndex);
-      onImageChange?.(newImageIndex);
+      if (currentImageIndex > 0) navigateTo(currentImageIndex - 1);
    };
 
    const handleNext = () => {
-      const newImageIndex =
-         currentImageIndex < media.length - 1 ? currentImageIndex + 1 : currentImageIndex;
-      setCurrentImageIndex(newImageIndex);
-      onImageChange?.(newImageIndex);
+      if (currentImageIndex < media.length - 1) navigateTo(currentImageIndex + 1);
+   };
+
+   const handleImageClick = (item: UnifiedMedia) => {
+      if (item.tags.length > 0) {
+         setTagsVisible(v => !v);
+         return;
+      }
+      if (isPostFullViewModalOpen) return;
+      if (onImageClick) {
+         onImageClick(post, currentImageIndex);
+      } else {
+         openPostFullViewModal(post, { initialImageIndex: currentImageIndex });
+      }
    };
 
    return (
@@ -161,23 +187,21 @@ export default function PostMediaCarousel({
                   }
 
                   return (
-                     <button
+                     // biome-ignore lint/a11y/useSemanticElements: <Link> tags inside prevent using <button>
+                     <div
                         key={item.id}
-                        onClick={() => {
-                           if (isPostFullViewModalOpen) return;
-                           if (onImageClick) {
-                              onImageClick(post, currentImageIndex);
-                           } else {
-                              openPostFullViewModal(post, { initialImageIndex: currentImageIndex });
-                           }
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => handleImageClick(item)}
+                        onKeyDown={e => {
+                           if (e.key === 'Enter' || e.key === ' ') handleImageClick(item);
                         }}
-                        {...stylex.props(styles.carouselSlide)}
-                        style={{
-                           width: `${width}`,
-                           height: `${height}`,
-                           aspectRatio,
-                           cursor: isPostFullViewModalOpen ? 'default' : 'pointer',
-                        }}
+                        {...stylex.props(
+                           styles.carouselSlide,
+                           styles.imageSlide,
+                           isPostFullViewModalOpen && styles.imageSlideDefault,
+                        )}
+                        style={{ width: `${width}`, height: `${height}`, aspectRatio }}
                      >
                         <Image
                            src={item.url}
@@ -188,7 +212,16 @@ export default function PostMediaCarousel({
                            blurDataURL={item.blurDataURL}
                            {...imageProps}
                         />
-                     </button>
+                        {tagsVisible &&
+                           item.tags.map(tag => (
+                              <ImageTagPin
+                                 key={tag.id}
+                                 username={tag.username}
+                                 x={tag.x}
+                                 y={tag.y}
+                              />
+                           ))}
+                     </div>
                   );
                })}
             </div>
@@ -205,7 +238,7 @@ export default function PostMediaCarousel({
                         key={media[dotIndex].id}
                         type="button"
                         aria-label={`Go to slide ${dotIndex + 1}`}
-                        onClick={() => setCurrentImageIndex(dotIndex)}
+                        onClick={() => navigateTo(dotIndex)}
                         {...stylex.props(
                            styles.dot,
                            dotIndex === currentImageIndex && styles.dotActive,
@@ -222,7 +255,7 @@ export default function PostMediaCarousel({
                      key={media[dotIndex].id}
                      type="button"
                      aria-label={`Go to slide ${dotIndex + 1}`}
-                     onClick={() => setCurrentImageIndex(dotIndex)}
+                     onClick={() => navigateTo(dotIndex)}
                      {...stylex.props(
                         styles.dotBelow,
                         dotIndex === currentImageIndex && styles.dotBelowActive,

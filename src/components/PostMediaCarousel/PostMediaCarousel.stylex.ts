@@ -25,6 +25,14 @@ export const styles = stylex.create({
       backgroundColor: colors.black,
       flexShrink: 0,
    },
+   imageSlide: {
+      cursor: 'pointer',
+      display: 'block',
+      overflow: 'hidden',
+   },
+   imageSlideDefault: {
+      cursor: 'default',
+   },
    columnWrapper: {
       display: 'flex',
       flexDirection: 'column',
@@ -63,13 +71,13 @@ export const styles = stylex.create({
       width: '6px',
       height: '6px',
       borderRadius: radius.full,
-      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      backgroundColor: 'rgba(155, 155, 155, 0.5)',
       border: 'none',
       padding: 0,
       cursor: 'pointer',
       transition: 'background-color 0.15s ease',
    },
    dotBelowActive: {
-      backgroundColor: colors.black,
+      backgroundColor: colors.whiteBlack,
    },
 });
