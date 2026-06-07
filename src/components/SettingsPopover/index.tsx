@@ -14,7 +14,7 @@ import { useSettingsPopoverStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
-import { styles as buttonStyles } from '../MainSidebar/index.stylex';
+import { styles as buttonStyles } from '../MainNavbar/index.stylex';
 import { styles } from './index.stylex';
 
 export function SettingsPopoverButton() {

@@ -8,7 +8,7 @@ import { SettingsPopoverButton } from '../SettingsPopover';
 import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 
-export default async function MainSidebar() {
+export default async function MainNavbar() {
    const supabase = await createServerClient();
    const profile = await getAuthProfile(supabase);
    const {

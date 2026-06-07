@@ -10,7 +10,7 @@ import { LuCircleFadingPlus } from 'react-icons/lu';
 import { MdOutlineSmartDisplay } from 'react-icons/md';
 import { useCreateStoryModalStore } from '@/src/store/createModalStore';
 import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
-import type { MainSidebarStyles } from '../MainSidebar/index.stylex';
+import type { MainSidebarStyles } from '../MainNavbar/index.stylex';
 import { styles } from './index.stylex';
 
 interface CreateMenuPopoverProps {
