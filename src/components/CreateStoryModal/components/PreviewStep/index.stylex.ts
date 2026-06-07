@@ -20,4 +20,10 @@ export const styles = stylex.create({
       height: '100%',
       objectFit: 'cover',
    },
+   controls: {
+      position: 'absolute',
+      bottom: '12px',
+      right: '12px',
+      zIndex: 3,
+   },
 });
