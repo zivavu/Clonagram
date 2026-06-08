@@ -11,6 +11,7 @@ import { styles } from './index.stylex';
 interface ProfilePageProps extends ProfileWithPosts {
    isOwnProfile: boolean;
    initialPost?: PostWithMedia | string;
+   note?: string | null;
 }
 
 export default function ProfilePage({
@@ -19,6 +20,7 @@ export default function ProfilePage({
    followStatus,
    isOwnProfile,
    initialPost,
+   note,
 }: ProfilePageProps) {
    return (
       <div {...stylex.props(styles.root)}>
@@ -30,6 +32,7 @@ export default function ProfilePage({
                postsCount={posts.length}
                isOwnProfile={isOwnProfile}
                followStatus={followStatus}
+               note={note ?? null}
             />
             <ProfileStoryHighlights isOwnProfile={isOwnProfile} />
          </div>

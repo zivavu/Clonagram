@@ -1,3 +1,4 @@
+import { getUserNote } from '../../../actions/notes/getUserNote';
 import { getUserProfileWithPosts } from '../../../actions/profile/getUserProfileWithPosts';
 import { getAuthProfile } from '../../../lib/supabase/getAuthProfile';
 import ProfilePage from '../../../pageComponents/Profile';
@@ -7,9 +8,10 @@ export default async function Profile() {
 
    if (!profile) throw new Error('Profile not found');
 
-   const { userProfile, posts, followStatus } = await getUserProfileWithPosts({
-      username: profile?.username,
-   });
+   const [{ userProfile, posts, followStatus }, note] = await Promise.all([
+      getUserProfileWithPosts({ username: profile.username }),
+      getUserNote(profile.id),
+   ]);
 
    return (
       <ProfilePage
@@ -17,6 +19,7 @@ export default async function Profile() {
          posts={posts}
          followStatus={followStatus}
          isOwnProfile
+         note={note}
       />
    );
 }

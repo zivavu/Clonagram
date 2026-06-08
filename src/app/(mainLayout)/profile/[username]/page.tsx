@@ -1,3 +1,4 @@
+import { getUserNote } from '../../../../actions/notes/getUserNote';
 import { getUserProfileWithPosts } from '../../../../actions/profile/getUserProfileWithPosts';
 import { getAuthProfile } from '../../../../lib/supabase/getAuthProfile';
 import ProfilePage from '../../../../pageComponents/Profile';
@@ -17,6 +18,7 @@ export default async function Profile({ params }: ProfilePageProps) {
    ]);
 
    const isOwnProfile = authProfile?.username === username;
+   const note = await getUserNote(userProfile.id);
 
    return (
       <ProfilePage
@@ -24,6 +26,7 @@ export default async function Profile({ params }: ProfilePageProps) {
          posts={posts}
          followStatus={followStatus}
          isOwnProfile={isOwnProfile}
+         note={note}
       />
    );
 }

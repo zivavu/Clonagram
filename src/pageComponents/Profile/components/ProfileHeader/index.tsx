@@ -9,6 +9,7 @@ import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { FollowState } from '@/src/queries/followStatus';
 import { useFollowListModal } from '@/src/store/followListModalStore';
+import { useNewNoteModalStore } from '@/src/store/createModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
 import MessageButton from './components/MessageButton';
 import { styles } from './index.stylex';
@@ -29,6 +30,7 @@ interface ProfileHeaderProps {
    postsCount: number;
    isOwnProfile: boolean;
    followStatus: FollowState;
+   note: string | null;
 }
 
 export default function ProfileHeader({
@@ -36,6 +38,7 @@ export default function ProfileHeader({
    postsCount,
    isOwnProfile,
    followStatus,
+   note,
 }: ProfileHeaderProps) {
    const followersCount =
       (userProfile.followers as unknown as [{ count: number }])?.[0]?.count ?? 0;
@@ -43,11 +46,25 @@ export default function ProfileHeader({
       (userProfile.following as unknown as [{ count: number }])?.[0]?.count ?? 0;
 
    const openFollowList = useFollowListModal(state => state.open);
+   const openNoteModal = useNewNoteModalStore(s => s.open);
 
    return (
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.mainRow)}>
             <div {...stylex.props(styles.avatarSection)}>
+               {note && (
+                  isOwnProfile ? (
+                     <button
+                        type="button"
+                        {...stylex.props(styles.profileNoteBubble, styles.profileNoteBubbleClickable)}
+                        onClick={openNoteModal}
+                     >
+                        {note}
+                     </button>
+                  ) : (
+                     <span {...stylex.props(styles.profileNoteBubble)}>{note}</span>
+                  )
+               )}
                <UserAvatar
                   src={userProfile.avatar_url}
                   alt={userProfile.username}
