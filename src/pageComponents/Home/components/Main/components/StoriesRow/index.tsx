@@ -7,8 +7,10 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { BsPlus } from 'react-icons/bs';
 import { MdExpandCircleDown } from 'react-icons/md';
+import type { NoteEntry } from '@/src/actions/notes/getNotesForFeed';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import { useCreateStoryModalStore } from '@/src/store/createModalStore';
+import { useNewNoteModalStore } from '@/src/store/createModalStore';
 import type { Profile } from '../../../../../../lib/supabase/getAuthProfile';
 import { colors } from '../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
@@ -38,11 +40,22 @@ function OptionalLink({ href, children, styleProps }: OptionalLinkProps) {
    return <div {...stylex.props(styleProps)}>{children}</div>;
 }
 
+function NoteBubble({ content }: { content: string }) {
+   return (
+      <div {...stylex.props(styles.noteBubble)}>
+         {content}
+         <span {...stylex.props(styles.noteBubbleInner)} />
+      </div>
+   );
+}
+
 interface StoriesRowProps {
    entries: StoryEntry[];
    viewedStoryIds: string[];
    currentUser: Profile | undefined;
    isAnonymous: boolean;
+   notes: NoteEntry[];
+   ownNote: string | null;
 }
 
 export default function StoriesRow({
@@ -50,8 +63,11 @@ export default function StoriesRow({
    viewedStoryIds,
    currentUser,
    isAnonymous,
+   notes,
+   ownNote,
 }: StoriesRowProps) {
    const { open: openCreateStory } = useCreateStoryModalStore();
+   const { open: openNewNote } = useNewNoteModalStore();
    const storiesRowRef = useRef<HTMLDivElement>(null);
    const [isScrolling, setIsScrolling] = useState(false);
    const [scrollLeft, setScrollLeft] = useState(0);
@@ -59,9 +75,17 @@ export default function StoriesRow({
    const rafRef = useRef<number | null>(null);
    const viewedSet = new Set(viewedStoryIds);
 
+   const notesByUserId = new Map(notes.map(n => [n.userId, n.content]));
+
    const currentUserStory = entries.find(entry => entry.username === currentUser?.username);
    const allOwnStoriesViewed =
       !currentUserStory || currentUserStory.stories.every(s => viewedSet.has(s.userId));
+
+   const otherEntries = entries.filter(entry => entry.username !== currentUser?.username);
+
+   const noteOnlyUsers = notes.filter(
+      note => !entries.some(e => e.userId === note.userId),
+   );
 
    useEffect(() => {
       return () => {
@@ -97,8 +121,10 @@ export default function StoriesRow({
       rafRef.current = requestAnimationFrame(animate);
    };
 
+   const totalItems =
+      (isAnonymous ? 0 : 1) + otherEntries.length + noteOnlyUsers.length;
    const isFirst = scrollLeft === 0;
-   const isLast = scrollLeft >= scrollMax || entries.length <= 6;
+   const isLast = scrollLeft >= scrollMax || totalItems <= 6;
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -129,68 +155,78 @@ export default function StoriesRow({
          </button>
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef} onScroll={handleScroll}>
             {!isAnonymous && (
-               <div {...stylex.props(styles.addStoryCard)}>
-                  <OptionalLink
-                     href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}
-                     styleProps={styles.addStoryRingWrapper}
-                  >
-                     {currentUser?.avatar_url ? (
-                        <div
-                           {...stylex.props(
-                              styles.storyRing,
-                              allOwnStoriesViewed && styles.storyRingViewed,
-                           )}
-                        >
-                           <div {...stylex.props(styles.storyRingInner)}>
-                              <Image
-                                 src={currentUser?.avatar_url}
-                                 alt="Your story"
-                                 width={74}
-                                 height={74}
-                                 {...stylex.props(styles.addStoryAvatar)}
-                              />
+               <div {...stylex.props(styles.noteStoryWrapper)}>
+                  {ownNote && (
+                     <button type="button" onClick={openNewNote} style={{ all: 'unset' }}>
+                        <NoteBubble content={ownNote} />
+                     </button>
+                  )}
+                  <div {...stylex.props(styles.addStoryCard)}>
+                     <OptionalLink
+                        href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}
+                        styleProps={styles.addStoryRingWrapper}
+                     >
+                        {currentUser?.avatar_url ? (
+                           <div
+                              {...stylex.props(
+                                 styles.storyRing,
+                                 allOwnStoriesViewed && styles.storyRingViewed,
+                              )}
+                           >
+                              <div {...stylex.props(styles.storyRingInner)}>
+                                 <Image
+                                    src={currentUser?.avatar_url}
+                                    alt="Your story"
+                                    width={74}
+                                    height={74}
+                                    {...stylex.props(styles.addStoryAvatar)}
+                                 />
+                              </div>
                            </div>
-                        </div>
-                     ) : (
-                        <div
-                           style={{
-                              width: 74,
-                              height: 74,
-                              borderRadius: '50%',
-                              background: '#888',
-                           }}
-                        />
-                     )}
-                  </OptionalLink>
+                        ) : (
+                           <div
+                              style={{
+                                 width: 74,
+                                 height: 74,
+                                 borderRadius: '50%',
+                                 background: '#888',
+                              }}
+                           />
+                        )}
+                     </OptionalLink>
+                     <button
+                        type="button"
+                        {...stylex.props(styles.addStoryPlusBadge)}
+                        onClick={
+                           currentUserStory
+                              ? e => {
+                                   e.stopPropagation();
+                                   openCreateStory();
+                                }
+                              : openCreateStory
+                        }
+                        aria-label="Add story"
+                     >
+                        <BsPlus fontSize={22} />
+                     </button>
+                  </div>
                   <button
                      type="button"
-                     {...stylex.props(styles.addStoryPlusBadge)}
-                     onClick={
-                        currentUserStory
-                           ? e => {
-                                e.stopPropagation();
-                                openCreateStory();
-                             }
-                           : openCreateStory
-                     }
-                     aria-label="Add story"
+                     onClick={openNewNote}
+                     {...stylex.props(styles.addNoteLabel)}
                   >
-                     <BsPlus fontSize={22} />
+                     {ownNote ? 'Your note' : 'New note'}
                   </button>
-                  <span {...stylex.props(styles.storyUsername)}>Your story</span>
                </div>
             )}
 
-            {entries
-               .filter(entry => entry.username !== currentUser?.username)
-               .map(entry => {
-                  const allViewed = entry.stories.every(s => viewedSet.has(s.userId));
-                  return (
-                     <Link
-                        href={`/stories/${entry.username}`}
-                        key={entry.username}
-                        {...stylex.props(styles.storyLink)}
-                     >
+            {otherEntries.map(entry => {
+               const allViewed = entry.stories.every(s => viewedSet.has(s.userId));
+               const noteContent = notesByUserId.get(entry.userId);
+               return (
+                  <div key={entry.username} {...stylex.props(styles.noteStoryWrapper)}>
+                     {noteContent && <NoteBubble content={noteContent} />}
+                     <Link href={`/stories/${entry.username}`} {...stylex.props(styles.storyLink)}>
                         <div {...stylex.props(styles.storyItem)}>
                            <div
                               {...stylex.props(
@@ -211,8 +247,34 @@ export default function StoriesRow({
                            <span {...stylex.props(styles.storyUsername)}>{entry.username}</span>
                         </div>
                      </Link>
-                  );
-               })}
+                  </div>
+               );
+            })}
+
+            {noteOnlyUsers.map(note => (
+               <div key={note.userId} {...stylex.props(styles.noteStoryWrapper)}>
+                  <NoteBubble content={note.content} />
+                  <Link
+                     href={`/${note.username}`}
+                     {...stylex.props(styles.storyLink)}
+                  >
+                     <div {...stylex.props(styles.storyItem)}>
+                        <div {...stylex.props(styles.storyRing, styles.storyRingViewed)}>
+                           <div {...stylex.props(styles.storyRingInner)}>
+                              <Image
+                                 {...stylex.props(styles.storyAvatar)}
+                                 src={note.avatarUrl}
+                                 alt={note.username}
+                                 width={74}
+                                 height={74}
+                              />
+                           </div>
+                        </div>
+                        <span {...stylex.props(styles.storyUsername)}>{note.username}</span>
+                     </div>
+                  </Link>
+               </div>
+            ))}
          </div>
       </div>
    );

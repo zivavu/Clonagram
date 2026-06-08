@@ -5,6 +5,7 @@ import * as stylex from '@stylexjs/stylex';
 import { type EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { BsPeopleFill } from 'react-icons/bs';
@@ -29,12 +30,13 @@ interface NewNoteModalProps {
 export default function NewNoteModal({ currentUser, ownNote }: NewNoteModalProps) {
    const { isOpen, close } = useNewNoteModalStore();
    const isDark = useThemeStore(s => s.isDark);
+   const router = useRouter();
    const [text, setText] = useState(ownNote ?? '');
    const [pickerOpen, setPickerOpen] = useState(false);
    const [loading, setLoading] = useState(false);
    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-   const handleOpen = (open: boolean) => {
+   const handleOpenChange = (open: boolean) => {
       if (open) {
          setText(ownNote ?? '');
       } else {
@@ -66,6 +68,7 @@ export default function NewNoteModal({ currentUser, ownNote }: NewNoteModalProps
       setLoading(true);
       try {
          await createNoteAction(text.trim());
+         router.refresh();
          close();
       } finally {
          setLoading(false);
@@ -77,6 +80,7 @@ export default function NewNoteModal({ currentUser, ownNote }: NewNoteModalProps
       setLoading(true);
       try {
          await deleteNoteAction();
+         router.refresh();
          setText('');
          close();
       } finally {
@@ -87,7 +91,7 @@ export default function NewNoteModal({ currentUser, ownNote }: NewNoteModalProps
    const remaining = MAX_LENGTH - text.length;
 
    return (
-      <Dialog.Root open={isOpen} onOpenChange={handleOpen}>
+      <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
          <Dialog.Portal>
             <DialogOverlay />
             <Dialog.Content
@@ -157,7 +161,10 @@ export default function NewNoteModal({ currentUser, ownNote }: NewNoteModalProps
 
                   {text.length > 40 && (
                      <span
-                        {...stylex.props(styles.charCount, remaining <= 5 && styles.charCountWarning)}
+                        {...stylex.props(
+                           styles.charCount,
+                           remaining <= 5 && styles.charCountWarning,
+                        )}
                      >
                         {remaining}
                      </span>
