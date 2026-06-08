@@ -26,6 +26,7 @@ export interface MessageInputHandle {
 }
 
 const MAX_LENGTH = 1000;
+const MAX_IMAGES = 10;
 const PICKER_CLASS = 'clonagram-emoji-picker';
 
 const pickerOverrideCSS = `
@@ -80,11 +81,22 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
    function addImageFiles(files: File[]) {
       const imageFiles = files.filter(f => f.type.startsWith('image/'));
       if (!imageFiles.length) return;
-      const newItems: PendingImage[] = imageFiles.map(file => ({
-         file,
-         previewUrl: URL.createObjectURL(file),
-      }));
-      setPendingImages(prev => [...prev, ...newItems]);
+      setPendingImages(prev => {
+         const availableSlots = Math.max(0, MAX_IMAGES - prev.length);
+         if (availableSlots === 0) {
+            toast(`You can only send up to ${MAX_IMAGES} images`);
+            return prev;
+         }
+         const toAdd = imageFiles.slice(0, availableSlots);
+         if (toAdd.length < imageFiles.length) {
+            toast(`You can only send up to ${MAX_IMAGES} images`);
+         }
+         const newItems: PendingImage[] = toAdd.map(file => ({
+            file,
+            previewUrl: URL.createObjectURL(file),
+         }));
+         return [...prev, ...newItems];
+      });
    }
 
    function removeImage(index: number) {
