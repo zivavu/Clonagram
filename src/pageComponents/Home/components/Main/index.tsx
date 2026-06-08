@@ -7,7 +7,11 @@ import HomepageFeed from './components/HomepageFeed';
 import StoriesRow from './components/StoriesRow';
 import { styles } from './index.stylex';
 
-export default async function Main() {
+export default async function Main({
+   variant,
+}: {
+   variant: 'home' | 'following' | null;
+}) {
    const supabase = await createServerClient();
    const [{ entries, viewedStoryIds }, profile, { notes, ownNote }] = await Promise.all([
       getActiveStories(),
@@ -30,7 +34,7 @@ export default async function Main() {
             notes={notes}
             ownNote={ownNote}
          />
-         <HomepageFeed />
+         <HomepageFeed variant={variant ?? 'home'} />
       </main>
    );
 }

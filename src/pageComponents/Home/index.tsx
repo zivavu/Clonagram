@@ -47,7 +47,7 @@ export default async function HomePage({ variant }: { variant: 'following' | 'ho
          <Separator {...stylex.props(styles.separator)} />
          <div {...stylex.props(styles.mainContainer)}>
             <Suspense fallback={<MainSkeleton />}>
-               <Main />
+               <Main variant={variant} />
             </Suspense>
             <div {...stylex.props(styles.sidebarSlot)}>
                <Suspense fallback={<RightSidebarSkeleton />}>
