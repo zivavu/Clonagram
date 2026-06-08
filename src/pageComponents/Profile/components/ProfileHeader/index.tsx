@@ -6,6 +6,7 @@ import { BiLink } from 'react-icons/bi';
 import { MdPersonAdd, MdVerified } from 'react-icons/md';
 import type { ProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
 import FollowButton from '@/src/components/FollowButton';
+import NoteBubble from '@/src/components/NoteBubble';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { FollowState } from '@/src/queries/followStatus';
 import { useNewNoteModalStore } from '@/src/store/createModalStore';
@@ -52,21 +53,13 @@ export default function ProfileHeader({
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.mainRow)}>
             <div {...stylex.props(styles.avatarSection)}>
-               {note &&
-                  (isOwnProfile ? (
-                     <button
-                        type="button"
-                        {...stylex.props(
-                           styles.profileNoteBubble,
-                           styles.profileNoteBubbleClickable,
-                        )}
-                        onClick={openNoteModal}
-                     >
-                        {note}
-                     </button>
-                  ) : (
-                     <span {...stylex.props(styles.profileNoteBubble)}>{note}</span>
-                  ))}
+               {note && (
+                  <NoteBubble
+                     content={note}
+                     onClick={isOwnProfile ? openNoteModal : undefined}
+                     size="md"
+                  />
+               )}
                <UserAvatar
                   src={userProfile.avatar_url}
                   alt={userProfile.username}

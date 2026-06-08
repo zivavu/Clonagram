@@ -9,6 +9,7 @@ import { BsPlus } from 'react-icons/bs';
 import { MdExpandCircleDown } from 'react-icons/md';
 import type { NoteEntry } from '@/src/actions/notes/getNotesForFeed';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
+import NoteBubble from '@/src/components/NoteBubble';
 import { useCreateStoryModalStore, useNewNoteModalStore } from '@/src/store/createModalStore';
 import type { Profile } from '../../../../../../lib/supabase/getAuthProfile';
 import { colors } from '../../../../../../styles/tokens.stylex';
@@ -37,15 +38,6 @@ function OptionalLink({ href, children, styleProps }: OptionalLinkProps) {
       );
    }
    return <div {...stylex.props(styleProps)}>{children}</div>;
-}
-
-function NoteBubble({ content }: { content: string }) {
-   return (
-      <div {...stylex.props(styles.noteBubble)}>
-         {content}
-         <span {...stylex.props(styles.noteBubbleInner)} />
-      </div>
-   );
 }
 
 interface StoriesRowProps {
@@ -152,11 +144,7 @@ export default function StoriesRow({
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef} onScroll={handleScroll}>
             {!isAnonymous && (
                <div {...stylex.props(styles.noteStoryWrapper)}>
-                  {ownNote && (
-                     <button type="button" onClick={openNewNote} style={{ all: 'unset' }}>
-                        <NoteBubble content={ownNote} />
-                     </button>
-                  )}
+                  {ownNote && <NoteBubble content={ownNote} onClick={openNewNote} />}
                   <div {...stylex.props(styles.addStoryCard)}>
                      <OptionalLink
                         href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}

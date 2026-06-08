@@ -27,28 +27,6 @@ export const styles = stylex.create({
       position: 'relative',
       marginTop: '34px',
    },
-   profileNoteBubble: {
-      position: 'absolute',
-      top: '-30px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      backgroundColor: 'rgba(0,0,0,0.82)',
-      borderRadius: '14px',
-      padding: '6px 14px',
-      fontSize: '0.8rem',
-      color: '#fff',
-      whiteSpace: 'nowrap',
-      maxWidth: '140px',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      zIndex: 1,
-   },
-   profileNoteBubbleClickable: {
-      cursor: 'pointer',
-      ':hover': {
-         backgroundColor: 'rgba(0,0,0,0.95)',
-      },
-   },
    infoSection: {
       display: 'flex',
       flexDirection: 'column',
