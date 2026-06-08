@@ -12,6 +12,7 @@ interface ChatLayoutProps {
    conversationId: string;
    authUserId: string;
    folder: 'primary' | 'general' | 'requests';
+   currentFolderHref: string;
    initialMessages: ConversationMessages;
    initialConversation: ConversationDetail;
    isGroup: boolean;
@@ -21,6 +22,7 @@ export default function ChatLayout({
    conversationId,
    authUserId,
    folder,
+   currentFolderHref,
    initialMessages,
    initialConversation,
    isGroup,
@@ -33,6 +35,7 @@ export default function ChatLayout({
             conversationId={conversationId}
             authUserId={authUserId}
             folder={folder}
+            currentFolderHref={currentFolderHref}
             initialMessages={initialMessages}
             initialConversation={initialConversation}
             onInfoClick={() => setShowDetails(v => !v)}
@@ -43,6 +46,7 @@ export default function ChatLayout({
                authUserId={authUserId}
                initialConversation={initialConversation}
                isGroup={isGroup}
+               onClose={() => setShowDetails(false)}
             />
          )}
       </div>

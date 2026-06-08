@@ -10,6 +10,12 @@ export const styles = stylex.create({
       borderRightColor: colors.separator,
       display: 'flex',
       flexDirection: 'column',
+      '@media (max-width: 1024px)': {
+         minWidth: '100%',
+         width: '100%',
+         height: 'calc(100dvh - 58px - env(safe-area-inset-bottom, 0px))',
+         borderRightWidth: 0,
+      },
    },
    changeAccountButton: {
       display: 'flex',
@@ -25,6 +31,9 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       width: '100%',
+      '@media (max-width: 1024px)': {
+         padding: '16px 16px 8px',
+      },
    },
    messageFoldersContainer: {
       display: 'flex',

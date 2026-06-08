@@ -8,8 +8,22 @@ export const styles = stylex.create({
       height: '100%',
       width: '100%',
       marginLeft: 'var(--main-sidebar-width)',
-      '@media (max-width: 767px)': {
+      '@media (max-width: 1024px)': {
          marginLeft: 0,
+      },
+   },
+   sidebarContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      flexShrink: 0,
+      '@media (max-width: 1024px)': {
+         width: '100%',
+         height: 'calc(100dvh - 58px - env(safe-area-inset-bottom, 0px))',
+      },
+   },
+   sidebarContainerHidden: {
+      '@media (max-width: 1024px)': {
+         display: 'none',
       },
    },
    chatContainer: {
@@ -17,6 +31,20 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       height: '100dvh',
+      '@media (max-width: 1024px)': {
+         position: 'fixed',
+         top: 0,
+         left: 0,
+         width: '100%',
+         height: '100dvh',
+         zIndex: 4,
+         backgroundColor: colors.bg,
+      },
+   },
+   chatContainerHidden: {
+      '@media (max-width: 1024px)': {
+         display: 'none',
+      },
    },
    chatNotSelectedContainer: {
       height: '100%',
@@ -85,6 +113,10 @@ export const styles = stylex.create({
       borderBottomWidth: 1,
       borderBottomStyle: 'solid',
       borderBottomColor: colors.separator,
+      '@media (max-width: 1024px)': {
+         height: 64,
+         paddingRight: 16,
+      },
    },
    chatTopBarRecipient: {
       display: 'flex',
@@ -110,6 +142,24 @@ export const styles = stylex.create({
       color: colors.textPrimary,
       cursor: 'pointer',
    },
+   chatTopBarActionMobileHidden: {
+      '@media (max-width: 1024px)': {
+         display: 'none',
+      },
+   },
+   backButton: {
+      display: 'none',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '4px',
+      color: colors.textPrimary,
+      '@media (max-width: 1024px)': {
+         display: 'flex',
+      },
+   },
+   backButtonIcon: {
+      fontSize: '1.25rem',
+   },
    messagesContainer: {
       flex: 1,
       overflowY: 'auto',
@@ -117,6 +167,9 @@ export const styles = stylex.create({
       flexDirection: 'column',
       gap: '8px',
       padding: '24px 16px',
+      '@media (max-width: 1024px)': {
+         padding: '16px 12px',
+      },
    },
    chatProfileHeader: {
       display: 'flex',
@@ -162,6 +215,9 @@ export const styles = stylex.create({
       alignItems: 'flex-end',
       gap: '8px',
       maxWidth: '70%',
+      '@media (max-width: 1024px)': {
+         maxWidth: '85%',
+      },
    },
    messageRowSent: {
       alignSelf: 'flex-end',
@@ -196,6 +252,9 @@ export const styles = stylex.create({
       alignItems: 'center',
       gap: '8px',
       padding: '16px 20px',
+      '@media (max-width: 1024px)': {
+         padding: '12px 16px',
+      },
    },
    inputWrapper: {
       flex: 1,

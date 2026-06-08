@@ -27,6 +27,7 @@ interface ChatDetailsPanelProps {
    authUserId: string;
    initialConversation: ConversationDetail;
    isGroup: boolean;
+   onClose: () => void;
 }
 
 export default function ChatDetailsPanel({
@@ -34,6 +35,7 @@ export default function ChatDetailsPanel({
    authUserId,
    initialConversation,
    isGroup,
+   onClose,
 }: ChatDetailsPanelProps) {
    const router = useRouter();
    const queryClient = useQueryClient();
@@ -143,7 +145,17 @@ export default function ChatDetailsPanel({
 
    return (
       <div {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.header)}>Details</div>
+         <div {...stylex.props(styles.header)}>
+            <button
+               type="button"
+               {...stylex.props(styles.closeButton)}
+               onClick={onClose}
+               aria-label="Close details"
+            >
+               <IoCloseOutline style={{ fontSize: 24 }} />
+            </button>
+            <span {...stylex.props(styles.headerTitle)}>Details</span>
+         </div>
 
          {isGroup && (
             <>

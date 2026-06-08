@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { FaArrowLeft } from 'react-icons/fa6';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { sendImage } from '@/src/actions/dm/sendImage';
@@ -43,6 +44,7 @@ interface ChatViewProps {
    conversationId: string;
    authUserId: string;
    folder: 'primary' | 'general' | 'requests';
+   currentFolderHref: string;
    initialMessages: ConversationMessages;
    initialConversation: ConversationDetail;
    onInfoClick: () => void;
@@ -52,6 +54,7 @@ export default function ChatView({
    conversationId,
    authUserId,
    folder,
+   currentFolderHref,
    initialMessages,
    initialConversation,
    onInfoClick,
@@ -143,6 +146,13 @@ export default function ChatView({
       <div {...getRootProps()} {...stylex.props(styles.chatViewRoot)}>
          <div {...stylex.props(styles.chatTopBar)}>
             <div {...stylex.props(styles.chatTopBarRecipient)}>
+               <Link
+                  href={currentFolderHref}
+                  {...stylex.props(styles.backButton)}
+                  aria-label="Back to messages"
+               >
+                  <FaArrowLeft {...stylex.props(styles.backButtonIcon)} />
+               </Link>
                <UserAvatar
                   src={avatars[0]?.avatar_url ?? null}
                   alt={displayName}
@@ -161,8 +171,18 @@ export default function ChatView({
                </div>
             </div>
             <div {...stylex.props(styles.chatTopBarActions)}>
-               <IoCallOutline {...stylex.props(styles.chatTopBarActionIcon)} />
-               <HiOutlineVideoCamera {...stylex.props(styles.chatTopBarActionIcon)} />
+               <IoCallOutline
+                  {...stylex.props(
+                     styles.chatTopBarActionIcon,
+                     styles.chatTopBarActionMobileHidden,
+                  )}
+               />
+               <HiOutlineVideoCamera
+                  {...stylex.props(
+                     styles.chatTopBarActionIcon,
+                     styles.chatTopBarActionMobileHidden,
+                  )}
+               />
                <IoInformationCircleOutline
                   {...stylex.props(styles.chatTopBarActionIcon)}
                   onClick={onInfoClick}

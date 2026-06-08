@@ -53,14 +53,23 @@ export default async function DirectMessagesPage({
 
    return (
       <div {...stylex.props(styles.root)}>
-         <RecipientsSidebar
-            authUserId={authUserId}
-            currentFolderHref={currentFolderHref}
-            isRequestsPage={isRequestsPage}
-            initialConversations={conversations ?? []}
-            folder={folder}
-         />
-         <div {...stylex.props(styles.chatContainer)}>
+         <div
+            {...stylex.props(
+               styles.sidebarContainer,
+               isChatSelected && styles.sidebarContainerHidden,
+            )}
+         >
+            <RecipientsSidebar
+               authUserId={authUserId}
+               currentFolderHref={currentFolderHref}
+               isRequestsPage={isRequestsPage}
+               initialConversations={conversations ?? []}
+               folder={folder}
+            />
+         </div>
+         <div
+            {...stylex.props(styles.chatContainer, !isChatSelected && styles.chatContainerHidden)}
+         >
             {!isChatSelected && !isRequestsPage && (
                <div {...stylex.props(styles.chatNotSelectedContainer)}>
                   <div {...stylex.props(styles.messageIconContainer)}>
@@ -93,6 +102,7 @@ export default async function DirectMessagesPage({
                   conversationId={chatId}
                   authUserId={authUserId}
                   folder={folder}
+                  currentFolderHref={currentFolderHref}
                   initialMessages={initialMessages}
                   initialConversation={initialConversation}
                   isGroup={isGroup}

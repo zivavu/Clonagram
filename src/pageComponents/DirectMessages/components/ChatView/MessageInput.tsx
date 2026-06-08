@@ -233,8 +233,8 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
                            theme={isDark ? Theme.DARK : Theme.LIGHT}
                            emojiStyle={EmojiStyle.FACEBOOK}
                            className={PICKER_CLASS}
-                           width={400}
-                           height={400}
+                           width={320}
+                           height={320}
                            previewConfig={{ showPreview: false }}
                         />
                      </div>
