@@ -12,9 +12,7 @@ const HOME_FEED_SELECT = `
    videos:post_videos(id, mux_playback_id, duration, position, width, height)
 `;
 
-export async function getHomeFeedPosts(
-   variant: 'home' | 'following',
-): Promise<PostsWithMedia> {
+export async function getHomeFeedPosts(variant: 'home' | 'following'): Promise<PostsWithMedia> {
    const supabase = await createServerClient();
    const {
       data: { user },

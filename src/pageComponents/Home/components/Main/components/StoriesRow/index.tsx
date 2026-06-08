@@ -9,8 +9,7 @@ import { BsPlus } from 'react-icons/bs';
 import { MdExpandCircleDown } from 'react-icons/md';
 import type { NoteEntry } from '@/src/actions/notes/getNotesForFeed';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
-import { useCreateStoryModalStore } from '@/src/store/createModalStore';
-import { useNewNoteModalStore } from '@/src/store/createModalStore';
+import { useCreateStoryModalStore, useNewNoteModalStore } from '@/src/store/createModalStore';
 import type { Profile } from '../../../../../../lib/supabase/getAuthProfile';
 import { colors } from '../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
@@ -83,9 +82,7 @@ export default function StoriesRow({
 
    const otherEntries = entries.filter(entry => entry.username !== currentUser?.username);
 
-   const noteOnlyUsers = notes.filter(
-      note => !entries.some(e => e.userId === note.userId),
-   );
+   const noteOnlyUsers = notes.filter(note => !entries.some(e => e.userId === note.userId));
 
    useEffect(() => {
       return () => {
@@ -121,8 +118,7 @@ export default function StoriesRow({
       rafRef.current = requestAnimationFrame(animate);
    };
 
-   const totalItems =
-      (isAnonymous ? 0 : 1) + otherEntries.length + noteOnlyUsers.length;
+   const totalItems = (isAnonymous ? 0 : 1) + otherEntries.length + noteOnlyUsers.length;
    const isFirst = scrollLeft === 0;
    const isLast = scrollLeft >= scrollMax || totalItems <= 6;
 
@@ -254,10 +250,7 @@ export default function StoriesRow({
             {noteOnlyUsers.map(note => (
                <div key={note.userId} {...stylex.props(styles.noteStoryWrapper)}>
                   <NoteBubble content={note.content} />
-                  <Link
-                     href={`/${note.username}`}
-                     {...stylex.props(styles.storyLink)}
-                  >
+                  <Link href={`/${note.username}`} {...stylex.props(styles.storyLink)}>
                      <div {...stylex.props(styles.storyItem)}>
                         <div {...stylex.props(styles.storyRing, styles.storyRingViewed)}>
                            <div {...stylex.props(styles.storyRingInner)}>

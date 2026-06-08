@@ -4,11 +4,7 @@ import { getHomeFeedPosts } from '../../../../../../actions/post/getHomeFeedPost
 import HomepagePost from './HomepagePost';
 import { styles } from './index.stylex';
 
-export default async function HomepageFeed({
-   variant,
-}: {
-   variant: 'home' | 'following';
-}) {
+export default async function HomepageFeed({ variant }: { variant: 'home' | 'following' }) {
    const posts = await getHomeFeedPosts(variant);
 
    return (

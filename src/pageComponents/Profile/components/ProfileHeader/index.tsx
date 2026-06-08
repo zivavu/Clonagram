@@ -8,8 +8,8 @@ import type { ProfileWithPosts } from '@/src/actions/profile/getUserProfileWithP
 import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { FollowState } from '@/src/queries/followStatus';
-import { useFollowListModal } from '@/src/store/followListModalStore';
 import { useNewNoteModalStore } from '@/src/store/createModalStore';
+import { useFollowListModal } from '@/src/store/followListModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
 import MessageButton from './components/MessageButton';
 import { styles } from './index.stylex';
@@ -52,19 +52,21 @@ export default function ProfileHeader({
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.mainRow)}>
             <div {...stylex.props(styles.avatarSection)}>
-               {note && (
-                  isOwnProfile ? (
+               {note &&
+                  (isOwnProfile ? (
                      <button
                         type="button"
-                        {...stylex.props(styles.profileNoteBubble, styles.profileNoteBubbleClickable)}
+                        {...stylex.props(
+                           styles.profileNoteBubble,
+                           styles.profileNoteBubbleClickable,
+                        )}
                         onClick={openNoteModal}
                      >
                         {note}
                      </button>
                   ) : (
                      <span {...stylex.props(styles.profileNoteBubble)}>{note}</span>
-                  )
-               )}
+                  ))}
                <UserAvatar
                   src={userProfile.avatar_url}
                   alt={userProfile.username}
