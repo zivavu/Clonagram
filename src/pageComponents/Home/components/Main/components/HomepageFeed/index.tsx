@@ -1,17 +1,16 @@
 import * as stylex from '@stylexjs/stylex';
 import { BiNotificationOff } from 'react-icons/bi';
-import { createServerClient } from '../../../../../../lib/supabase/server';
-import { postsWithMediaQuery } from '../../../../../../queries/posts';
+import { getHomeFeedPosts } from '../../../../../../actions/post/getHomeFeedPosts';
 import HomepagePost from './HomepagePost';
 import { styles } from './index.stylex';
 
-export default async function HomepageFeed() {
-   const supabase = await createServerClient();
-   const { data: posts, error } = await postsWithMediaQuery(supabase);
+export default async function HomepageFeed({
+   variant,
+}: {
+   variant: 'home' | 'following';
+}) {
+   const posts = await getHomeFeedPosts(variant);
 
-   if (error) {
-      throw new Error(`Failed to fetch posts: ${error.message}`);
-   }
    return (
       <>
          {posts.length === 0 ? (
@@ -19,7 +18,9 @@ export default async function HomepageFeed() {
                <BiNotificationOff {...stylex.props(styles.emptyStateIcon)} />
                <span {...stylex.props(styles.emptyStateTitle)}>No posts yet</span>
                <span {...stylex.props(styles.emptyStateSubtitle)}>
-                  Follow people to see their photos and videos here.
+                  {variant === 'following'
+                     ? 'Follow people to see their photos and videos here.'
+                     : 'Be the first to share a photo or video.'}
                </span>
             </div>
          ) : (
