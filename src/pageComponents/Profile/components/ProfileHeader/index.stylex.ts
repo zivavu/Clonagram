@@ -25,11 +25,11 @@ export const styles = stylex.create({
       flexShrink: 0,
       width: '150px',
       position: 'relative',
-      paddingTop: '34px',
+      marginTop: '34px',
    },
    profileNoteBubble: {
       position: 'absolute',
-      top: '0',
+      top: '-30px',
       left: '50%',
       transform: 'translateX(-50%)',
       backgroundColor: 'rgba(0,0,0,0.82)',

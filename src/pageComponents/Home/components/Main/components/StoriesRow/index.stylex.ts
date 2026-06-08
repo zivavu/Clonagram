@@ -13,7 +13,7 @@ export const styles = stylex.create({
       overflowX: 'auto',
       paddingBottom: spacing.xs,
       borderBottom: `1px solid ${colors.separator}`,
-      paddingTop: '8px',
+      paddingTop: '40px',
       paddingLeft: '12px',
       position: 'relative',
       scrollbarWidth: 'none',
@@ -139,7 +139,7 @@ export const styles = stylex.create({
    },
    noteBubble: {
       position: 'absolute',
-      top: '0',
+      top: '-30px',
       left: '50%',
       transform: 'translateX(-50%)',
       backgroundColor: 'rgba(0,0,0,0.82)',
@@ -157,7 +157,6 @@ export const styles = stylex.create({
    noteBubbleInner: {},
    noteStoryWrapper: {
       position: 'relative',
-      paddingTop: '30px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
