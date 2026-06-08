@@ -21,3 +21,4 @@ export const useSearchPortalStore = createModalStore();
 export const useCreateStoryModalStore = createModalStore();
 export const useNewMessageModalStore = createModalStore();
 export const useSettingsPopoverStore = createModalStore();
+export const useNewNoteModalStore = createModalStore();
