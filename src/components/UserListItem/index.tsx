@@ -1,6 +1,7 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
+import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
 import { styles } from './index.stylex';
 
@@ -15,6 +16,7 @@ interface UserListItemProps {
    onClick?: () => void;
    role?: string;
    ariaSelected?: boolean;
+   href?: string;
 }
 
 export function UserListItem({
@@ -28,15 +30,10 @@ export function UserListItem({
    onClick,
    role,
    ariaSelected,
+   href,
 }: UserListItemProps) {
-   return (
-      // biome-ignore lint/a11y/useAriaPropsSupportedByRole: role is passed dynamically and can be option
-      <button
-         {...stylex.props(styles.row)}
-         onClick={onClick}
-         role={role}
-         aria-selected={ariaSelected}
-      >
+   const content = (
+      <>
          <div {...stylex.props(styles.info)}>
             <UserAvatar
                src={avatarUrl}
@@ -51,6 +48,26 @@ export function UserListItem({
             </div>
          </div>
          {rightElement && <div {...stylex.props(styles.right)}>{rightElement}</div>}
+      </>
+   );
+
+   if (href) {
+      return (
+         <Link href={href} {...stylex.props(styles.row)}>
+            {content}
+         </Link>
+      );
+   }
+
+   return (
+      // biome-ignore lint/a11y/useAriaPropsSupportedByRole: role is passed dynamically and can be option
+      <button
+         {...stylex.props(styles.row)}
+         onClick={onClick}
+         role={role}
+         aria-selected={ariaSelected}
+      >
+         {content}
       </button>
    );
 }

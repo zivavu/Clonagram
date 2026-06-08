@@ -100,9 +100,7 @@ export default function SearchPortal() {
                               </span>
                            }
                            subtitle={user.full_name ?? ''}
-                           onClick={() => {
-                              // TODO: navigate to user profile
-                           }}
+                           href={`/profile/${user.username}`}
                         />
                      );
                   })}
