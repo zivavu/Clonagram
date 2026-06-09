@@ -3,6 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import { MdLocationOn, MdVerified } from 'react-icons/md';
+import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { supabase } from '@/src/lib/supabase/client';
@@ -65,9 +66,12 @@ export default function ReelItem({
                      </span>
                   )}
                   {!isOwnReel && (
-                     <button type="button" {...stylex.props(styles.follow)}>
-                        · Follow
-                     </button>
+                     <FollowButton
+                        targetUserId={reel.user.id}
+                        targetIsPrivate={false}
+                        variant="sidebar"
+                        rootStyle={styles.followButton}
+                     />
                   )}
                </div>
                {reel.location_name && (

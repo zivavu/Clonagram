@@ -10,6 +10,7 @@ import { TbDots, TbRepeat } from 'react-icons/tb';
 import { dislikePostAction } from '@/src/actions/likes/dislikePost';
 import { likePostAction } from '@/src/actions/likes/likePost';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { useToggleSave } from '@/src/hooks/useToggleSave';
 import type { Reel } from '@/src/queries/posts';
 import { styles } from './index.stylex';
 
@@ -31,12 +32,16 @@ export default function ReelActionRail({
    onToggleComments,
 }: ReelActionRailProps) {
    const { data: authUser } = useAuthUser();
-   const [saved, setSaved] = useState(false);
    const [isLiked, setIsLiked] = useState(false);
    const [likeCount, setLikeCount] = useState(reel.likes.length);
+   const [isSaved, setIsSaved] = useState(false);
+   const { mutate: toggleSave, isPending: isSavePending } = useToggleSave(reel.id, reel.saves);
 
    useEffect(() => {
-      if (authUser) setIsLiked(reel.likes.some(l => l.user_id === authUser.id));
+      if (authUser) {
+         setIsLiked(reel.likes.some(l => l.user_id === authUser.id));
+         setIsSaved(reel.saves?.some(s => s.user_id === authUser.id) ?? false);
+      }
    }, [authUser, reel]);
 
    async function handleLike() {
@@ -55,6 +60,16 @@ export default function ReelActionRail({
       }
    }
 
+   function handleSave() {
+      const next = !isSaved;
+      setIsSaved(next);
+      try {
+         toggleSave();
+      } catch {
+         setIsSaved(!next);
+      }
+   }
+
    return (
       <div {...stylex.props(styles.rail)}>
          <div {...stylex.props(styles.group)}>
@@ -64,11 +79,7 @@ export default function ReelActionRail({
                aria-label="Like"
                {...stylex.props(styles.button)}
             >
-               {isLiked ? (
-                  <MdFavorite {...stylex.props(styles.likedIcon)} size={26} />
-               ) : (
-                  <MdFavoriteBorder size={26} />
-               )}
+               {isLiked ? <MdFavorite size={26} /> : <MdFavoriteBorder size={26} />}
             </button>
             <span {...stylex.props(styles.count)}>{formatCount(likeCount)}</span>
          </div>
@@ -95,11 +106,12 @@ export default function ReelActionRail({
 
          <button
             type="button"
-            onClick={() => setSaved(prev => !prev)}
+            onClick={handleSave}
             aria-label="Save"
+            disabled={isSavePending}
             {...stylex.props(styles.button)}
          >
-            {saved ? <MdBookmark size={24} /> : <MdBookmarkBorder size={24} />}
+            {isSaved ? <MdBookmark size={24} /> : <MdBookmarkBorder size={24} />}
          </button>
 
          <button type="button" aria-label="More" {...stylex.props(styles.button)}>

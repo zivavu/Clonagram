@@ -6,7 +6,13 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
-import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder, MdLocationOn } from 'react-icons/md';
+import {
+   MdBookmark,
+   MdBookmarkBorder,
+   MdFavorite,
+   MdFavoriteBorder,
+   MdLocationOn,
+} from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { getPostAction } from '@/src/actions/post/getPost';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
@@ -17,6 +23,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
+import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
@@ -73,6 +80,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    }, [comments]);
 
    const { mutate: togglePostLike } = useTogglePostLike(post);
+   const { mutate: togglePostSave } = useTogglePostSave(post);
 
    const { mutate: submitComment } = useSubmitComment(post.id, commentsKey);
 
@@ -244,8 +252,17 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                         </button>
                      ))}
                   </div>
-                  <button type="button" aria-label="Bookmark">
-                     <MdBookmarkBorder size={24} />
+                  <button
+                     type="button"
+                     aria-label="Bookmark"
+                     onClick={() => togglePostSave()}
+                     {...stylex.props(styles.actionButton)}
+                  >
+                     {post.saves?.some(s => s.user_id === authUser?.id) ? (
+                        <MdBookmark size={24} />
+                     ) : (
+                        <MdBookmarkBorder size={24} />
+                     )}
                   </button>
                </div>
                <div {...stylex.props(styles.likedByText)}>

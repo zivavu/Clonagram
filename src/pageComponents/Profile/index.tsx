@@ -12,6 +12,7 @@ interface ProfilePageProps extends ProfileWithPosts {
    isOwnProfile: boolean;
    initialPost?: PostWithMedia | string;
    note?: string | null;
+   savedPosts?: PostWithMedia[];
 }
 
 export default function ProfilePage({
@@ -21,6 +22,7 @@ export default function ProfilePage({
    isOwnProfile,
    initialPost,
    note,
+   savedPosts,
 }: ProfilePageProps) {
    return (
       <div {...stylex.props(styles.root)}>
@@ -40,6 +42,7 @@ export default function ProfilePage({
             posts={posts}
             username={userProfile.username}
             isOwnProfile={isOwnProfile}
+            savedPosts={savedPosts}
          />
       </div>
    );

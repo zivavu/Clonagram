@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
-import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
+import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
@@ -16,6 +16,7 @@ import { getPostAction } from '../../../../../../../actions/post/getPost';
 import PostMediaCarousel from '../../../../../../../components/PostMediaCarousel/PostMediaCarousel';
 import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
 import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike';
+import { useTogglePostSave } from '../../../../../../../hooks/useTogglePostSave';
 import { usePostViewModal } from '../../../../../../../store/postViewModalStore';
 import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
 import { colors } from '../../../../../../../styles/tokens.stylex';
@@ -70,7 +71,9 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    });
 
    const { mutate: togglePostLike } = useTogglePostLike(post);
+   const { mutate: togglePostSave } = useTogglePostSave(post);
    const isLiked = post.likes.some(l => l.user_id === currentUser?.id);
+   const isSaved = post.saves?.some(s => s.user_id === currentUser?.id);
 
    const isOwner = post.user.id === currentUser?.id;
 
@@ -152,8 +155,17 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
             <button type="button" aria-label="Share">
                <LuSend size={24} color={colors.textPrimary} />
             </button>
-            <button type="button" aria-label="Bookmark" style={{ marginLeft: 'auto' }}>
-               <MdBookmarkBorder size={26} color={colors.textPrimary} />
+            <button
+               type="button"
+               aria-label="Bookmark"
+               style={{ marginLeft: 'auto' }}
+               onClick={() => togglePostSave()}
+            >
+               {isSaved ? (
+                  <MdBookmark size={26} color={colors.textPrimary} />
+               ) : (
+                  <MdBookmarkBorder size={26} color={colors.textPrimary} />
+               )}
             </button>
          </div>
          <div {...stylex.props(styles.descriptionContainer)}>

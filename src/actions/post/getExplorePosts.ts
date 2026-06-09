@@ -6,6 +6,7 @@ import type { PostsWithMedia } from '../../queries/posts';
 const EXPLORE_SELECT = `
     id, caption, created_at, aspect_ratio, hide_likes, location_name,
     likes(user_id),
+    saves(user_id),
     comments(count),
     user:profiles!user_id(id, username, avatar_url, is_private),
     collaborators:post_collaborators(user:profiles!user_id(id, username, avatar_url)),

@@ -54,13 +54,12 @@ export const styles = stylex.create({
       color: 'rgb(74, 144, 226)',
       display: 'flex',
    },
-   follow: {
+   followButton: {
       color: colors.textPrimary,
       fontSize: '14px',
       fontWeight: 600,
       background: 'none',
       border: 'none',
-      cursor: 'pointer',
    },
    location: {
       display: 'flex',
