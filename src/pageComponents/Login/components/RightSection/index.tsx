@@ -14,15 +14,22 @@ import FloatingInput from '../../../../components/FloatingInput';
 import { colors } from '../../../../styles/tokens.stylex';
 import ForgotPassword from './ForgotPassword';
 import { styles } from './index.stylex';
+import ResetPassword from './ResetPassword';
 
 const schema = z.object({
    email: z.email(),
    password: z.string().min(8),
 });
 
-export default function RightSection() {
+interface RightSectionProps {
+   initialReset?: boolean;
+   initialError?: string;
+}
+
+export default function RightSection({ initialReset, initialError }: RightSectionProps) {
    const [isLoading, setIsLoading] = useState(false);
    const [showForgot, setShowForgot] = useState(false);
+   const [showReset, setShowReset] = useState(initialReset ?? false);
 
    const {
       register,
@@ -86,7 +93,9 @@ export default function RightSection() {
 
    return (
       <main {...stylex.props(styles.root)}>
-         {showForgot ? (
+         {showReset ? (
+            <ResetPassword onBack={() => setShowReset(false)} />
+         ) : showForgot ? (
             <ForgotPassword onBack={() => setShowForgot(false)} />
          ) : (
             <>
@@ -109,6 +118,11 @@ export default function RightSection() {
                   {errors.root?.message && (
                      <span role="alert" {...stylex.props(styles.errorAlert)}>
                         {errors.root.message}
+                     </span>
+                  )}
+                  {initialError && (
+                     <span role="alert" {...stylex.props(styles.errorAlert)}>
+                        {initialError}
                      </span>
                   )}
                </form>
