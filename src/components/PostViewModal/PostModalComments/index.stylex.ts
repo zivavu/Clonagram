@@ -35,10 +35,34 @@ export const styles = stylex.create({
       paddingBottom: spacing.md,
       borderBottom: `1px solid ${colors.separator}`,
    },
+   headerMeta: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '2px',
+      flex: 1,
+      minWidth: 0,
+   },
+   headerTopRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px',
+      flexWrap: 'wrap',
+   },
    postHeaderUsername: {
       fontWeight: 600,
       color: colors.textPrimary,
       fontSize: '14px',
+   },
+   collaboratorsText: {
+      fontSize: '14px',
+      color: colors.textPrimary,
+   },
+   locationName: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '2px',
+      fontSize: '12px',
+      color: colors.textSecondary,
    },
    followButton: {
       color: colors.accentText,

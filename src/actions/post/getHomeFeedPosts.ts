@@ -4,13 +4,14 @@ import { createServerClient } from '../../lib/supabase/server';
 import type { PostsWithMedia } from '../../queries/posts';
 
 const HOME_FEED_SELECT = `
-   id, caption, created_at, aspect_ratio, hide_likes,
-   likes(user_id),
-   comments(count),
+    id, caption, created_at, aspect_ratio, hide_likes, location_name,
+    likes(user_id),
+    comments(count),
     user:profiles!user_id(id, username, avatar_url, is_private),
-   images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(id, username, avatar_url))),
-   videos:post_videos(id, mux_playback_id, duration, position, width, height)
-`;
+    collaborators:post_collaborators(user:profiles!user_id(id, username, avatar_url)),
+    images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(id, username, avatar_url))),
+    videos:post_videos(id, mux_playback_id, duration, position, width, height)
+ `;
 
 export async function getHomeFeedPosts(variant: 'home' | 'following'): Promise<PostsWithMedia> {
    const supabase = await createServerClient();

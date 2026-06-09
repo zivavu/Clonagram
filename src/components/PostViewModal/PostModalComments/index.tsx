@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaRegFaceSmile } from 'react-icons/fa6';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
-import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
+import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder, MdLocationOn } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { getPostAction } from '@/src/actions/post/getPost';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
@@ -143,18 +143,46 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                      username={post.user.username}
                      userId={post.user.id}
                   />
-                  <OtherUserUsername style={styles.postHeaderUsername} userProfile={post.user} />
-                  {authUser?.id !== post.user.id && (
-                     <>
-                        <span>•</span>
-                        <FollowButton
-                           targetUserId={post.user.id}
-                           targetIsPrivate={post.user.is_private ?? false}
-                           variant="sidebar"
-                           rootStyle={styles.inlineFollowButton}
+                  <div {...stylex.props(styles.headerMeta)}>
+                     <div {...stylex.props(styles.headerTopRow)}>
+                        <OtherUserUsername
+                           style={styles.postHeaderUsername}
+                           userProfile={post.user}
                         />
-                     </>
-                  )}
+                        {post.collaborators && post.collaborators.length > 0 && (
+                           <span {...stylex.props(styles.collaboratorsText)}>
+                              {' and '}
+                              {post.collaborators.map((c, i) => (
+                                 <span key={c.user.id}>
+                                    <OtherUserUsername
+                                       style={styles.captionUsername}
+                                       userProfile={c.user}
+                                    />
+                                    {i < post.collaborators.length - 1 && ', '}
+                                 </span>
+                              ))}
+                           </span>
+                        )}
+                        {authUser?.id !== post.user.id &&
+                           (!post.collaborators || post.collaborators.length === 0) && (
+                              <>
+                                 <span>•</span>
+                                 <FollowButton
+                                    targetUserId={post.user.id}
+                                    targetIsPrivate={post.user.is_private ?? false}
+                                    variant="sidebar"
+                                    rootStyle={styles.inlineFollowButton}
+                                 />
+                              </>
+                           )}
+                     </div>
+                     {post.location_name && (
+                        <span {...stylex.props(styles.locationName)}>
+                           <MdLocationOn size={12} />
+                           {post.location_name}
+                        </span>
+                     )}
+                  </div>
                   <button
                      type="button"
                      aria-label="Post owner actions"
