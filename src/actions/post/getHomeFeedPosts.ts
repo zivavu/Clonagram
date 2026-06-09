@@ -4,24 +4,39 @@ import { createServerClient } from '../../lib/supabase/server';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 
-export async function getHomeFeedPosts(variant: 'home' | 'following'): Promise<PostsWithMedia> {
+const PAGE_SIZE = 10;
+
+export interface HomeFeedPage {
+   posts: PostsWithMedia;
+   nextCursor: string | null;
+}
+
+export async function getHomeFeedPosts(
+   variant: 'home' | 'following',
+   cursor?: string | null,
+): Promise<HomeFeedPage> {
    const supabase = await createServerClient();
    const {
       data: { user },
    } = await supabase.auth.getUser();
 
    if (variant === 'home') {
-      const { data, error } = await supabase
+      let query = supabase
          .from('posts')
          .select(POST_WITH_MEDIA_SELECT)
          .order('created_at', { ascending: false })
-         .limit(10);
+         .limit(PAGE_SIZE);
+      if (cursor) query = query.lt('created_at', cursor);
+      const { data, error } = await query;
       if (error) throw new Error(`Failed to fetch home feed: ${error.message}`);
-      return (data ?? []) as PostsWithMedia;
+      const posts = (data ?? []) as PostsWithMedia;
+      const nextCursor =
+         posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
+      return { posts, nextCursor };
    }
 
    if (!user) {
-      return [];
+      return { posts: [], nextCursor: null };
    }
 
    const { data: followedData, error: followError } = await supabase
@@ -34,16 +49,22 @@ export async function getHomeFeedPosts(variant: 'home' | 'following'): Promise<P
    const followedIds = followedData?.map(f => f.following_id) ?? [];
 
    if (followedIds.length === 0) {
-      return [];
+      return { posts: [], nextCursor: null };
    }
 
-   const { data, error: postsError } = await supabase
+   let query = supabase
       .from('posts')
       .select(POST_WITH_MEDIA_SELECT)
       .in('user_id', followedIds)
       .order('created_at', { ascending: false })
-      .limit(10);
+      .limit(PAGE_SIZE);
+   if (cursor) query = query.lt('created_at', cursor);
+
+   const { data, error: postsError } = await query;
 
    if (postsError) throw new Error(`Failed to fetch following feed: ${postsError.message}`);
-   return (data ?? []) as PostsWithMedia;
+   const posts = (data ?? []) as PostsWithMedia;
+   const nextCursor =
+      posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
+   return { posts, nextCursor };
 }
