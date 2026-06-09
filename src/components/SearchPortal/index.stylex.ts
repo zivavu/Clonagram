@@ -84,4 +84,17 @@ export const styles = stylex.create({
       overflowY: 'auto',
       paddingTop: '8px',
    },
+   emptyState: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px 24px',
+      gap: '8px',
+   },
+   emptyStateText: {
+      fontSize: '14px',
+      color: colors.textSecondary,
+      fontWeight: 500,
+   },
 });

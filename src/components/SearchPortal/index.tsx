@@ -5,11 +5,12 @@ import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FaCircleXmark } from 'react-icons/fa6';
-import { IoCloseOutline } from 'react-icons/io5';
+import { IoCloseOutline, IoSearchOutline } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
 import { useSearchPortalStore } from '@/src/store/createModalStore';
 import { supabase } from '../../lib/supabase/client';
 import { userProfilesQuery } from '../../queries/userProfiles';
+import { colors } from '../../styles/tokens.stylex';
 import { UserListItem, UserListSkeleton } from '../UserListItem';
 import { styles } from './index.stylex';
 
@@ -19,7 +20,7 @@ export default function SearchPortal() {
    const { isOpen, close } = useSearchPortalStore();
    const [query, setQuery] = useState('');
 
-   const { data: filteredUsers } = useQuery({
+   const { data: filteredUsers, isLoading } = useQuery({
       queryKey: ['profiles', 'search', query],
       queryFn: async () => {
          const { data, error } = await userProfilesQuery(supabase, { search: query });
@@ -70,6 +71,19 @@ export default function SearchPortal() {
                </div>
 
                <div {...stylex.props(styles.list)} role="listbox">
+                  {!query && (
+                     <div {...stylex.props(styles.emptyState)}>
+                        <IoSearchOutline
+                           style={{ fontSize: 32, color: colors.textSecondary, marginBottom: 8 }}
+                        />
+                        <span {...stylex.props(styles.emptyStateText)}>Search for users</span>
+                     </div>
+                  )}
+                  {query && !isLoading && !filteredUsers?.length && (
+                     <div {...stylex.props(styles.emptyState)}>
+                        <span {...stylex.props(styles.emptyStateText)}>No results found</span>
+                     </div>
+                  )}
                   {filteredUsers?.map(user => {
                      const isVerified = VERIFIED_USERS.has(user.username);
                      return (
@@ -104,7 +118,7 @@ export default function SearchPortal() {
                         />
                      );
                   })}
-                  <UserListSkeleton count={skeletonCount} />
+                  {isLoading && <UserListSkeleton count={skeletonCount} />}
                </div>
             </Dialog.Content>
          </Dialog.Portal>
