@@ -12,6 +12,7 @@ import ZetaLogo from '@/src/components/ZetaLogo';
 import { supabase } from '@/src/lib/supabase/client';
 import FloatingInput from '../../../../components/FloatingInput';
 import { colors } from '../../../../styles/tokens.stylex';
+import ForgotPassword from './ForgotPassword';
 import { styles } from './index.stylex';
 
 const schema = z.object({
@@ -21,6 +22,7 @@ const schema = z.object({
 
 export default function RightSection() {
    const [isLoading, setIsLoading] = useState(false);
+   const [showForgot, setShowForgot] = useState(false);
 
    const {
       register,
@@ -84,50 +86,60 @@ export default function RightSection() {
 
    return (
       <main {...stylex.props(styles.root)}>
-         <div {...stylex.props(styles.titleContainer)}>Log into Clonagram</div>
-         <form onSubmit={handleSubmit(signInUser)} style={{ display: 'contents' }}>
-            <FloatingInput label="Email adress" {...register('email')} autoComplete="email" />
-            <FloatingInput
-               label="Password"
-               type="password"
-               {...register('password')}
-               autoComplete="current-password"
-            />
-            <LoginPageButton
-               disabled={disableButtons || !isValid}
-               variant="primary"
-               text="Log in"
-               style={{ marginTop: '12px' }}
-               type="submit"
-            />
-            {errors.root?.message && (
-               <span role="alert" {...stylex.props(styles.errorAlert)}>
-                  {errors.root.message}
-               </span>
-            )}
-         </form>
-         <LoginPageButton variant="transparent" text="Forgot password?" />
-         <LoginPageButton
-            disabled={disableButtons}
-            variant="outlined"
-            text="Log in with Google"
-            icon={GoogleIcon}
-            onClick={signInWithGoogle}
-            style={{ marginTop: '42px' }}
-         />
-         <LoginPageButton
-            variant="outlined"
-            text="Anonymous login"
-            onClick={signInAnonymously}
-            disabled={disableButtons}
-            icon={AnonymousLoginIcon}
-         />
-         <LoginPageButton
-            variant="outlined"
-            text="Create new account"
-            style={{ borderColor: colors.accent, color: colors.accent }}
-            linkProps={{ href: '/emailsignup' }}
-         />
+         {showForgot ? (
+            <ForgotPassword onBack={() => setShowForgot(false)} />
+         ) : (
+            <>
+               <div {...stylex.props(styles.titleContainer)}>Log into Clonagram</div>
+               <form onSubmit={handleSubmit(signInUser)} style={{ display: 'contents' }}>
+                  <FloatingInput label="Email adress" {...register('email')} autoComplete="email" />
+                  <FloatingInput
+                     label="Password"
+                     type="password"
+                     {...register('password')}
+                     autoComplete="current-password"
+                  />
+                  <LoginPageButton
+                     disabled={disableButtons || !isValid}
+                     variant="primary"
+                     text="Log in"
+                     style={{ marginTop: '12px' }}
+                     type="submit"
+                  />
+                  {errors.root?.message && (
+                     <span role="alert" {...stylex.props(styles.errorAlert)}>
+                        {errors.root.message}
+                     </span>
+                  )}
+               </form>
+               <LoginPageButton
+                  variant="transparent"
+                  text="Forgot password?"
+                  onClick={() => setShowForgot(true)}
+               />
+               <LoginPageButton
+                  disabled={disableButtons}
+                  variant="outlined"
+                  text="Log in with Google"
+                  icon={GoogleIcon}
+                  onClick={signInWithGoogle}
+                  style={{ marginTop: '42px' }}
+               />
+               <LoginPageButton
+                  variant="outlined"
+                  text="Anonymous login"
+                  onClick={signInAnonymously}
+                  disabled={disableButtons}
+                  icon={AnonymousLoginIcon}
+               />
+               <LoginPageButton
+                  variant="outlined"
+                  text="Create new account"
+                  style={{ borderColor: colors.accent, color: colors.accent }}
+                  linkProps={{ href: '/emailsignup' }}
+               />
+            </>
+         )}
          <ZetaLogo rootProps={{ style: { marginTop: '8px' } }} />
          <span {...stylex.props(styles.reportContent)}>
             You can also{' '}
