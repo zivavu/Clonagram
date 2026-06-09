@@ -32,23 +32,12 @@ export async function updateSession(request: NextRequest) {
 
    const authPages = ['/login', '/emailsignup', '/auth/callback'];
 
-   const protectedPrefixes = ['/direct', '/accounts', '/archive'];
-   const isProtected = protectedPrefixes.some(prefix =>
-      request.nextUrl.pathname.startsWith(prefix),
-   );
-   const isOwnProfile = request.nextUrl.pathname === '/profile';
-   const isAnonymous = session?.user?.is_anonymous;
-
-   if (
-      (!session?.user || isAnonymous) &&
-      !authPages.some(page => request.nextUrl.pathname.startsWith(page)) &&
-      isProtected &&
-      !isOwnProfile
-   ) {
+   if (!session?.user && !authPages.some(page => request.nextUrl.pathname.startsWith(page))) {
       const url = request.nextUrl.clone();
       url.pathname = '/login';
       return NextResponse.redirect(url);
    }
+
    if (
       session?.user &&
       !session.user.is_anonymous &&
