@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
 
    const authPages = ['/login', '/emailsignup', '/auth/callback'];
 
-   const protectedPrefixes = ['/direct', '/accounts', '/dashboard', '/archive'];
+   const protectedPrefixes = ['/direct', '/accounts', '/archive'];
    const isProtected = protectedPrefixes.some(prefix =>
       request.nextUrl.pathname.startsWith(prefix),
    );
