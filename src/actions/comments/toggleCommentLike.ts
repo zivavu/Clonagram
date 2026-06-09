@@ -1,6 +1,6 @@
 'use server';
 import 'server-only';
-import { getAuthUser } from '../actions/getAuthUser';
+import { getAuthUser } from '../getAuthUser';
 
 export async function toggleCommentLikeAction(params: {
    commentId: string;

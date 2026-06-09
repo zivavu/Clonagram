@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
-import { createCommentAction } from '@/src/comments/createComment';
+import { createCommentAction } from '@/src/actions/comments/createComment';
 import CommentItem, { CommentSkeleton } from '@/src/components/CommentItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { supabase } from '@/src/lib/supabase/client';

@@ -2,7 +2,7 @@
 import 'server-only';
 import { revalidatePath } from 'next/cache';
 import type { PostComment } from '@/src/queries/comments';
-import { getAuthUser } from '../actions/getAuthUser';
+import { getAuthUser } from '../getAuthUser';
 
 export async function createCommentAction(params: {
    postId: string;
