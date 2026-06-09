@@ -28,7 +28,7 @@ interface RightSectionProps {
 
 export default function RightSection({ initialReset, initialError }: RightSectionProps) {
    const [isLoading, setIsLoading] = useState(false);
-   const [showForgot, setShowForgot] = useState(false);
+   const [showForgot, setShowForgot] = useState(!!initialError);
    const [showReset, setShowReset] = useState(initialReset ?? false);
 
    const {
@@ -96,7 +96,7 @@ export default function RightSection({ initialReset, initialError }: RightSectio
          {showReset ? (
             <ResetPassword onBack={() => setShowReset(false)} />
          ) : showForgot ? (
-            <ForgotPassword onBack={() => setShowForgot(false)} />
+            <ForgotPassword onBack={() => setShowForgot(false)} initialError={initialError} />
          ) : (
             <>
                <div {...stylex.props(styles.titleContainer)}>Log into Clonagram</div>

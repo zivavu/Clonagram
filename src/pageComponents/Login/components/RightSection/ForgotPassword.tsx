@@ -16,9 +16,10 @@ const forgotSchema = z.object({
 
 interface ForgotPasswordProps {
    onBack: () => void;
+   initialError?: string;
 }
 
-export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
+export default function ForgotPassword({ onBack, initialError }: ForgotPasswordProps) {
    const [isLoading, setIsLoading] = useState(false);
    const [resetSent, setResetSent] = useState(false);
 
@@ -27,12 +28,14 @@ export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
       handleSubmit,
       formState: { errors, isSubmitting, isValid },
       setError,
+      clearErrors,
    } = useForm({
       resolver: zodResolver(forgotSchema),
    });
 
    async function onSubmit(formData: z.infer<typeof forgotSchema>) {
       setIsLoading(true);
+      clearErrors();
       try {
          await sendPasswordResetEmail(formData.email);
          setResetSent(true);
@@ -46,7 +49,7 @@ export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
       <>
          <div {...stylex.props(styles.titleContainer)}>Reset your password</div>
          {resetSent ? (
-            <span {...stylex.props(styles.errorAlert)}>Check your email for a reset link.</span>
+            <span {...stylex.props(styles.successAlert)}>Check your email for a reset link.</span>
          ) : (
             <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
                <FloatingInput label="Email address" {...register('email')} autoComplete="email" />
@@ -65,6 +68,11 @@ export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
                {errors.root?.message && (
                   <span role="alert" {...stylex.props(styles.errorAlert)}>
                      {errors.root.message}
+                  </span>
+               )}
+               {initialError && (
+                  <span role="alert" {...stylex.props(styles.errorAlert)}>
+                     {initialError}
                   </span>
                )}
             </form>

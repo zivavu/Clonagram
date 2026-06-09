@@ -51,4 +51,10 @@ export const styles = stylex.create({
       marginTop: 8,
       textAlign: 'center',
    },
+   successAlert: {
+      color: colors.success,
+      fontSize: 13,
+      marginTop: 8,
+      textAlign: 'center',
+   },
 });

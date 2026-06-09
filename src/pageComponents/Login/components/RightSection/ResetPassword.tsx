@@ -54,7 +54,7 @@ export default function ResetPassword({ onBack }: ResetPasswordProps) {
       <>
          <div {...stylex.props(styles.titleContainer)}>Create new password</div>
          {resetComplete ? (
-            <span {...stylex.props(styles.errorAlert)}>
+            <span {...stylex.props(styles.successAlert)}>
                Your password has been updated. You can now log in.
             </span>
          ) : (
