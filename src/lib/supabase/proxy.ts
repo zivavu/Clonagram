@@ -30,7 +30,7 @@ export async function updateSession(request: NextRequest) {
       data: { session },
    } = await supabase.auth.getSession();
 
-   const authPages = ['/login', '/emailsignup', '/auth/callback'];
+   const authPages = ['/login', '/emailsignup', '/auth/callback', '/auth/reset-callback'];
 
    if (!session?.user && !authPages.some(page => request.nextUrl.pathname.startsWith(page))) {
       const url = request.nextUrl.clone();
