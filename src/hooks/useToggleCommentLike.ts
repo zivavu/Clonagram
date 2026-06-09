@@ -3,7 +3,7 @@ import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useOptimisticToggle } from '@/src/hooks/useOptimisticToggle';
 import type { PostComment, PostComments } from '@/src/queries/comments';
 
-export function useToggleCommentLike(comment: PostComment, commentsKey: unknown[]) {
+export function useToggleCommentLike(comment: PostComment, commentsKey: readonly unknown[]) {
    const { data: authUser } = useAuthUser();
 
    const isLiked = comment.comment_likes.some(cl => cl.user_id === authUser?.id);

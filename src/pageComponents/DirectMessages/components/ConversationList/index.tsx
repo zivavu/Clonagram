@@ -3,6 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
 import ConversationItem from '../ConversationItem';
@@ -22,7 +23,7 @@ export default function ConversationList({
    initialData,
 }: ConversationListProps) {
    const queryClient = useQueryClient();
-   const queryKey = ['conversations', folder, authUserId];
+   const queryKey = queryKeys.conversations(folder, authUserId);
 
    const { data: conversations = initialData } = useQuery({
       queryKey,
@@ -39,7 +40,9 @@ export default function ConversationList({
       const channel = supabase
          .channel(`conversations-list-${authUserId}-${folder}`)
          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {
-            queryClient.invalidateQueries({ queryKey: ['conversations', folder, authUserId] });
+            queryClient.invalidateQueries({
+               queryKey: queryKeys.conversations(folder, authUserId),
+            });
          })
          .on(
             'postgres_changes',
@@ -50,7 +53,9 @@ export default function ConversationList({
                filter: `user_id=eq.${authUserId}`,
             },
             () => {
-               queryClient.invalidateQueries({ queryKey: ['conversations', folder, authUserId] });
+               queryClient.invalidateQueries({
+                  queryKey: queryKeys.conversations(folder, authUserId),
+               });
             },
          )
          .on(
@@ -62,7 +67,9 @@ export default function ConversationList({
                filter: `user_id=eq.${authUserId}`,
             },
             () => {
-               queryClient.invalidateQueries({ queryKey: ['conversations', folder, authUserId] });
+               queryClient.invalidateQueries({
+                  queryKey: queryKeys.conversations(folder, authUserId),
+               });
             },
          )
          .subscribe();

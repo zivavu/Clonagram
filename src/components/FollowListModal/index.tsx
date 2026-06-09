@@ -10,7 +10,7 @@ import { getFollowers, getFollowing } from '@/src/actions/follow/getFollows';
 import FollowButton from '@/src/components/FollowButton';
 import { UserListItem, UserListSkeleton } from '@/src/components/UserListItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
-import { useFollowListModal } from '@/src/store/followListModalStore';
+import { useFollowListModal } from '@/src/store/useFollowListModalStore';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 

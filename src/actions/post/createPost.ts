@@ -196,4 +196,6 @@ export async function createPostAction(params: CreatePostParams) {
    ]);
 
    revalidatePath('/');
+   revalidatePath('/[username]', 'page');
+   if (isReel) revalidatePath('/reels');
 }

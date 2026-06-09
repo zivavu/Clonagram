@@ -8,6 +8,7 @@ import { IoClose } from 'react-icons/io5';
 import { createCommentAction } from '@/src/actions/comments/createComment';
 import CommentItem, { CommentSkeleton } from '@/src/components/CommentItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type PostComment, type PostComments, postCommentsQuery } from '@/src/queries/comments';
 import type { Reel } from '@/src/queries/posts';
@@ -32,7 +33,7 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
       document.addEventListener('mousedown', handleMouseDown);
       return () => document.removeEventListener('mousedown', handleMouseDown);
    }, [onClose]);
-   const commentsKey = ['comments', reel.id];
+   const commentsKey = queryKeys.comments(reel.id);
    const [inputValue, setInputValue] = useState('');
    const [replyingTo, setReplyingTo] = useState<{ commentId: string; username: string } | null>(
       null,
@@ -63,7 +64,7 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
             user: { id: authUser.id, username: authUser.username, avatar_url: authUser.avatar_url },
          };
          if (parentId) {
-            const repliesKey = ['replies', parentId];
+            const repliesKey = queryKeys.replies(parentId);
             const prev = queryClient.getQueryData<PostComments>(repliesKey);
             queryClient.setQueryData<PostComments>(repliesKey, old => [...(old ?? []), optimistic]);
             return { prev, repliesKey };
@@ -75,14 +76,14 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
       onError: (_err, { parentId }, context) => {
          if (!context) return;
          if (parentId && 'repliesKey' in context && context.repliesKey) {
-            queryClient.setQueryData(context.repliesKey as string[], context.prev);
+            queryClient.setQueryData(context.repliesKey, context.prev);
          } else if ('prev' in context) {
             queryClient.setQueryData(commentsKey, context.prev);
          }
       },
       onSuccess: (newComment, { parentId }) => {
          if (parentId) {
-            queryClient.setQueryData<PostComments>(['replies', parentId], old =>
+            queryClient.setQueryData<PostComments>(queryKeys.replies(parentId), old =>
                (old ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
             );
          } else {

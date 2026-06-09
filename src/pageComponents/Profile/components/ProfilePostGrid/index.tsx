@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { FaComment } from 'react-icons/fa6';
 import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
 import type { ProfileWithPosts } from '../../../../actions/profile/getUserProfileWithPosts';
-import { usePostViewModal } from '../../../../store/postViewModalStore';
+import { usePostViewModal } from '../../../../store/usePostViewModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
 import { getPostThumbnail } from '../../../../utils/posts';
 import { styles } from './index.stylex';

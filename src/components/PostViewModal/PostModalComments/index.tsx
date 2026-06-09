@@ -24,11 +24,12 @@ import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
-import { usePostViewModal } from '@/src/store/postViewModalStore';
 import { useOwnerActionsModal } from '@/src/store/useOwnerActionsModalStore';
+import { usePostViewModal } from '@/src/store/usePostViewModalStore';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from './index.stylex';
 import { useSubmitComment } from './useSubmitComment';
@@ -50,8 +51,8 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const { close: closePostViewModalStore, returnPath } = usePostViewModal();
    const router = useRouter();
    const { data: authUser } = useAuthUser();
-   const postKey = ['post', initialPost.id];
-   const commentsKey = ['comments', initialPost.id];
+   const postKey = queryKeys.post(initialPost.id);
+   const commentsKey = queryKeys.comments(initialPost.id);
 
    const scrollAreaRef = useRef<HTMLDivElement>(null);
    const commentInputRef = useRef<EmojiInputRef>(null);

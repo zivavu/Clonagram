@@ -25,20 +25,20 @@ export async function updateSession(request: NextRequest) {
    });
 
    const {
-      data: { session },
-   } = await supabase.auth.getSession();
+      data: { user },
+   } = await supabase.auth.getUser();
 
    const authPages = ['/login', '/emailsignup', '/auth/callback', '/auth/reset-callback'];
 
-   if (!session?.user && !authPages.some(page => request.nextUrl.pathname.startsWith(page))) {
+   if (!user && !authPages.some(page => request.nextUrl.pathname.startsWith(page))) {
       const url = request.nextUrl.clone();
       url.pathname = '/login';
       return NextResponse.redirect(url);
    }
 
    if (
-      session?.user &&
-      !session.user.is_anonymous &&
+      user &&
+      !user.is_anonymous &&
       (request.nextUrl.pathname.startsWith('/login') ||
          request.nextUrl.pathname.startsWith('/emailsignup'))
    ) {

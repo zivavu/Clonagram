@@ -54,4 +54,6 @@ export async function deletePostAction(params: { postId: string }) {
    await Promise.allSettled(cleanupTasks);
 
    revalidatePath('/');
+   revalidatePath('/[username]', 'page');
+   revalidatePath('/reels');
 }

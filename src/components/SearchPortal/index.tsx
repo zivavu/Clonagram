@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { FaCircleXmark } from 'react-icons/fa6';
 import { IoCloseOutline, IoSearchOutline } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { useSearchPortalStore } from '@/src/store/createModalStore';
 import { supabase } from '../../lib/supabase/client';
 import { userProfilesQuery } from '../../queries/userProfiles';
@@ -21,7 +22,7 @@ export default function SearchPortal() {
    const [query, setQuery] = useState('');
 
    const { data: filteredUsers, isLoading } = useQuery({
-      queryKey: ['profiles', 'search', query],
+      queryKey: queryKeys.profileSearch(query),
       queryFn: async () => {
          const { data, error } = await userProfilesQuery(supabase, { search: query });
          if (error) throw error;

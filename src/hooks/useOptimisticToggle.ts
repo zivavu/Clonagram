@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type UseOptimisticToggleOptions<T> = {
-   queryKey: unknown[];
+   queryKey: readonly unknown[];
    mutationFn: () => Promise<unknown>;
    updater: (old: T) => T;
-   extraInvalidations?: unknown[][];
+   extraInvalidations?: readonly unknown[][];
 };
 
 export function useOptimisticToggle<T>({

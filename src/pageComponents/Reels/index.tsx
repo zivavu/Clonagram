@@ -3,6 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type Reel, reelsQuery } from '@/src/queries/posts';
 import ReelItem from './components/ReelItem';
@@ -14,7 +15,7 @@ export default function Reels() {
    const [openComments, setOpenComments] = useState<Reel | null>(null);
 
    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-      queryKey: ['reels'],
+      queryKey: queryKeys.reels(),
       queryFn: async ({ pageParam }) => {
          let query = reelsQuery(supabase);
          if (pageParam) query = query.lt('created_at', pageParam);

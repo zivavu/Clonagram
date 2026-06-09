@@ -10,6 +10,7 @@ import { blockAndDeleteRequest } from '@/src/actions/dm/blockAndDeleteRequest';
 import { deleteRequest } from '@/src/actions/dm/deleteRequest';
 import { toast } from '@/src/components/AppToast';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { styles } from '../../index.stylex';
 
@@ -67,7 +68,7 @@ export default function RequestActions({
       setLoading(true);
       try {
          await action();
-         await queryClient.invalidateQueries({ queryKey: ['conversations'] });
+         await queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
          router.push(redirectToRequests ? '/direct/requests' : '/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Something went wrong.');

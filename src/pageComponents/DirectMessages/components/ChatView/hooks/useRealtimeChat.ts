@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 
 export function useRealtimeChat(conversationId: string, queryClient: QueryClient) {
@@ -15,8 +16,8 @@ export function useRealtimeChat(conversationId: string, queryClient: QueryClient
                filter: `conversation_id=eq.${conversationId}`,
             },
             () => {
-               queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
-               queryClient.invalidateQueries({ queryKey: ['conversations'] });
+               queryClient.invalidateQueries({ queryKey: queryKeys.messages(conversationId) });
+               queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
             },
          )
          .on(
@@ -28,7 +29,7 @@ export function useRealtimeChat(conversationId: string, queryClient: QueryClient
                filter: `conversation_id=eq.${conversationId}`,
             },
             () => {
-               queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+               queryClient.invalidateQueries({ queryKey: queryKeys.messages(conversationId) });
             },
          )
          .subscribe();

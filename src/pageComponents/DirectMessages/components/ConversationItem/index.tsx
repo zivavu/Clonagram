@@ -19,6 +19,7 @@ import { moveConversation } from '@/src/actions/dm/moveConversation';
 import { toggleMute } from '@/src/actions/dm/toggleMute';
 import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
+import { queryKeys } from '@/src/lib/queryKeys';
 import type { ConversationSummary } from '@/src/queries/conversations';
 import {
    getConversationAvatars,
@@ -56,7 +57,7 @@ export default function ConversationItem({
    const isMuted = summary.is_muted ?? false;
 
    const invalidate = () =>
-      queryClient.invalidateQueries({ queryKey: ['conversations', folder, authUserId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.conversations(folder, authUserId) });
 
    const { mutate: markUnread } = useMutation({
       mutationFn: () => markConversationUnread(conv.id),
@@ -79,8 +80,12 @@ export default function ConversationItem({
    const { mutate: doMove } = useMutation({
       mutationFn: () => moveConversation(conv.id, folder === 'primary' ? 'general' : 'primary'),
       onSuccess: () => {
-         queryClient.invalidateQueries({ queryKey: ['conversations', 'primary', authUserId] });
-         queryClient.invalidateQueries({ queryKey: ['conversations', 'general', authUserId] });
+         queryClient.invalidateQueries({
+            queryKey: queryKeys.conversations('primary', authUserId),
+         });
+         queryClient.invalidateQueries({
+            queryKey: queryKeys.conversations('general', authUserId),
+         });
       },
       onError: (e: Error) => toast(e.message),
    });

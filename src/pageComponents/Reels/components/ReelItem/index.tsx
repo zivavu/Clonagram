@@ -6,6 +6,7 @@ import { MdLocationOn, MdVerified } from 'react-icons/md';
 import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
 import type { Reel } from '@/src/queries/posts';
@@ -33,7 +34,7 @@ export default function ReelItem({
    const isOwnReel = authUser?.id === reel.user.id;
 
    const { data: comments } = useQuery({
-      queryKey: ['comments', reel.id],
+      queryKey: queryKeys.comments(reel.id),
       queryFn: async () => {
          const { data, error } = await postCommentsQuery(supabase, reel.id);
          if (error) throw error;

@@ -9,6 +9,7 @@ import { IoChevronForward, IoEyeOffOutline } from 'react-icons/io5';
 import { deleteAllRequests } from '@/src/actions/dm/deleteAllRequests';
 import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
 import { getConversationAvatars, getConversationDisplayName } from '@/src/utils/conversations';
@@ -23,7 +24,7 @@ interface RequestsContentProps {
 export function RequestsContent({ authUserId, initialData }: RequestsContentProps) {
    const queryClient = useQueryClient();
    const [isDeleting, setIsDeleting] = useState(false);
-   const queryKey = ['conversations', 'requests', authUserId];
+   const queryKey = queryKeys.conversationRequests(authUserId);
 
    const { data: requests = initialData } = useQuery({
       queryKey,
@@ -40,7 +41,7 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
       const channel = supabase
          .channel(`requests-list-${authUserId}`)
          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {
-            queryClient.invalidateQueries({ queryKey: ['conversations', 'requests', authUserId] });
+            queryClient.invalidateQueries({ queryKey: queryKeys.conversationRequests(authUserId) });
          })
          .on(
             'postgres_changes',
@@ -52,7 +53,7 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
             },
             () => {
                queryClient.invalidateQueries({
-                  queryKey: ['conversations', 'requests', authUserId],
+                  queryKey: queryKeys.conversationRequests(authUserId),
                });
             },
          )
@@ -146,7 +147,9 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
                      setIsDeleting(true);
                      try {
                         await deleteAllRequests();
-                        await queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                        await queryClient.invalidateQueries({
+                           queryKey: queryKeys.conversations(),
+                        });
                      } catch (e) {
                         toast(e instanceof Error ? e.message : 'Something went wrong.');
                      } finally {

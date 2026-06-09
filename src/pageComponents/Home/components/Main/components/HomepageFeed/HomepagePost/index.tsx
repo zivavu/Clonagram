@@ -17,8 +17,9 @@ import PostMediaCarousel from '../../../../../../../components/PostMediaCarousel
 import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
 import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike';
 import { useTogglePostSave } from '../../../../../../../hooks/useTogglePostSave';
-import { usePostViewModal } from '../../../../../../../store/postViewModalStore';
+import { queryKeys } from '../../../../../../../lib/queryKeys';
 import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
+import { usePostViewModal } from '../../../../../../../store/usePostViewModalStore';
 import { colors } from '../../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
@@ -65,7 +66,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    const { data: post } = useQuery({
       initialData: initialPost,
       initialDataUpdatedAt: Date.now(),
-      queryKey: ['post', initialPost.id],
+      queryKey: queryKeys.post(initialPost.id),
       queryFn: () => getPostAction(initialPost.id),
       staleTime: Infinity,
    });

@@ -7,6 +7,7 @@ import { IoClose } from 'react-icons/io5';
 import { MdLocationOn } from 'react-icons/md';
 import Autocomplete from '@/src/components/Autocomplete';
 import type { PostLocation } from '@/src/components/CreatePostModal/types';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { styles } from './index.stylex';
 
 interface PhotonFeature {
@@ -57,7 +58,7 @@ export default function LocationAutocomplete({ value, onChange }: LocationAutoco
    }, [query]);
 
    const { data: locations = [] } = useQuery({
-      queryKey: ['locations', 'search', debouncedQuery],
+      queryKey: queryKeys.locationSearch(debouncedQuery),
       queryFn: () => searchLocations(debouncedQuery),
       enabled: !!debouncedQuery,
    });

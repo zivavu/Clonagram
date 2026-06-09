@@ -9,6 +9,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { markNotificationsReadAction } from '@/src/actions/notifications/markNotificationsRead';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type NotificationRow, notificationsQuery } from '@/src/queries/notifications';
 import { useNotificationsPortalStore } from '@/src/store/createModalStore';
@@ -189,7 +190,7 @@ export default function NotificationsPortal() {
    const [activeCategory, setActiveCategory] = useState<FilterCategory>('all');
 
    const { data: notificationRows = [] } = useQuery({
-      queryKey: ['notifications', authUser?.id],
+      queryKey: authUser?.id ? queryKeys.notifications(authUser.id) : ['notifications'],
       queryFn: async () => {
          if (!authUser?.id) return [];
          const { data, error } = await notificationsQuery(supabase, authUser.id);

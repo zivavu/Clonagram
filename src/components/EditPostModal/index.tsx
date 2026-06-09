@@ -14,6 +14,7 @@ import StepHeader, {
 } from '@/src/components/CreatePostModal/components/StepHeader';
 import type { PostLocation, PostSettings } from '@/src/components/CreatePostModal/types';
 import { DEFAULT_POST_SETTINGS } from '@/src/components/CreatePostModal/types';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { styles } from './index.stylex';
 
 interface EditPostModalProps {
@@ -26,7 +27,7 @@ export default function EditPostModal({ isOpen, postId, onClose }: EditPostModal
    const queryClient = useQueryClient();
 
    const { data: post } = useQuery({
-      queryKey: ['post-for-edit', postId],
+      queryKey: postId ? queryKeys.postForEdit(postId) : ['post-for-edit'],
       queryFn: () => getPostForEdit(postId ?? ''),
       enabled: isOpen && !!postId,
       staleTime: 0,
@@ -62,7 +63,7 @@ export default function EditPostModal({ isOpen, postId, onClose }: EditPostModal
             commentsOff: postSettings.commentsOff,
          }),
       onSuccess: () => {
-         queryClient.invalidateQueries({ queryKey: ['post', postId] });
+         queryClient.invalidateQueries({ queryKey: postId ? queryKeys.post(postId) : ['post'] });
          toast('Post updated.');
          handleClose();
       },

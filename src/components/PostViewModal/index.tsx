@@ -6,7 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { IoCloseOutline } from 'react-icons/io5';
 import { getPostAction } from '../../actions/post/getPost';
-import { usePostViewModal } from '../../store/postViewModalStore';
+import { queryKeys } from '../../lib/queryKeys';
+import { usePostViewModal } from '../../store/usePostViewModalStore';
 import DialogOverlay from '../DialogOverlay';
 import PostMediaCarousel from '../PostMediaCarousel/PostMediaCarousel';
 import { styles } from './index.stylex';
@@ -26,7 +27,7 @@ export default function PostFullViewModal() {
    const postId = typeof postOrPostId === 'string' ? postOrPostId : postOrPostId?.id;
 
    const { data: post } = useQuery({
-      queryKey: ['post', postId],
+      queryKey: postId ? queryKeys.post(postId) : ['post'],
       queryFn: () => getPostAction(postId ?? ''),
       enabled: !!postId,
       initialData: typeof postOrPostId !== 'string' ? postOrPostId : undefined,

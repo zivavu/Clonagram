@@ -10,7 +10,7 @@ import NoteBubble from '@/src/components/NoteBubble';
 import UserAvatar from '@/src/components/UserAvatar';
 import type { FollowState } from '@/src/queries/followStatus';
 import { useNewNoteModalStore } from '@/src/store/createModalStore';
-import { useFollowListModal } from '@/src/store/followListModalStore';
+import { useFollowListModal } from '@/src/store/useFollowListModalStore';
 import { colors } from '../../../../styles/tokens.stylex';
 import MessageButton from './components/MessageButton';
 import { styles } from './index.stylex';

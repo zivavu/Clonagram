@@ -15,4 +15,5 @@ export async function updateAvatar({ avatarUrl }: { avatarUrl: string | null }) 
 
    if (error) throw new Error(error.message);
    revalidatePath('/', 'layout');
+   revalidatePath('/[username]', 'page');
 }

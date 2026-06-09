@@ -1,6 +1,7 @@
 import { type QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCommentAction } from '@/src/actions/comments/createComment';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { queryKeys } from '@/src/lib/queryKeys';
 import type { PostComment, PostComments } from '@/src/queries/comments';
 
 export function useSubmitComment(postId: string, commentsKey: QueryKey) {
@@ -25,7 +26,7 @@ export function useSubmitComment(postId: string, commentsKey: QueryKey) {
          };
 
          if (parentId) {
-            const repliesKey = ['replies', parentId];
+            const repliesKey = queryKeys.replies(parentId);
             await queryClient.cancelQueries({ queryKey: repliesKey });
             const previousReplies = queryClient.getQueryData<PostComments>(repliesKey);
             queryClient.setQueryData<PostComments>(repliesKey, prev => [
@@ -60,7 +61,7 @@ export function useSubmitComment(postId: string, commentsKey: QueryKey) {
       },
       onSuccess: (newComment, { parentId }) => {
          if (parentId) {
-            const repliesKey = ['replies', parentId];
+            const repliesKey = queryKeys.replies(parentId);
             queryClient.setQueryData<PostComments>(repliesKey, prev =>
                (prev ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
             );

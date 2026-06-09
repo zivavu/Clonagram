@@ -14,6 +14,7 @@ import { sendSticker } from '@/src/actions/dm/sendSticker';
 import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
 import {
@@ -63,7 +64,7 @@ export default function ChatView({
    const messagesEndRef = useRef<HTMLDivElement>(null);
    const messagesContainerRef = useRef<HTMLDivElement>(null);
    const inputRef = useRef<MessageInputHandle>(null);
-   const messagesKey = ['messages', conversationId];
+   const messagesKey = queryKeys.messages(conversationId);
    const [viewingImage, setViewingImage] = useState<string | null>(null);
 
    const { getRootProps, isDragActive } = useDropzone({
@@ -91,7 +92,7 @@ export default function ChatView({
    });
 
    const { data: conversation = initialConversation } = useQuery({
-      queryKey: ['conversation', conversationId],
+      queryKey: queryKeys.conversation(conversationId),
       queryFn: async () => {
          const { data, error } = await getConversationQuery(supabase, conversationId);
          if (error) throw error;
@@ -308,7 +309,7 @@ export default function ChatView({
                      await sendSticker(conversationId, url);
                   } finally {
                      queryClient.invalidateQueries({ queryKey: messagesKey });
-                     queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                     queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
                   }
                }}
                onSend={async text => {
@@ -323,7 +324,7 @@ export default function ChatView({
                      await sendMessage(conversationId, text);
                   } finally {
                      queryClient.invalidateQueries({ queryKey: messagesKey });
-                     queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                     queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
                   }
                }}
                onSendImages={async (files: File[]) => {
@@ -350,7 +351,7 @@ export default function ChatView({
                      } finally {
                         URL.revokeObjectURL(previewUrl);
                         queryClient.invalidateQueries({ queryKey: messagesKey });
-                        queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                        queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
                      }
                   }
                }}

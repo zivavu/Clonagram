@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import type { PostWithMedia } from '@/src/queries/posts';
-import { usePostViewModal } from '@/src/store/postViewModalStore';
+import { usePostViewModal } from '@/src/store/usePostViewModalStore';
 
 interface OpenPostOnMountProps {
    post: PostWithMedia | string;

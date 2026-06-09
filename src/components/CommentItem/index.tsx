@@ -26,7 +26,7 @@ export interface OnReplyParams {
 
 interface CommentItemProps {
    comment: PostComment;
-   commentsKey: unknown[];
+   commentsKey: readonly unknown[];
    onReply: (params: OnReplyParams) => void;
    isReply?: boolean;
    postOwnerId: string;
@@ -65,14 +65,14 @@ export default function CommentItem({
    const { mutate: deleteComment, isPending: isDeleting } = useMutation({
       mutationFn: () => deleteCommentAction({ commentId: comment.id }),
       onMutate: () => {
-         const prev = queryClient.getQueryData<PostComments>(commentsKey as string[]);
-         queryClient.setQueryData<PostComments>(commentsKey as string[], old =>
+         const prev = queryClient.getQueryData<PostComments>(commentsKey);
+         queryClient.setQueryData<PostComments>(commentsKey, old =>
             (old ?? []).filter(c => c.id !== comment.id),
          );
          return { prev };
       },
       onError: (_err, _vars, context) => {
-         if (context?.prev) queryClient.setQueryData(commentsKey as string[], context.prev);
+         if (context?.prev) queryClient.setQueryData(commentsKey, context.prev);
          toast('Failed to delete comment.');
       },
       onSuccess: () => {

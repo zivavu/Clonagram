@@ -16,6 +16,7 @@ import { updateGroupName } from '@/src/actions/dm/updateGroupName';
 import { toast } from '@/src/components/AppToast';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
 import type { PartialUser } from '@/src/types/global';
@@ -39,7 +40,7 @@ export default function ChatDetailsPanel({
 }: ChatDetailsPanelProps) {
    const router = useRouter();
    const queryClient = useQueryClient();
-   const convKey = ['conversation', conversationId];
+   const convKey = queryKeys.conversation(conversationId);
 
    const { data: conversation = initialConversation } = useQuery({
       queryKey: convKey,
@@ -123,7 +124,7 @@ export default function ChatDetailsPanel({
       setIsNavigating(true);
       try {
          await leaveConversation(conversationId);
-         queryClient.invalidateQueries({ queryKey: ['conversations'] });
+         queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
          router.push('/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Could not leave chat.');
@@ -135,7 +136,7 @@ export default function ChatDetailsPanel({
       setIsNavigating(true);
       try {
          await deleteConversation(conversationId);
-         queryClient.invalidateQueries({ queryKey: ['conversations'] });
+         queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
          router.push('/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Could not delete chat.');

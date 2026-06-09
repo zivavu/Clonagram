@@ -50,5 +50,6 @@ export async function updateProfile(params: UpdateProfileParams) {
 
    if (error) throw new Error(error.message);
    revalidatePath('/', 'layout');
+   revalidatePath('/[username]', 'page');
    return {};
 }
