@@ -45,6 +45,9 @@ export const styles = stylex.create({
       fontSize: '14px',
       fontWeight: 600,
    },
+   inlineFollowButton: {
+      fontSize: '14px',
+   },
    moreButton: {
       marginLeft: 'auto',
       color: colors.textPrimary,

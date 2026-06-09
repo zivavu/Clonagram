@@ -11,6 +11,7 @@ import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { getPostAction } from '@/src/actions/post/getPost';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
+import FollowButton from '@/src/components/FollowButton';
 import OwnerActionsModal from '@/src/components/OwnerActionsModal/OwnerActionsModal';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
@@ -143,8 +144,17 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                      userId={post.user.id}
                   />
                   <OtherUserUsername style={styles.postHeaderUsername} userProfile={post.user} />
-                  <span>•</span>
-                  <span {...stylex.props(styles.followButton)}>Follow</span>
+                  {authUser?.id !== post.user.id && (
+                     <>
+                        <span>•</span>
+                        <FollowButton
+                           targetUserId={post.user.id}
+                           targetIsPrivate={post.user.is_private ?? false}
+                           variant="sidebar"
+                           rootStyle={styles.inlineFollowButton}
+                        />
+                     </>
+                  )}
                   <button
                      type="button"
                      aria-label="Post owner actions"
