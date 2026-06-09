@@ -1,4 +1,4 @@
-import PeoplePage from '@/src/pageComponents/explore/PeoplePage';
+import PeoplePage from '@/src/pageComponents/Explore/PeoplePage';
 
 export default async function People({
    searchParams,

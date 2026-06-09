@@ -1,4 +1,4 @@
-import ExplorePage from '@/src/pageComponents/explore';
+import ExplorePage from '@/src/pageComponents/Explore';
 
 export default async function Explore({
    searchParams,

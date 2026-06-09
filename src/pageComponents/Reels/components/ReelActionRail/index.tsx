@@ -10,7 +10,7 @@ import { TbDots, TbRepeat } from 'react-icons/tb';
 import { dislikePostAction } from '@/src/actions/likes/dislikePost';
 import { likePostAction } from '@/src/actions/likes/likePost';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
-import { useToggleSave } from '@/src/hooks/useToggleSave';
+import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import type { Reel } from '@/src/queries/posts';
 import { styles } from './index.stylex';
 
@@ -35,7 +35,7 @@ export default function ReelActionRail({
    const [isLiked, setIsLiked] = useState(false);
    const [likeCount, setLikeCount] = useState(reel.likes.length);
    const [isSaved, setIsSaved] = useState(false);
-   const { mutate: toggleSave, isPending: isSavePending } = useToggleSave(reel.id, reel.saves);
+   const { mutate: toggleSave, isPending: isSavePending } = useTogglePostSave(reel);
 
    useEffect(() => {
       if (authUser) {

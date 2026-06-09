@@ -88,7 +88,7 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
             alt={image.alt}
             fill
             sizes="18vw"
-            style={{ objectFit: 'cover', zIndex: '-1' }}
+            style={{ objectFit: 'cover' }}
             preload
          />
       </div>
