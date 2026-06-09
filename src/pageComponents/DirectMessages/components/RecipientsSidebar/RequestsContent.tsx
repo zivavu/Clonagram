@@ -3,9 +3,11 @@
 import * as stylex from '@stylexjs/stylex';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { IoChevronForward, IoEyeOffOutline } from 'react-icons/io5';
+import { deleteAllRequests } from '@/src/actions/dm/deleteAllRequests';
+import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
@@ -20,6 +22,7 @@ interface RequestsContentProps {
 
 export function RequestsContent({ authUserId, initialData }: RequestsContentProps) {
    const queryClient = useQueryClient();
+   const [isDeleting, setIsDeleting] = useState(false);
    const queryKey = ['conversations', 'requests', authUserId];
 
    const { data: requests = initialData } = useQuery({
@@ -136,8 +139,22 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
 
          {requests.length > 0 && (
             <div {...stylex.props(styles.bottomSection)}>
-               <button {...stylex.props(styles.deleteAllButton)}>
-                  Delete all {requests.length}
+               <button
+                  {...stylex.props(styles.deleteAllButton)}
+                  disabled={isDeleting}
+                  onClick={async () => {
+                     setIsDeleting(true);
+                     try {
+                        await deleteAllRequests();
+                        await queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                     } catch (e) {
+                        toast(e instanceof Error ? e.message : 'Something went wrong.');
+                     } finally {
+                        setIsDeleting(false);
+                     }
+                  }}
+               >
+                  {isDeleting ? 'Deleting...' : `Delete all ${requests.length}`}
                </button>
             </div>
          )}

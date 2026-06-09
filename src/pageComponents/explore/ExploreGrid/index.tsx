@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { FaComment } from 'react-icons/fa6';
 import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
 import type { PostsWithMedia } from '@/src/queries/posts';
@@ -14,6 +14,7 @@ import { styles } from './index.stylex';
 
 interface ExploreGridProps {
    posts: PostsWithMedia;
+   emptyState?: ReactNode;
 }
 
 function isPostTall(index: number): boolean {
@@ -23,7 +24,7 @@ function isPostTall(index: number): boolean {
    return isTallOnRight ? positionInGroup === 2 : positionInGroup === 0;
 }
 
-export default function ExploreGrid({ posts }: ExploreGridProps) {
+export default function ExploreGrid({ posts, emptyState }: ExploreGridProps) {
    const pathname = usePathname();
    const { open } = usePostViewModal();
    const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -31,7 +32,7 @@ export default function ExploreGrid({ posts }: ExploreGridProps) {
    if (posts.length === 0) {
       return (
          <div {...stylex.props(styles.emptyState)}>
-            <span {...stylex.props(styles.emptyText)}>No posts to show</span>
+            {emptyState ?? <span {...stylex.props(styles.emptyText)}>No posts to show</span>}
          </div>
       );
    }

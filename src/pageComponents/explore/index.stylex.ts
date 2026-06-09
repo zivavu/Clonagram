@@ -38,4 +38,9 @@ export const styles = stylex.create({
    headerInactive: {
       color: colors.textSecondary,
    },
+   emptyText: {
+      fontSize: '16px',
+      color: colors.textSecondary,
+      textAlign: 'center',
+   },
 });
