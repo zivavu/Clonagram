@@ -4,13 +4,13 @@ import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { FaRegFaceSmile } from 'react-icons/fa6';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmarkBorder, MdFavorite, MdFavoriteBorder, MdLocationOn } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { getPostAction } from '@/src/actions/post/getPost';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
+import EmojiInput, { type EmojiInputRef } from '@/src/components/EmojiInput';
 import FollowButton from '@/src/components/FollowButton';
 import OwnerActionsModal from '@/src/components/OwnerActionsModal/OwnerActionsModal';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -47,9 +47,8 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const commentsKey = ['comments', initialPost.id];
 
    const scrollAreaRef = useRef<HTMLDivElement>(null);
-   const commentInputRef = useRef<HTMLInputElement>(null);
+   const commentInputRef = useRef<EmojiInputRef>(null);
 
-   const [commentInputValue, setCommentInputValue] = useState('');
    const [replyingTo, setReplyingTo] = useState<OnReplyParams | null>(null);
 
    const { data: post } = useQuery({
@@ -106,15 +105,15 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
 
    function handleReply(params: OnReplyParams) {
       setReplyingTo(params);
-      setCommentInputValue(`@${params.username} `);
+      commentInputRef.current?.setText(`@${params.username} `);
       commentInputRef.current?.focus();
    }
 
-   function handleCommentSubmit(e: React.FormEvent) {
-      e.preventDefault();
-      const content = commentInputValue.trim();
+   function handleCommentSubmit(e?: React.FormEvent) {
+      e?.preventDefault();
+      const content = commentInputRef.current?.getText().trim() ?? '';
       if (!content) return;
-      setCommentInputValue('');
+      commentInputRef.current?.clear();
       submitComment({ content, parentId: replyingTo?.commentId });
       setReplyingTo(null);
    }
@@ -258,16 +257,11 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                   {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
                </div>
                <form onSubmit={handleCommentSubmit} {...stylex.props(styles.commentInputRow)}>
-                  <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
-                     <FaRegFaceSmile size={20} style={{ overflow: 'visible' }} />
-                  </button>
-                  <input
+                  <EmojiInput
                      ref={commentInputRef}
-                     type="text"
                      placeholder="Add a comment..."
-                     value={commentInputValue}
-                     onChange={e => setCommentInputValue(e.target.value)}
-                     {...stylex.props(styles.commentInput)}
+                     onSubmit={handleCommentSubmit}
+                     maxLength={1000}
                   />
                   <button type="submit" {...stylex.props(styles.postButton)}>
                      Post

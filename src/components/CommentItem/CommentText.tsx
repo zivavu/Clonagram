@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { Fragment } from 'react';
+import EmojiText from '@/src/components/EmojiText';
 import { styles } from './index.stylex';
 
 interface CommentTextProps {
@@ -30,7 +31,11 @@ export default function CommentText({ content }: CommentTextProps) {
                   </Link>
                );
             }
-            return <Fragment key={key}>{text}</Fragment>;
+            return (
+               <Fragment key={key}>
+                  <EmojiText content={text} size={14} />
+               </Fragment>
+            );
          })}
       </span>
    );
