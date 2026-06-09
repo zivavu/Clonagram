@@ -1,21 +1,21 @@
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/src/types/database';
 
+export const POST_WITH_MEDIA_SELECT = `
+   id, caption, created_at, aspect_ratio, hide_likes, location_name,
+   likes(user_id),
+   saves(user_id),
+   comments(count),
+   user:profiles!user_id(id, username, avatar_url, is_private),
+   collaborators:post_collaborators(user:profiles!user_id(id, username, avatar_url)),
+   images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(id, username, avatar_url))),
+   videos:post_videos(id, mux_playback_id, duration, position, width, height)
+`;
+
 export function postsWithMediaQuery(supabase: SupabaseClient<Database>) {
    return supabase
       .from('posts')
-      .select(
-         `
-          id, caption, created_at, aspect_ratio, hide_likes, location_name,
-          likes(user_id),
-          saves(user_id),
-          comments(count),
-          user:profiles!user_id(id, username, avatar_url, is_private),
-          collaborators:post_collaborators(user:profiles!user_id(id, username, avatar_url)),
-          images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(id, username, avatar_url))),
-          videos:post_videos(id, mux_playback_id, duration, position, width, height)
-       `,
-      )
+      .select(POST_WITH_MEDIA_SELECT)
       .order('created_at', { ascending: false })
       .limit(10);
 }
@@ -61,21 +61,7 @@ export type Reel = Reels[number];
 export function savedPostsQuery(supabase: SupabaseClient<Database>, userId: string) {
    return supabase
       .from('saves')
-      .select(
-         `
-         post_id,
-         post:posts!post_id(
-            id, caption, created_at, aspect_ratio, hide_likes, location_name,
-            likes(user_id),
-            saves(user_id),
-            comments(count),
-            user:profiles!user_id(id, username, avatar_url, is_private),
-            collaborators:post_collaborators(user:profiles!user_id(id, username, avatar_url)),
-            images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(id, username, avatar_url))),
-            videos:post_videos(id, mux_playback_id, duration, position, width, height)
-         )
-      `,
-      )
+      .select(`post_id, post:posts!post_id(${POST_WITH_MEDIA_SELECT})`)
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 }
