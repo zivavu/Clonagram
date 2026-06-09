@@ -3,6 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Image from 'next/image';
 import { useState } from 'react';
 import { getPostForEdit } from '@/src/actions/post/getPostForEdit';
 import { updatePost } from '@/src/actions/post/updatePost';
@@ -104,11 +105,11 @@ export default function EditPostModal({ isOpen, postId, onClose }: EditPostModal
                   <div {...stylex.props(styles.body)}>
                      <div {...stylex.props(styles.preview)}>
                         {firstImage ? (
-                           /* biome-ignore lint/performance/noImgElement: modal preview, no layout shift concern */
-                           <img
+                           <Image
                               src={firstImage.url}
                               alt="Post preview"
-                              {...stylex.props(styles.previewImage)}
+                              fill
+                              style={{ objectFit: 'contain' }}
                            />
                         ) : firstVideo ? (
                            <video

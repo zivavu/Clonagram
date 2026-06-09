@@ -133,7 +133,6 @@ export default function NewNoteModal({ currentUser, ownNote }: NewNoteModalProps
                      maxLength={MAX_LENGTH}
                      rows={3}
                      onChange={e => setText(e.target.value)}
-                     autoFocus
                   />
 
                   {currentUser?.avatar_url ? (

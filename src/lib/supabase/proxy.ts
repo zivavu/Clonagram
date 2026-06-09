@@ -24,8 +24,6 @@ export async function updateSession(request: NextRequest) {
       cookies: cookieMethods,
    });
 
-   // Refresh the session — do not add logic between createServerClient and
-   // getUser(), as it may cause hard-to-debug session issues.
    const {
       data: { session },
    } = await supabase.auth.getSession();
