@@ -18,11 +18,16 @@ uniform float u_presetActive;
 uniform float u_pBrightness;
 uniform float u_pContrast;
 uniform float u_pSaturation;
+uniform float u_pSepia;
+uniform float u_pHue;
 uniform vec4 u_pShadowTint;
 uniform vec4 u_pHighlightTint;
 uniform vec4 u_pFade;
 uniform vec3 u_pColorBalance;
 uniform float u_pVignette;
+uniform float u_pBlendMode;
+uniform vec4 u_pBlendTop;
+uniform vec4 u_pBlendBottom;
 uniform float u_filterStrength;
 
 uniform float u_brightness;
@@ -52,6 +57,51 @@ vec3 setSaturation(vec3 c, float amount) {
   return mix(vec3(lum), c, amount);
 }
 
+vec3 applySepia(vec3 c, float amount) {
+  vec3 sepia = vec3(
+    dot(c, vec3(0.393, 0.769, 0.189)),
+    dot(c, vec3(0.349, 0.686, 0.168)),
+    dot(c, vec3(0.272, 0.534, 0.131))
+  );
+  return mix(c, sepia, amount);
+}
+
+vec3 applyHueRotate(vec3 c, float angle) {
+  float ca = cos(angle);
+  float sa = sin(angle);
+  mat3 m = mat3(
+    0.213 + ca * 0.787 - sa * 0.213, 0.213 - ca * 0.213 + sa * 0.143, 0.213 - ca * 0.213 - sa * 0.787,
+    0.715 - ca * 0.715 - sa * 0.715, 0.715 + ca * 0.285 + sa * 0.140, 0.715 - ca * 0.715 + sa * 0.715,
+    0.072 - ca * 0.072 + sa * 0.928, 0.072 - ca * 0.072 - sa * 0.283, 0.072 + ca * 0.928 + sa * 0.072
+  );
+  return m * c;
+}
+
+float softLightChannel(float b, float s) {
+  if (s < 0.5) return b - (1.0 - 2.0 * s) * b * (1.0 - b);
+  float d = (b <= 0.25) ? ((16.0 * b - 12.0) * b + 4.0) * b : sqrt(b);
+  return b + (2.0 * s - 1.0) * (d - b);
+}
+
+vec3 blendColor(vec3 base, vec3 blend, float mode) {
+  if (mode < 1.5) {
+    return vec3(
+      softLightChannel(base.r, blend.r),
+      softLightChannel(base.g, blend.g),
+      softLightChannel(base.b, blend.b)
+    );
+  }
+  if (mode < 2.5) {
+    vec3 lo = 2.0 * base * blend;
+    vec3 hi = 1.0 - 2.0 * (1.0 - base) * (1.0 - blend);
+    return mix(lo, hi, step(0.5, base));
+  }
+  if (mode < 3.5) return base * blend;
+  if (mode < 4.5) return min(base, blend);
+  if (mode < 5.5) return max(base, blend);
+  return 1.0 - (1.0 - base) * (1.0 - blend);
+}
+
 void main() {
   vec4 color = texture(u_image, v_texCoord);
   vec3 originalRGB = color.rgb;
@@ -59,6 +109,8 @@ void main() {
 
   if (u_presetActive > 0.5) {
     filtered = applyCurves(filtered);
+    if (u_pSepia > 0.0) filtered = applySepia(filtered, u_pSepia);
+    if (abs(u_pHue) > 0.0001) filtered = applyHueRotate(filtered, u_pHue);
     filtered = setSaturation(filtered, u_pSaturation);
     filtered += u_pColorBalance;
 
@@ -79,6 +131,13 @@ void main() {
 
     filtered = (filtered - 0.5) * u_pContrast + 0.5;
     filtered += u_pBrightness;
+
+    if (u_pBlendMode > 0.5) {
+      vec3 blendRGB = mix(u_pBlendBottom.rgb, u_pBlendTop.rgb, v_texCoord.y);
+      float blendAmount = mix(u_pBlendBottom.a, u_pBlendTop.a, v_texCoord.y);
+      vec3 blended = blendColor(clamp(filtered, 0.0, 1.0), blendRGB, u_pBlendMode);
+      filtered = mix(filtered, blended, blendAmount);
+    }
   }
 
   filtered += u_brightness;

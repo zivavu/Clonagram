@@ -38,16 +38,42 @@ const ID: CurvePoints = [
 ];
 const IDENTITY_CURVES = buildCurveSet(ID, ID, ID);
 
+export type BlendMode =
+   | 'none'
+   | 'soft-light'
+   | 'overlay'
+   | 'multiply'
+   | 'darken'
+   | 'lighten'
+   | 'screen';
+
+export const BLEND_MODE_VALUES: Record<BlendMode, number> = {
+   none: 0,
+   'soft-light': 1,
+   overlay: 2,
+   multiply: 3,
+   darken: 4,
+   lighten: 5,
+   screen: 6,
+};
+
+export type TintColor = [number, number, number, number];
+
 export interface FilterPreset {
    curves: CurveSet;
    brightness: number;
    contrast: number;
    saturation: number;
-   shadowTint: [number, number, number, number];
-   highlightTint: [number, number, number, number];
-   fade: [number, number, number, number];
+   sepia?: number;
+   hue?: number;
+   shadowTint: TintColor;
+   highlightTint: TintColor;
+   fade: TintColor;
    colorBalance: [number, number, number];
    vignette: number;
+   blendMode?: BlendMode;
+   blendTop?: TintColor;
+   blendBottom?: TintColor;
 }
 
 export const PRESETS: Record<string, FilterPreset> = {

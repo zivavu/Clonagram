@@ -1,7 +1,8 @@
 import type { Adjustments } from '@/src/components/CreatePostModal/types';
-import { type CurveSet, getPreset } from './filterPresets';
+import { BLEND_MODE_VALUES, type CurveSet, getPreset, type TintColor } from './filterPresets';
 
 export {
+   type BlendMode,
    buildCurve,
    buildCurveSet,
    type CurvePoints,
@@ -9,6 +10,7 @@ export {
    type FilterPreset,
    getPreset,
    PRESETS,
+   type TintColor,
 } from './filterPresets';
 export { FRAGMENT_SHADER, VERTEX_SHADER } from './filterShaderSources';
 
@@ -19,11 +21,16 @@ const FILTER_UNIFORM_NAMES = [
    'u_pBrightness',
    'u_pContrast',
    'u_pSaturation',
+   'u_pSepia',
+   'u_pHue',
    'u_pShadowTint',
    'u_pHighlightTint',
    'u_pFade',
    'u_pColorBalance',
    'u_pVignette',
+   'u_pBlendMode',
+   'u_pBlendTop',
+   'u_pBlendBottom',
    'u_filterStrength',
    'u_brightness',
    'u_contrast',
@@ -52,16 +59,22 @@ export function setPresetUniforms(
    presetName: string,
    filterStrength: number,
 ) {
+   const NO_TINT: TintColor = [0, 0, 0, 0];
    const preset = getPreset(presetName);
    gl.uniform1f(locs.u_presetActive, presetName === 'Original' ? 0.0 : 1.0);
    gl.uniform1f(locs.u_pBrightness, preset.brightness);
    gl.uniform1f(locs.u_pContrast, preset.contrast);
    gl.uniform1f(locs.u_pSaturation, preset.saturation);
+   gl.uniform1f(locs.u_pSepia, preset.sepia ?? 0);
+   gl.uniform1f(locs.u_pHue, ((preset.hue ?? 0) * Math.PI) / 180);
    gl.uniform4fv(locs.u_pShadowTint, preset.shadowTint);
    gl.uniform4fv(locs.u_pHighlightTint, preset.highlightTint);
    gl.uniform4fv(locs.u_pFade, preset.fade);
    gl.uniform3fv(locs.u_pColorBalance, preset.colorBalance);
    gl.uniform1f(locs.u_pVignette, preset.vignette);
+   gl.uniform1f(locs.u_pBlendMode, BLEND_MODE_VALUES[preset.blendMode ?? 'none']);
+   gl.uniform4fv(locs.u_pBlendTop, preset.blendTop ?? preset.blendBottom ?? NO_TINT);
+   gl.uniform4fv(locs.u_pBlendBottom, preset.blendBottom ?? preset.blendTop ?? NO_TINT);
    gl.uniform1f(locs.u_filterStrength, filterStrength);
 }
 
