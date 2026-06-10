@@ -15,22 +15,54 @@ import { DEFAULT_ADJUSTMENTS } from '../types';
 
 const THUMB_SIZE = 176;
 
+function coverUVs(naturalW: number, naturalH: number) {
+   const imgAspect = naturalW / naturalH;
+   const halfU = imgAspect >= 1 ? 0.5 / imgAspect : 0.5;
+   const halfV = imgAspect >= 1 ? 0.5 : imgAspect * 0.5;
+   const u0 = 0.5 - halfU;
+   const u1 = 0.5 + halfU;
+   const v0 = 0.5 - halfV;
+   const v1 = 0.5 + halfV;
+   return new Float32Array([
+      -1,
+      -1,
+      u0,
+      v0,
+      1,
+      -1,
+      u1,
+      v0,
+      -1,
+      1,
+      u0,
+      v1,
+      -1,
+      1,
+      u0,
+      v1,
+      1,
+      -1,
+      u1,
+      v0,
+      1,
+      1,
+      u1,
+      v1,
+   ]);
+}
+
 function setupThumbnailGL(
    gl: WebGL2RenderingContext,
-): { program: WebGLProgram; locs: FilterUniformLocations } | null {
+): { program: WebGLProgram; locs: FilterUniformLocations; buffer: WebGLBuffer } | null {
    const program = createProgram(gl, VERTEX_SHADER, FRAGMENT_SHADER);
    if (!program) return null;
 
    // biome-ignore lint/correctness/useHookAtTopLevel: gl.useProgram is a WebGL API, not a React hook
    gl.useProgram(program);
 
-   const positions = new Float32Array([
-      -1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, -1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1,
-   ]);
-
    const buffer = gl.createBuffer();
+   if (!buffer) return null;
    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-   gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
 
    const positionLoc = gl.getAttribLocation(program, 'a_position');
    const texCoordLoc = gl.getAttribLocation(program, 'a_texCoord');
@@ -40,7 +72,7 @@ function setupThumbnailGL(
    gl.enableVertexAttribArray(texCoordLoc);
    gl.vertexAttribPointer(texCoordLoc, 2, gl.FLOAT, false, 16, 8);
 
-   return { program, locs: getFilterUniformLocations(gl, program) };
+   return { program, locs: getFilterUniformLocations(gl, program), buffer };
 }
 
 function renderPreset(
@@ -95,11 +127,17 @@ export function useFilterThumbnails(src: string, presetNames: string[]): Record<
 
       const setup = setupThumbnailGL(gl);
       if (!setup) return;
-      const { program, locs } = setup;
+      const { program, locs, buffer } = setup;
 
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = async () => {
+         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+         gl.bufferData(
+            gl.ARRAY_BUFFER,
+            coverUVs(img.naturalWidth, img.naturalHeight),
+            gl.STATIC_DRAW,
+         );
          const imageTexture = loadTexture(gl, img);
          const newThumbnails: Record<string, string> = {};
          const newUrls: string[] = [];
