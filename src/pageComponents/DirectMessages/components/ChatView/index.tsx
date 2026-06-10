@@ -307,6 +307,8 @@ export default function ChatView({
                   ]);
                   try {
                      await sendSticker(conversationId, url);
+                  } catch {
+                     toast('Failed to send sticker');
                   } finally {
                      queryClient.invalidateQueries({ queryKey: messagesKey });
                      queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
@@ -322,6 +324,8 @@ export default function ChatView({
 
                   try {
                      await sendMessage(conversationId, text);
+                  } catch {
+                     toast('Failed to send message');
                   } finally {
                      queryClient.invalidateQueries({ queryKey: messagesKey });
                      queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
@@ -348,6 +352,8 @@ export default function ChatView({
                            .from('messages')
                            .getPublicUrl(fileName);
                         await sendImage(conversationId, urlData.publicUrl);
+                     } catch {
+                        toast('Failed to send image');
                      } finally {
                         URL.revokeObjectURL(previewUrl);
                         queryClient.invalidateQueries({ queryKey: messagesKey });
