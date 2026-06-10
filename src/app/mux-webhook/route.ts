@@ -25,10 +25,12 @@ export async function POST(request: Request) {
 
    const { type, data } = JSON.parse(rawBody);
 
-   if (type === 'video.asset.ready') {
-      void data;
-      // TODO: save asset to database
-   }
+    if (type === 'video.asset.ready') {
+       void data;
+       // The frontend polls for asset readiness via pollMuxAsset() before creating
+       // the post, so the webhook is a no-op for the current flow. If async
+       // processing is needed in the future, update post_videos/story_videos here.
+    }
 
    return Response.json({ message: 'ok' });
 }
