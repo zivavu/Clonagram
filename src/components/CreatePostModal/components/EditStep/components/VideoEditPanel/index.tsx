@@ -4,7 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
 import { extractVideoFrames } from '@/src/utils/extractVideoFrames';
 import type { PostMedia } from '../../../../types';
-import Toggle from '../../../CaptionStep/components/Toggle';
+import Toggle from '@/src/components/Toggle';
 import CoverPhoto from './components/CoverPhoto';
 import TrimStrip from './components/TrimStrip';
 import { styles } from './index.stylex';

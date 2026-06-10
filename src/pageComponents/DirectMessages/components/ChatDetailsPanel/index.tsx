@@ -14,6 +14,7 @@ import { removeParticipant } from '@/src/actions/dm/removeParticipant';
 import { toggleMute } from '@/src/actions/dm/toggleMute';
 import { updateGroupName } from '@/src/actions/dm/updateGroupName';
 import { toast } from '@/src/components/AppToast';
+import Toggle from '@/src/components/Toggle';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -229,20 +230,7 @@ export default function ChatDetailsPanel({
                <IoNotificationsOutline {...stylex.props(styles.rowIcon)} />
                <span {...stylex.props(styles.rowLabel)}>Mute messages</span>
             </div>
-            <button
-               type="button"
-               {...stylex.props(styles.toggle, isMuted ? styles.toggleOn : styles.toggleOff)}
-               onClick={() => muteMutation(!isMuted)}
-               aria-label={isMuted ? 'Unmute' : 'Mute'}
-               disabled={isLoading}
-            >
-               <span
-                  {...stylex.props(
-                     styles.toggleThumb,
-                     isMuted ? styles.toggleThumbOn : styles.toggleThumbOff,
-                  )}
-               />
-            </button>
+            <Toggle checked={isMuted} onChange={() => muteMutation(!isMuted)} />
          </div>
 
          <div {...stylex.props(styles.sectionHeader)}>

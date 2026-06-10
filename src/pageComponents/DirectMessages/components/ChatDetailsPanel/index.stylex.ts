@@ -240,31 +240,4 @@ export const styles = stylex.create({
       textAlign: 'left',
       width: '100%',
    },
-   toggle: {
-      width: 44,
-      height: 24,
-      borderRadius: radius.full,
-      position: 'relative',
-      border: 'none',
-   },
-   toggleOn: {
-      backgroundColor: colors.accent,
-   },
-   toggleOff: {
-      backgroundColor: colors.textMuted,
-   },
-   toggleThumb: {
-      position: 'absolute',
-      top: 3,
-      width: 18,
-      height: 18,
-      borderRadius: radius.full,
-      backgroundColor: colors.white,
-   },
-   toggleThumbOn: {
-      left: 23,
-   },
-   toggleThumbOff: {
-      left: 3,
-   },
 });
