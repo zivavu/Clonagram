@@ -1,11 +1,8 @@
 'use client';
 
-import * as stylex from '@stylexjs/stylex';
 import { useLayoutEffect } from 'react';
+import { darkClass } from '@/src/lib/theme';
 import { useThemeStore } from '@/src/store/useThemeStore';
-import { darkTheme } from '@/src/styles/tokens.stylex';
-
-export const darkClass = (stylex.props(darkTheme) as unknown as { className: string }).className;
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
    const { isDark } = useThemeStore();

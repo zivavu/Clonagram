@@ -1,13 +1,9 @@
-import { getActiveStories } from '@/src/actions/story/getActiveStories';
-import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import StoriesPage from '@/src/pageComponents/Stories';
+import { loadStoriesPage } from '../loadStoriesPage';
 
 export default async function StoriesRoute({ params }: { params: Promise<{ username: string }> }) {
    const { username } = await params;
-   const [{ entries, viewedStoryIds }, profile] = await Promise.all([
-      getActiveStories(),
-      getAuthProfile(),
-   ]);
+   const { entries, viewedStoryIds, currentUserId } = await loadStoriesPage();
 
    return (
       <StoriesPage
@@ -15,7 +11,7 @@ export default async function StoriesRoute({ params }: { params: Promise<{ usern
          basePath="/stories"
          entries={entries}
          viewedStoryIds={viewedStoryIds}
-         currentUserId={profile?.id ?? null}
+         currentUserId={currentUserId}
       />
    );
 }

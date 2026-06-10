@@ -1,5 +1,5 @@
-import DirectMessagesPage from '@/src/pageComponents/DirectMessages';
+import { renderDirectPage } from '../renderDirectPage';
 
 export default function DirectRequests() {
-   return <DirectMessagesPage isRequestsPage currentFolderHref="/direct/requests" />;
+   return renderDirectPage({ currentFolderHref: '/direct/requests', isRequestsPage: true });
 }

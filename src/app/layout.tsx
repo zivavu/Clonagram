@@ -1,10 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { cookies } from 'next/headers';
-import { darkTheme } from '@/src/styles/tokens.stylex';
+import { darkClass } from '@/src/lib/theme';
 import { Providers } from './providers';
 
 const chivo = localFont({
@@ -18,8 +17,6 @@ export const metadata: Metadata = {
    title: 'Clonagram',
    description: 'Instagram clone',
 };
-
-const darkClass = (stylex.props(darkTheme) as unknown as { className: string }).className;
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
    const cookieStore = await cookies();

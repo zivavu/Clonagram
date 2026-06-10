@@ -3,16 +3,7 @@ import 'server-only';
 import { createServerClient } from '../../lib/supabase/server';
 import type { PostsWithMedia } from '../../queries/posts';
 
-const EXPLORE_SELECT = `
-    id, caption, created_at, aspect_ratio, hide_likes, comments_off, location_name,
-    likes(user_id),
-    saves(user_id),
-    comments(count),
-    user:profiles!user_id(id, username, avatar_url, is_private),
-    collaborators:post_collaborators(user:profiles!user_id(id, username, avatar_url)),
-    images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(id, username, avatar_url))),
-    videos:post_videos(id, mux_playback_id, duration, position, width, height)
- `;
+import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 
 export interface ExploreFeedPage {
    posts: PostsWithMedia;
@@ -32,7 +23,7 @@ export async function getExplorePosts(
 
    let query = supabase
       .from('posts')
-      .select(EXPLORE_SELECT)
+      .select(POST_WITH_MEDIA_SELECT)
       .order('created_at', { ascending: false });
 
    if (cursor) query = query.lt('created_at', cursor);

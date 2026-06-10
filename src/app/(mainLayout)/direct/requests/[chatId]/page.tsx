@@ -1,9 +1,14 @@
-import DirectMessagesPage from '@/src/pageComponents/DirectMessages';
-import type { DirectPageProps } from '../../[chatId]/page';
+import { renderDirectPage } from '../../renderDirectPage';
 
-export default async function DirectRequestsChat({ params }: DirectPageProps) {
+interface DirectRequestsChatPageProps {
+   params: Promise<{ chatId: string }>;
+}
+
+export default async function DirectRequestsChat({ params }: DirectRequestsChatPageProps) {
    const { chatId } = await params;
-   return (
-      <DirectMessagesPage chatId={chatId} isRequestsPage currentFolderHref="/direct/requests" />
-   );
+   return renderDirectPage({
+      currentFolderHref: '/direct/requests',
+      chatId,
+      isRequestsPage: true,
+   });
 }

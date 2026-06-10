@@ -1,7 +1,6 @@
 import { getPostAction } from '../../../../../actions/post/getPost';
-import { getUserProfileWithPosts } from '../../../../../actions/profile/getUserProfileWithPosts';
-import { getAuthProfile } from '../../../../../lib/supabase/getAuthProfile';
 import ProfilePage from '../../../../../pageComponents/Profile';
+import { loadProfilePage } from '../loadProfilePage';
 
 interface ProfilePostPageProps {
    params: Promise<{
@@ -13,20 +12,18 @@ interface ProfilePostPageProps {
 export default async function ProfilePostPage({ params }: ProfilePostPageProps) {
    const { username, postId } = await params;
 
-   const [authProfile, { userProfile, posts, followStatus }, post] = await Promise.all([
-      getAuthProfile(),
-      getUserProfileWithPosts({ username }),
+   const [profileData, post] = await Promise.all([
+      loadProfilePage(username),
       getPostAction(postId),
    ]);
 
-   const isOwnProfile = authProfile?.username === username;
-
    return (
       <ProfilePage
-         userProfile={userProfile}
-         posts={posts}
-         followStatus={followStatus}
-         isOwnProfile={isOwnProfile}
+         userProfile={profileData.userProfile}
+         posts={profileData.posts}
+         followStatus={profileData.followStatus}
+         isOwnProfile={profileData.isOwnProfile}
+         note={profileData.note}
          initialPost={post}
       />
    );
