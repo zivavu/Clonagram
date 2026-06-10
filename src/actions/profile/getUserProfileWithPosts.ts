@@ -11,7 +11,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
    const { supabase } = await getAuthUser();
    const authProfile = await getAuthProfile(supabase);
 
-   const { data, error } = await supabase
+   let query = supabase
       .from('profiles')
       .select(
          `id, username, full_name, bio, avatar_url, website, is_verified, is_private,
@@ -19,15 +19,20 @@ export async function getUserProfileWithPosts(params: { username: string }) {
           following:follows!follower_id(count),
           posts!user_id(
              id, caption, created_at, aspect_ratio, hide_likes, type,
+             like_count, comment_count,
              likes(user_id),
-             comments(count),
              images:post_images(id, url, position, width, height),
              videos:post_videos(id, mux_playback_id, duration, position, width, height)
           )`,
       )
       .eq('username', username)
-      .order('created_at', { referencedTable: 'posts', ascending: false })
-      .single();
+      .order('created_at', { referencedTable: 'posts', ascending: false });
+
+   if (authProfile) {
+      query = query.eq('posts.likes.user_id', authProfile.id);
+   }
+
+   const { data, error } = await query.single();
 
    if (error || !data)
       throw new Error(`Failed to fetch profile with posts: ${error?.message ?? 'unknown error'}`);

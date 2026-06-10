@@ -18,8 +18,10 @@ export async function bakeStoryImage(file: File): Promise<{ blob: Blob; blurData
          ctx.drawImage(img, 0, 0);
          URL.revokeObjectURL(objectUrl);
 
-          Promise.all([canvasToBlurDataUrl(canvas), canvasToWebpBlob(canvas)])
-             .then(([blurDataUrl, blob]) => resolve({ blob, blurDataUrl }), reject);
+         Promise.all([canvasToBlurDataUrl(canvas), canvasToWebpBlob(canvas)]).then(
+            ([blurDataUrl, blob]) => resolve({ blob, blurDataUrl }),
+            reject,
+         );
       };
 
       img.onerror = () => {

@@ -268,9 +268,9 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                </div>
                {!post.hide_likes && (
                   <div {...stylex.props(styles.likedByText)}>
-                     {post.likes.length === 1
-                        ? `${post.likes.length} like`
-                        : `${post.likes.length} likes`}
+                     {post.like_count === 1
+                        ? `${post.like_count} like`
+                        : `${post.like_count} likes`}
                   </div>
                )}
                <div {...stylex.props(styles.postTime)}>

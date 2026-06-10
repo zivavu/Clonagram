@@ -37,6 +37,8 @@ export async function getExplorePosts(
       return { posts, nextCursor };
    }
 
+   query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
+
    const { data: followedData, error: followError } = await supabase
       .from('follows')
       .select('following_id')

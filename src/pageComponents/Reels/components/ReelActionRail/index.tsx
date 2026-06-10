@@ -33,7 +33,7 @@ export default function ReelActionRail({
 }: ReelActionRailProps) {
    const { data: authUser } = useAuthUser();
    const [isLiked, setIsLiked] = useState(false);
-   const [likeCount, setLikeCount] = useState(reel.likes.length);
+   const [likeCount, setLikeCount] = useState(reel.like_count);
    const [isSaved, setIsSaved] = useState(false);
    const { mutate: toggleSave, isPending: isSavePending } = useTogglePostSave(reel);
 

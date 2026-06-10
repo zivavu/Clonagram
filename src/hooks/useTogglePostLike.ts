@@ -17,6 +17,7 @@ export function useTogglePostLike(post: PostWithMedia) {
          if (!authUser) return old;
          return {
             ...old,
+            like_count: isLiked ? Math.max(old.like_count - 1, 0) : old.like_count + 1,
             likes: isLiked
                ? old.likes.filter(l => l.user_id !== authUser.id)
                : [...old.likes, { user_id: authUser.id }],

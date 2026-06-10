@@ -134,7 +134,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   ) : (
                      <MdFavoriteBorder size={26} color={colors.textPrimary} />
                   )}
-                  {(post.likes.length ?? 0) > 0 && <span>{post.likes.length}</span>}
+                  {(post.like_count ?? 0) > 0 && <span>{post.like_count}</span>}
                </button>
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
@@ -145,7 +145,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   {...stylex.props(styles.iconBarItemButton)}
                >
                   <FiMessageCircle size={26} color={colors.textPrimary} />
-                  {(post.comments[0]?.count ?? 0) > 0 && <span>{post.comments[0]?.count}</span>}
+                  {(post.comment_count ?? 0) > 0 && <span>{post.comment_count}</span>}
                </button>
             </div>
             <div {...stylex.props(styles.iconBarItem)}>

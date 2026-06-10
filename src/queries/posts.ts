@@ -3,9 +3,9 @@ import type { Database } from '@/src/types/database';
 
 export const POST_WITH_MEDIA_SELECT = `
    id, caption, created_at, aspect_ratio, hide_likes, comments_off, location_name,
+   like_count, comment_count,
    likes(user_id),
    saves(user_id),
-   comments(count),
    user:profiles!user_id(id, username, avatar_url, is_private),
    collaborators:post_collaborators(user:profiles!user_id(id, username, avatar_url)),
    images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(id, username, avatar_url))),
@@ -39,8 +39,8 @@ export type UserRecentPost = UserRecentPosts[number];
 
 export const REELS_PAGE_SIZE = 10;
 
-export function reelsQuery(supabase: SupabaseClient<Database>) {
-   return supabase
+export function reelsQuery(supabase: SupabaseClient<Database>, userId?: string) {
+   let query = supabase
       .from('posts')
       .select(
          `
@@ -55,6 +55,12 @@ export function reelsQuery(supabase: SupabaseClient<Database>) {
       .eq('type', 'reel')
       .order('created_at', { ascending: false })
       .limit(REELS_PAGE_SIZE);
+
+   if (userId) {
+      query = query.eq('likes.user_id', userId).eq('saves.user_id', userId);
+   }
+
+   return query;
 }
 
 export type Reels = QueryData<ReturnType<typeof reelsQuery>>;
@@ -65,6 +71,8 @@ export function savedPostsQuery(supabase: SupabaseClient<Database>, userId: stri
       .from('saves')
       .select(`post_id, post:posts!post_id(${POST_WITH_MEDIA_SELECT})`)
       .eq('user_id', userId)
+      .eq('post.likes.user_id', userId)
+      .eq('post.saves.user_id', userId)
       .order('created_at', { ascending: false });
 }
 

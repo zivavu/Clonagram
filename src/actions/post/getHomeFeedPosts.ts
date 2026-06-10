@@ -27,6 +27,9 @@ export async function getHomeFeedPosts(
          .order('created_at', { ascending: false })
          .limit(PAGE_SIZE);
       if (cursor) query = query.lt('created_at', cursor);
+      if (user) {
+         query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
+      }
       const { data, error } = await query;
       if (error) throw new Error(`Failed to fetch home feed: ${error.message}`);
       const posts = data ?? [];
@@ -59,6 +62,9 @@ export async function getHomeFeedPosts(
       .order('created_at', { ascending: false })
       .limit(PAGE_SIZE);
    if (cursor) query = query.lt('created_at', cursor);
+   if (user) {
+      query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
+   }
 
    const { data, error: postsError } = await query;
 
