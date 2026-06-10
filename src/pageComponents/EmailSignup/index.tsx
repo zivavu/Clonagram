@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { MdChevronLeft } from 'react-icons/md';
 import z from 'zod';
@@ -11,8 +12,11 @@ import AuthPagesFooter from '@/src/components/AuthPagesFooter';
 import BirthdatePicker from '@/src/components/BirthdatePicker';
 import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
+import UsernameSignupInput from '@/src/components/UsernameSignupInput';
 import ZetaLogo from '@/src/components/ZetaLogo';
+import { type UsernameStatus } from '@/src/hooks/useUsernameAvailability';
 import { supabase } from '@/src/lib/supabase/client';
+import { usernameSchema } from '@/src/lib/validation/username';
 import { styles } from './index.stylex';
 
 const birthdateSchema = z
@@ -23,14 +27,24 @@ const birthdateSchema = z
    })
    .refine(v => v.month !== null && v.day !== null && v.year !== null, {
       message: 'Birthdate is required',
-   });
+   })
+   .refine(
+      v => {
+         if (v.month === null || v.day === null || v.year === null) return true;
+         const dob = new Date(v.year, v.month - 1, v.day);
+         const cutoff = new Date();
+         cutoff.setFullYear(cutoff.getFullYear() - 13);
+         return dob <= cutoff;
+      },
+      { message: 'You must be at least 13 years old to sign up.' },
+   );
 
 const schema = z.object({
    email: z.email(),
    password: z.string().min(8),
    birthdate: birthdateSchema,
    fullName: z.string().min(1),
-   username: z.string().min(1),
+   username: usernameSchema,
 });
 
 export type EmailSignupFormData = z.infer<typeof schema>;
@@ -49,7 +63,18 @@ export default function EmailSignUpPage() {
       },
    });
 
+   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>('idle');
+
    const onSubmit = async (data: EmailSignupFormData) => {
+      if (usernameStatus !== 'available') {
+         setError('username', {
+            message:
+               usernameStatus === 'taken'
+                  ? `The username ${data.username} is not available.`
+                  : 'Please wait while we check username availability.',
+         });
+         return;
+      }
       const { error } = await supabase.auth.signUp({
          email: data.email,
          password: data.password,
@@ -101,15 +126,33 @@ export default function EmailSignUpPage() {
                   <Controller
                      control={control}
                      name="birthdate"
-                     render={({ field }) => (
-                        <BirthdatePicker value={field.value} onChange={field.onChange} />
+                     render={({ field, fieldState }) => (
+                        <>
+                           <BirthdatePicker value={field.value} onChange={field.onChange} />
+                           {fieldState.error && (
+                              <span
+                                 role="alert"
+                                 style={{ color: 'rgb(237, 73, 86)', fontSize: 13 }}
+                              >
+                                 {fieldState.error.message}
+                              </span>
+                           )}
+                        </>
                      )}
                   />
                   <EmailSignupInput label="Full Name" topLabel="Name" {...register('fullName')} />
-                  <EmailSignupInput
-                     label="Username"
-                     topLabel="Username"
-                     {...register('username')}
+                  <Controller
+                     control={control}
+                     name="username"
+                     render={({ field }) => (
+                        <UsernameSignupInput
+                           ref={field.ref}
+                           value={field.value ?? ''}
+                           onChange={field.onChange}
+                           onBlur={field.onBlur}
+                           onStatusChange={setUsernameStatus}
+                        />
+                     )}
                   />
 
                   <div {...stylex.props(styles.policyText)}>
