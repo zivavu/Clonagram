@@ -14,47 +14,59 @@ const EXPLORE_SELECT = `
     videos:post_videos(id, mux_playback_id, duration, position, width, height)
  `;
 
+export interface ExploreFeedPage {
+   posts: PostsWithMedia;
+   nextCursor: string | null;
+}
+
+const PAGE_SIZE = 45;
+
 export async function getExplorePosts(
    variant: 'for_you' | 'nonpersonalized',
-): Promise<PostsWithMedia> {
+   cursor?: string | null,
+): Promise<ExploreFeedPage> {
    const supabase = await createServerClient();
    const {
       data: { user },
    } = await supabase.auth.getUser();
 
+   let query = supabase
+      .from('posts')
+      .select(EXPLORE_SELECT)
+      .order('created_at', { ascending: false });
+
+   if (cursor) query = query.lt('created_at', cursor);
+
    if (!user) {
-      const { data } = await supabase
-         .from('posts')
-         .select(EXPLORE_SELECT)
-         .order('created_at', { ascending: false })
-         .limit(45);
-      return (data ?? []) as PostsWithMedia;
+      const { data, error } = await query.limit(PAGE_SIZE);
+      if (error) throw new Error(`Failed to fetch explore feed: ${error.message}`);
+      const posts = (data ?? []) as PostsWithMedia;
+      const nextCursor =
+         posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
+      return { posts, nextCursor };
    }
 
-   const { data: followedData } = await supabase
+   const { data: followedData, error: followError } = await supabase
       .from('follows')
       .select('following_id')
       .eq('follower_id', user.id);
 
+   if (followError) throw new Error(`Failed to fetch followed users: ${followError.message}`);
+
    const followedIds = followedData?.map(f => f.following_id) ?? [];
 
    if (variant === 'for_you') {
-      if (followedIds.length === 0) return [];
-      const { data } = await supabase
-         .from('posts')
-         .select(EXPLORE_SELECT)
-         .in('user_id', followedIds)
-         .order('created_at', { ascending: false })
-         .limit(45);
-      return (data ?? []) as PostsWithMedia;
+      if (followedIds.length === 0) return { posts: [], nextCursor: null };
+      query = query.in('user_id', followedIds);
+   } else {
+      const excludeIds = [user.id, ...followedIds];
+      query = query.not('user_id', 'in', `(${excludeIds.join(',')})`);
    }
 
-   const excludeIds = [user.id, ...followedIds];
-   const { data } = await supabase
-      .from('posts')
-      .select(EXPLORE_SELECT)
-      .not('user_id', 'in', `(${excludeIds.join(',')})`)
-      .order('created_at', { ascending: false })
-      .limit(45);
-   return (data ?? []) as PostsWithMedia;
+   const { data, error } = await query.limit(PAGE_SIZE);
+   if (error) throw new Error(`Failed to fetch explore feed: ${error.message}`);
+   const posts = (data ?? []) as PostsWithMedia;
+   const nextCursor =
+      posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
+   return { posts, nextCursor };
 }

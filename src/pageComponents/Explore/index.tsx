@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getExplorePosts } from '../../actions/post/getExplorePosts';
 import { createServerClient } from '../../lib/supabase/server';
 import { colors } from '../../styles/tokens.stylex';
-import ExploreGrid from './ExploreGrid';
+import ExploreFeed from './ExploreFeed';
 import { styles } from './index.stylex';
 
 export default async function ExplorePage({ variant }: { variant: string | null }) {
@@ -17,7 +17,7 @@ export default async function ExplorePage({ variant }: { variant: string | null 
       isAnonymous || variant === 'nonpersonalized' ? 'nonpersonalized' : 'for_you';
    const isForYou = activeVariant === 'for_you';
 
-   const posts = await getExplorePosts(activeVariant);
+   const { posts } = await getExplorePosts(activeVariant);
 
    return (
       <div {...stylex.props(styles.page)}>
@@ -43,22 +43,16 @@ export default async function ExplorePage({ variant }: { variant: string | null 
                   </Link>
                </div>
             )}
-            <ExploreGrid
-               posts={posts}
-               emptyState={
-                  isForYou ? (
-                     <span {...stylex.props(styles.emptyText)}>
-                        Start following people to see their posts.{' '}
-                        <Link
-                           href="/explore/people"
-                           style={{ color: colors.accent, fontWeight: 600 }}
-                        >
-                           Find people
-                        </Link>
-                     </span>
-                  ) : undefined
-               }
-            />
+            {posts.length === 0 && isForYou ? (
+               <span {...stylex.props(styles.emptyText)}>
+                  Start following people to see their posts.{' '}
+                  <Link href="/explore/people" style={{ color: colors.accent, fontWeight: 600 }}>
+                     Find people
+                  </Link>
+               </span>
+            ) : (
+               <ExploreFeed variant={activeVariant} initialPosts={posts} />
+            )}
          </div>
       </div>
    );

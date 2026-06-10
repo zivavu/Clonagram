@@ -21,6 +21,7 @@ export const queryKeys = {
    conversation: (conversationId: string) => ['conversation', conversationId] as const,
    messages: (conversationId: string) => ['messages', conversationId] as const,
    homeFeed: (variant: 'home' | 'following') => ['home-feed', variant] as const,
+   explore: (variant: 'for_you' | 'nonpersonalized') => ['explore', variant] as const,
    followedUsers: () => ['followed-users'] as const,
    userSearch: (query: string) => ['user-search', query] as const,
    locationSearch: (query: string) => ['locations', 'search', query] as const,

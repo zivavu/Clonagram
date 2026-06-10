@@ -5,7 +5,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
-import { type Reel, reelsQuery } from '@/src/queries/posts';
+import { REELS_PAGE_SIZE, type Reel, reelsQuery } from '@/src/queries/posts';
 import ReelItem from './components/ReelItem';
 import ReelNavArrows from './components/ReelNavArrows';
 import { styles } from './index.stylex';
@@ -25,7 +25,7 @@ export default function Reels() {
       },
       initialPageParam: null as string | null,
       getNextPageParam: lastPage =>
-         lastPage.length === 5 ? lastPage[lastPage.length - 1].created_at : null,
+         lastPage.length === REELS_PAGE_SIZE ? lastPage[lastPage.length - 1].created_at : null,
    });
 
    const reels = data?.pages.flat() ?? [];
