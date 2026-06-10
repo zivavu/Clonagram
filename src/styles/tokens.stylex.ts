@@ -30,6 +30,7 @@ export const colors = stylex.defineVars({
    blackWhite: 'rgb(255, 255, 255)',
    whiteBlack: 'rgb(0, 0, 0)',
    shadowColor: '#eeeeee',
+   toggleTrack: '#6a717a',
 });
 
 export const darkTheme = stylex.createTheme(colors, {
@@ -62,6 +63,7 @@ export const darkTheme = stylex.createTheme(colors, {
    blackWhite: 'rgb(0, 0, 0)',
    whiteBlack: 'rgb(255, 255, 255)',
    shadowColor: 'transparent',
+   toggleTrack: '#2b3036',
 });
 
 export const spacing = stylex.defineVars({

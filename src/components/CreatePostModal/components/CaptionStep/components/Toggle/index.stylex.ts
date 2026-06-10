@@ -6,14 +6,14 @@ export const styles = stylex.create({
       width: '40px',
       height: '24px',
       borderRadius: radius.full,
-      backgroundColor: '#d1d1d6',
+      backgroundColor: colors.toggleTrack,
       border: 'none',
       position: 'relative',
       flexShrink: 0,
       transition: 'background-color 0.2s',
    },
    toggleOn: {
-      backgroundColor: colors.black,
+      backgroundColor: colors.whiteBlack,
    },
    thumb: {
       position: 'absolute',
