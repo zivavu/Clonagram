@@ -7,10 +7,13 @@ export const styles = stylex.create({
       flexDirection: 'column',
       gap: '6px',
    },
+   inputWrapper: {
+      position: 'relative',
+   },
    input: {
       width: '100%',
       height: '44px',
-      padding: '0 12px',
+      padding: '0 40px 0 12px',
       backgroundColor: colors.bg,
       borderWidth: '1px',
       borderStyle: 'solid',
@@ -25,6 +28,18 @@ export const styles = stylex.create({
    },
    inputError: {
       borderColor: colors.danger,
+   },
+   inputSuccess: {
+      borderColor: colors.success,
+   },
+   icon: {
+      position: 'absolute',
+      right: '10px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      display: 'flex',
+      alignItems: 'center',
+      pointerEvents: 'none',
    },
    error: {
       fontSize: '12px',

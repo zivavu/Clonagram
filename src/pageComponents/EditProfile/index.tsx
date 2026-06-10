@@ -11,6 +11,7 @@ import { updateProfile } from '@/src/actions/profile/updateProfile';
 import { toast } from '@/src/components/AppToast';
 import { supabase } from '@/src/lib/supabase/client';
 import type { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
+import { usernameSchema } from '@/src/lib/validation/username';
 import AuthPagesFooter from '../../components/AuthPagesFooter';
 import AvatarCard from './components/AvatarCard';
 import BioField from './components/BioField';
@@ -25,14 +26,7 @@ type AuthProfile = NonNullable<Awaited<ReturnType<typeof getAuthProfile>>>;
 
 const schema = z.object({
    fullName: z.string(),
-   username: z
-      .string()
-      .min(1, 'Username is required')
-      .max(30, 'Username must be 30 characters or less')
-      .regex(/^[a-zA-Z0-9_.]+$/, 'Username can only contain letters, numbers, underscores and dots')
-      .refine(v => !v.startsWith('.'), 'Username cannot start with a dot')
-      .refine(v => !v.endsWith('.'), 'Username cannot end with a dot')
-      .refine(v => !v.includes('..'), 'Username cannot contain consecutive dots'),
+   username: usernameSchema,
    bio: z.string().max(150, 'Bio must be 150 characters or less'),
    gender: z.string(),
    links: z.array(z.object({ id: z.string(), title: z.string(), url: z.string() })),
@@ -159,6 +153,7 @@ export default function EditProfile({ profile }: { profile: AuthProfile }) {
                         value={field.value}
                         onChange={field.onChange}
                         error={errors.username?.message ?? null}
+                        currentUsername={profile.username}
                      />
                   )}
                />
