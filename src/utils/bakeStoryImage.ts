@@ -1,6 +1,4 @@
-const BLUR_SIZE = 20;
-const WEBP_QUALITY = 0.85;
-const BLUR_QUALITY = 0.5;
+import { canvasToBlurDataUrl, canvasToWebpBlob } from './canvasBlur';
 
 export async function bakeStoryImage(file: File): Promise<{ blob: Blob; blurDataUrl: string }> {
    return new Promise((resolve, reject) => {
@@ -18,31 +16,10 @@ export async function bakeStoryImage(file: File): Promise<{ blob: Blob; blurData
             return;
          }
          ctx.drawImage(img, 0, 0);
+         URL.revokeObjectURL(objectUrl);
 
-         const blurCanvas = document.createElement('canvas');
-         blurCanvas.width = BLUR_SIZE;
-         blurCanvas.height = Math.round(BLUR_SIZE * (img.naturalHeight / img.naturalWidth));
-         const blurCtx = blurCanvas.getContext('2d');
-         if (!blurCtx) {
-            URL.revokeObjectURL(objectUrl);
-            reject(new Error('Canvas context unavailable'));
-            return;
-         }
-         blurCtx.drawImage(img, 0, 0, blurCanvas.width, blurCanvas.height);
-         const blurDataUrl = blurCanvas.toDataURL('image/webp', BLUR_QUALITY);
-
-         canvas.toBlob(
-            blob => {
-               URL.revokeObjectURL(objectUrl);
-               if (!blob) {
-                  reject(new Error('Failed to convert image to WebP'));
-                  return;
-               }
-               resolve({ blob, blurDataUrl });
-            },
-            'image/webp',
-            WEBP_QUALITY,
-         );
+          Promise.all([canvasToBlurDataUrl(canvas), canvasToWebpBlob(canvas)])
+             .then(([blurDataUrl, blob]) => resolve({ blob, blurDataUrl }), reject);
       };
 
       img.onerror = () => {
