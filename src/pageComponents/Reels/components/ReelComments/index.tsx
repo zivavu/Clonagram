@@ -1,16 +1,15 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
-import { createCommentAction } from '@/src/actions/comments/createComment';
 import CommentItem, { CommentSkeleton } from '@/src/components/CommentItem';
-import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { useSubmitComment } from '@/src/hooks/useSubmitComment';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
-import { type PostComment, type PostComments, postCommentsQuery } from '@/src/queries/comments';
+import { postCommentsQuery } from '@/src/queries/comments';
 import type { Reel } from '@/src/queries/posts';
 import { styles } from './index.stylex';
 
@@ -21,8 +20,13 @@ interface ReelCommentsProps {
 
 export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
    const panelRef = useRef<HTMLDivElement>(null);
-   const { data: authUser } = useAuthUser();
-   const queryClient = useQueryClient();
+   const commentsKey = queryKeys.comments(reel.id);
+   const [inputValue, setInputValue] = useState('');
+   const [replyingTo, setReplyingTo] = useState<{ commentId: string; username: string } | null>(
+      null,
+   );
+
+   const { mutate: submitComment } = useSubmitComment(reel.id, commentsKey);
 
    useEffect(() => {
       function handleMouseDown(e: MouseEvent) {
@@ -33,11 +37,6 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
       document.addEventListener('mousedown', handleMouseDown);
       return () => document.removeEventListener('mousedown', handleMouseDown);
    }, [onClose]);
-   const commentsKey = queryKeys.comments(reel.id);
-   const [inputValue, setInputValue] = useState('');
-   const [replyingTo, setReplyingTo] = useState<{ commentId: string; username: string } | null>(
-      null,
-   );
 
    const { data: comments = [], isLoading: isLoadingComments } = useQuery({
       queryKey: commentsKey,
@@ -45,52 +44,6 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
          const { data, error } = await postCommentsQuery(supabase, reel.id);
          if (error) throw error;
          return data;
-      },
-   });
-
-   const { mutate: submitComment } = useMutation({
-      mutationFn: ({ content, parentId }: { content: string; parentId?: string }) =>
-         createCommentAction({ postId: reel.id, content, parentId }),
-      onMutate: async ({ content, parentId }) => {
-         if (!authUser) return {};
-         const optimistic: PostComment = {
-            id: `optimistic-${Date.now()}`,
-            content,
-            created_at: new Date().toISOString(),
-            like_count: 0,
-            reply_count: 0,
-            parent_id: parentId ?? null,
-            comment_likes: [],
-            user: { id: authUser.id, username: authUser.username, avatar_url: authUser.avatar_url },
-         };
-         if (parentId) {
-            const repliesKey = queryKeys.replies(parentId);
-            const prev = queryClient.getQueryData<PostComments>(repliesKey);
-            queryClient.setQueryData<PostComments>(repliesKey, old => [...(old ?? []), optimistic]);
-            return { prev, repliesKey };
-         }
-         const prev = queryClient.getQueryData<PostComments>(commentsKey);
-         queryClient.setQueryData<PostComments>(commentsKey, old => [...(old ?? []), optimistic]);
-         return { prev };
-      },
-      onError: (_err, { parentId }, context) => {
-         if (!context) return;
-         if (parentId && 'repliesKey' in context && context.repliesKey) {
-            queryClient.setQueryData(context.repliesKey, context.prev);
-         } else if ('prev' in context) {
-            queryClient.setQueryData(commentsKey, context.prev);
-         }
-      },
-      onSuccess: (newComment, { parentId }) => {
-         if (parentId) {
-            queryClient.setQueryData<PostComments>(queryKeys.replies(parentId), old =>
-               (old ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
-            );
-         } else {
-            queryClient.setQueryData<PostComments>(commentsKey, old =>
-               (old ?? []).map(c => (c.id.startsWith('optimistic-') ? newComment : c)),
-            );
-         }
       },
    });
 

@@ -22,6 +22,7 @@ import OwnerActionsModal from '@/src/components/OwnerActionsModal/OwnerActionsMo
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { useSubmitComment } from '@/src/hooks/useSubmitComment';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -32,7 +33,6 @@ import { useOwnerActionsModal } from '@/src/store/useOwnerActionsModalStore';
 import { usePostViewModal } from '@/src/store/usePostViewModalStore';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from './index.stylex';
-import { useSubmitComment } from './useSubmitComment';
 
 interface PostModalCommentsProps {
    initialPost: PostWithMedia;
