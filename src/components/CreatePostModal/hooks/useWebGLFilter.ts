@@ -2,9 +2,13 @@ import { useCallback, useEffect, useRef } from 'react';
 import {
    createCurveTexture,
    createProgram,
+   type FilterUniformLocations,
    FRAGMENT_SHADER,
+   getFilterUniformLocations,
    getPreset,
    loadTexture,
+   setAdjustmentUniforms,
+   setPresetUniforms,
    VERTEX_SHADER,
 } from '@/src/utils/filterShader';
 import type { Adjustments } from '../types';
@@ -22,28 +26,6 @@ interface WebGLFilterParams {
    filterStrength: number;
 }
 
-const PRESET_UNIFORMS = [
-   'u_presetActive',
-   'u_pBrightness',
-   'u_pContrast',
-   'u_pSaturation',
-   'u_pShadowTint',
-   'u_pHighlightTint',
-   'u_pFade',
-   'u_pColorBalance',
-   'u_pVignette',
-   'u_filterStrength',
-] as const;
-
-const USER_UNIFORMS = [
-   'u_brightness',
-   'u_contrast',
-   'u_saturation',
-   'u_temperature',
-   'u_fade',
-   'u_vignette',
-] as const;
-
 export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
    const canvasRef = useRef<HTMLCanvasElement | null>(null);
    const glRef = useRef<WebGL2RenderingContext | null>(null);
@@ -51,7 +33,7 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
    const textureRef = useRef<WebGLTexture | null>(null);
    const curvesTextureRef = useRef<WebGLTexture | null>(null);
    const presetRef = useRef<string>('');
-   const uniformLocsRef = useRef<Record<string, WebGLUniformLocation | null>>({});
+   const uniformLocsRef = useRef<FilterUniformLocations | null>(null);
    const adjustmentsRef = useRef(params.adjustments);
    const filterPresetRef = useRef(params.filterPreset);
    const filterStrengthRef = useRef(params.filterStrength);
@@ -66,40 +48,21 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       const texture = textureRef.current;
       const curvesTexture = curvesTextureRef.current;
       const locs = uniformLocsRef.current;
-      if (!gl || !program || !texture || !curvesTexture) return;
+      if (!gl || !program || !texture || !curvesTexture || !locs) return;
 
       // biome-ignore lint/correctness/useHookAtTopLevel: gl.useProgram is a WebGL API, not a React hook
       gl.useProgram(program);
 
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
-      if (locs.u_image) gl.uniform1i(locs.u_image, 0);
+      gl.uniform1i(locs.u_image, 0);
 
       gl.activeTexture(gl.TEXTURE1);
       gl.bindTexture(gl.TEXTURE_2D, curvesTexture);
-      if (locs.u_curves) gl.uniform1i(locs.u_curves, 1);
+      gl.uniform1i(locs.u_curves, 1);
 
-      const preset = getPreset(filterPresetRef.current);
-      if (locs.u_presetActive)
-         gl.uniform1f(locs.u_presetActive, filterPresetRef.current === 'Original' ? 0.0 : 1.0);
-      if (locs.u_pBrightness) gl.uniform1f(locs.u_pBrightness, preset.brightness);
-      if (locs.u_pContrast) gl.uniform1f(locs.u_pContrast, preset.contrast);
-      if (locs.u_pSaturation) gl.uniform1f(locs.u_pSaturation, preset.saturation);
-      if (locs.u_pShadowTint) gl.uniform4fv(locs.u_pShadowTint, preset.shadowTint);
-      if (locs.u_pHighlightTint) gl.uniform4fv(locs.u_pHighlightTint, preset.highlightTint);
-      if (locs.u_pFade) gl.uniform4fv(locs.u_pFade, preset.fade);
-      if (locs.u_pColorBalance) gl.uniform3fv(locs.u_pColorBalance, preset.colorBalance);
-      if (locs.u_pVignette) gl.uniform1f(locs.u_pVignette, preset.vignette);
-      if (locs.u_filterStrength)
-         gl.uniform1f(locs.u_filterStrength, filterStrengthRef.current / 100);
-
-      const adj = adjustmentsRef.current;
-      if (locs.u_brightness) gl.uniform1f(locs.u_brightness, adj.brightness / 100);
-      if (locs.u_contrast) gl.uniform1f(locs.u_contrast, 1 + adj.contrast / 100);
-      if (locs.u_saturation) gl.uniform1f(locs.u_saturation, 1 + adj.saturation / 100);
-      if (locs.u_temperature) gl.uniform1f(locs.u_temperature, adj.temperature / 100);
-      if (locs.u_fade) gl.uniform1f(locs.u_fade, adj.fade / 100);
-      if (locs.u_vignette) gl.uniform1f(locs.u_vignette, adj.vignette / 100);
+      setPresetUniforms(gl, locs, filterPresetRef.current, filterStrengthRef.current / 100);
+      setAdjustmentUniforms(gl, locs, adjustmentsRef.current);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
    }, []);
@@ -140,13 +103,7 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
       gl.enableVertexAttribArray(texCoordLoc);
       gl.vertexAttribPointer(texCoordLoc, 2, gl.FLOAT, false, 16, 8);
 
-      const locs: Record<string, WebGLUniformLocation | null> = {
-         u_image: gl.getUniformLocation(program, 'u_image'),
-         u_curves: gl.getUniformLocation(program, 'u_curves'),
-      };
-      for (const name of PRESET_UNIFORMS) locs[name] = gl.getUniformLocation(program, name);
-      for (const name of USER_UNIFORMS) locs[name] = gl.getUniformLocation(program, name);
-      uniformLocsRef.current = locs;
+      uniformLocsRef.current = getFilterUniformLocations(gl, program);
 
       return () => {
          if (textureRef.current) gl.deleteTexture(textureRef.current);
@@ -156,7 +113,7 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
          programRef.current = null;
          textureRef.current = null;
          curvesTextureRef.current = null;
-         uniformLocsRef.current = {};
+         uniformLocsRef.current = null;
       };
    }, []);
 

@@ -3,7 +3,10 @@ import {
    createCurveTexture,
    createProgram,
    FRAGMENT_SHADER,
+   getFilterUniformLocations,
    getPreset,
+   setAdjustmentUniforms,
+   setPresetUniforms,
    VERTEX_SHADER,
 } from './filterShader';
 
@@ -148,27 +151,11 @@ export async function bakeImage(
    gl.activeTexture(gl.TEXTURE1);
    gl.bindTexture(gl.TEXTURE_2D, curvesTexture);
 
-   const u = (name: string) => gl.getUniformLocation(program, name);
-   gl.uniform1i(u('u_image'), 0);
-   gl.uniform1i(u('u_curves'), 1);
-   gl.uniform1f(u('u_presetActive'), media.filterPreset === 'Original' ? 0.0 : 1.0);
-   gl.uniform1f(u('u_pBrightness'), preset.brightness);
-   gl.uniform1f(u('u_pContrast'), preset.contrast);
-   gl.uniform1f(u('u_pSaturation'), preset.saturation);
-   gl.uniform4fv(u('u_pShadowTint'), preset.shadowTint);
-   gl.uniform4fv(u('u_pHighlightTint'), preset.highlightTint);
-   gl.uniform4fv(u('u_pFade'), preset.fade);
-   gl.uniform3fv(u('u_pColorBalance'), preset.colorBalance);
-   gl.uniform1f(u('u_pVignette'), preset.vignette);
-   gl.uniform1f(u('u_filterStrength'), media.filterStrength / 100);
-
-   const adj = media.adjustments;
-   gl.uniform1f(u('u_brightness'), adj.brightness / 100);
-   gl.uniform1f(u('u_contrast'), 1 + adj.contrast / 100);
-   gl.uniform1f(u('u_saturation'), 1 + adj.saturation / 100);
-   gl.uniform1f(u('u_temperature'), adj.temperature / 100);
-   gl.uniform1f(u('u_fade'), adj.fade / 100);
-   gl.uniform1f(u('u_vignette'), adj.vignette / 100);
+   const locs = getFilterUniformLocations(gl, program);
+   gl.uniform1i(locs.u_image, 0);
+   gl.uniform1i(locs.u_curves, 1);
+   setPresetUniforms(gl, locs, media.filterPreset, media.filterStrength / 100);
+   setAdjustmentUniforms(gl, locs, media.adjustments);
 
    gl.drawArrays(gl.TRIANGLES, 0, 6);
 

@@ -21,7 +21,7 @@ const FILTER_PRESETS: FilterPreset[] = [
    { name: 'Perpetua' },
    { name: 'Reyes' },
    { name: 'Slumber' },
-];
+] as const;
 
 const FILTER_PRESET_NAMES = FILTER_PRESETS.map(p => p.name);
 

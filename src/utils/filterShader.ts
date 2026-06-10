@@ -1,4 +1,5 @@
-import type { CurveSet } from './filterPresets';
+import type { Adjustments } from '@/src/components/CreatePostModal/types';
+import { type CurveSet, getPreset } from './filterPresets';
 
 export {
    buildCurve,
@@ -10,6 +11,72 @@ export {
    PRESETS,
 } from './filterPresets';
 export { FRAGMENT_SHADER, VERTEX_SHADER } from './filterShaderSources';
+
+const FILTER_UNIFORM_NAMES = [
+   'u_image',
+   'u_curves',
+   'u_presetActive',
+   'u_pBrightness',
+   'u_pContrast',
+   'u_pSaturation',
+   'u_pShadowTint',
+   'u_pHighlightTint',
+   'u_pFade',
+   'u_pColorBalance',
+   'u_pVignette',
+   'u_filterStrength',
+   'u_brightness',
+   'u_contrast',
+   'u_saturation',
+   'u_temperature',
+   'u_fade',
+   'u_vignette',
+] as const;
+
+export type FilterUniformLocations = Record<
+   (typeof FILTER_UNIFORM_NAMES)[number],
+   WebGLUniformLocation | null
+>;
+
+export function getFilterUniformLocations(gl: WebGL2RenderingContext, program: WebGLProgram) {
+   const locs = {} as FilterUniformLocations;
+   for (const name of FILTER_UNIFORM_NAMES) {
+      locs[name] = gl.getUniformLocation(program, name);
+   }
+   return locs;
+}
+
+export function setPresetUniforms(
+   gl: WebGL2RenderingContext,
+   locs: FilterUniformLocations,
+   presetName: string,
+   filterStrength: number,
+) {
+   const preset = getPreset(presetName);
+   gl.uniform1f(locs.u_presetActive, presetName === 'Original' ? 0.0 : 1.0);
+   gl.uniform1f(locs.u_pBrightness, preset.brightness);
+   gl.uniform1f(locs.u_pContrast, preset.contrast);
+   gl.uniform1f(locs.u_pSaturation, preset.saturation);
+   gl.uniform4fv(locs.u_pShadowTint, preset.shadowTint);
+   gl.uniform4fv(locs.u_pHighlightTint, preset.highlightTint);
+   gl.uniform4fv(locs.u_pFade, preset.fade);
+   gl.uniform3fv(locs.u_pColorBalance, preset.colorBalance);
+   gl.uniform1f(locs.u_pVignette, preset.vignette);
+   gl.uniform1f(locs.u_filterStrength, filterStrength);
+}
+
+export function setAdjustmentUniforms(
+   gl: WebGL2RenderingContext,
+   locs: FilterUniformLocations,
+   adjustments: Adjustments,
+) {
+   gl.uniform1f(locs.u_brightness, adjustments.brightness / 100);
+   gl.uniform1f(locs.u_contrast, 1 + adjustments.contrast / 100);
+   gl.uniform1f(locs.u_saturation, 1 + adjustments.saturation / 100);
+   gl.uniform1f(locs.u_temperature, adjustments.temperature / 100);
+   gl.uniform1f(locs.u_fade, adjustments.fade / 100);
+   gl.uniform1f(locs.u_vignette, adjustments.vignette / 100);
+}
 
 export function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
    const shader = gl.createShader(type);
