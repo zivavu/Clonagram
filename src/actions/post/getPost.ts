@@ -9,14 +9,15 @@ export async function getPostAction(postId: string) {
       data: { user },
    } = await supabase.auth.getUser();
 
-    const { data: postData, error } = await supabase
-       .from('posts')
-       .select(POST_WITH_MEDIA_SELECT)
-       .eq('id', postId)
-       .eq('likes.user_id', user?.id ?? '00000000-0000-0000-0000-000000000000')
-       .eq('saves.user_id', user?.id ?? '00000000-0000-0000-0000-000000000000')
-       .single();
+   const { data: postData, error } = await supabase
+      .from('posts')
+      .select(POST_WITH_MEDIA_SELECT)
+      .eq('id', postId)
+      .eq('likes.user_id', user?.id ?? '00000000-0000-0000-0000-000000000000')
+      .eq('saves.user_id', user?.id ?? '00000000-0000-0000-0000-000000000000')
+      .single();
 
-    if (error || !postData) throw new Error(`Failed to get post: ${error?.message ?? 'unknown error'}`);
-    return postData;
+   if (error || !postData)
+      throw new Error(`Failed to get post: ${error?.message ?? 'unknown error'}`);
+   return postData;
 }

@@ -13,7 +13,8 @@ import { styles } from './index.stylex';
 import LogoutButton from './LogoutButton';
 
 export default async function RightSidebar() {
-   const [profile, supabase] = await Promise.all([getAuthProfile(), createServerClient()]);
+   const supabase = await createServerClient();
+   const profile = await getAuthProfile(supabase);
 
    const { data: suggestedUsers, error } = await userProfilesQuery(supabase, {
       limit: 6,

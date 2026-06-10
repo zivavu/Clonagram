@@ -5,7 +5,8 @@ import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '@/src/lib/supabase/server';
 
 export async function unfollowUser(targetUserId: string): Promise<void> {
-   const [supabase, authProfile] = await Promise.all([createServerClient(), getAuthProfile()]);
+   const supabase = await createServerClient();
+   const authProfile = await getAuthProfile(supabase);
 
    if (!authProfile) throw new Error('Not authenticated');
 

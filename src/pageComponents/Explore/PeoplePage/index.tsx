@@ -14,7 +14,8 @@ import { styles } from './index.stylex';
 
 export default async function PeoplePage({ tab }: { tab: string | null }) {
    const isMore = tab === 'more';
-   const [profile, supabase] = await Promise.all([getAuthProfile(), createServerClient()]);
+   const supabase = await createServerClient();
+   const profile = await getAuthProfile(supabase);
 
    const { data: users, error } = await userProfilesQuery(supabase, {
       limit: 30,
