@@ -44,10 +44,9 @@ export default function DeleteConfirmModal({
                <Separator orientation="horizontal" {...stylex.props(styles.separator)} />
                <button
                   type="button"
-                  style={{ color: '#ed4956', fontWeight: 700 }}
+                  {...stylex.props(styles.actionButton, styles.dangerButton)}
                   disabled={isLoading}
                   onClick={onConfirm}
-                  {...stylex.props(styles.actionButton)}
                >
                   {confirmLabel}
                </button>

@@ -39,4 +39,8 @@ export const styles = stylex.create({
       padding: '16px',
       fontSize: '0.875rem',
    },
+   dangerButton: {
+      color: colors.danger,
+      fontWeight: 700,
+   },
 });
