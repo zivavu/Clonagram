@@ -24,9 +24,14 @@ export async function updateSession(request: NextRequest) {
       cookies: cookieMethods,
    });
 
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
+   // Do not run code between createServerClient and
+   // supabase.auth.getClaims(). A simple mistake could make it very hard to debug
+   // issues with users being randomly logged out.
+   // IMPORTANT: If you remove getClaims() and you use server-side rendering
+   // with the Supabase client, your users may be randomly logged out.
+
+   const { data } = await supabase.auth.getClaims();
+   const user = data?.claims;
 
    const authPages = [
       '/login',

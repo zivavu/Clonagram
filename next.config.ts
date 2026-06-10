@@ -4,7 +4,6 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
    images: {
       remotePatterns: [
-         { hostname: 'picsum.photos' },
          { hostname: 'pggvzapkivjgsybyzjok.supabase.co' },
          { hostname: 'lh3.googleusercontent.com' },
          { hostname: 'image.mux.com' },

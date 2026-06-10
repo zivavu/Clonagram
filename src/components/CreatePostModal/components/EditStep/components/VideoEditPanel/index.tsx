@@ -2,9 +2,9 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
+import Toggle from '@/src/components/Toggle';
 import { extractVideoFrames } from '@/src/utils/extractVideoFrames';
 import type { PostMedia } from '../../../../types';
-import Toggle from '@/src/components/Toggle';
 import CoverPhoto from './components/CoverPhoto';
 import TrimStrip from './components/TrimStrip';
 import { styles } from './index.stylex';

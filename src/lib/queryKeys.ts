@@ -1,3 +1,9 @@
+export const staleTime = {
+   default: 30_000,
+   infinite: 0,
+   static: Infinity,
+};
+
 export const queryKeys = {
    authUser: () => ['authUser'] as const,
    post: (id: string) => ['post', id] as const,
