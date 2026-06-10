@@ -9,4 +9,5 @@ export async function deleteNoteAction() {
    const { error } = await supabase.from('notes').delete().eq('user_id', user.id);
    if (error) throw new Error(`Failed to delete note: ${error.message}`);
    revalidatePath('/');
+   revalidatePath('/profile/[username]', 'page');
 }

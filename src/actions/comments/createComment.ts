@@ -37,5 +37,8 @@ export async function createCommentAction(params: {
    if (error || !data)
       throw new Error(`Failed to post comment: ${error?.message ?? 'unknown error'}`);
    revalidatePath('/');
+   revalidatePath('/reels');
+   revalidatePath('/explore');
+   revalidatePath('/profile/[username]', 'page');
    return data;
 }

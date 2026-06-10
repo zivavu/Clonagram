@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { revalidatePath } from 'next/cache';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '@/src/lib/supabase/server';
 
@@ -27,4 +28,6 @@ export async function followUser(targetUserId: string): Promise<void> {
          .insert({ follower_id: authProfile.id, following_id: targetUserId });
       if (error) throw error;
    }
+
+   revalidatePath('/profile/[username]', 'page');
 }

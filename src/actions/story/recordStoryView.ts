@@ -13,4 +13,5 @@ export async function recordStoryView(storyId: string) {
          { onConflict: 'story_id,viewer_id', ignoreDuplicates: true },
       );
    revalidatePath('/');
+   revalidatePath('/stories/[username]', 'page');
 }

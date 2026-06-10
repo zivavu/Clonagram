@@ -25,4 +25,7 @@ export async function deleteCommentAction(params: { commentId: string }) {
    if (error) throw new Error(`Failed to delete comment: ${error.message}`);
 
    revalidatePath('/');
+   revalidatePath('/reels');
+   revalidatePath('/explore');
+   revalidatePath('/profile/[username]', 'page');
 }

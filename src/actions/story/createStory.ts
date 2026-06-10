@@ -41,4 +41,5 @@ export async function createStoryAction(params: { mediaResult: StoryMediaResult 
    }
 
    revalidatePath('/');
+   revalidatePath('/stories/[username]', 'page');
 }

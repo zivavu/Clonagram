@@ -14,4 +14,5 @@ export async function createNoteAction(content: string) {
       .upsert({ user_id: user.id, content: content.trim() }, { onConflict: 'user_id' });
    if (error) throw new Error(`Failed to save note: ${error.message}`);
    revalidatePath('/');
+   revalidatePath('/profile/[username]', 'page');
 }
