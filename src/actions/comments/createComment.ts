@@ -11,6 +11,16 @@ export async function createCommentAction(params: {
 }): Promise<PostComment> {
    const { supabase, user } = await getAuthUser();
 
+   const { data: post } = await supabase
+      .from('posts')
+      .select('comments_off')
+      .eq('id', params.postId)
+      .single();
+
+   if (post?.comments_off) {
+      throw new Error('Comments are disabled on this post');
+   }
+
    const { data, error } = await supabase
       .from('comments')
       .insert({

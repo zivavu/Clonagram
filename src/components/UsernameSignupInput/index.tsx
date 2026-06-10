@@ -3,8 +3,8 @@
 import * as stylex from '@stylexjs/stylex';
 import { forwardRef, useEffect } from 'react';
 import { MdCheckCircle, MdError } from 'react-icons/md';
-import FloatingInput from '../FloatingInput';
 import { type UsernameStatus, useUsernameAvailability } from '@/src/hooks/useUsernameAvailability';
+import FloatingInput from '../FloatingInput';
 import { styles } from './index.stylex';
 
 interface UsernameSignupInputProps {
@@ -34,9 +34,12 @@ const UsernameSignupInput = forwardRef<HTMLInputElement, UsernameSignupInputProp
 
       return (
          <div {...stylex.props(styles.wrapper)}>
-            <label {...stylex.props(styles.topLabel)}>Username</label>
+            <label htmlFor="username-signup" {...stylex.props(styles.topLabel)}>
+               Username
+            </label>
             <FloatingInput
                ref={ref}
+               id="username-signup"
                label="Username"
                value={value}
                onChange={e => onChange(e.target.value)}

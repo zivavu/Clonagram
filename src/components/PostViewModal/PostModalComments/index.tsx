@@ -266,25 +266,29 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                      )}
                   </button>
                </div>
-               <div {...stylex.props(styles.likedByText)}>
-                  {post.likes.length === 1
-                     ? `${post.likes.length} like`
-                     : `${post.likes.length} likes`}
-               </div>
+               {!post.hide_likes && (
+                  <div {...stylex.props(styles.likedByText)}>
+                     {post.likes.length === 1
+                        ? `${post.likes.length} like`
+                        : `${post.likes.length} likes`}
+                  </div>
+               )}
                <div {...stylex.props(styles.postTime)}>
                   {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
                </div>
-               <form onSubmit={handleCommentSubmit} {...stylex.props(styles.commentInputRow)}>
-                  <EmojiInput
-                     ref={commentInputRef}
-                     placeholder="Add a comment..."
-                     onSubmit={handleCommentSubmit}
-                     maxLength={1000}
-                  />
-                  <button type="submit" {...stylex.props(styles.postButton)}>
-                     Post
-                  </button>
-               </form>
+               {!post.comments_off && (
+                  <form onSubmit={handleCommentSubmit} {...stylex.props(styles.commentInputRow)}>
+                     <EmojiInput
+                        ref={commentInputRef}
+                        placeholder="Add a comment..."
+                        onSubmit={handleCommentSubmit}
+                        maxLength={1000}
+                     />
+                     <button type="submit" {...stylex.props(styles.postButton)}>
+                        Post
+                     </button>
+                  </form>
+               )}
             </div>
          </div>
       </>

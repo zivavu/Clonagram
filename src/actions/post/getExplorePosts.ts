@@ -4,7 +4,7 @@ import { createServerClient } from '../../lib/supabase/server';
 import type { PostsWithMedia } from '../../queries/posts';
 
 const EXPLORE_SELECT = `
-    id, caption, created_at, aspect_ratio, hide_likes, location_name,
+    id, caption, created_at, aspect_ratio, hide_likes, comments_off, location_name,
     likes(user_id),
     saves(user_id),
     comments(count),

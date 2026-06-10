@@ -1,6 +1,6 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
-import { type InputHTMLAttributes, forwardRef, useState } from 'react';
+import { forwardRef, type InputHTMLAttributes, useState } from 'react';
 import { styles } from './index.stylex';
 
 export interface FloatingInputProps

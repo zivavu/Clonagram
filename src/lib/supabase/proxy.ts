@@ -28,7 +28,13 @@ export async function updateSession(request: NextRequest) {
       data: { user },
    } = await supabase.auth.getUser();
 
-   const authPages = ['/login', '/emailsignup', '/auth/callback', '/auth/reset-callback'];
+   const authPages = [
+      '/login',
+      '/emailsignup',
+      '/auth/callback',
+      '/auth/reset-callback',
+      '/mux-webhook',
+   ];
 
    if (!user && !authPages.some(page => request.nextUrl.pathname.startsWith(page))) {
       const url = request.nextUrl.clone();

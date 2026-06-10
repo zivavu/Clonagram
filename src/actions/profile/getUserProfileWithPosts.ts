@@ -4,6 +4,8 @@ import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
 import { getFollowStatus } from '../../queries/followStatus';
 import { getAuthUser } from '../getAuthUser';
 
+type CountAggregate = [{ count: number }];
+
 export async function getUserProfileWithPosts(params: { username: string }) {
    const { username } = params;
    const { supabase } = await getAuthUser();
@@ -13,15 +15,15 @@ export async function getUserProfileWithPosts(params: { username: string }) {
       .from('profiles')
       .select(
          `id, username, full_name, bio, avatar_url, website, is_verified, is_private,
-         followers:follows!following_id(count),
-         following:follows!follower_id(count),
-         posts!user_id(
-            id, caption, created_at, aspect_ratio, hide_likes, type,
-            likes(user_id),
-            comments(count),
-            images:post_images(id, url, position, width, height),
-            videos:post_videos(id, mux_playback_id, duration, position, width, height)
-         )`,
+          followers:follows!following_id(count),
+          following:follows!follower_id(count),
+          posts!user_id(
+             id, caption, created_at, aspect_ratio, hide_likes, type,
+             likes(user_id),
+             comments(count),
+             images:post_images(id, url, position, width, height),
+             videos:post_videos(id, mux_playback_id, duration, position, width, height)
+          )`,
       )
       .eq('username', username)
       .order('created_at', { referencedTable: 'posts', ascending: false })
@@ -35,7 +37,13 @@ export async function getUserProfileWithPosts(params: { username: string }) {
          ? await getFollowStatus(supabase, authProfile.id, data.id)
          : 'none';
 
-   return { userProfile: data, posts: data.posts ?? [], followStatus };
+   const userProfile = {
+      ...data,
+      followers: data.followers as unknown as CountAggregate,
+      following: data.following as unknown as CountAggregate,
+   };
+
+   return { userProfile, posts: data.posts ?? [], followStatus };
 }
 
 export type ProfileWithPosts = Awaited<ReturnType<typeof getUserProfileWithPosts>>;

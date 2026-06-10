@@ -14,7 +14,10 @@ function verifyMuxSignature(rawBody: string, signatureHeader: string, secret: st
 export async function POST(request: Request) {
    const rawBody = await request.text();
    const signatureHeader = request.headers.get('mux-signature') ?? '';
-   const webhookSecret = process.env.MUX_WEBHOOK_SECRET ?? '';
+   const webhookSecret = process.env.MUX_WEBHOOK_SECRET;
+   if (!webhookSecret) {
+      return Response.json({ message: 'webhook secret not configured' }, { status: 500 });
+   }
 
    if (!verifyMuxSignature(rawBody, signatureHeader, webhookSecret)) {
       return Response.json({ message: 'invalid signature' }, { status: 401 });

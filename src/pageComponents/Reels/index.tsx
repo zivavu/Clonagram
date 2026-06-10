@@ -25,7 +25,7 @@ export default function Reels() {
       },
       initialPageParam: null as string | null,
       getNextPageParam: lastPage =>
-         lastPage.length > 0 ? lastPage[lastPage.length - 1].created_at : null,
+         lastPage.length === 5 ? lastPage[lastPage.length - 1].created_at : null,
    });
 
    const reels = data?.pages.flat() ?? [];

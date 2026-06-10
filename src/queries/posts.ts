@@ -2,7 +2,7 @@ import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/src/types/database';
 
 export const POST_WITH_MEDIA_SELECT = `
-   id, caption, created_at, aspect_ratio, hide_likes, location_name,
+   id, caption, created_at, aspect_ratio, hide_likes, comments_off, location_name,
    likes(user_id),
    saves(user_id),
    comments(count),

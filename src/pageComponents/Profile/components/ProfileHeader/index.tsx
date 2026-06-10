@@ -41,10 +41,8 @@ export default function ProfileHeader({
    followStatus,
    note,
 }: ProfileHeaderProps) {
-   const followersCount =
-      (userProfile.followers as unknown as [{ count: number }])?.[0]?.count ?? 0;
-   const followingCount =
-      (userProfile.following as unknown as [{ count: number }])?.[0]?.count ?? 0;
+   const followersCount = userProfile.followers?.[0]?.count ?? 0;
+   const followingCount = userProfile.following?.[0]?.count ?? 0;
 
    const openFollowList = useFollowListModal(state => state.open);
    const openNoteModal = useNewNoteModalStore(s => s.open);
