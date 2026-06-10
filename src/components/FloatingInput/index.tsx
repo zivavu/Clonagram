@@ -1,24 +1,36 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
-import { type InputHTMLAttributes, useState } from 'react';
+import { type InputHTMLAttributes, forwardRef, useState } from 'react';
 import { styles } from './index.stylex';
 
 export interface FloatingInputProps
    extends Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
    label: string;
+   endAdornment?: React.ReactNode;
+   borderState?: 'error' | 'success';
 }
 
-export default function FloatingInput({ label, onChange, ...props }: FloatingInputProps) {
+const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(function FloatingInput(
+   { label, onChange, endAdornment, borderState, ...props },
+   ref,
+) {
    const [isFocused, setIsFocused] = useState(false);
-   const [hasValue, setHasValue] = useState(false);
+   const [hasValue, setHasValue] = useState(!!props.value || !!props.defaultValue);
 
    const floated = isFocused || hasValue;
 
    return (
       <div {...stylex.props(styles.wrapper)}>
          <input
-            {...stylex.props(styles.input, isFocused && styles.inputFocused)}
+            {...stylex.props(
+               styles.input,
+               isFocused && styles.inputFocused,
+               !!endAdornment && styles.inputWithAdornment,
+               borderState === 'error' && styles.inputError,
+               borderState === 'success' && styles.inputSuccess,
+            )}
             {...props}
+            ref={ref}
             id={props.id}
             onFocus={e => {
                setIsFocused(true);
@@ -39,10 +51,14 @@ export default function FloatingInput({ label, onChange, ...props }: FloatingInp
                styles.label,
                floated && styles.labelFloated,
                isFocused && styles.labelFocused,
+               borderState === 'error' && styles.labelError,
             )}
          >
             {label}
          </label>
+         {endAdornment && <div {...stylex.props(styles.adornment)}>{endAdornment}</div>}
       </div>
    );
-}
+});
+
+export default FloatingInput;

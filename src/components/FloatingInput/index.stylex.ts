@@ -43,4 +43,25 @@ export const styles = stylex.create({
    labelFocused: {
       color: colors.accent,
    },
+   labelError: {
+      color: colors.danger,
+   },
+   inputError: {
+      borderColor: colors.danger,
+   },
+   inputSuccess: {
+      borderColor: colors.accent,
+   },
+   inputWithAdornment: {
+      paddingRight: '44px',
+   },
+   adornment: {
+      position: 'absolute',
+      right: '12px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      display: 'flex',
+      alignItems: 'center',
+      pointerEvents: 'none',
+   },
 });
