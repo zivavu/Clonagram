@@ -6,13 +6,13 @@ import { createServerClient } from './server';
 export const getAuthProfile = cache(async (supabase?: SupabaseClient<Database>) => {
    const client = supabase ?? (await createServerClient());
    const {
-      data: { session },
-   } = await client.auth.getSession();
-   if (!session?.user) return null;
+      data: { user },
+   } = await client.auth.getUser();
+   if (!user) return null;
    const { data: profile } = await client
       .from('profiles')
       .select('id, username, full_name, avatar_url, bio, website, gender')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single();
    return profile;
 });
