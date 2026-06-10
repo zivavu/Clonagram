@@ -9,6 +9,7 @@ export const styles = stylex.create({
    storiesRow: {
       display: 'flex',
       flexDirection: 'row',
+      alignItems: 'center',
       gap: '18px',
       overflowX: 'auto',
       paddingBottom: spacing.xs,
@@ -65,19 +66,6 @@ export const styles = stylex.create({
       cursor: 'pointer',
       flexShrink: 0,
    },
-   storyRing: {
-      padding: '3px',
-      borderRadius: radius.full,
-      backgroundImage: 'linear-gradient(45deg, #f09433, #bc1888)',
-   },
-   storyRingInner: {
-      padding: '3px',
-      borderRadius: radius.full,
-      backgroundColor: colors.bg,
-   },
-   storyAvatar: {
-      borderRadius: radius.full,
-   },
    storyUsername: {
       fontSize: '0.7rem',
       color: colors.textPrimary,
@@ -103,10 +91,6 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'center',
    },
-   addStoryAvatar: {
-      borderRadius: '50%',
-      objectFit: 'cover',
-   },
    addStoryPlusBadge: {
       position: 'absolute',
       bottom: 16,
@@ -124,9 +108,5 @@ export const styles = stylex.create({
       borderWidth: '2px',
       borderStyle: 'solid',
       borderColor: colors.bgBubble,
-   },
-   storyRingViewed: {
-      backgroundImage: 'none',
-      backgroundColor: colors.buttonHover,
    },
 });

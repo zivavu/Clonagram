@@ -14,7 +14,7 @@ import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import UsernameSignupInput from '@/src/components/UsernameSignupInput';
 import ZetaLogo from '@/src/components/ZetaLogo';
-import { type UsernameStatus } from '@/src/hooks/useUsernameAvailability';
+import type { UsernameStatus } from '@/src/hooks/useUsernameAvailability';
 import { supabase } from '@/src/lib/supabase/client';
 import { usernameSchema } from '@/src/lib/validation/username';
 import { styles } from './index.stylex';

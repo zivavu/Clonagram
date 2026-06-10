@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import Image, { type ImageProps } from 'next/image';
+import type React from 'react';
 import Link from 'next/link';
 import { MdPerson } from 'react-icons/md';
 import ProfileHoverCard from '@/src/components/ProfileHoverCard';
@@ -16,8 +17,10 @@ interface UserAvatarProps extends Omit<ImageProps, 'src'> {
    username: string;
    useHoverCard?: boolean;
    showStoryRing?: boolean;
+   ringState?: { hasStories: boolean; allStoriesViewed: boolean };
    disableLink?: boolean;
    href?: string;
+   ringWidth?: number;
 }
 
 export default function UserAvatar({
@@ -27,15 +30,20 @@ export default function UserAvatar({
    username,
    useHoverCard = true,
    showStoryRing = true,
+   ringState,
    disableLink = false,
    href,
+   ringWidth = 2,
    ...props
 }: UserAvatarProps) {
-   const { data: storyStatus } = useStoryStatus(showStoryRing ? userId : undefined);
+   const { data: hookStoryStatus } = useStoryStatus(
+      showStoryRing && !ringState ? userId : undefined,
+   );
+   const effectiveRingState = ringState ?? hookStoryStatus;
 
    const resolvedHref = disableLink
       ? undefined
-      : (href ?? (storyStatus?.hasStories && username ? `/stories/${username}` : undefined));
+      : (href ?? (effectiveRingState?.hasStories && username ? `/stories/${username}` : undefined));
 
    let content = src ? (
       <Image
@@ -56,9 +64,17 @@ export default function UserAvatar({
       content = <ProfileHoverCard userId={userId}>{content}</ProfileHoverCard>;
    }
 
-   if (storyStatus?.hasStories) {
+   if (effectiveRingState?.hasStories) {
       content = (
-         <div {...stylex.props(styles.ring, storyStatus.allStoriesViewed && styles.ringViewed)}>
+         <div
+            {...stylex.props(styles.ring, effectiveRingState.allStoriesViewed && styles.ringViewed)}
+            style={
+               {
+                  '--ring-width': `${ringWidth}px`,
+                  '--ring-inner-width': `${Math.max(1, ringWidth - 1)}px`,
+               } as React.CSSProperties
+            }
+         >
             <div {...stylex.props(styles.ringInner)}>{content}</div>
          </div>
       );

@@ -25,8 +25,8 @@ export const styles = stylex.create({
       flexShrink: 0,
       borderRadius: radius.full,
       backgroundImage: 'linear-gradient(45deg, #f09433, #bc1888)',
-      padding: 2,
-      margin: -2,
+      padding: 'var(--ring-width, 2px)',
+      margin: 'calc(-1 * var(--ring-width, 2px))',
    },
    ringViewed: {
       backgroundImage: 'none',
@@ -36,7 +36,7 @@ export const styles = stylex.create({
       display: 'inline-flex',
       borderRadius: radius.full,
       backgroundColor: colors.bg,
-      padding: 1,
+      padding: 'var(--ring-inner-width, 1px)',
    },
    link: {
       display: 'inline-flex',

@@ -1,13 +1,12 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import Image from 'next/image';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { BsPlus } from 'react-icons/bs';
 import { MdExpandCircleDown } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
+import UserAvatar from '@/src/components/UserAvatar';
 import { useCreateStoryModalStore } from '@/src/store/createModalStore';
 import type { Profile } from '../../../../../../lib/supabase/getAuthProfile';
 import { colors } from '../../../../../../styles/tokens.stylex';
@@ -19,23 +18,6 @@ const SCROLL_PAGES = 4;
 
 function easeInOut(t: number): number {
    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-}
-
-interface OptionalLinkProps {
-   href?: string;
-   children: ReactNode;
-   styleProps: stylex.StyleXStyles;
-}
-
-function OptionalLink({ href, children, styleProps }: OptionalLinkProps) {
-   if (href) {
-      return (
-         <Link href={href} {...stylex.props(styleProps)}>
-            {children}
-         </Link>
-      );
-   }
-   return <div {...stylex.props(styleProps)}>{children}</div>;
 }
 
 interface StoriesRowProps {
@@ -133,38 +115,22 @@ export default function StoriesRow({
          <div {...stylex.props(styles.storiesRow)} ref={storiesRowRef} onScroll={handleScroll}>
             {!isAnonymous && (
                <div {...stylex.props(styles.addStoryCard)}>
-                  <OptionalLink
-                     href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}
-                     styleProps={styles.addStoryRingWrapper}
-                  >
-                     {currentUser?.avatar_url ? (
-                        <div
-                           {...stylex.props(
-                              styles.storyRing,
-                              allOwnStoriesViewed && styles.storyRingViewed,
-                           )}
-                        >
-                           <div {...stylex.props(styles.storyRingInner)}>
-                              <Image
-                                 src={currentUser?.avatar_url}
-                                 alt="Your story"
-                                 width={74}
-                                 height={74}
-                                 {...stylex.props(styles.addStoryAvatar)}
-                              />
-                           </div>
-                        </div>
-                     ) : (
-                        <div
-                           style={{
-                              width: 74,
-                              height: 74,
-                              borderRadius: '50%',
-                              background: '#888',
-                           }}
-                        />
-                     )}
-                  </OptionalLink>
+                  <div {...stylex.props(styles.addStoryRingWrapper)}>
+                     <UserAvatar
+                        src={currentUser?.avatar_url ?? null}
+                        alt="Your story"
+                        username={currentUser?.username ?? ''}
+                        size={74}
+                        ringState={{
+                           hasStories: !!currentUserStory,
+                           allStoriesViewed: allOwnStoriesViewed,
+                        }}
+                        ringWidth={3}
+                        href={currentUserStory ? `/stories/${currentUser?.username}` : undefined}
+                        disableLink={!currentUserStory}
+                        useHoverCard={false}
+                     />
+                  </div>
                   <button
                      type="button"
                      {...stylex.props(styles.addStoryPlusBadge)}
@@ -193,19 +159,16 @@ export default function StoriesRow({
                      key={entry.username}
                   >
                      <div {...stylex.props(styles.storyItem)}>
-                        <div
-                           {...stylex.props(styles.storyRing, allViewed && styles.storyRingViewed)}
-                        >
-                           <div {...stylex.props(styles.storyRingInner)}>
-                              <Image
-                                 {...stylex.props(styles.storyAvatar)}
-                                 src={entry.avatarUrl}
-                                 alt={entry.username}
-                                 width={74}
-                                 height={74}
-                              />
-                           </div>
-                        </div>
+                        <UserAvatar
+                           src={entry.avatarUrl || null}
+                           alt={entry.username}
+                           username={entry.username}
+                           size={74}
+                           ringState={{ hasStories: true, allStoriesViewed: allViewed }}
+                           ringWidth={3}
+                           disableLink={true}
+                           useHoverCard={false}
+                        />
                         <span {...stylex.props(styles.storyUsername)}>{entry.username}</span>
                      </div>
                   </Link>
