@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { createServerClient } from '../../lib/supabase/server';
+import { activeStoriesQuery } from '../../queries/stories';
 
 export async function getActiveStories() {
    const supabase = await createServerClient();
@@ -10,17 +11,7 @@ export async function getActiveStories() {
    } = await supabase.auth.getUser();
    const currentUserId = user?.id ?? null;
 
-   const { data, error } = await supabase
-      .from('stories')
-      .select(
-         `id, created_at, user_id,
-          profiles!stories_user_id_fkey(username, avatar_url),
-          story_images(url, blur_data_url),
-          story_videos(mux_playback_id),
-          story_views(viewer_id)`,
-      )
-      .gt('expires_at', new Date().toISOString())
-      .order('created_at', { ascending: true });
+   const { data, error } = await activeStoriesQuery(supabase);
 
    if (error) throw new Error(`Failed to fetch stories: ${error.message}`);
 
@@ -44,12 +35,12 @@ export async function getActiveStories() {
    const viewedStoryIds: string[] = [];
 
    for (const row of data ?? []) {
-      const profile = row.profiles as { username: string; avatar_url: string | null } | null;
+      const profile = row.profiles;
       if (!profile) continue;
 
-      const images = row.story_images as Array<{ url: string; blur_data_url: string | null }>;
-      const videos = row.story_videos as Array<{ mux_playback_id: string | null }>;
-      const views = row.story_views as Array<{ viewer_id: string }>;
+      const images = row.story_images;
+      const videos = row.story_videos;
+      const views = row.story_views;
 
       const isImage = images.length > 0;
       const mediaUrl = isImage ? images[0].url : (videos[0]?.mux_playback_id ?? '');

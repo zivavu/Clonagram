@@ -97,8 +97,6 @@ export function createShader(gl: WebGL2RenderingContext, type: number, source: s
    gl.shaderSource(shader, source);
    gl.compileShader(shader);
    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      // biome-ignore lint/suspicious/noConsole: legitimate shader compile error logging
-      console.error('Shader compile error:', gl.getShaderInfoLog(shader));
       gl.deleteShader(shader);
       return null;
    }
@@ -122,8 +120,6 @@ export function createProgram(
    gl.linkProgram(program);
 
    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      // biome-ignore lint/suspicious/noConsole: legitimate program link error logging
-      console.error('Program link error:', gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
       return null;
    }

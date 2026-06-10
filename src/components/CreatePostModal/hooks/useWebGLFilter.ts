@@ -73,8 +73,6 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
 
       const gl = canvas.getContext('webgl2', { premultipliedAlpha: false });
       if (!gl) {
-         // biome-ignore lint/suspicious/noConsole: legitimate error logging for unsupported WebGL2
-         console.error('WebGL2 not supported');
          return;
       }
 
@@ -128,10 +126,7 @@ export function useWebGLFilter(params: WebGLFilterParams): WebGLFilterResult {
          textureRef.current = loadTexture(gl, img);
          render();
       };
-      img.onerror = () => {
-         // biome-ignore lint/suspicious/noConsole: legitimate error logging for image load failure
-         console.error('Failed to load image for WebGL filter:', params.src);
-      };
+      img.onerror = () => {};
       img.src = params.src;
    }, [params.src, render]);
 

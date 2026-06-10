@@ -31,7 +31,7 @@ export async function getExplorePosts(
    if (!user) {
       const { data, error } = await query.limit(PAGE_SIZE);
       if (error) throw new Error(`Failed to fetch explore feed: ${error.message}`);
-      const posts = (data ?? []) as PostsWithMedia;
+      const posts = data ?? [];
       const nextCursor =
          posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
       return { posts, nextCursor };
@@ -56,7 +56,7 @@ export async function getExplorePosts(
 
    const { data, error } = await query.limit(PAGE_SIZE);
    if (error) throw new Error(`Failed to fetch explore feed: ${error.message}`);
-   const posts = (data ?? []) as PostsWithMedia;
+   const posts = data ?? [];
    const nextCursor =
       posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
    return { posts, nextCursor };

@@ -29,7 +29,7 @@ export async function getHomeFeedPosts(
       if (cursor) query = query.lt('created_at', cursor);
       const { data, error } = await query;
       if (error) throw new Error(`Failed to fetch home feed: ${error.message}`);
-      const posts = (data ?? []) as PostsWithMedia;
+      const posts = data ?? [];
       const nextCursor =
          posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
       return { posts, nextCursor };
@@ -63,7 +63,7 @@ export async function getHomeFeedPosts(
    const { data, error: postsError } = await query;
 
    if (postsError) throw new Error(`Failed to fetch following feed: ${postsError.message}`);
-   const posts = (data ?? []) as PostsWithMedia;
+   const posts = data ?? [];
    const nextCursor =
       posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
    return { posts, nextCursor };
