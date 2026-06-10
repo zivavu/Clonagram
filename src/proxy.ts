@@ -6,11 +6,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-   matcher: [
-      /*
-       * Match all request paths except static files and Next.js internals.
-       * The session must be refreshed on every navigation for SSR to work correctly.
-       */
-      '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-   ],
+   matcher: ['/((?!_next/static|_next/image|favicon.ico|.*.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
 };
