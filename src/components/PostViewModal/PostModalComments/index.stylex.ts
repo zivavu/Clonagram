@@ -88,6 +88,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       gap: '4px',
+      flex: 1,
       minWidth: 0,
    },
    captionTextRow: {

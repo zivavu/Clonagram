@@ -89,7 +89,11 @@ export default function ReelActionRail({
          <div {...stylex.props(styles.group)}>
             <button
                type="button"
-               onClick={onToggleComments}
+               onClick={e => {
+                  e.stopPropagation();
+                  onToggleComments();
+               }}
+               onMouseDown={e => e.stopPropagation()}
                aria-label="Comments"
                {...stylex.props(styles.button)}
             >
