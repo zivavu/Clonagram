@@ -94,9 +94,10 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
          onClick: togglePostLike,
       },
       {
-         label: 'Comment',
+         label: post.comments_off ? 'Comments disabled' : 'Comment',
          icon: <FiMessageCircle size={24} />,
          onClick: () => {
+            if (post.comments_off) return;
             commentInputRef.current?.focus();
          },
       },
@@ -276,7 +277,11 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                <div {...stylex.props(styles.postTime)}>
                   {post.created_at ? formatRelativeTimeLongUnit(post.created_at) : ''}
                </div>
-               {!post.comments_off && (
+               {post.comments_off ? (
+                  <div {...stylex.props(styles.commentsDisabledText)}>
+                     Comments are disabled for this post
+                  </div>
+               ) : (
                   <form onSubmit={handleCommentSubmit} {...stylex.props(styles.commentInputRow)}>
                      <EmojiInput
                         ref={commentInputRef}

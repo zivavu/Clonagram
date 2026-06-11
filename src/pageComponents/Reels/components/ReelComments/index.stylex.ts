@@ -73,4 +73,13 @@ export const styles = stylex.create({
       border: 'none',
       flexShrink: 0,
    },
+   commentsDisabledText: {
+      padding: spacing.md,
+      borderTopWidth: '1px',
+      borderTopStyle: 'solid',
+      borderTopColor: colors.separator,
+      fontSize: '14px',
+      color: colors.textSecondary,
+      textAlign: 'center',
+   },
 });

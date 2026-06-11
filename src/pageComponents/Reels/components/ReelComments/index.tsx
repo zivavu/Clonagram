@@ -78,21 +78,25 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
                     />
                  ))}
          </div>
-         <form onSubmit={handleSubmit} {...stylex.props(styles.composer)}>
-            <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
-               <BsEmojiSmile size={22} />
-            </button>
-            <input
-               type="text"
-               placeholder="Add a comment..."
-               value={inputValue}
-               onChange={e => setInputValue(e.target.value)}
-               {...stylex.props(styles.input, sharedStyles.placeholder)}
-            />
-            <button type="submit" {...stylex.props(styles.postButton)}>
-               Post
-            </button>
-         </form>
+         {reel.comments_off ? (
+            <div {...stylex.props(styles.commentsDisabledText)}>Comments are disabled</div>
+         ) : (
+            <form onSubmit={handleSubmit} {...stylex.props(styles.composer)}>
+               <button type="button" aria-label="Emoji" {...stylex.props(styles.emojiButton)}>
+                  <BsEmojiSmile size={22} />
+               </button>
+               <input
+                  type="text"
+                  placeholder="Add a comment..."
+                  value={inputValue}
+                  onChange={e => setInputValue(e.target.value)}
+                  {...stylex.props(styles.input, sharedStyles.placeholder)}
+               />
+               <button type="submit" {...stylex.props(styles.postButton)}>
+                  Post
+               </button>
+            </form>
+         )}
       </div>
    );
 }

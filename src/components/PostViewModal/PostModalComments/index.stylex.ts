@@ -78,6 +78,7 @@ export const styles = stylex.create({
    },
    captionRow: {
       display: 'flex',
+      alignItems: 'flex-start',
       gap: spacing.sm,
       paddingTop: spacing.md,
       paddingBottom: spacing.md,
@@ -87,11 +88,13 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       gap: '4px',
+      minWidth: 0,
    },
    captionTextRow: {
       fontSize: '14px',
       lineHeight: '18px',
       color: colors.textPrimary,
+      wordBreak: 'break-word',
    },
    captionUsername: {
       fontWeight: 600,
@@ -154,6 +157,15 @@ export const styles = stylex.create({
       borderTopStyle: 'solid',
       borderTopColor: colors.elevatedSeparator,
       borderTopWidth: '1px',
+   },
+   commentsDisabledText: {
+      padding: `${spacing.md} ${spacing.md} 0`,
+      borderTopStyle: 'solid',
+      borderTopColor: colors.elevatedSeparator,
+      borderTopWidth: '1px',
+      fontSize: '14px',
+      color: colors.textSecondary,
+      textAlign: 'center',
    },
    emojiButton: {
       color: colors.textPrimary,
