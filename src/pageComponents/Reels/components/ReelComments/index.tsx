@@ -18,11 +18,10 @@ import { styles } from './index.stylex';
 interface ReelCommentsProps {
    reel: Reel;
    onClose: () => void;
-   ignoreRef?: React.RefObject<HTMLElement | null>;
 }
 
-export default function ReelComments({ reel, onClose, ignoreRef }: ReelCommentsProps) {
-   const panelRef = useClickOutside<HTMLDivElement>(onClose, true, ignoreRef);
+export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
+   const panelRef = useClickOutside<HTMLDivElement>(onClose);
    const commentsKey = queryKeys.comments(reel.id);
    const [inputValue, setInputValue] = useState('');
    const [replyingTo, setReplyingTo] = useState<{ commentId: string; username: string } | null>(
