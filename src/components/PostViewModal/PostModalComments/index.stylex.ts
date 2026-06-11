@@ -159,15 +159,6 @@ export const styles = stylex.create({
       color: colors.textPrimary,
       flexShrink: 0,
    },
-   commentInput: {
-      flex: 1,
-      backgroundColor: 'transparent',
-      fontSize: '14px',
-      color: colors.textPrimary,
-      '::placeholder': {
-         color: colors.textSecondary,
-      },
-   },
    postButton: {
       color: colors.accentText,
       fontWeight: 600,
