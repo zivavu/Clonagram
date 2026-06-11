@@ -42,15 +42,18 @@ export async function getHomeFeedPosts(
       return { posts: [], nextCursor: null };
    }
 
-    const rpc = (supabase.rpc as unknown) as <T>(
-       name: string,
-       args: Record<string, unknown>,
-    ) => Promise<{ data: T | null; error: { message: string } | null }>;
-    const { data: postIds, error: rpcError } = await rpc<{ id: string; created_at: string }[]>('get_following_posts', {
-      follower_id: user.id,
-      before_cursor: cursor,
-      page_size: PAGE_SIZE,
-   });
+   const rpc = supabase.rpc as unknown as <T>(
+      name: string,
+      args: Record<string, unknown>,
+   ) => Promise<{ data: T | null; error: { message: string } | null }>;
+   const { data: postIds, error: rpcError } = await rpc<{ id: string; created_at: string }[]>(
+      'get_following_posts',
+      {
+         follower_id: user.id,
+         before_cursor: cursor,
+         page_size: PAGE_SIZE,
+      },
+   );
 
    if (rpcError) throw new Error(`Failed to fetch following feed: ${rpcError.message}`);
    const ids = postIds as { id: string; created_at: string }[] | null;

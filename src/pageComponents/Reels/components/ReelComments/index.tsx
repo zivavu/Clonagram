@@ -2,10 +2,11 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
 import CommentItem, { CommentSkeleton } from '@/src/components/CommentItem';
+import { useClickOutside } from '@/src/hooks/useClickOutside';
 import { useSubmitComment } from '@/src/hooks/useSubmitComment';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
@@ -19,7 +20,7 @@ interface ReelCommentsProps {
 }
 
 export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
-   const panelRef = useRef<HTMLDivElement>(null);
+   const panelRef = useClickOutside<HTMLDivElement>(onClose);
    const commentsKey = queryKeys.comments(reel.id);
    const [inputValue, setInputValue] = useState('');
    const [replyingTo, setReplyingTo] = useState<{ commentId: string; username: string } | null>(
@@ -27,16 +28,6 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
    );
 
    const { mutate: submitComment } = useSubmitComment(reel.id, commentsKey);
-
-   useEffect(() => {
-      function handleMouseDown(e: MouseEvent) {
-         if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-            onClose();
-         }
-      }
-      document.addEventListener('mousedown', handleMouseDown);
-      return () => document.removeEventListener('mousedown', handleMouseDown);
-   }, [onClose]);
 
    const { data: comments = [], isLoading: isLoadingComments } = useQuery({
       queryKey: commentsKey,

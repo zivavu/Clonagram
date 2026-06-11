@@ -2,8 +2,9 @@
 
 import * as stylex from '@stylexjs/stylex';
 import EmojiPicker, { type EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { FaRegFaceSmile } from 'react-icons/fa6';
+import { useClickOutside } from '@/src/hooks/useClickOutside';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { styles } from './index.stylex';
 
@@ -53,7 +54,10 @@ const EmojiInput = forwardRef<EmojiInputRef, EmojiInputProps>(function EmojiInpu
    const [pickerOpen, setPickerOpen] = useState(false);
    const [isEmpty, setIsEmpty] = useState(true);
    const editorRef = useRef<HTMLDivElement>(null);
-   const pickerContainerRef = useRef<HTMLDivElement>(null);
+   const pickerContainerRef = useClickOutside<HTMLDivElement>(
+      () => setPickerOpen(false),
+      pickerOpen,
+   );
 
    useImperativeHandle(ref, () => ({
       getText: () => {
@@ -76,17 +80,6 @@ const EmojiInput = forwardRef<EmojiInputRef, EmojiInputProps>(function EmojiInpu
          editorRef.current?.focus();
       },
    }));
-
-   useEffect(() => {
-      if (!pickerOpen) return;
-      function handleClickOutside(e: MouseEvent) {
-         if (pickerContainerRef.current && !pickerContainerRef.current.contains(e.target as Node)) {
-            setPickerOpen(false);
-         }
-      }
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-   }, [pickerOpen]);
 
    function handleEmojiClick(emojiData: EmojiClickData) {
       const div = editorRef.current;

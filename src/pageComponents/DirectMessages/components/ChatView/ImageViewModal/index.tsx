@@ -1,8 +1,8 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useEffect } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
+import { useEscapeKey } from '@/src/hooks/useEscapeKey';
 import { styles } from './index.stylex';
 
 interface ImageViewModalProps {
@@ -11,13 +11,7 @@ interface ImageViewModalProps {
 }
 
 export default function ImageViewModal({ src, onClose }: ImageViewModalProps) {
-   useEffect(() => {
-      function onKey(e: KeyboardEvent) {
-         if (e.key === 'Escape') onClose();
-      }
-      document.addEventListener('keydown', onKey);
-      return () => document.removeEventListener('keydown', onKey);
-   }, [onClose]);
+   useEscapeKey(onClose);
 
    return (
       // biome-ignore lint/a11y/useKeyWithClickEvents: overlay click closes modal, Escape handled via useEffect

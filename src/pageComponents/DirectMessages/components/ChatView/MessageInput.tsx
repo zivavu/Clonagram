@@ -3,11 +3,12 @@
 import * as stylex from '@stylexjs/stylex';
 import EmojiPicker, { type EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { IoMicOutline } from 'react-icons/io5';
 import { TbPhoto } from 'react-icons/tb';
 import { toast } from '@/src/components/AppToast';
+import { useClickOutside } from '@/src/hooks/useClickOutside';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { radius } from '../../../../styles/tokens.stylex';
 import { styles } from '../../index.stylex';
@@ -62,21 +63,13 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
    const [isEmpty, setIsEmpty] = useState(true);
    const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
    const editorRef = useRef<HTMLDivElement>(null);
-   const pickerContainerRef = useRef<HTMLDivElement>(null);
+   const pickerContainerRef = useClickOutside<HTMLDivElement>(
+      () => setPickerOpen(false),
+      pickerOpen,
+   );
    const fileInputRef = useRef<HTMLInputElement>(null);
 
    useImperativeHandle(ref, () => ({ addFiles: addImageFiles }));
-
-   useEffect(() => {
-      if (!pickerOpen) return;
-      function handleClickOutside(e: MouseEvent) {
-         if (pickerContainerRef.current && !pickerContainerRef.current.contains(e.target as Node)) {
-            setPickerOpen(false);
-         }
-      }
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-   }, [pickerOpen]);
 
    function addImageFiles(files: File[]) {
       const imageFiles = files.filter(f => f.type.startsWith('image/'));
