@@ -3,10 +3,14 @@ import 'server-only';
 
 import { randomUUID } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
+import { getStoryThumbnail } from '@/src/lib/getStoryThumbnail';
 import { ReactToStorySchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function reactToStory(storyId: string, emoji: string) {
+export async function toggleStoryReaction(
+   storyId: string,
+   emoji: string,
+): Promise<{ liked: boolean }> {
    const { storyId: validatedStoryId, emoji: validatedEmoji } = validate(ReactToStorySchema, {
       storyId,
       emoji,
@@ -30,7 +34,28 @@ export async function reactToStory(storyId: string, emoji: string) {
       .eq('user_id', user.id)
       .maybeSingle();
 
-   if (existingReaction) return;
+   if (existingReaction) {
+      await supabase
+         .from('story_reactions')
+         .delete()
+         .eq('story_id', validatedStoryId)
+         .eq('user_id', user.id);
+
+      const { data: likeMessage } = await supabase
+         .from('messages')
+         .select('id')
+         .eq('story_id', validatedStoryId)
+         .eq('sender_id', user.id)
+         .maybeSingle();
+
+      if (likeMessage) {
+         await supabase.from('messages').update({ is_deleted: true }).eq('id', likeMessage.id);
+      }
+
+      revalidatePath('/');
+      revalidatePath('/stories/[username]', 'page');
+      return { liked: false };
+   }
 
    await supabase.from('story_reactions').insert({
       story_id: validatedStoryId,
@@ -38,15 +63,7 @@ export async function reactToStory(storyId: string, emoji: string) {
       emoji: validatedEmoji,
    });
 
-   const { data: storyMedia } = await supabase
-      .from('story_images')
-      .select('url')
-      .eq('story_id', validatedStoryId)
-      .order('position', { ascending: true })
-      .limit(1)
-      .maybeSingle();
-
-   const storyThumbnailUrl = storyMedia?.url ?? null;
+   const storyThumbnailUrl = await getStoryThumbnail(supabase, validatedStoryId);
 
    const { data: existingId } = await supabase.rpc('find_direct_conversation', {
       p_user_a: user.id,
@@ -102,4 +119,5 @@ export async function reactToStory(storyId: string, emoji: string) {
 
    revalidatePath('/');
    revalidatePath('/stories/[username]', 'page');
+   return { liked: true };
 }

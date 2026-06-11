@@ -1,0 +1,31 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/src/types/database';
+
+export async function getStoryThumbnail(
+   supabase: SupabaseClient<Database>,
+   storyId: string,
+): Promise<string | null> {
+   const { data: storyImage } = await supabase
+      .from('story_images')
+      .select('url')
+      .eq('story_id', storyId)
+      .order('position', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+   if (storyImage?.url) return storyImage.url;
+
+   const { data: storyVideo } = await supabase
+      .from('story_videos')
+      .select('mux_playback_id')
+      .eq('story_id', storyId)
+      .order('position', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+   if (storyVideo?.mux_playback_id) {
+      return `https://image.mux.com/${storyVideo.mux_playback_id}/thumbnail.jpg`;
+   }
+
+   return null;
+}

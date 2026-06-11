@@ -3,11 +3,12 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import type React from 'react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { LuSend } from 'react-icons/lu';
 import { MdClose, MdFavorite, MdFavoriteBorder, MdPause, MdPlayArrow } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
-import { reactToStory } from '@/src/actions/story/reactToStory';
+import { replyToStory } from '@/src/actions/story/replyToStory';
+import { toggleStoryReaction } from '@/src/actions/story/toggleStoryReaction';
 import VolumeControl from '@/src/components/VolumeControl';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
@@ -45,22 +46,35 @@ export default function ActiveStoryOverlay({
    reactedStoryIds,
 }: ActiveStoryOverlayProps) {
    const currentStoryId = story.stories[currentStoryMediaIndex]?.userId ?? '';
-   const alreadyLiked = reactedStoryIds.includes(currentStoryId);
-   const hasLiked = useRef(alreadyLiked);
-   const [liked, setLiked] = useState(alreadyLiked);
+   const [liked, setLiked] = useState(reactedStoryIds.includes(currentStoryId));
+   const [replyText, setReplyText] = useState('');
+
+   const onSendReply = async () => {
+      const storyId = story.stories[currentStoryMediaIndex]?.userId;
+      if (!storyId || !replyText.trim()) return;
+      const text = replyText;
+      setReplyText('');
+      try {
+         await replyToStory(storyId, text);
+      } catch {
+         setReplyText(text);
+      }
+   };
 
    const onPictureAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
       if (e.target !== e.currentTarget) return;
       onPictureSegmentComplete();
    };
 
-   const onLike = () => {
-      if (hasLiked.current) return;
-      hasLiked.current = true;
-      setLiked(true);
-      const currentStoryId = story.stories[currentStoryMediaIndex]?.userId;
-      if (currentStoryId) {
-         reactToStory(currentStoryId, '\u2764\uFE0F');
+   const onLike = async () => {
+      const storyId = story.stories[currentStoryMediaIndex]?.userId;
+      if (!storyId) return;
+      const prev = liked;
+      setLiked(!prev);
+      try {
+         await toggleStoryReaction(storyId, '\u2764\uFE0F');
+      } catch {
+         setLiked(prev);
       }
    };
 
@@ -167,13 +181,18 @@ export default function ActiveStoryOverlay({
             <div {...stylex.props(styles.activeStoryBottomBar)}>
                <input
                   type="text"
+                  value={replyText}
+                  onChange={e => setReplyText(e.target.value)}
+                  onKeyDown={e => {
+                     if (e.key === 'Enter') onSendReply();
+                  }}
                   placeholder={`Reply to ${story.username}...`}
                   {...stylex.props(styles.activeStoryReplyToInput, sharedStyles.placeholderPrimary)}
                />
                <button type="button" onClick={onLike}>
                   {liked ? <MdFavorite size={26} color="red" /> : <MdFavoriteBorder size={26} />}
                </button>
-               <button type="button">
+               <button type="button" onClick={onSendReply}>
                   <LuSend size={24} />
                </button>
             </div>
