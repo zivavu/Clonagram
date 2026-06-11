@@ -134,7 +134,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   ) : (
                      <MdFavoriteBorder size={26} color={colors.textPrimary} />
                   )}
-                  {(post.like_count ?? 0) > 0 && <span>{post.like_count}</span>}
+                  {!post.hide_likes && (post.like_count ?? 0) > 0 && <span>{post.like_count}</span>}
                </button>
             </div>
             <div {...stylex.props(styles.iconBarItem)}>

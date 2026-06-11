@@ -81,7 +81,9 @@ export default function ReelActionRail({
             >
                {isLiked ? <MdFavorite size={26} /> : <MdFavoriteBorder size={26} />}
             </button>
-            <span {...stylex.props(styles.count)}>{formatCount(likeCount)}</span>
+            {!reel.hide_likes && (
+               <span {...stylex.props(styles.count)}>{formatCount(likeCount)}</span>
+            )}
          </div>
 
          <div {...stylex.props(styles.group)}>

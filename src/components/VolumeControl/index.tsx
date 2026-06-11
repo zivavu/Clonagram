@@ -13,19 +13,8 @@ interface VolumeControlProps {
 }
 
 export default function VolumeControl({ side = 'bottom', style }: VolumeControlProps) {
-   const { volume, setVolume } = usePlayerStore();
-   const [previousVolume, setPreviousVolume] = useState(1);
+   const { volume, setVolume, mute, unmute } = usePlayerStore();
    const [open, setOpen] = useState(false);
-
-   const handleToggleMute = (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      if (volume === 0) {
-         setVolume(previousVolume || 1);
-      } else {
-         setPreviousVolume(volume);
-         setVolume(0);
-      }
-   };
 
    return (
       <div
@@ -60,7 +49,10 @@ export default function VolumeControl({ side = 'bottom', style }: VolumeControlP
          </div>
          <button
             type="button"
-            onClick={handleToggleMute}
+            onClick={e => {
+               e.stopPropagation();
+               volume === 0 ? unmute() : mute();
+            }}
             {...stylex.props(styles.button, open && styles.buttonOpen)}
          >
             {volume === 0 ? (
