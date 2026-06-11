@@ -18,6 +18,7 @@ export default async function Profile({ params }: ProfilePageProps) {
          followStatus={profileData.followStatus}
          isOwnProfile={profileData.isOwnProfile}
          note={profileData.note}
+         ringState={profileData.ringState}
       />
    );
 }

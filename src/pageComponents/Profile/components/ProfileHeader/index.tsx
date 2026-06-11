@@ -32,6 +32,7 @@ interface ProfileHeaderProps {
    isOwnProfile: boolean;
    followStatus: FollowState;
    note: string | null;
+   ringState: { hasStories: boolean; allStoriesViewed: boolean };
 }
 
 export default function ProfileHeader({
@@ -40,6 +41,7 @@ export default function ProfileHeader({
    isOwnProfile,
    followStatus,
    note,
+   ringState,
 }: ProfileHeaderProps) {
    const followersCount = userProfile.followers?.[0]?.count ?? 0;
    const followingCount = userProfile.following?.[0]?.count ?? 0;
@@ -65,6 +67,8 @@ export default function ProfileHeader({
                   username={userProfile.username}
                   userId={userProfile.id}
                   useHoverCard={false}
+                  ringWidth={4}
+                  ringState={ringState}
                />
             </div>
             <div {...stylex.props(styles.infoSection)}>

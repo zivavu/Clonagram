@@ -13,6 +13,7 @@ interface ProfilePageProps extends ProfileWithPosts {
    initialPost?: PostWithMedia | string;
    note?: string | null;
    savedPosts?: PostWithMedia[];
+   ringState: { hasStories: boolean; allStoriesViewed: boolean };
 }
 
 export default function ProfilePage({
@@ -23,6 +24,7 @@ export default function ProfilePage({
    initialPost,
    note,
    savedPosts,
+   ringState,
 }: ProfilePageProps) {
    return (
       <div {...stylex.props(styles.root)}>
@@ -35,6 +37,7 @@ export default function ProfilePage({
                isOwnProfile={isOwnProfile}
                followStatus={followStatus}
                note={note ?? null}
+               ringState={ringState}
             />
             <ProfileStoryHighlights isOwnProfile={isOwnProfile} />
          </div>

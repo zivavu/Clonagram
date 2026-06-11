@@ -5,6 +5,13 @@ import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
 import { styles } from './index.stylex';
 
+function handleKeyDown(e: React.KeyboardEvent, callback: () => void) {
+   if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      callback();
+   }
+}
+
 interface UserListItemProps {
    avatarUrl: string | null;
    avatarAlt?: string;
@@ -60,15 +67,18 @@ export function UserListItem({
    }
 
    return (
+      // biome-ignore lint/a11y/noStaticElementInteractions: role is set conditionally when onClick exists
       // biome-ignore lint/a11y/useAriaPropsSupportedByRole: role is passed dynamically and can be option
-      <button
+      <div
          {...stylex.props(styles.row)}
          onClick={onClick}
-         role={role}
-         aria-selected={ariaSelected}
+         role={onClick ? (role ?? 'button') : undefined}
+         tabIndex={onClick ? 0 : undefined}
+         aria-selected={onClick ? ariaSelected : undefined}
+         onKeyDown={onClick ? e => handleKeyDown(e, onClick) : undefined}
       >
          {content}
-      </button>
+      </div>
    );
 }
 

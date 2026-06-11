@@ -1,6 +1,7 @@
 import { getUserNote } from '../../../actions/notes/getUserNote';
 import { getUserProfileWithPosts } from '../../../actions/profile/getUserProfileWithPosts';
 import { getSavedPosts } from '../../../actions/saves/getSavedPosts';
+import { getRingState } from '../../../actions/story/getRingState';
 import { getAuthProfile } from '../../../lib/supabase/getAuthProfile';
 import ProfilePage from '../../../pageComponents/Profile';
 
@@ -15,6 +16,8 @@ export default async function Profile() {
       getSavedPosts(),
    ]);
 
+   const ringState = await getRingState(userProfile.id);
+
    return (
       <ProfilePage
          userProfile={userProfile}
@@ -23,6 +26,7 @@ export default async function Profile() {
          isOwnProfile
          note={note}
          savedPosts={savedPosts}
+         ringState={ringState}
       />
    );
 }

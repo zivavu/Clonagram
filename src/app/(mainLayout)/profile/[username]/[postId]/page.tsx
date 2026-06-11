@@ -22,6 +22,7 @@ export default async function ProfilePostPage({ params }: ProfilePostPageProps) 
          isOwnProfile={profileData.isOwnProfile}
          note={profileData.note}
          initialPost={post}
+         ringState={profileData.ringState}
       />
    );
 }
