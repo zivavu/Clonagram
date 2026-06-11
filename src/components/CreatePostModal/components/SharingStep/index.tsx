@@ -65,7 +65,7 @@ export default function SharingStep({ postData, onDone }: SharingStepProps) {
             rightSlot={
                <Dialog.Close asChild>
                   <button {...stylex.props(styles.closeButton)} aria-label="Close">
-                     <IoCloseOutline style={{ fontSize: 30 }} />
+                     <IoCloseOutline size={30} />
                   </button>
                </Dialog.Close>
             }

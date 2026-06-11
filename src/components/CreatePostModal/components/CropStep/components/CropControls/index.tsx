@@ -123,7 +123,7 @@ export default function CropControls({
                      onClick={() => setShowZoomSlider(prev => !prev)}
                      aria-label="Zoom"
                   >
-                     <MdZoomIn style={{ fontSize: 20 }} />
+                     <MdZoomIn size={20} />
                   </button>
                   {showZoomSlider && (
                      <div {...stylex.props(styles.zoomPopup)}>
@@ -152,7 +152,7 @@ export default function CropControls({
                      {...stylex.props(styles.controlButton)}
                      aria-label="View all media"
                   >
-                     <PiImagesSquareLight style={{ fontSize: 20 }} />
+                     <PiImagesSquareLight size={20} />
                   </button>
                </Popover.Trigger>
                <Popover.Portal>
@@ -223,7 +223,7 @@ export default function CropControls({
                                        {...stylex.props(styles.thumbRemove)}
                                        onClick={() => onRemoveFile(idx)}
                                     >
-                                       <IoClose style={{ fontSize: 12 }} />
+                                       <IoClose size={12} />
                                     </button>
                                  )}
                               </li>
@@ -235,7 +235,7 @@ export default function CropControls({
                                     {...stylex.props(styles.popoverAddButton)}
                                     onClick={onAddFiles}
                                  >
-                                    <MdAdd style={{ fontSize: 20 }} />
+                                    <MdAdd size={20} />
                                  </button>
                               </li>
                            )}

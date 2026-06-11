@@ -81,7 +81,7 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
          </div>
          <div {...stylex.props(imageCardStyles.reactionBoxContainer)}>
             <div {...stylex.props(imageCardStyles.commentBorder)}></div>
-            <MdFavorite style={{ fontSize: 38 }} />
+            <MdFavorite size={38} />
          </div>
          <Image
             src={`/loginPageCardsPeople/${image.src}`}

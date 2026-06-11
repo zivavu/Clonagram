@@ -34,7 +34,7 @@ export default function AuthPagesFooter({ ...props }: React.ComponentProps<'foot
          <div {...stylex.props(styles.footerMetaRow)}>
             <button type="button" {...stylex.props(styles.languageButton)}>
                English
-               <MdKeyboardArrowDown style={{ fontSize: 14 }} />
+               <MdKeyboardArrowDown size={14} />
             </button>
             <span>© {new Date().getFullYear()} Clonagram from Zeta</span>
          </div>

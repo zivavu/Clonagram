@@ -40,7 +40,7 @@ export default async function MainNavbar() {
          <div {...stylex.props(styles.bottomSection)}>
             <SettingsPopoverButton />
             <button aria-label="Other apps from Zeta" {...stylex.props(styles.navItem)}>
-               <MdGridView style={{ fontSize: 28 }} />
+               <MdGridView size={28} />
                <span {...stylex.props(styles.navItemLabel)}>Also from Zeta</span>
             </button>
          </div>

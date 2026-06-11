@@ -52,7 +52,7 @@ export function SettingsPopoverButton() {
          <Popover open={isOpen} onOpenChange={toggle}>
             <PopoverTrigger asChild>
                <button aria-label="More" {...stylex.props(buttonStyles.navItem)}>
-                  <RiMenuFill style={{ fontSize: 28 }} />
+                  <RiMenuFill size={28} />
                   <span {...stylex.props(buttonStyles.navItemLabel)}>More</span>
                </button>
             </PopoverTrigger>

@@ -154,7 +154,7 @@ export default function ChatDetailsPanel({
                onClick={onClose}
                aria-label="Close details"
             >
-               <IoCloseOutline style={{ fontSize: 24 }} />
+               <IoCloseOutline size={24} />
             </button>
             <span {...stylex.props(styles.headerTitle)}>Details</span>
          </div>
@@ -193,7 +193,7 @@ export default function ChatDetailsPanel({
                                  {...stylex.props(styles.renameModalCloseButton)}
                                  aria-label="Close"
                               >
-                                 <IoCloseOutline style={{ fontSize: 24 }} />
+                                 <IoCloseOutline size={24} />
                               </button>
                            </Dialog.Close>
                            <Dialog.Title {...stylex.props(styles.renameModalTitle)}>

@@ -24,9 +24,9 @@ const UsernameSignupInput = forwardRef<HTMLInputElement, UsernameSignupInputProp
 
       const endAdornment =
          status === 'available' ? (
-            <MdCheckCircle style={{ fontSize: 22, color: 'var(--colors-success)' }} />
+            <MdCheckCircle size={22} style={{ color: 'var(--colors-success)' }} />
          ) : status === 'taken' ? (
-            <MdError style={{ fontSize: 22, color: 'var(--colors-danger)' }} />
+            <MdError size={22} style={{ color: 'var(--colors-danger)' }} />
          ) : null;
 
       const borderState =
@@ -49,7 +49,7 @@ const UsernameSignupInput = forwardRef<HTMLInputElement, UsernameSignupInputProp
             />
             {status === 'taken' && (
                <span {...stylex.props(styles.errorMessage)}>
-                  <MdError style={{ fontSize: 16 }} />
+                  <MdError size={16} />
                   The username {value} is not available.
                </span>
             )}

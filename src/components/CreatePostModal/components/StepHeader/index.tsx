@@ -20,7 +20,7 @@ export default function StepHeader({ title, onBack, leftSlot, rightSlot }: StepH
             onClick={onBack}
             aria-label="Back"
          >
-            <IoArrowBack style={{ fontSize: 24 }} />
+            <IoArrowBack size={24} />
          </button>
       ) : (
          <div {...stylex.props(styles.spacer)} />

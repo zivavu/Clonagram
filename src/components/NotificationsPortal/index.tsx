@@ -238,7 +238,7 @@ export default function NotificationsPortal() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                      <Dialog.Close asChild>
                         <button {...stylex.props(styles.closeButton)} aria-label="Close">
-                           <IoCloseOutline style={{ fontSize: 30 }} />
+                           <IoCloseOutline size={30} />
                         </button>
                      </Dialog.Close>
                   </div>

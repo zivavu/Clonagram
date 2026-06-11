@@ -96,7 +96,7 @@ export default function EmailSignUpPage() {
       <>
          <div {...stylex.props(styles.root)}>
             <Link href="/login" {...stylex.props(styles.backButton)}>
-               <MdChevronLeft style={{ fontSize: 28 }} />
+               <MdChevronLeft size={28} />
             </Link>
             <div {...stylex.props(styles.contentContainer)}>
                <ZetaLogo />

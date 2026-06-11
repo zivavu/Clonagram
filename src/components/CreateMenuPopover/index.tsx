@@ -52,11 +52,7 @@ export function CreateMenuPopover({
                style={{ order: mobileOrder }}
                {...stylex.props(mainSidebarStyles.navItem)}
             >
-               {isOpen ? (
-                  <FaSquarePlus style={{ fontSize: 28 }} />
-               ) : (
-                  <FaRegSquarePlus style={{ fontSize: 28 }} />
-               )}
+               {isOpen ? <FaSquarePlus size={28} /> : <FaRegSquarePlus size={28} />}
                <span
                   {...stylex.props(mainSidebarStyles.navItemLabel)}
                   style={{ fontWeight: isOpen ? 700 : 400 }}
@@ -82,15 +78,15 @@ export function CreateMenuPopover({
                <>
                   <button type="button" onClick={handlePost} {...stylex.props(styles.item)}>
                      Post
-                     <BsImages style={{ fontSize: 18 }} />
+                     <BsImages size={18} />
                   </button>
                   <button type="button" onClick={handleReels} {...stylex.props(styles.item)}>
                      Reel
-                     <MdOutlineSmartDisplay style={{ fontSize: 18 }} />
+                     <MdOutlineSmartDisplay size={18} />
                   </button>
                   <button type="button" onClick={handleStory} {...stylex.props(styles.item)}>
                      Story
-                     <LuCircleFadingPlus style={{ fontSize: 18 }} />
+                     <LuCircleFadingPlus size={18} />
                   </button>
                </>
             )}

@@ -96,7 +96,7 @@ export default function LocationAutocomplete({ value, onChange }: LocationAutoco
             onDismiss={() => setOpen(false)}
             rightAction={
                <button type="button" {...stylex.props(styles.iconButton)} onClick={handleClear}>
-                  <IoClose style={{ fontSize: 18 }} />
+                  <IoClose size={18} />
                </button>
             }
          />
@@ -108,7 +108,7 @@ export default function LocationAutocomplete({ value, onChange }: LocationAutoco
          <div {...stylex.props(styles.row)}>
             <span {...stylex.props(styles.label, styles.labelSelected)}>{value.name}</span>
             <button type="button" {...stylex.props(styles.iconButton)} onClick={handleClear}>
-               <IoClose style={{ fontSize: 18 }} />
+               <IoClose size={18} />
             </button>
          </div>
       );
@@ -117,7 +117,7 @@ export default function LocationAutocomplete({ value, onChange }: LocationAutoco
    return (
       <button type="button" {...stylex.props(styles.row)} onClick={handleOpen}>
          <span {...stylex.props(styles.label, styles.labelPlaceholder)}>Add location</span>
-         <MdLocationOn style={{ fontSize: 20, opacity: 0.6 }} />
+         <MdLocationOn size={20} style={{ opacity: 0.6 }} />
       </button>
    );
 }

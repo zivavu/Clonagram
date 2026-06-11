@@ -95,7 +95,7 @@ export function NavItems({ mainSidebarStyles, profile, isAnonymous }: NavItemsPr
                         username={profile?.username ?? ''}
                      />
                   ) : (
-                     IconComponent && <IconComponent style={{ fontSize: 28 }} />
+                     IconComponent && <IconComponent size={28} />
                   );
 
                const content = (

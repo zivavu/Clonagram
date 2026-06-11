@@ -47,7 +47,7 @@ export default function UploadStep({
             rightSlot={
                <Dialog.Close asChild>
                   <button {...stylex.props(stepHeaderStyles.closeButton)} aria-label="Close">
-                     <IoCloseOutline style={{ fontSize: 30 }} />
+                     <IoCloseOutline size={30} />
                   </button>
                </Dialog.Close>
             }
@@ -56,7 +56,7 @@ export default function UploadStep({
             {...getRootProps()}
             {...stylex.props(styles.dropZone, isDragActive && styles.dropZoneActive)}
          >
-            <IoImagesOutline style={{ fontSize: 96, color: 'rgb(168, 168, 168)' }} />
+            <IoImagesOutline size={96} style={{ color: 'rgb(168, 168, 168)' }} />
             <p {...stylex.props(styles.dropText)}>{textContent[elementType].dropzoneText}</p>
             <button type="button" {...stylex.props(styles.selectButton)} onClick={open}>
                {textContent[elementType].button}

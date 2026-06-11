@@ -63,7 +63,7 @@ export default function PostFullViewModal() {
                   onClick={handleClose}
                   {...stylex.props(styles.closeOverlayButton)}
                >
-                  <IoCloseOutline style={{ fontSize: 28 }} />
+                  <IoCloseOutline size={28} />
                </button>
             </div>
             <Dialog.Content

@@ -104,11 +104,11 @@ export default function NewMessageModal() {
                   Start a new direct message
                </Dialog.Description>
                <div {...stylex.props(styles.header)}>
-                  <IoCloseOutline style={{ fontSize: 30, visibility: 'hidden' }} />
+                  <IoCloseOutline size={30} style={{ visibility: 'hidden' }} />
                   <Dialog.Title {...stylex.props(styles.title)}>New message</Dialog.Title>
                   <Dialog.Close asChild>
                      <button {...stylex.props(styles.closeButton)} aria-label="Close">
-                        <IoCloseOutline style={{ fontSize: 30 }} />
+                        <IoCloseOutline size={30} />
                      </button>
                   </Dialog.Close>
                </div>
@@ -129,7 +129,7 @@ export default function NewMessageModal() {
                               }}
                               aria-label={`Remove ${user.full_name || user.username}`}
                            >
-                              <IoClose style={{ fontSize: '14px' }} />
+                              <IoClose size={14} />
                            </button>
                         </span>
                      ))}
@@ -167,7 +167,7 @@ export default function NewMessageModal() {
                                           isSelected && styles.radioCircleSelected,
                                        )}
                                     >
-                                       {isSelected && <IoCheckmark style={{ fontSize: '14px' }} />}
+                                       {isSelected && <IoCheckmark size={14} />}
                                     </div>
                                  }
                                  onClick={() => toggleUser(user.id)}

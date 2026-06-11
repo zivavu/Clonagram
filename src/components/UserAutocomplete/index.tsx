@@ -79,7 +79,7 @@ export default function UserAutocomplete({
                            isSelected(user) && styles.checkboxChecked,
                         )}
                      >
-                        {isSelected(user) && <IoCheckmark style={{ fontSize: 13 }} />}
+                        {isSelected(user) && <IoCheckmark size={13} />}
                      </div>
                   ) : undefined
                }
@@ -88,7 +88,7 @@ export default function UserAutocomplete({
          rightAction={
             onDismiss ? (
                <button type="button" {...stylex.props(styles.dismissButton)} onClick={onDismiss}>
-                  <IoClose style={{ fontSize: 18 }} />
+                  <IoClose size={18} />
                </button>
             ) : undefined
          }

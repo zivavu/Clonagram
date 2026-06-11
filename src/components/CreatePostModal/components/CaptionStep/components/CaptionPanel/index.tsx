@@ -86,7 +86,7 @@ export default function CaptionPanel({
             />
             <div {...stylex.props(styles.captionRowBottom)}>
                <button type="button" {...stylex.props(styles.emojiButton)} aria-label="Add emoji">
-                  <MdOutlineEmojiEmotions style={{ fontSize: 22 }} />
+                  <MdOutlineEmojiEmotions size={22} />
                </button>
                <span {...stylex.props(styles.charCount)}>
                   {caption.length}/{MAX_CAPTION}
@@ -135,7 +135,7 @@ export default function CaptionPanel({
                   ) : (
                      <span {...stylex.props(styles.addRowLabel)}>Add collaborators</span>
                   )}
-                  <IoPersonAddOutline style={{ fontSize: 20, opacity: 0.7 }} />
+                  <IoPersonAddOutline size={20} style={{ opacity: 0.7 }} />
                </button>
             ))}
 

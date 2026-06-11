@@ -44,7 +44,7 @@ export default function SearchPortal() {
                   <Dialog.Title {...stylex.props(styles.title)}>Search</Dialog.Title>
                   <Dialog.Close asChild>
                      <button {...stylex.props(styles.closeButton)} aria-label="Close">
-                        <IoCloseOutline style={{ fontSize: 30 }} />
+                        <IoCloseOutline size={30} />
                      </button>
                   </Dialog.Close>
                </div>
@@ -66,7 +66,7 @@ export default function SearchPortal() {
                         onClick={() => setQuery('')}
                         aria-label="Clear search"
                      >
-                        <FaCircleXmark style={{ fontSize: 14 }} />
+                        <FaCircleXmark size={14} />
                      </button>
                   )}
                </div>
@@ -75,7 +75,8 @@ export default function SearchPortal() {
                   {!query && (
                      <div {...stylex.props(styles.emptyState)}>
                         <IoSearchOutline
-                           style={{ fontSize: 32, color: colors.textSecondary, marginBottom: 8 }}
+                           size={32}
+                           style={{ color: colors.textSecondary, marginBottom: 8 }}
                         />
                         <span {...stylex.props(styles.emptyStateText)}>Search for users</span>
                      </div>
@@ -105,9 +106,9 @@ export default function SearchPortal() {
                                  {user.username}
                                  {isVerified && (
                                     <MdVerified
+                                       size={14}
                                        style={{
                                           color: 'rgb(0, 149, 246)',
-                                          fontSize: 14,
                                           flexShrink: 0,
                                        }}
                                     />
