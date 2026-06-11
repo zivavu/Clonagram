@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import { markNotificationsReadAction } from '@/src/actions/notifications/markNotificationsRead';
+import { markNotificationsRead } from '@/src/actions/notifications/markNotificationsRead';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -205,7 +205,7 @@ export default function NotificationsPortal() {
       if (isOpen) {
          const unreadIds = notificationRows.filter(n => !n.read).map(n => n.id);
          if (unreadIds.length) {
-            markNotificationsReadAction(unreadIds).catch(() => {});
+            markNotificationsRead(unreadIds).catch(() => {});
          }
       }
    }, [isOpen, notificationRows]);

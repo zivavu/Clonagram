@@ -5,7 +5,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { IoCloseOutline } from 'react-icons/io5';
-import { getPostAction } from '../../actions/post/getPost';
+import { getPost } from '../../actions/post/getPost';
 import { queryKeys } from '../../lib/queryKeys';
 import { usePostViewModal } from '../../store/usePostViewModalStore';
 import DialogOverlay from '../DialogOverlay';
@@ -28,7 +28,7 @@ export default function PostFullViewModal() {
 
    const { data: post } = useQuery({
       queryKey: postId ? queryKeys.post(postId) : ['post'],
-      queryFn: () => getPostAction(postId ?? ''),
+      queryFn: () => getPost(postId ?? ''),
       enabled: !!postId,
       initialData: typeof postOrPostId !== 'string' ? postOrPostId : undefined,
    });

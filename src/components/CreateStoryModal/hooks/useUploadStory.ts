@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { createStoryAction } from '@/src/actions/story/createStory';
+import { createStory } from '@/src/actions/story/createStory';
 import { uploadVideo } from '@/src/actions/uploadVideo';
 import { supabase } from '@/src/lib/supabase/client';
 import { bakeStoryImage } from '@/src/utils/bakeStoryImage';
@@ -52,7 +52,7 @@ export function useUploadStory({ media, onDone }: UseUploadStoryParams) {
       async function run() {
          setStatus('uploading');
          const mediaResult = await processStoryMedia(mediaRef.current);
-         await createStoryAction({ mediaResult });
+         await createStory({ mediaResult });
          setStatus('done');
          onDoneRef.current();
       }

@@ -3,7 +3,7 @@ import 'server-only';
 import { LikePostSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function likePostAction(params: { postId: string }): Promise<void> {
+export async function likePost(params: { postId: string }): Promise<void> {
    const { postId } = validate(LikePostSchema, params);
    const { supabase, user } = await getAuthUser();
 

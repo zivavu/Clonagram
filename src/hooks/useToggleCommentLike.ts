@@ -1,4 +1,4 @@
-import { toggleCommentLikeAction } from '@/src/actions/comments/toggleCommentLike';
+import { toggleCommentLike } from '@/src/actions/comments/toggleCommentLike';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useOptimisticToggle } from '@/src/hooks/useOptimisticToggle';
 import type { PostComment, PostComments } from '@/src/queries/comments';
@@ -10,7 +10,7 @@ export function useToggleCommentLike(comment: PostComment, commentsKey: readonly
 
    return useOptimisticToggle<PostComments>({
       queryKey: commentsKey,
-      mutationFn: () => toggleCommentLikeAction({ commentId: comment.id, isLiked }),
+      mutationFn: () => toggleCommentLike({ commentId: comment.id, isLiked }),
       updater: old =>
          old.map(c => {
             if (c.id !== comment.id) return c;

@@ -14,7 +14,7 @@ import {
    MdLocationOn,
 } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
-import { getPostAction } from '@/src/actions/post/getPost';
+import { getPost } from '@/src/actions/post/getPost';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
 import EmojiInput, { type EmojiInputRef } from '@/src/components/EmojiInput';
 import FollowButton from '@/src/components/FollowButton';
@@ -62,7 +62,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const { data: post } = useQuery({
       initialData: initialPost,
       queryKey: postKey,
-      queryFn: () => getPostAction(initialPost.id),
+      queryFn: () => getPost(initialPost.id),
    });
 
    const { data: comments = [], isLoading: commentsLoading } = useQuery({

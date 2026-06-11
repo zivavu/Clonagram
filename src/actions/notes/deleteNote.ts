@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { DeleteNoteSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function deleteNoteAction(noteId: string) {
+export async function deleteNote(noteId: string) {
    const { noteId: validatedNoteId } = validate(DeleteNoteSchema, { noteId });
    const { supabase, user } = await getAuthUser();
    const { error } = await supabase

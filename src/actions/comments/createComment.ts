@@ -5,7 +5,7 @@ import type { PostComment } from '@/src/queries/comments';
 import { CreateCommentSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function createCommentAction(params: {
+export async function createComment(params: {
    postId: string;
    content: string;
    parentId?: string;

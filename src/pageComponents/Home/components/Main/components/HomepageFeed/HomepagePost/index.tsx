@@ -12,7 +12,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { getPostAction } from '../../../../../../../actions/post/getPost';
+import { getPost } from '../../../../../../../actions/post/getPost';
 import PostMediaCarousel from '../../../../../../../components/PostMediaCarousel/PostMediaCarousel';
 import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
 import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike';
@@ -67,7 +67,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
       initialData: initialPost,
       initialDataUpdatedAt: Date.now(),
       queryKey: queryKeys.post(initialPost.id),
-      queryFn: () => getPostAction(initialPost.id),
+      queryFn: () => getPost(initialPost.id),
       staleTime: Infinity,
    });
 

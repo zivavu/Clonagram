@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { createPostAction } from '@/src/actions/post/createPost';
+import { createPost } from '@/src/actions/post/createPost';
 import { uploadVideo } from '@/src/actions/uploadVideo';
 import { supabase } from '@/src/lib/supabase/client';
 import { bakeImage } from '@/src/utils/bakeImage';
@@ -98,7 +98,7 @@ export function useUploadPost({ postData, onDone }: UseUploadPostParams): UseUpl
          const data = postDataRef.current;
          const mediaResults = await Promise.all(data.media.map(media => processMedia(media, data)));
          const { media: _, ...postMeta } = data;
-         await createPostAction({ ...postMeta, mediaResults });
+         await createPost({ ...postMeta, mediaResults });
          setStatus('done');
          onDoneRef.current();
       }

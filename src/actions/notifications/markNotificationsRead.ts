@@ -3,7 +3,7 @@ import 'server-only';
 import { MarkNotificationsReadSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function markNotificationsReadAction(ids: string[]) {
+export async function markNotificationsRead(ids: string[]) {
    const { ids: validatedIds } = validate(MarkNotificationsReadSchema, { ids });
    const { supabase, user } = await getAuthUser();
 

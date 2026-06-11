@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots } from 'react-icons/tb';
-import { deleteCommentAction } from '@/src/actions/comments/deleteComment';
+import { deleteComment } from '@/src/actions/comments/deleteComment';
 import Skeleton from '@/src/components/Skeleton';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
@@ -62,8 +62,8 @@ export default function CommentItem({
    const isLiked = comment.comment_likes.some(cl => cl.user_id === authUser?.id);
    const canDelete = !!authUser && (authUser.id === comment.user.id || authUser.id === postOwnerId);
 
-   const { mutate: deleteComment, isPending: isDeleting } = useMutation({
-      mutationFn: () => deleteCommentAction({ commentId: comment.id }),
+   const { mutate: deleteCommentMutate, isPending: isDeleting } = useMutation({
+      mutationFn: () => deleteComment({ commentId: comment.id }),
       onMutate: () => {
          const prev = queryClient.getQueryData<PostComments>(commentsKey);
          queryClient.setQueryData<PostComments>(commentsKey, old =>
@@ -158,7 +158,7 @@ export default function CommentItem({
          <DeleteConfirmModal
             open={showDeleteModal}
             onOpenChange={setShowDeleteModal}
-            onConfirm={() => deleteComment()}
+            onConfirm={() => deleteCommentMutate()}
             isLoading={isDeleting}
             title="Delete comment?"
             description="Are you sure you want to delete this comment?"

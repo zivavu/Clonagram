@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import type { StoryMediaResult } from '@/src/components/CreateStoryModal/types';
 import { getAuthUser } from '../getAuthUser';
 
-export async function createStoryAction(params: { mediaResult: StoryMediaResult }) {
+export async function createStory(params: { mediaResult: StoryMediaResult }) {
    const { supabase, user } = await getAuthUser();
 
    const { data: story, error: storyError } = await supabase

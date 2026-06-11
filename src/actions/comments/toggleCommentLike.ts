@@ -3,7 +3,7 @@ import 'server-only';
 import { LikeCommentSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function toggleCommentLikeAction(params: {
+export async function toggleCommentLike(params: {
    commentId: string;
    isLiked: boolean;
 }): Promise<void> {

@@ -3,7 +3,7 @@ import 'server-only';
 import { getMuxClient } from '../../lib/mux';
 import { getAuthUser } from '../getAuthUser';
 
-export async function deleteAccountAction() {
+export async function deleteAccount() {
    const { supabase, user } = await getAuthUser();
 
    const [{ data: postVideos }, { data: storyVideos }] = await Promise.all([

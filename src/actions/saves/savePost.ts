@@ -3,7 +3,7 @@ import 'server-only';
 import { SavePostSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function savePostAction(params: { postId: string }): Promise<void> {
+export async function savePost(params: { postId: string }): Promise<void> {
    const { postId } = validate(SavePostSchema, params);
    const { supabase, user } = await getAuthUser();
 

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { DeleteCommentSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function deleteCommentAction(params: { commentId: string }) {
+export async function deleteComment(params: { commentId: string }) {
    const { commentId } = validate(DeleteCommentSchema, params);
    const { supabase, user } = await getAuthUser();
 

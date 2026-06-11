@@ -3,7 +3,7 @@ import 'server-only';
 import { createServerClient } from '../../lib/supabase/server';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 
-export async function getPostAction(postId: string) {
+export async function getPost(postId: string) {
    const supabase = await createServerClient();
    const {
       data: { user },

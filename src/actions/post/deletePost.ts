@@ -5,7 +5,7 @@ import { DeletePostSchema, validate } from '@/src/lib/validation';
 import { getMuxClient } from '../../lib/mux';
 import { getAuthUser } from '../getAuthUser';
 
-export async function deletePostAction(params: { postId: string }) {
+export async function deletePost(params: { postId: string }) {
    const { postId } = validate(DeletePostSchema, params);
    const { supabase } = await getAuthUser();
 

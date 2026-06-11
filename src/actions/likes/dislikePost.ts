@@ -3,7 +3,7 @@ import 'server-only';
 import { DislikePostSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function dislikePostAction(params: { postId: string }): Promise<void> {
+export async function dislikePost(params: { postId: string }): Promise<void> {
    const { postId } = validate(DislikePostSchema, params);
    const { supabase, user } = await getAuthUser();
 

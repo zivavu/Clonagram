@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { CreateNoteSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function createNoteAction(content: string) {
+export async function createNote(content: string) {
    const { content: validatedContent } = validate(CreateNoteSchema, { content });
    const { supabase, user } = await getAuthUser();
    const { error } = await supabase

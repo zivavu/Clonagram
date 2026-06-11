@@ -1,4 +1,4 @@
-import { getPostAction } from '../../../../../actions/post/getPost';
+import { getPost } from '../../../../../actions/post/getPost';
 import ProfilePage from '../../../../../pageComponents/Profile';
 import { loadProfilePage } from '../loadProfilePage';
 
@@ -12,10 +12,7 @@ interface ProfilePostPageProps {
 export default async function ProfilePostPage({ params }: ProfilePostPageProps) {
    const { username, postId } = await params;
 
-   const [profileData, post] = await Promise.all([
-      loadProfilePage(username),
-      getPostAction(postId),
-   ]);
+   const [profileData, post] = await Promise.all([loadProfilePage(username), getPost(postId)]);
 
    return (
       <ProfilePage

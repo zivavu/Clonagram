@@ -158,7 +158,7 @@ async function saveHashtags(
    }
 }
 
-export async function createPostAction(params: CreatePostParams) {
+export async function createPost(params: CreatePostParams) {
    const { supabase, user } = await getAuthUser();
    const userId = user.id;
    const isReel =

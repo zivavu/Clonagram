@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { RiMenuFill } from 'react-icons/ri';
 import { TbLogout, TbTrash } from 'react-icons/tb';
-import { deleteAccountAction } from '@/src/actions/auth/deleteAccount';
+import { deleteAccount } from '@/src/actions/auth/deleteAccount';
 import { supabase } from '@/src/lib/supabase/client';
 import { useSettingsPopoverStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
@@ -35,7 +35,7 @@ export function SettingsPopoverButton() {
    async function handleDeleteAccount() {
       setIsDeletingAccount(true);
       try {
-         await deleteAccountAction();
+         await deleteAccount();
          await supabase.auth.signOut();
          queryClient.clear();
          router.push('/login');

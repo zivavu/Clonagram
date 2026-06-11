@@ -10,8 +10,8 @@ import { useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { BsPeopleFill } from 'react-icons/bs';
 import { IoChevronDownSharp, IoClose } from 'react-icons/io5';
-import { createNoteAction } from '@/src/actions/notes/createNote';
-import { deleteNoteAction } from '@/src/actions/notes/deleteNote';
+import { createNote } from '@/src/actions/notes/createNote';
+import { deleteNote } from '@/src/actions/notes/deleteNote';
 import DialogOverlay from '@/src/components/DialogOverlay';
 import { useNewNoteModalStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
@@ -68,7 +68,7 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
       if (!text.trim() || loading) return;
       setLoading(true);
       try {
-         await createNoteAction(text.trim());
+         await createNote(text.trim());
          router.refresh();
          close();
       } finally {
@@ -80,7 +80,7 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
       if (loading || !ownNoteId) return;
       setLoading(true);
       try {
-         await deleteNoteAction(ownNoteId);
+         await deleteNote(ownNoteId);
          router.refresh();
          setText('');
          close();

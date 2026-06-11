@@ -5,7 +5,7 @@ import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
-import { deletePostAction } from '../../actions/post/deletePost';
+import { deletePost } from '../../actions/post/deletePost';
 import { useOwnerActionsModal } from '../../store/useOwnerActionsModalStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
@@ -33,7 +33,7 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
       if (!deletingPostId) return;
       setIsLoading(true);
       try {
-         await deletePostAction({ postId: deletingPostId });
+         await deletePost({ postId: deletingPostId });
          toast('Post deleted.');
       } catch (error) {
          toast(error instanceof Error ? error.message : 'Could not delete post. Try again.');
