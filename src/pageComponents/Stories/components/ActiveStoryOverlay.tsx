@@ -9,6 +9,7 @@ import { MdClose, MdFavorite, MdFavoriteBorder, MdPause, MdPlayArrow } from 'rea
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import { replyToStory } from '@/src/actions/story/replyToStory';
 import { toggleStoryReaction } from '@/src/actions/story/toggleStoryReaction';
+import { toast } from '@/src/components/AppToast';
 import VolumeControl from '@/src/components/VolumeControl';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
@@ -56,6 +57,7 @@ export default function ActiveStoryOverlay({
       setReplyText('');
       try {
          await replyToStory(storyId, text);
+         toast('Message sent');
       } catch {
          setReplyText(text);
       }
