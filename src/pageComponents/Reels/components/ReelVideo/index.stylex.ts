@@ -20,7 +20,7 @@ export const styles = stylex.create({
    },
    volumeControl: {
       position: 'absolute',
-      top: '12px',
+      bottom: '12px',
       right: '12px',
    },
 });

@@ -18,6 +18,7 @@ interface ReelActionRailProps {
    reel: Reel;
    commentCount: number;
    onToggleComments: () => void;
+   commentButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 function formatCount(n: number): string {
@@ -30,6 +31,7 @@ export default function ReelActionRail({
    reel,
    commentCount,
    onToggleComments,
+   commentButtonRef,
 }: ReelActionRailProps) {
    const { data: authUser } = useAuthUser();
    const [isLiked, setIsLiked] = useState(false);
@@ -89,11 +91,11 @@ export default function ReelActionRail({
          <div {...stylex.props(styles.group)}>
             <button
                type="button"
+               ref={commentButtonRef}
                onClick={e => {
                   e.stopPropagation();
                   onToggleComments();
                }}
-               onMouseDown={e => e.stopPropagation()}
                aria-label="Comments"
                {...stylex.props(styles.button)}
             >

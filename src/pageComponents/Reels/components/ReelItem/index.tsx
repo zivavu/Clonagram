@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
+import { useRef } from 'react';
 import { MdLocationOn, MdVerified } from 'react-icons/md';
 import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -32,6 +33,7 @@ export default function ReelItem({
    const { data: authUser } = useAuthUser();
    const video = reel.videos[0];
    const isOwnReel = authUser?.id === reel.user.id;
+   const commentToggleRef = useRef<HTMLButtonElement>(null);
 
    const { data: comments } = useQuery({
       queryKey: queryKeys.comments(reel.id),
@@ -88,8 +90,15 @@ export default function ReelItem({
                   reel={reel}
                   commentCount={commentCount}
                   onToggleComments={onToggleComments}
+                  commentButtonRef={commentToggleRef}
                />
-               {isCommentsOpen && <ReelComments reel={reel} onClose={onCloseComments} />}
+               {isCommentsOpen && (
+                  <ReelComments
+                     reel={reel}
+                     onClose={onCloseComments}
+                     ignoreRef={commentToggleRef}
+                  />
+               )}
             </div>
          </div>
       </section>
