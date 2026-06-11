@@ -2,6 +2,7 @@
 import 'server-only';
 import { revalidatePath } from 'next/cache';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
+import { UpdateProfileSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
 interface UpdateProfileParams {
@@ -13,22 +14,7 @@ interface UpdateProfileParams {
 }
 
 export async function updateProfile(params: UpdateProfileParams) {
-   const { fullName, username, bio, website, gender } = params;
-
-   if (bio.length > 150) throw new Error('Bio must be 150 characters or less.');
-   if (
-      !username ||
-      username.length > 30 ||
-      !/^[a-zA-Z0-9_.]+$/.test(username) ||
-      username.startsWith('.') ||
-      username.endsWith('.') ||
-      username.includes('..')
-   ) {
-      return {
-         usernameError:
-            'Username must be 1–30 characters: letters, numbers, underscores, dots only (no leading/trailing/consecutive dots).',
-      };
-   }
+   const { fullName, username, bio, website, gender } = validate(UpdateProfileSchema, params);
 
    const { supabase, user } = await getAuthUser();
    const authProfile = await getAuthProfile(supabase);

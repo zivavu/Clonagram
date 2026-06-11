@@ -3,6 +3,7 @@ import 'server-only';
 import { revalidatePath } from 'next/cache';
 import type { PostLocation } from '@/src/components/CreatePostModal/types';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
+import { UpdatePostSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
 interface UpdatePostParams {
@@ -20,6 +21,13 @@ export async function updatePost({
    hideLikes,
    commentsOff,
 }: UpdatePostParams) {
+   const {
+      postId: pid,
+      caption: cap,
+      location: loc,
+      hideLikes: hl,
+      commentsOff: co,
+   } = validate(UpdatePostSchema, { postId, caption, location, hideLikes, commentsOff });
    const { supabase, user } = await getAuthUser();
    const authProfile = await getAuthProfile(supabase);
 
@@ -28,14 +36,14 @@ export async function updatePost({
    const { error } = await supabase
       .from('posts')
       .update({
-         caption: caption || null,
-         location_name: location?.name ?? null,
-         location_lat: location?.lat ?? null,
-         location_lon: location?.lon ?? null,
-         hide_likes: hideLikes,
-         comments_off: commentsOff,
+         caption: cap || null,
+         location_name: loc?.name ?? null,
+         location_lat: loc?.lat ?? null,
+         location_lon: loc?.lon ?? null,
+         hide_likes: hl,
+         comments_off: co,
       })
-      .eq('id', postId)
+      .eq('id', pid)
       .eq('user_id', authProfile.id);
 
    if (error) throw error;

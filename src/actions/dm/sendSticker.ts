@@ -1,8 +1,13 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { SendStickerSchema, validate } from '@/src/lib/validation';
 
 export async function sendSticker(conversationId: string, stickerUrl: string): Promise<void> {
+   const { conversationId: cid, stickerUrl: url } = validate(SendStickerSchema, {
+      conversationId,
+      stickerUrl,
+   });
    const supabase = await createServerClient();
    const {
       data: { user },
@@ -10,9 +15,9 @@ export async function sendSticker(conversationId: string, stickerUrl: string): P
    if (!user) throw new Error('Not authenticated');
 
    const { error } = await supabase.from('messages').insert({
-      conversation_id: conversationId,
+      conversation_id: cid,
       sender_id: user.id,
-      sticker_url: stickerUrl,
+      sticker_url: url,
    });
    if (error) throw error;
 }

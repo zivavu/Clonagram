@@ -42,35 +42,30 @@ export async function getHomeFeedPosts(
       return { posts: [], nextCursor: null };
    }
 
-   const { data: followedData, error: followError } = await supabase
-      .from('follows')
-      .select('following_id')
-      .eq('follower_id', user.id);
+    const {
+       data: postIds,
+       error: rpcError,
+    } = await (supabase.rpc as any)('get_following_posts', {
+       follower_id: user.id,
+       before_cursor: cursor,
+       page_size: PAGE_SIZE,
+    });
 
-   if (followError) throw new Error(`Failed to fetch followed users: ${followError.message}`);
+    if (rpcError) throw new Error(`Failed to fetch following feed: ${rpcError.message}`);
+    const ids = postIds as { id: string; created_at: string }[] | null;
+    if (!ids || ids.length === 0) {
+       return { posts: [], nextCursor: null };
+    }
 
-   const followedIds = followedData?.map(f => f.following_id) ?? [];
+    const { data: posts, error: postsError } = await supabase
+       .from('posts')
+       .select(POST_WITH_MEDIA_SELECT)
+       .in('id', ids.map(p => p.id))
+       .order('created_at', { ascending: false })
+       .eq('likes.user_id', user.id)
+       .eq('saves.user_id', user.id);
 
-   if (followedIds.length === 0) {
-      return { posts: [], nextCursor: null };
-   }
-
-   let query = supabase
-      .from('posts')
-      .select(POST_WITH_MEDIA_SELECT)
-      .in('user_id', followedIds)
-      .order('created_at', { ascending: false })
-      .limit(PAGE_SIZE);
-   if (cursor) query = query.lt('created_at', cursor);
-   if (user) {
-      query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
-   }
-
-   const { data, error: postsError } = await query;
-
-   if (postsError) throw new Error(`Failed to fetch following feed: ${postsError.message}`);
-   const posts = data ?? [];
-   const nextCursor =
-      posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
-   return { posts, nextCursor };
+    if (postsError) throw new Error(`Failed to fetch following feed: ${postsError.message}`);
+    const nextCursor = posts.length === PAGE_SIZE ? (ids[ids.length - 1].created_at ?? null) : null;
+    return { posts: posts ?? [], nextCursor };
 }
