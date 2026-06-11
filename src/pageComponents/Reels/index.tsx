@@ -3,10 +3,9 @@
 import * as stylex from '@stylexjs/stylex';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
-import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { getReels } from '@/src/actions/post/getReels';
 import { queryKeys } from '@/src/lib/queryKeys';
-import { supabase } from '@/src/lib/supabase/client';
-import { REELS_PAGE_SIZE, type Reel, reelsQuery } from '@/src/queries/posts';
+import { REELS_PAGE_SIZE, type Reel } from '@/src/queries/posts';
 import ReelItem from './components/ReelItem';
 import ReelNavArrows from './components/ReelNavArrows';
 import { styles } from './index.stylex';
@@ -14,17 +13,10 @@ import { styles } from './index.stylex';
 export default function Reels() {
    const scrollerRef = useRef<HTMLDivElement>(null);
    const [openComments, setOpenComments] = useState<Reel | null>(null);
-   const { data: authUser } = useAuthUser();
 
    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
       queryKey: queryKeys.reels(),
-      queryFn: async ({ pageParam }) => {
-         let query = reelsQuery(supabase, authUser?.id);
-         if (pageParam) query = query.lt('created_at', pageParam);
-         const { data, error } = await query;
-         if (error) throw error;
-         return data;
-      },
+      queryFn: async ({ pageParam }) => getReels(pageParam),
       initialPageParam: null as string | null,
       getNextPageParam: lastPage =>
          lastPage.length === REELS_PAGE_SIZE ? lastPage[lastPage.length - 1].created_at : null,

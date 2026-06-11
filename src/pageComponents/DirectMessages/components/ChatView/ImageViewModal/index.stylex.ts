@@ -11,6 +11,13 @@ export const styles = stylex.create({
       justifyContent: 'center',
       zIndex: 1000,
    },
+   content: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      outline: 'none',
+   },
    image: {
       maxWidth: '90vw',
       maxHeight: '90vh',

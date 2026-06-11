@@ -364,9 +364,11 @@ export default function ChatView({
             />
          )}
 
-         {viewingImage && (
-            <ImageViewModal src={viewingImage} onClose={() => setViewingImage(null)} />
-         )}
+         <ImageViewModal
+            src={viewingImage}
+            open={!!viewingImage}
+            onClose={() => setViewingImage(null)}
+         />
       </div>
    );
 }

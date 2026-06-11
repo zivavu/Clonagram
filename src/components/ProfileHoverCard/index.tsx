@@ -7,11 +7,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { TbCamera } from 'react-icons/tb';
+import { getProfileCard, getUserRecentPosts } from '@/src/actions/profile/getProfileCard';
 import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
-import { supabase } from '@/src/lib/supabase/client';
-import { userRecentPostsQuery } from '@/src/queries/posts';
-import { userProfileCardQuery } from '@/src/queries/userProfiles';
 import { getPostThumbnail } from '@/src/utils/posts';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { colors } from '../../styles/tokens.stylex';
@@ -38,22 +36,14 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
 
    const { data: profile } = useQuery({
       queryKey: queryKeys.profileCard(userId),
-      queryFn: async () => {
-         const { data, error } = await userProfileCardQuery(supabase, userId);
-         if (error) throw error;
-         return data;
-      },
+      queryFn: async () => getProfileCard(userId),
       enabled: open,
       staleTime: Infinity,
    });
 
    const { data: posts = [] } = useQuery({
       queryKey: queryKeys.profileRecentPosts(userId),
-      queryFn: async () => {
-         const { data, error } = await userRecentPostsQuery(supabase, userId);
-         if (error) throw error;
-         return data ?? [];
-      },
+      queryFn: async () => getUserRecentPosts(userId),
       enabled: open,
       staleTime: Infinity,
    });

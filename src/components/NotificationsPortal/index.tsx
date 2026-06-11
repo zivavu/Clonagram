@@ -6,12 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
+import { getNotifications } from '@/src/actions/notifications/getNotifications';
 import { markNotificationsRead } from '@/src/actions/notifications/markNotificationsRead';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
-import { supabase } from '@/src/lib/supabase/client';
-import { type NotificationRow, notificationsQuery } from '@/src/queries/notifications';
+import type { NotificationRow } from '@/src/queries/notifications';
 import { useNotificationsPortalStore } from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
@@ -193,9 +193,7 @@ export default function NotificationsPortal() {
       queryKey: authUser?.id ? queryKeys.notifications(authUser.id) : ['notifications'],
       queryFn: async () => {
          if (!authUser?.id) return [];
-         const { data, error } = await notificationsQuery(supabase, authUser.id);
-         if (error) throw error;
-         return (data ?? []) as NotificationRow[];
+         return getNotifications() as Promise<NotificationRow[]>;
       },
       enabled: isOpen && !!authUser?.id,
       staleTime: 30_000,
