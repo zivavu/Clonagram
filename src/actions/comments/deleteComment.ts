@@ -1,15 +1,17 @@
 'use server';
 import 'server-only';
 import { revalidatePath } from 'next/cache';
+import { DeleteCommentSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
 export async function deleteCommentAction(params: { commentId: string }) {
+   const { commentId } = validate(DeleteCommentSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { data: comment } = await supabase
       .from('comments')
       .select('user_id, post:posts!post_id(user_id)')
-      .eq('id', params.commentId)
+      .eq('id', commentId)
       .single();
 
    if (!comment) throw new Error('Comment not found');
@@ -20,7 +22,7 @@ export async function deleteCommentAction(params: { commentId: string }) {
       throw new Error('Not authorized');
    }
 
-   const { error } = await supabase.from('comments').delete().eq('id', params.commentId);
+   const { error } = await supabase.from('comments').delete().eq('id', commentId);
 
    if (error) throw new Error(`Failed to delete comment: ${error.message}`);
 

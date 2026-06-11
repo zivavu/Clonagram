@@ -4,8 +4,10 @@ import { revalidatePath } from 'next/cache';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
+import { FollowUserSchema, validate } from '@/src/lib/validation';
 
 export async function followUser(targetUserId: string): Promise<void> {
+   const { targetUserId: validatedTargetUserId } = validate(FollowUserSchema, { targetUserId });
    const supabase = await createServerClient();
    const authProfile = await getAuthProfile(supabase);
 
@@ -14,7 +16,7 @@ export async function followUser(targetUserId: string): Promise<void> {
    const { data: target, error: targetError } = await supabase
       .from('profiles')
       .select('is_private')
-      .eq('id', targetUserId)
+      .eq('id', validatedTargetUserId)
       .single();
 
    if (targetError || !target) throw new Error('User not found');
@@ -22,12 +24,12 @@ export async function followUser(targetUserId: string): Promise<void> {
    if (target.is_private) {
       const { error } = await supabase
          .from('follow_requests')
-         .insert({ requester_id: authProfile.id, target_id: targetUserId });
+         .insert({ requester_id: authProfile.id, target_id: validatedTargetUserId });
       throwIfError({ error }, 'Failed to send follow request');
    } else {
       const { error } = await supabase
          .from('follows')
-         .insert({ follower_id: authProfile.id, following_id: targetUserId });
+         .insert({ follower_id: authProfile.id, following_id: validatedTargetUserId });
       throwIfError({ error }, 'Failed to follow user');
    }
 

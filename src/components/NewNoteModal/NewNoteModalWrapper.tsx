@@ -5,9 +5,12 @@ import NewNoteModal from './index';
 
 export default async function NewNoteModalWrapper() {
    const supabase = await createServerClient();
-   const [profile, { ownNote }] = await Promise.all([getAuthProfile(supabase), getNotesForFeed()]);
+   const [profile, { ownNote, ownNoteId }] = await Promise.all([
+      getAuthProfile(supabase),
+      getNotesForFeed(),
+   ]);
 
    if (!profile) return null;
 
-   return <NewNoteModal currentUser={profile} ownNote={ownNote} />;
+   return <NewNoteModal currentUser={profile} ownNote={ownNote} ownNoteId={ownNoteId} />;
 }

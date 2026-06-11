@@ -25,9 +25,10 @@ const MAX_LENGTH = 60;
 interface NewNoteModalProps {
    currentUser: Profile;
    ownNote: string | null;
+   ownNoteId: string | null;
 }
 
-export default function NewNoteModal({ currentUser, ownNote }: NewNoteModalProps) {
+export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNoteModalProps) {
    const { isOpen, close } = useNewNoteModalStore();
    const isDark = useThemeStore(s => s.isDark);
    const router = useRouter();
@@ -76,10 +77,10 @@ export default function NewNoteModal({ currentUser, ownNote }: NewNoteModalProps
    };
 
    const handleDelete = async () => {
-      if (loading) return;
+      if (loading || !ownNoteId) return;
       setLoading(true);
       try {
-         await deleteNoteAction();
+         await deleteNoteAction(ownNoteId);
          router.refresh();
          setText('');
          close();

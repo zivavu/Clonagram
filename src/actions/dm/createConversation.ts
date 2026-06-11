@@ -2,15 +2,19 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { CreateConversationSchema, validate } from '@/src/lib/validation';
 
 export async function createConversation(participantIds: string[]): Promise<string> {
+   const { participantIds: validatedParticipantIds } = validate(CreateConversationSchema, {
+      participantIds,
+   });
    const supabase = await createServerClient();
    const {
       data: { user },
    } = await supabase.auth.getUser();
    if (!user) throw new Error('Not authenticated');
 
-   const uniqueParticipantIds = [...new Set(participantIds.filter(id => id !== user.id))];
+   const uniqueParticipantIds = [...new Set(validatedParticipantIds.filter(id => id !== user.id))];
 
    if (uniqueParticipantIds.length === 1) {
       const { data: existingId } = await supabase.rpc('find_direct_conversation', {

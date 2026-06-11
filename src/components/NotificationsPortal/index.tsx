@@ -203,9 +203,12 @@ export default function NotificationsPortal() {
 
    useEffect(() => {
       if (isOpen) {
-         markNotificationsReadAction().catch(() => {});
+         const unreadIds = notificationRows.filter(n => !n.read).map(n => n.id);
+         if (unreadIds.length) {
+            markNotificationsReadAction(unreadIds).catch(() => {});
+         }
       }
-   }, [isOpen]);
+   }, [isOpen, notificationRows]);
 
    const grouped = groupNotifications(notificationRows);
 

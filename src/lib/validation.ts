@@ -48,6 +48,26 @@ export const UpdateProfileSchema = z.object({
    gender: z.string().max(20).nullable(),
 });
 
+export const CreateConversationSchema = z.object({
+   participantIds: z.array(uuid).min(1).max(100),
+});
+
+export const DeletePostSchema = z.object({ postId: uuid });
+export const DeleteCommentSchema = z.object({ commentId: uuid });
+export const LikeCommentSchema = z.object({ commentId: uuid });
+export const UnsavePostSchema = z.object({ postId: uuid });
+export const DislikePostSchema = z.object({ postId: uuid });
+
+export const CreateNoteSchema = z.object({
+   content: z.string().min(1).max(100),
+});
+
+export const DeleteNoteSchema = z.object({ noteId: uuid });
+export const RecordStoryViewSchema = z.object({ storyId: uuid });
+export const MarkNotificationsReadSchema = z.object({
+   ids: z.array(uuid).max(100),
+});
+
 export function validate<T>(schema: z.ZodSchema<T>, input: unknown): T {
    const result = schema.safeParse(input);
    if (!result.success) {

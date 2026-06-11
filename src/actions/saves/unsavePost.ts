@@ -1,10 +1,10 @@
 'use server';
 import 'server-only';
-import { SavePostSchema, validate } from '../../lib/validation';
+import { UnsavePostSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
 export async function unsavePostAction(params: { postId: string }): Promise<void> {
-   const { postId } = validate(SavePostSchema, params);
+   const { postId } = validate(UnsavePostSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { error } = await supabase
