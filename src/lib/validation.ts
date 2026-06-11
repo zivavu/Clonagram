@@ -64,6 +64,7 @@ export const CreateNoteSchema = z.object({
 
 export const DeleteNoteSchema = z.object({ noteId: uuid });
 export const RecordStoryViewSchema = z.object({ storyId: uuid });
+export const ReactToStorySchema = z.object({ storyId: uuid, emoji: z.string().min(1).max(10) });
 export const MarkNotificationsReadSchema = z.object({
    ids: z.array(uuid).max(100),
 });

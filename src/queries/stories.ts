@@ -6,7 +6,8 @@ export const ACTIVE_STORIES_SELECT = `
    profiles!stories_user_id_fkey(username, avatar_url),
    story_images(url, blur_data_url),
    story_videos(mux_playback_id),
-   story_views(viewer_id)
+   story_views(viewer_id),
+   story_reactions(user_id)
 `;
 
 export function activeStoriesQuery(supabase: SupabaseClient<Database>) {

@@ -377,70 +377,80 @@ export type Database = {
                },
             ];
          };
-         messages: {
-            Row: {
-               content: string | null;
-               conversation_id: string;
-               created_at: string | null;
-               edited_at: string | null;
-               id: string;
-               is_deleted: boolean;
-               media_url: string | null;
-               read_at: string | null;
-               reply_to_id: string | null;
-               sender_id: string;
-               sticker_url: string | null;
-            };
-            Insert: {
-               content?: string | null;
-               conversation_id: string;
-               created_at?: string | null;
-               edited_at?: string | null;
-               id?: string;
-               is_deleted?: boolean;
-               media_url?: string | null;
-               read_at?: string | null;
-               reply_to_id?: string | null;
-               sender_id: string;
-               sticker_url?: string | null;
-            };
-            Update: {
-               content?: string | null;
-               conversation_id?: string;
-               created_at?: string | null;
-               edited_at?: string | null;
-               id?: string;
-               is_deleted?: boolean;
-               media_url?: string | null;
-               read_at?: string | null;
-               reply_to_id?: string | null;
-               sender_id?: string;
-               sticker_url?: string | null;
-            };
-            Relationships: [
-               {
-                  foreignKeyName: 'messages_conversation_id_fkey';
-                  columns: ['conversation_id'];
-                  isOneToOne: false;
-                  referencedRelation: 'conversations';
-                  referencedColumns: ['id'];
-               },
-               {
-                  foreignKeyName: 'messages_reply_to_id_fkey';
-                  columns: ['reply_to_id'];
-                  isOneToOne: false;
-                  referencedRelation: 'messages';
-                  referencedColumns: ['id'];
-               },
-               {
-                  foreignKeyName: 'messages_sender_id_fkey';
-                  columns: ['sender_id'];
-                  isOneToOne: false;
-                  referencedRelation: 'profiles';
-                  referencedColumns: ['id'];
-               },
-            ];
-         };
+          messages: {
+             Row: {
+                content: string | null;
+                conversation_id: string;
+                created_at: string | null;
+                edited_at: string | null;
+                id: string;
+                is_deleted: boolean;
+                media_url: string | null;
+                read_at: string | null;
+                reply_to_id: string | null;
+                sender_id: string;
+                sticker_url: string | null;
+                story_id: string | null;
+             };
+             Insert: {
+                content?: string | null;
+                conversation_id: string;
+                created_at?: string | null;
+                edited_at?: string | null;
+                id?: string;
+                is_deleted?: boolean;
+                media_url?: string | null;
+                read_at?: string | null;
+                reply_to_id?: string | null;
+                sender_id: string;
+                sticker_url?: string | null;
+                story_id?: string | null;
+             };
+             Update: {
+                content?: string | null;
+                conversation_id?: string;
+                created_at?: string | null;
+                edited_at?: string | null;
+                id?: string;
+                is_deleted?: boolean;
+                media_url?: string | null;
+                read_at?: string | null;
+                reply_to_id?: string | null;
+                sender_id?: string;
+                sticker_url?: string | null;
+                story_id?: string | null;
+             };
+             Relationships: [
+                {
+                   foreignKeyName: 'messages_conversation_id_fkey';
+                   columns: ['conversation_id'];
+                   isOneToOne: false;
+                   referencedRelation: 'conversations';
+                   referencedColumns: ['id'];
+                },
+                {
+                   foreignKeyName: 'messages_reply_to_id_fkey';
+                   columns: ['reply_to_id'];
+                   isOneToOne: false;
+                   referencedRelation: 'messages';
+                   referencedColumns: ['id'];
+                },
+                {
+                   foreignKeyName: 'messages_sender_id_fkey';
+                   columns: ['sender_id'];
+                   isOneToOne: false;
+                   referencedRelation: 'profiles';
+                   referencedColumns: ['id'];
+                },
+                {
+                   foreignKeyName: 'messages_story_id_fkey';
+                   columns: ['story_id'];
+                   isOneToOne: false;
+                   referencedRelation: 'stories';
+                   referencedColumns: ['id'];
+                },
+             ];
+          };
          mutes: {
             Row: {
                created_at: string | null;

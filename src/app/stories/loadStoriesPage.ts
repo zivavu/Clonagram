@@ -2,10 +2,10 @@ import { getActiveStories } from '@/src/actions/story/getActiveStories';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 
 export async function loadStoriesPage() {
-   const [{ entries, viewedStoryIds }, profile] = await Promise.all([
+   const [{ entries, viewedStoryIds, reactedStoryIds }, profile] = await Promise.all([
       getActiveStories(),
       getAuthProfile(),
    ]);
 
-   return { entries, viewedStoryIds, currentUserId: profile?.id ?? null };
+   return { entries, viewedStoryIds, reactedStoryIds, currentUserId: profile?.id ?? null };
 }

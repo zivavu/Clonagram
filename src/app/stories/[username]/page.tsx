@@ -3,7 +3,7 @@ import { loadStoriesPage } from '../loadStoriesPage';
 
 export default async function StoriesRoute({ params }: { params: Promise<{ username: string }> }) {
    const { username } = await params;
-   const { entries, viewedStoryIds, currentUserId } = await loadStoriesPage();
+   const { entries, viewedStoryIds, reactedStoryIds, currentUserId } = await loadStoriesPage();
 
    return (
       <StoriesPage
@@ -11,6 +11,7 @@ export default async function StoriesRoute({ params }: { params: Promise<{ usern
          basePath="/stories"
          entries={entries}
          viewedStoryIds={viewedStoryIds}
+         reactedStoryIds={reactedStoryIds}
          currentUserId={currentUserId}
       />
    );

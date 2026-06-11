@@ -38,6 +38,7 @@ import MessageInput, { type MessageInputHandle } from './MessageInput';
 import MessageText from './MessageText';
 import RequestActions from './RequestActions';
 import StickerMessage from './StickerMessage';
+import StoryLikeMessage from './StoryLikeMessage';
 
 const MS_PER_DAY = 86_400_000;
 
@@ -120,11 +121,13 @@ export default function ChatView({
          content: null,
          sticker_url: null,
          media_url: null,
+         story_id: null,
          created_at: new Date().toISOString(),
          sender_id: authUserId,
          is_deleted: false,
          reply_to_id: null,
          read_at: null,
+         story: null,
          sender: authProfile ?? {
             id: authUserId,
             username: '',
@@ -265,6 +268,24 @@ export default function ChatView({
                         )}
                         {msg.sticker_url ? (
                            <StickerMessage src={msg.sticker_url} />
+                        ) : msg.story_id ? (
+                           <>
+                              <div
+                                 {...stylex.props(
+                                    styles.messageBubble,
+                                    isSent
+                                       ? styles.messageBubbleSent
+                                       : styles.messageBubbleReceived,
+                                 )}
+                              >
+                                 <MessageText content={msg.content ?? ''} />
+                              </div>
+                              <StoryLikeMessage
+                                 storyId={msg.story_id}
+                                 storyUsername={msg.story?.profiles?.username ?? ''}
+                                 thumbnailUrl={msg.media_url}
+                              />
+                           </>
                         ) : msg.media_url ? (
                            <ImageMessage src={msg.media_url} onOpen={setViewingImage} />
                         ) : (

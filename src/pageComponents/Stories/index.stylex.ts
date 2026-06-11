@@ -27,6 +27,10 @@ export const styles = stylex.create({
    titleLinkText: {
       fontFamily: 'var(--font-grand-hotel)',
       fontWeight: '200',
+
+      '@media (max-width: 639px)': {
+         display: 'none',
+      },
    },
    closeLink: {
       position: 'absolute',

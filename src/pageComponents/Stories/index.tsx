@@ -19,6 +19,7 @@ export default function StoriesPage({
    closeHref = '/',
    entries,
    viewedStoryIds,
+   reactedStoryIds,
 }: StoriesPageProps) {
    const startIndex = Math.max(
       0,
@@ -161,6 +162,7 @@ export default function StoriesPage({
                         goToNextStoryMedia={goToNextStoryMedia}
                         closeHref={closeHref}
                         showReply={showReply}
+                        reactedStoryIds={reactedStoryIds}
                      />
                   ))}
                </div>

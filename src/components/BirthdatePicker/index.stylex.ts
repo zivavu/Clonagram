@@ -63,7 +63,7 @@ export const styles = stylex.create({
       position: 'absolute',
       top: '50%',
       transform: 'translateY(-50%)',
-      right: 16,
+      right: 8,
    },
    content: {
       backgroundColor: colors.bgElevated,
@@ -72,7 +72,7 @@ export const styles = stylex.create({
       borderColor: colors.border,
       borderRadius: radius.md,
       padding: '1px',
-      maxHeight: '200px',
+      maxHeight: '420px',
       overflowY: 'auto',
       zIndex: 50,
       minWidth: 'var(--radix-dropdown-menu-trigger-width)',

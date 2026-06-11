@@ -92,6 +92,7 @@ export function useUploadPost({ postData, onDone }: UseUploadPostParams): UseUpl
    postDataRef.current = postData;
    onDoneRef.current = onDone;
 
+   // biome-ignore lint/correctness/useExhaustiveDependencies: runs once on mount, guarded by hasRun ref
    useEffect(() => {
       if (hasRun.current) return;
       hasRun.current = true;

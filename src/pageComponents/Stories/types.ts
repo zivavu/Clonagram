@@ -19,5 +19,6 @@ export interface StoriesPageProps {
    closeHref?: string;
    entries: Awaited<ReturnType<typeof getActiveStories>>['entries'];
    viewedStoryIds: string[];
+   reactedStoryIds: string[];
    currentUserId: string | null;
 }

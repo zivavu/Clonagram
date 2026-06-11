@@ -203,17 +203,13 @@ export async function createPost(params: CreatePostParams) {
       saveHashtags(supabase, postId, params.caption),
    ]);
 
-   Promise.all(
+   await Promise.all(
       insertedImageIds
          .filter((img, i) => {
             const media = params.mediaResults[i];
             return media.type === 'image' && !media.alt && img.url;
          })
-         .map(img =>
-            generateImageAltText(img.id, img.url).catch(err => {
-               console.error('Failed to generate alt text for image', img.id, err);
-            }),
-         ),
+         .map(img => generateImageAltText(img.id, img.url)),
    );
 
    revalidatePath('/');

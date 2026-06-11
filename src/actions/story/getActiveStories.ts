@@ -33,6 +33,7 @@ export async function getActiveStories() {
    >();
 
    const viewedStoryIds: string[] = [];
+   const reactedStoryIds: string[] = [];
 
    for (const row of data ?? []) {
       const profile = row.profiles;
@@ -41,6 +42,7 @@ export async function getActiveStories() {
       const images = row.story_images;
       const videos = row.story_videos;
       const views = row.story_views;
+      const reactions = row.story_reactions;
 
       const isImage = images.length > 0;
       const mediaUrl = isImage ? images[0].url : (videos[0]?.mux_playback_id ?? '');
@@ -48,6 +50,9 @@ export async function getActiveStories() {
 
       const isViewed = currentUserId !== null && views.some(v => v.viewer_id === currentUserId);
       if (isViewed) viewedStoryIds.push(row.id);
+
+      const isReacted = currentUserId !== null && reactions.some(r => r.user_id === currentUserId);
+      if (isReacted) reactedStoryIds.push(row.id);
 
       if (!grouped.has(row.user_id)) {
          grouped.set(row.user_id, {
@@ -77,7 +82,7 @@ export async function getActiveStories() {
       b.timestamp.localeCompare(a.timestamp),
    );
 
-   return { entries, viewedStoryIds };
+   return { entries, viewedStoryIds, reactedStoryIds };
 }
 
 export type StoryEntry = Awaited<ReturnType<typeof getActiveStories>>['entries'][number];

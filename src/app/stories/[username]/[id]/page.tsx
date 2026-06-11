@@ -7,7 +7,7 @@ export default async function StoriesRoute({
    params: Promise<{ username: string; id: string }>;
 }) {
    const { username } = await params;
-   const { entries, viewedStoryIds, currentUserId } = await loadStoriesPage();
+   const { entries, viewedStoryIds, reactedStoryIds, currentUserId } = await loadStoriesPage();
 
    return (
       <StoriesPage
@@ -15,6 +15,7 @@ export default async function StoriesRoute({
          basePath="/stories"
          entries={entries}
          viewedStoryIds={viewedStoryIds}
+         reactedStoryIds={reactedStoryIds}
          currentUserId={currentUserId}
       />
    );

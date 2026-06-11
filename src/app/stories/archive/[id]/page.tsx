@@ -34,6 +34,7 @@ export default async function ArchiveStoryViewerRoute({
          closeHref="/archive/stories"
          entries={entries}
          viewedStoryIds={stories.map(story => story.id)}
+         reactedStoryIds={[]}
          currentUserId={profile?.id ?? null}
       />
    );

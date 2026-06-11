@@ -23,6 +23,7 @@ interface StoryCardProps {
    goToNextStoryMedia: () => void;
    closeHref: string;
    showReply?: boolean;
+   reactedStoryIds: string[];
 }
 
 export default function StoryCard({
@@ -34,6 +35,7 @@ export default function StoryCard({
    goToNextStoryMedia,
    closeHref,
    showReply = true,
+   reactedStoryIds,
 }: StoryCardProps) {
    const [displayedIndex, setDisplayedIndex] = useState(0);
    useEffect(() => {
@@ -103,6 +105,7 @@ export default function StoryCard({
          )}
          {isCurrent && (
             <ActiveStoryOverlay
+               key={story.stories[currentStoryMediaIndex]?.userId ?? ''}
                story={story}
                videoDuration={videoDuration}
                playTime={playTime}
@@ -114,6 +117,7 @@ export default function StoryCard({
                currentStoryMediaIndex={currentStoryMediaIndex}
                closeHref={closeHref}
                showReply={showReply}
+               reactedStoryIds={reactedStoryIds}
             />
          )}
 

@@ -3,10 +3,11 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import type React from 'react';
-import { useCallback } from 'react';
+import { useRef, useState } from 'react';
 import { LuSend } from 'react-icons/lu';
-import { MdClose, MdFavoriteBorder, MdMoreHoriz, MdPause, MdPlayArrow } from 'react-icons/md';
+import { MdClose, MdFavorite, MdFavoriteBorder, MdPause, MdPlayArrow } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
+import { reactToStory } from '@/src/actions/story/reactToStory';
 import VolumeControl from '@/src/components/VolumeControl';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
@@ -26,6 +27,7 @@ interface ActiveStoryOverlayProps {
    currentStoryMediaIndex: number;
    closeHref: string;
    showReply?: boolean;
+   reactedStoryIds: string[];
 }
 
 export default function ActiveStoryOverlay({
@@ -40,14 +42,27 @@ export default function ActiveStoryOverlay({
    currentStoryMediaIndex,
    closeHref,
    showReply = true,
+   reactedStoryIds,
 }: ActiveStoryOverlayProps) {
-   const onPictureAnimationEnd = useCallback(
-      (e: React.AnimationEvent<HTMLDivElement>) => {
-         if (e.target !== e.currentTarget) return;
-         onPictureSegmentComplete();
-      },
-      [onPictureSegmentComplete],
-   );
+   const currentStoryId = story.stories[currentStoryMediaIndex]?.userId ?? '';
+   const alreadyLiked = reactedStoryIds.includes(currentStoryId);
+   const hasLiked = useRef(alreadyLiked);
+   const [liked, setLiked] = useState(alreadyLiked);
+
+   const onPictureAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
+      if (e.target !== e.currentTarget) return;
+      onPictureSegmentComplete();
+   };
+
+   const onLike = () => {
+      if (hasLiked.current) return;
+      hasLiked.current = true;
+      setLiked(true);
+      const currentStoryId = story.stories[currentStoryMediaIndex]?.userId;
+      if (currentStoryId) {
+         reactToStory(currentStoryId, '\u2764\uFE0F');
+      }
+   };
 
    const playedPct = videoDuration > 0 ? (playTime / videoDuration) * 100 : 0;
    const remainingPct = 100 - playedPct;
@@ -136,12 +151,6 @@ export default function ActiveStoryOverlay({
                   >
                      {isPlaying ? <MdPause size={20} /> : <MdPlayArrow size={20} />}
                   </button>
-                  <button
-                     type="button"
-                     {...stylex.props(styles.activeStoryTopNavigationRightButton)}
-                  >
-                     <MdMoreHoriz size={20} />
-                  </button>
                   <Link
                      href={closeHref}
                      {...stylex.props(
@@ -161,8 +170,8 @@ export default function ActiveStoryOverlay({
                   placeholder={`Reply to ${story.username}...`}
                   {...stylex.props(styles.activeStoryReplyToInput, sharedStyles.placeholderPrimary)}
                />
-               <button type="button">
-                  <MdFavoriteBorder size={26} />
+               <button type="button" onClick={onLike}>
+                  {liked ? <MdFavorite size={26} color="red" /> : <MdFavoriteBorder size={26} />}
                </button>
                <button type="button">
                   <LuSend size={24} />
