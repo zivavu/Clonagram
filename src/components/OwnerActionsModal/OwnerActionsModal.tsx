@@ -6,7 +6,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
 import { deletePost } from '../../actions/post/deletePost';
-import { useOwnerActionsModal } from '../../store/useOwnerActionsModalStore';
+import { useOwnerActionsModal } from '../../store/createModalStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
 import EditPostModal from '../EditPostModal';
@@ -23,7 +23,7 @@ interface OwnerActionsModalProps {
 }
 
 export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) {
-   const { isOpen, postId, close } = useOwnerActionsModal();
+   const { isOpen, data: postId, close } = useOwnerActionsModal();
    const [isLoading, setIsLoading] = useState(false);
    const [showConfirm, setShowConfirm] = useState(false);
    const [deletingPostId, setDeletingPostId] = useState<string | null>(null);

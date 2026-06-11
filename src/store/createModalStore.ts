@@ -16,9 +16,28 @@ export function createModalStore() {
    }));
 }
 
+export interface ModalStoreWithData<T> {
+   isOpen: boolean;
+   data: T | null;
+   open: (data: T) => void;
+   close: () => void;
+   toggle: () => void;
+}
+
+export function createModalStoreWithData<T>() {
+   return create<ModalStoreWithData<T>>(set => ({
+      isOpen: false,
+      data: null,
+      open: (data: T) => set({ isOpen: true, data }),
+      close: () => set({ isOpen: false, data: null }),
+      toggle: () => set(state => ({ isOpen: !state.isOpen })),
+   }));
+}
+
 export const useNotificationsPortalStore = createModalStore();
 export const useSearchPortalStore = createModalStore();
 export const useCreateStoryModalStore = createModalStore();
 export const useNewMessageModalStore = createModalStore();
 export const useSettingsPopoverStore = createModalStore();
 export const useNewNoteModalStore = createModalStore();
+export const useOwnerActionsModal = createModalStoreWithData<string>();

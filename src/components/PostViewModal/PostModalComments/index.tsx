@@ -29,7 +29,7 @@ import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
-import { useOwnerActionsModal } from '@/src/store/useOwnerActionsModalStore';
+import { useOwnerActionsModal } from '@/src/store/createModalStore';
 import { usePostViewModal } from '@/src/store/usePostViewModalStore';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from './index.stylex';

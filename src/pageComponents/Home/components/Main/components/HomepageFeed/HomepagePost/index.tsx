@@ -18,7 +18,7 @@ import { useAuthUser } from '../../../../../../../hooks/useAuthUser';
 import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike';
 import { useTogglePostSave } from '../../../../../../../hooks/useTogglePostSave';
 import { queryKeys } from '../../../../../../../lib/queryKeys';
-import { useOwnerActionsModal } from '../../../../../../../store/useOwnerActionsModalStore';
+import { useOwnerActionsModal } from '../../../../../../../store/createModalStore';
 import { usePostViewModal } from '../../../../../../../store/usePostViewModalStore';
 import { colors } from '../../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';

@@ -2,8 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { useNotificationsPortalStore } from '../../store/createModalStore';
-import { useOwnerActionsModal } from '../../store/useOwnerActionsModalStore';
+import { useNotificationsPortalStore, useOwnerActionsModal } from '../../store/createModalStore';
 import { usePostViewModal } from '../../store/usePostViewModalStore';
 
 const POST_URL_PATTERN = /^\/profile\/[^/]+\/[^/]+$/;
