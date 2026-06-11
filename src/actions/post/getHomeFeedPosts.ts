@@ -42,30 +42,34 @@ export async function getHomeFeedPosts(
       return { posts: [], nextCursor: null };
    }
 
-    const {
-       data: postIds,
-       error: rpcError,
-    } = await (supabase.rpc as any)('get_following_posts', {
-       follower_id: user.id,
-       before_cursor: cursor,
-       page_size: PAGE_SIZE,
-    });
+    const rpc = (supabase.rpc as unknown) as <T>(
+       name: string,
+       args: Record<string, unknown>,
+    ) => Promise<{ data: T | null; error: { message: string } | null }>;
+    const { data: postIds, error: rpcError } = await rpc<{ id: string; created_at: string }[]>('get_following_posts', {
+      follower_id: user.id,
+      before_cursor: cursor,
+      page_size: PAGE_SIZE,
+   });
 
-    if (rpcError) throw new Error(`Failed to fetch following feed: ${rpcError.message}`);
-    const ids = postIds as { id: string; created_at: string }[] | null;
-    if (!ids || ids.length === 0) {
-       return { posts: [], nextCursor: null };
-    }
+   if (rpcError) throw new Error(`Failed to fetch following feed: ${rpcError.message}`);
+   const ids = postIds as { id: string; created_at: string }[] | null;
+   if (!ids || ids.length === 0) {
+      return { posts: [], nextCursor: null };
+   }
 
-    const { data: posts, error: postsError } = await supabase
-       .from('posts')
-       .select(POST_WITH_MEDIA_SELECT)
-       .in('id', ids.map(p => p.id))
-       .order('created_at', { ascending: false })
-       .eq('likes.user_id', user.id)
-       .eq('saves.user_id', user.id);
+   const { data: posts, error: postsError } = await supabase
+      .from('posts')
+      .select(POST_WITH_MEDIA_SELECT)
+      .in(
+         'id',
+         ids.map(p => p.id),
+      )
+      .order('created_at', { ascending: false })
+      .eq('likes.user_id', user.id)
+      .eq('saves.user_id', user.id);
 
-    if (postsError) throw new Error(`Failed to fetch following feed: ${postsError.message}`);
-    const nextCursor = posts.length === PAGE_SIZE ? (ids[ids.length - 1].created_at ?? null) : null;
-    return { posts: posts ?? [], nextCursor };
+   if (postsError) throw new Error(`Failed to fetch following feed: ${postsError.message}`);
+   const nextCursor = posts.length === PAGE_SIZE ? (ids[ids.length - 1].created_at ?? null) : null;
+   return { posts: posts ?? [], nextCursor };
 }
