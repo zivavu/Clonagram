@@ -5,6 +5,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { revalidatePath } from 'next/cache';
 import type { Database } from '@/src/types/database';
 import type { CreatePostParams, TaggedPerson } from '../../components/CreatePostModal/types';
+import { generateImageAltText } from '../ai/generateImageAltText';
 import { getAuthUser } from '../getAuthUser';
 
 function extractHashtags(caption: string | null): string[] {
@@ -18,7 +19,7 @@ async function saveMedia(
    supabase: SupabaseClient<Database>,
    postId: string,
    mediaResults: CreatePostParams['mediaResults'],
-) {
+): Promise<{ id: string; url: string }[]> {
    const imageInserts: Array<{
       post_id: string;
       position: number;
@@ -69,12 +70,16 @@ async function saveMedia(
       }
    }
 
+   let insertedImageIds: { id: string; url: string }[] = [];
+
    if (imageInserts.length > 0) {
       const { data: insertedImages, error } = await supabase
          .from('post_images')
          .insert(imageInserts)
-         .select('id');
+         .select('id, url');
       if (error || !insertedImages) throw new Error(`Failed to insert images: ${error?.message}`);
+
+      insertedImageIds = insertedImages;
 
       if (imageTags.length > 0) {
          await saveImageTags(supabase, insertedImages, imageTags);
@@ -85,6 +90,8 @@ async function saveMedia(
       const { error } = await supabase.from('post_videos').insert(videoInserts);
       if (error) throw new Error(`Failed to insert videos: ${error.message}`);
    }
+
+   return insertedImageIds;
 }
 
 async function saveImageTags(
@@ -189,11 +196,25 @@ export async function createPost(params: CreatePostParams) {
 
    const postId = post.id;
 
+   const insertedImageIds = await saveMedia(supabase, postId, params.mediaResults);
+
    await Promise.all([
-      saveMedia(supabase, postId, params.mediaResults),
       saveCollaborators(supabase, postId, params.collaborators),
       saveHashtags(supabase, postId, params.caption),
    ]);
+
+   Promise.all(
+      insertedImageIds
+         .filter((img, i) => {
+            const media = params.mediaResults[i];
+            return media.type === 'image' && !media.alt && img.url;
+         })
+         .map(img =>
+            generateImageAltText(img.id, img.url).catch(err => {
+               console.error('Failed to generate alt text for image', img.id, err);
+            }),
+         ),
+   );
 
    revalidatePath('/');
    revalidatePath('/[username]', 'page');

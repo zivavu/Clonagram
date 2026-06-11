@@ -3,6 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Image, { type ImageProps } from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import { formatAltText } from '../../lib/altText';
 import type { PostWithMedia } from '../../queries/posts';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { usePostViewModal } from '../../store/usePostViewModalStore';
@@ -30,13 +31,13 @@ interface UnifiedMedia {
 
 function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
    const images: UnifiedMedia[] =
-      post.images?.map(img => ({
+      post.images?.map((img, i) => ({
          id: img.id,
          type: 'image' as const,
          url: img.url,
          position: img.position,
          blurDataURL: img.blur_data_url ?? undefined,
-         altText: img.alt_text ?? undefined,
+         altText: formatAltText(img.alt_text, post, i),
          tags: img.tags?.map(t => ({ id: t.id, x: t.x, y: t.y, username: t.user.username })) ?? [],
       })) ?? [];
 
@@ -226,7 +227,7 @@ export default function PostMediaCarousel({
                      >
                         <Image
                            src={item.url}
-                           alt={item.altText ?? 'post'}
+                           alt={item.altText ?? ''}
                            fill
                            sizes={sizes}
                            placeholder={item.blurDataURL ? 'blur' : 'empty'}

@@ -1,6 +1,8 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { createPost } from '@/src/actions/post/createPost';
 import { uploadVideo } from '@/src/actions/uploadVideo';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { bakeImage } from '@/src/utils/bakeImage';
 import { pollMuxAsset } from '@/src/utils/pollMuxAsset';
@@ -85,6 +87,7 @@ export function useUploadPost({ postData, onDone }: UseUploadPostParams): UseUpl
    const postDataRef = useRef(postData);
    const onDoneRef = useRef(onDone);
    const hasRun = useRef(false);
+   const queryClient = useQueryClient();
 
    postDataRef.current = postData;
    onDoneRef.current = onDone;
@@ -99,6 +102,8 @@ export function useUploadPost({ postData, onDone }: UseUploadPostParams): UseUpl
          const mediaResults = await Promise.all(data.media.map(media => processMedia(media, data)));
          const { media: _, ...postMeta } = data;
          await createPost({ ...postMeta, mediaResults });
+         queryClient.invalidateQueries({ queryKey: queryKeys.homeFeed('home') });
+         queryClient.invalidateQueries({ queryKey: queryKeys.homeFeed('following') });
          setStatus('done');
          onDoneRef.current();
       }

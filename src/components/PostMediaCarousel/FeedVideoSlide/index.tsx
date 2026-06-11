@@ -42,6 +42,7 @@ export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: Feed
          <MuxPlayer
             ref={muxPlayerRef}
             disableCookies
+            loop
             style={{
                width: '100%',
                height: '100%',
