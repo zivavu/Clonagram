@@ -20,6 +20,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import type { PartialUser } from '@/src/types/global';
 import DeleteChatConfirmModal from '../DeleteChatConfirmModal';
 import { styles } from './index.stylex';
@@ -204,7 +205,7 @@ export default function ChatDetailsPanel({
                            Changing the name of a group chat changes it for everyone.
                         </p>
                         <input
-                           {...stylex.props(styles.renameModalInput)}
+                           {...stylex.props(styles.renameModalInput, sharedStyles.placeholder)}
                            value={groupName}
                            onChange={e => setGroupName(e.target.value)}
                            onKeyDown={e => e.key === 'Enter' && !isLoading && saveName()}

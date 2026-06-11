@@ -110,9 +110,6 @@ export const styles = stylex.create({
       backgroundColor: 'transparent',
       fontSize: '16px',
       color: colors.textPrimary,
-      '::placeholder': {
-         color: colors.textSecondary,
-      },
    },
    divider: {
       height: 1,

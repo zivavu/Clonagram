@@ -161,9 +161,7 @@ export const styles = stylex.create({
       fontSize: '0.9375rem',
       color: colors.textPrimary,
       outline: 'none',
-      '::placeholder': {
-         color: colors.textSecondary,
-      },
+
       ':focus': {
          borderColor: colors.textSecondary,
       },

@@ -31,9 +31,6 @@ export const styles = stylex.create({
       color: colors.textPrimary,
       fontSize: '14px',
       minWidth: 0,
-      '::placeholder': {
-         color: colors.textMuted,
-      },
    },
    rightAction: {
       flexShrink: 0,

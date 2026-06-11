@@ -12,6 +12,7 @@ import { UserListItem } from '@/src/components/UserListItem';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { useNewMessageModalStore } from '@/src/store/createModalStore';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { styles } from './index.stylex';
 
 export default function NewMessageModal() {
@@ -134,7 +135,7 @@ export default function NewMessageModal() {
                         </span>
                      ))}
                      <input
-                        {...stylex.props(styles.searchInput)}
+                        {...stylex.props(styles.searchInput, sharedStyles.placeholder)}
                         type="text"
                         placeholder={selectedUsers.length === 0 ? 'Search...' : ''}
                         value={query}

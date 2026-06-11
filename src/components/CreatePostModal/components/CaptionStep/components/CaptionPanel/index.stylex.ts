@@ -44,9 +44,6 @@ export const styles = stylex.create({
       fontSize: '14px',
       lineHeight: '20px',
       width: '100%',
-      '::placeholder': {
-         color: colors.textMuted,
-      },
    },
    captionRowBottom: {
       display: 'flex',
@@ -156,9 +153,6 @@ export const styles = stylex.create({
       color: colors.textPrimary,
       fontSize: '13px',
       padding: '4px 0',
-      '::placeholder': {
-         color: colors.textMuted,
-      },
    },
    settingRow: {
       display: 'flex',

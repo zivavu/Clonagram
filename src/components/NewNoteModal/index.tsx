@@ -15,6 +15,7 @@ import { deleteNote } from '@/src/actions/notes/deleteNote';
 import DialogOverlay from '@/src/components/DialogOverlay';
 import { useNewNoteModalStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import type { Profile } from '../../lib/supabase/getAuthProfile';
 import { styles } from './index.stylex';
 
@@ -128,7 +129,7 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
                <div {...stylex.props(styles.body)}>
                   <textarea
                      ref={textareaRef}
-                     {...stylex.props(styles.textarea)}
+                     {...stylex.props(styles.textarea, sharedStyles.placeholderMuted)}
                      placeholder="Share a thought..."
                      value={text}
                      maxLength={MAX_LENGTH}

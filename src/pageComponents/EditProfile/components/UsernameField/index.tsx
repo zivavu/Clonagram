@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { MdCheckCircle, MdError } from 'react-icons/md';
 import { useUsernameAvailability } from '@/src/hooks/useUsernameAvailability';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { styles } from './index.stylex';
 
 interface UsernameFieldProps {
@@ -27,6 +28,7 @@ export default function UsernameField({
             <input
                {...stylex.props(
                   styles.input,
+                  sharedStyles.placeholderMuted,
                   borderError && styles.inputError,
                   borderSuccess && styles.inputSuccess,
                )}

@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { styles } from './index.stylex';
 
 interface BioFieldProps {
@@ -10,7 +11,7 @@ export default function BioField({ value, onChange }: BioFieldProps) {
    return (
       <div {...stylex.props(styles.root)}>
          <textarea
-            {...stylex.props(styles.textarea)}
+            {...stylex.props(styles.textarea, sharedStyles.placeholderMuted)}
             value={value}
             onChange={e => onChange(e.target.value.slice(0, 150))}
             placeholder="Bio"

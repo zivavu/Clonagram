@@ -92,9 +92,6 @@ export const styles = stylex.create({
       fontSize: '1rem',
       borderWidth: 0,
       outline: 'none',
-      '::placeholder': {
-         color: colors.textSecondary,
-      },
    },
    yourNoteSection: {
       display: 'flex',

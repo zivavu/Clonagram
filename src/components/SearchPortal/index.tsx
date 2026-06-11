@@ -10,6 +10,7 @@ import { MdVerified } from 'react-icons/md';
 import { searchProfiles } from '@/src/actions/profile/searchProfiles';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { useSearchPortalStore } from '@/src/store/createModalStore';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { colors } from '../../styles/tokens.stylex';
 import { UserListItem, UserListSkeleton } from '../UserListItem';
 import { styles } from './index.stylex';
@@ -46,7 +47,7 @@ export default function SearchPortal() {
 
                <div {...stylex.props(styles.searchInputWrapper)}>
                   <input
-                     {...stylex.props(styles.searchInput)}
+                     {...stylex.props(styles.searchInput, sharedStyles.placeholder)}
                      type="text"
                      placeholder="Search"
                      value={query}

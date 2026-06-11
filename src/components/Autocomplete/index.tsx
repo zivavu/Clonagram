@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef } from 'react';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { styles } from './index.stylex';
 
 export interface AutocompleteProps<T> {
@@ -47,7 +48,7 @@ export default function Autocomplete<T>({
                value={query}
                onChange={e => onQueryChange(e.target.value)}
                placeholder={placeholder}
-               {...stylex.props(styles.input)}
+               {...stylex.props(styles.input, sharedStyles.placeholderMuted)}
             />
             {rightAction && <div {...stylex.props(styles.rightAction)}>{rightAction}</div>}
          </div>

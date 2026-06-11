@@ -24,9 +24,6 @@ export const styles = stylex.create({
       color: colors.textPrimary,
       fontSize: '14px',
       boxSizing: 'border-box',
-      '::placeholder': {
-         color: colors.textMuted,
-      },
    },
    removeBtn: {
       display: 'flex',

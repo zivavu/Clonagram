@@ -20,9 +20,6 @@ export const styles = stylex.create({
       resize: 'vertical',
       boxSizing: 'border-box',
       fontFamily: 'inherit',
-      '::placeholder': {
-         color: colors.textMuted,
-      },
    },
    counter: {
       position: 'absolute',

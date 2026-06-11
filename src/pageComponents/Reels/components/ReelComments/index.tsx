@@ -12,6 +12,7 @@ import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
 import type { Reel } from '@/src/queries/posts';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { styles } from './index.stylex';
 
 interface ReelCommentsProps {
@@ -86,7 +87,7 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
                placeholder="Add a comment..."
                value={inputValue}
                onChange={e => setInputValue(e.target.value)}
-               {...stylex.props(styles.input)}
+               {...stylex.props(styles.input, sharedStyles.placeholder)}
             />
             <button type="submit" {...stylex.props(styles.postButton)}>
                Post

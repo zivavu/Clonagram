@@ -81,9 +81,6 @@ export const styles = stylex.create({
       textAlign: 'center',
       lineHeight: 1.5,
       minHeight: '60px',
-      '::placeholder': {
-         color: colors.textMuted,
-      },
    },
    avatarWrapper: {
       width: '120px',

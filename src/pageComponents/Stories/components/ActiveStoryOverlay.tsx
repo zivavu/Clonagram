@@ -8,6 +8,7 @@ import { LuSend } from 'react-icons/lu';
 import { MdClose, MdFavoriteBorder, MdMoreHoriz, MdPause, MdPlayArrow } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import VolumeControl from '@/src/components/VolumeControl';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import UserAvatar from '../../../components/UserAvatar';
 import OtherUserUsername from '../../../components/Username/OtherUserUsername';
@@ -158,7 +159,7 @@ export default function ActiveStoryOverlay({
                <input
                   type="text"
                   placeholder={`Reply to ${story.username}...`}
-                  {...stylex.props(styles.activeStoryReplyToInput)}
+                  {...stylex.props(styles.activeStoryReplyToInput, sharedStyles.placeholderPrimary)}
                />
                <button type="button">
                   <MdFavoriteBorder size={26} />

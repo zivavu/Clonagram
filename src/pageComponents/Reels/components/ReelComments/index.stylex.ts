@@ -64,9 +64,6 @@ export const styles = stylex.create({
       backgroundColor: 'transparent',
       fontSize: '14px',
       color: colors.textPrimary,
-      '::placeholder': {
-         color: colors.textSecondary,
-      },
    },
    postButton: {
       color: colors.accentText,

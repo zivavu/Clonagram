@@ -1,6 +1,7 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
 import { MdClose } from 'react-icons/md';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { styles } from './index.stylex';
 
 export type LinkEntry = { id: string; title: string; url: string };
@@ -29,14 +30,14 @@ export default function LinksEditor({ links, onChange }: LinksEditorProps) {
          {links.map(link => (
             <div key={link.id} {...stylex.props(styles.linkRow)}>
                <input
-                  {...stylex.props(styles.input)}
+                  {...stylex.props(styles.input, sharedStyles.placeholderMuted)}
                   type="text"
                   placeholder="Title"
                   value={link.title}
                   onChange={e => updateLink(link.id, 'title', e.target.value)}
                />
                <input
-                  {...stylex.props(styles.input)}
+                  {...stylex.props(styles.input, sharedStyles.placeholderMuted)}
                   type="url"
                   placeholder="URL (https://...)"
                   value={link.url}

@@ -8,6 +8,7 @@ import UserAvatar from '@/src/components/UserAvatar';
 import CurrentUserName from '@/src/components/Username/CurrentUserName';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import type { ConversationSummaries } from '@/src/queries/conversations';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { colors } from '../../../../styles/tokens.stylex';
 import ConversationList from '../ConversationList';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
@@ -85,7 +86,7 @@ export default async function RecipientsSidebar({
                   <div {...stylex.props(styles.searchContainer)}>
                      <BsSearch {...stylex.props(styles.searchIcon)} />
                      <input
-                        {...stylex.props(styles.searchInput)}
+                        {...stylex.props(styles.searchInput, sharedStyles.placeholder)}
                         type="text"
                         placeholder="Search"
                      />

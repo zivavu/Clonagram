@@ -157,10 +157,6 @@ export const styles = stylex.create({
       borderWidth: '1px',
       borderStyle: 'solid',
       backgroundColor: 'transparent',
-
-      '::placeholder': {
-         color: colors.textPrimary,
-      },
    },
    storyMediaBarsContainer: {
       padding: '20px 16px',

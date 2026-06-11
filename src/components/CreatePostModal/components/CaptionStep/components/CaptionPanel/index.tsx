@@ -9,6 +9,7 @@ import LocationAutocomplete from '@/src/components/LocationAutocomplete';
 import Toggle from '@/src/components/Toggle';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import type { PartialUser } from '@/src/types/global';
 import { useAuthUser } from '../../../../../../hooks/useAuthUser';
 import type { PostLocation, PostMedia, PostSettings } from '../../../../types';
@@ -77,7 +78,7 @@ export default function CaptionPanel({
                <span>{}</span>
             </div>
             <textarea
-               {...stylex.props(styles.textarea)}
+               {...stylex.props(styles.textarea, sharedStyles.placeholderMuted)}
                placeholder="Write a caption..."
                maxLength={MAX_CAPTION}
                rows={8}
@@ -189,7 +190,7 @@ export default function CaptionPanel({
                            placeholder="Write alt text..."
                            value={file.alt}
                            onChange={e => onUpdateFile?.(fileIndex, { alt: e.target.value })}
-                           {...stylex.props(styles.altInput)}
+                           {...stylex.props(styles.altInput, sharedStyles.placeholderMuted)}
                         />
                      </div>
                   ))}

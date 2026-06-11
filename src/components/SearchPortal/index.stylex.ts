@@ -64,10 +64,6 @@ export const styles = stylex.create({
       outline: 'none',
       fontSize: '16px',
       color: colors.textPrimary,
-
-      '::placeholder': {
-         color: colors.textSecondary,
-      },
    },
    clearButton: {
       display: 'flex',
