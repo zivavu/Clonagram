@@ -3,6 +3,7 @@ import 'server-only';
 import { revalidatePath } from 'next/cache';
 import type { PostLocation } from '@/src/components/CreatePostModal/types';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
+import { throwIfError } from '@/src/lib/unwrap';
 import { UpdatePostSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
@@ -46,7 +47,7 @@ export async function updatePost({
       .eq('id', pid)
       .eq('user_id', authProfile.id);
 
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to update post');
    revalidatePath('/');
    revalidatePath('/[username]', 'page');
    revalidatePath('/reels');

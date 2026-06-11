@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function moveConversation(
    conversationId: string,
@@ -17,5 +18,5 @@ export async function moveConversation(
       .update({ folder })
       .eq('conversation_id', conversationId)
       .eq('user_id', user.id);
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to move conversation');
 }

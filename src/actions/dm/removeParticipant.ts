@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function removeParticipant(conversationId: string, userId: string): Promise<void> {
    const supabase = await createServerClient();
@@ -22,5 +23,5 @@ export async function removeParticipant(conversationId: string, userId: string):
       .delete()
       .eq('conversation_id', conversationId)
       .eq('user_id', userId);
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to remove participant');
 }

@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function deleteAllRequests(): Promise<void> {
    const supabase = await createServerClient();
@@ -14,5 +15,5 @@ export async function deleteAllRequests(): Promise<void> {
       .delete()
       .eq('user_id', user.id)
       .eq('folder', 'requests');
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to delete all requests');
 }

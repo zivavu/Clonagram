@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 import { SendImageSchema, validate } from '@/src/lib/validation';
 
 export async function sendImage(conversationId: string, mediaUrl: string): Promise<void> {
@@ -19,5 +20,5 @@ export async function sendImage(conversationId: string, mediaUrl: string): Promi
       sender_id: user.id,
       media_url: url,
    });
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to send image');
 }

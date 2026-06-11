@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function addParticipants(conversationId: string, userIds: string[]): Promise<void> {
    const supabase = await createServerClient();
@@ -26,5 +27,5 @@ export async function addParticipants(conversationId: string, userIds: string[])
       onConflict: 'conversation_id,user_id',
       ignoreDuplicates: true,
    });
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to add participants');
 }

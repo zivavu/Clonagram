@@ -9,3 +9,12 @@ export function unwrap<T>(
    }
    return result.data as NonNullable<T>;
 }
+
+export function throwIfError(
+   result: { error: { message: string } | null },
+   message: string,
+): void {
+   if (result.error) {
+      throw new Error(`${message}: ${result.error.message}`);
+   }
+}

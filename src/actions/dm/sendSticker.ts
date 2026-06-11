@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 import { SendStickerSchema, validate } from '@/src/lib/validation';
 
 export async function sendSticker(conversationId: string, stickerUrl: string): Promise<void> {
@@ -19,5 +20,5 @@ export async function sendSticker(conversationId: string, stickerUrl: string): P
       sender_id: user.id,
       sticker_url: url,
    });
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to send sticker');
 }

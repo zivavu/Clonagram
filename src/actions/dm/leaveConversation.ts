@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function leaveConversation(conversationId: string): Promise<void> {
    const supabase = await createServerClient();
@@ -31,7 +32,7 @@ export async function leaveConversation(conversationId: string): Promise<void> {
             .update({ role: 'admin' })
             .eq('conversation_id', conversationId)
             .eq('user_id', nextAdmin.user_id);
-         if (promoteError) throw promoteError;
+         throwIfError({ error: promoteError }, 'Failed to promote new admin');
       }
    }
 
@@ -40,5 +41,5 @@ export async function leaveConversation(conversationId: string): Promise<void> {
       .delete()
       .eq('conversation_id', conversationId)
       .eq('user_id', user.id);
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to leave conversation');
 }

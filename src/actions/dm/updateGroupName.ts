@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function updateGroupName(conversationId: string, title: string): Promise<void> {
    const supabase = await createServerClient();
@@ -21,5 +22,5 @@ export async function updateGroupName(conversationId: string, title: string): Pr
       .from('conversations')
       .update({ title: title.trim() || null })
       .eq('id', conversationId);
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to update group name');
 }

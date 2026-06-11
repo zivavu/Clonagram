@@ -3,6 +3,7 @@ import 'server-only';
 import { revalidatePath } from 'next/cache';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function unfollowUser(targetUserId: string): Promise<void> {
    const supabase = await createServerClient();
@@ -16,7 +17,7 @@ export async function unfollowUser(targetUserId: string): Promise<void> {
       .eq('follower_id', authProfile.id)
       .eq('following_id', targetUserId);
 
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to unfollow user');
 
    revalidatePath('/profile/[username]', 'page');
 }

@@ -3,6 +3,7 @@ import 'server-only';
 import { revalidatePath } from 'next/cache';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function followUser(targetUserId: string): Promise<void> {
    const supabase = await createServerClient();
@@ -22,12 +23,12 @@ export async function followUser(targetUserId: string): Promise<void> {
       const { error } = await supabase
          .from('follow_requests')
          .insert({ requester_id: authProfile.id, target_id: targetUserId });
-      if (error) throw error;
+      throwIfError({ error }, 'Failed to send follow request');
    } else {
       const { error } = await supabase
          .from('follows')
          .insert({ follower_id: authProfile.id, following_id: targetUserId });
-      if (error) throw error;
+      throwIfError({ error }, 'Failed to follow user');
    }
 
    revalidatePath('/profile/[username]', 'page');

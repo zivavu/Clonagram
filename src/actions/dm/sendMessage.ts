@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 import { SendMessageSchema, validate } from '@/src/lib/validation';
 
 export async function sendMessage(conversationId: string, content: string): Promise<void> {
@@ -22,5 +23,5 @@ export async function sendMessage(conversationId: string, content: string): Prom
       sender_id: user.id,
       content: trimmed,
    });
-   if (error) throw error;
+   throwIfError({ error }, 'Failed to send message');
 }
