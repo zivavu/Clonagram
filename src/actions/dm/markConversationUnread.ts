@@ -1,13 +1,9 @@
 'use server';
 import 'server-only';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getAuthUser } from '@/src/actions/getAuthUser';
 
 export async function markConversationUnread(conversationId: string): Promise<void> {
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
-   if (!user) return;
+   const { supabase, user } = await getAuthUser();
 
    await supabase
       .from('conversation_participants')

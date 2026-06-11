@@ -1,6 +1,6 @@
 'use server';
 import 'server-only';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 import { SendMessageSchema, validate } from '@/src/lib/validation';
 
@@ -9,11 +9,7 @@ export async function sendMessage(conversationId: string, content: string): Prom
       conversationId,
       content,
    });
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
-   if (!user) throw new Error('Not authenticated');
+   const { supabase, user } = await getAuthUser();
 
    const trimmed = text.trim();
    if (!trimmed) return;

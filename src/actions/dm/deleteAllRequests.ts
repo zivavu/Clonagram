@@ -1,14 +1,10 @@
 'use server';
 import 'server-only';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 
 export async function deleteAllRequests(): Promise<void> {
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
-   if (!user) throw new Error('Not authenticated');
+   const { supabase, user } = await getAuthUser();
 
    const { error } = await supabase
       .from('conversation_participants')
