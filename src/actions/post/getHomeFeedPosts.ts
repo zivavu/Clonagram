@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '../../lib/supabase/server';
+import { hideLikesForNonOwners } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 
@@ -35,7 +36,7 @@ export async function getHomeFeedPosts(
       const posts = data ?? [];
       const nextCursor =
          posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
-      return { posts, nextCursor };
+      return { posts: hideLikesForNonOwners(posts, user?.id), nextCursor };
    }
 
    if (!user) {
@@ -74,5 +75,5 @@ export async function getHomeFeedPosts(
 
    if (postsError) throw new Error(`Failed to fetch following feed: ${postsError.message}`);
    const nextCursor = posts.length === PAGE_SIZE ? (ids[ids.length - 1].created_at ?? null) : null;
-   return { posts: posts ?? [], nextCursor };
+   return { posts: hideLikesForNonOwners(posts ?? [], user?.id), nextCursor };
 }

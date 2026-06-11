@@ -1,8 +1,8 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '../../lib/supabase/server';
+import { hideLikesForNonOwners } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
-
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 
 export interface ExploreFeedPage {
@@ -34,7 +34,7 @@ export async function getExplorePosts(
       const posts = data ?? [];
       const nextCursor =
          posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
-      return { posts, nextCursor };
+      return { posts: hideLikesForNonOwners(posts, undefined), nextCursor };
    }
 
    query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
@@ -61,5 +61,5 @@ export async function getExplorePosts(
    const posts = data ?? [];
    const nextCursor =
       posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
-   return { posts, nextCursor };
+   return { posts: hideLikesForNonOwners(posts, user.id), nextCursor };
 }

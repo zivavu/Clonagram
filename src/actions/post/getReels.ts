@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { hideLikesForNonOwners } from '@/src/lib/unwrap';
 import type { Reels } from '@/src/queries/posts';
 import { REELS_PAGE_SIZE } from '@/src/queries/posts';
 
@@ -33,5 +34,5 @@ export async function getReels(cursor?: string | null): Promise<Reels> {
 
    const { data, error } = await query;
    if (error) throw new Error(`Failed to fetch reels: ${error.message}`);
-   return data ?? [];
+   return hideLikesForNonOwners(data ?? [], user?.id);
 }

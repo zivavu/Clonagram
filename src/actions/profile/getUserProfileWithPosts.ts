@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
+import { hideLikesForNonOwners } from '../../lib/unwrap';
 import { getFollowStatus } from '../../queries/followStatus';
 import { getAuthUser } from '../getAuthUser';
 
@@ -48,7 +49,11 @@ export async function getUserProfileWithPosts(params: { username: string }) {
       following: data.following as unknown as CountAggregate,
    };
 
-   return { userProfile, posts: data.posts ?? [], followStatus };
+   return {
+      userProfile,
+      posts: hideLikesForNonOwners(data.posts ?? [], authProfile?.id),
+      followStatus,
+   };
 }
 
 export type ProfileWithPosts = Awaited<ReturnType<typeof getUserProfileWithPosts>>;

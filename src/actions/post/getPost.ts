@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '../../lib/supabase/server';
+import { hideLikesForNonOwners } from '../../lib/unwrap';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 
 export async function getPost(postId: string) {
@@ -19,5 +20,5 @@ export async function getPost(postId: string) {
 
    if (error || !postData)
       throw new Error(`Failed to get post: ${error?.message ?? 'unknown error'}`);
-   return postData;
+   return hideLikesForNonOwners([postData], user?.id)[0];
 }
