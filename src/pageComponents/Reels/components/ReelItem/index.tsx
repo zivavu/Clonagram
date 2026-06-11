@@ -6,6 +6,7 @@ import { MdLocationOn, MdVerified } from 'react-icons/md';
 import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { useClickOutside } from '@/src/hooks/useClickOutside';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { postCommentsQuery } from '@/src/queries/comments';
@@ -44,6 +45,7 @@ export default function ReelItem({
    });
 
    const commentCount = comments?.length ?? reel.comment_count ?? 0;
+   const containerRef = useClickOutside<HTMLDivElement>(onCloseComments, isCommentsOpen);
 
    return (
       <section {...stylex.props(styles.section)}>
@@ -83,7 +85,7 @@ export default function ReelItem({
                )}
                {reel.caption && <p {...stylex.props(styles.caption)}>{reel.caption}</p>}
             </div>
-            <div {...stylex.props(styles.railWrapper)}>
+            <div ref={containerRef} {...stylex.props(styles.railWrapper)}>
                <ReelActionRail
                   reel={reel}
                   commentCount={commentCount}

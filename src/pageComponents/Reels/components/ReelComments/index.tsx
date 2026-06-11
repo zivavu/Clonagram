@@ -2,11 +2,10 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
 import CommentItem, { CommentSkeleton } from '@/src/components/CommentItem';
-import { useClickOutside } from '@/src/hooks/useClickOutside';
 import { useSubmitComment } from '@/src/hooks/useSubmitComment';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
@@ -21,7 +20,7 @@ interface ReelCommentsProps {
 }
 
 export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
-   const panelRef = useClickOutside<HTMLDivElement>(onClose);
+   const panelRef = useRef<HTMLDivElement>(null);
    const commentsKey = queryKeys.comments(reel.id);
    const [inputValue, setInputValue] = useState('');
    const [replyingTo, setReplyingTo] = useState<{ commentId: string; username: string } | null>(

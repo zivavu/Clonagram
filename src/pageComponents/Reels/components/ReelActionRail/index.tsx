@@ -93,7 +93,6 @@ export default function ReelActionRail({
                   e.stopPropagation();
                   onToggleComments();
                }}
-               onMouseDown={e => e.stopPropagation()}
                aria-label="Comments"
                {...stylex.props(styles.button)}
             >
