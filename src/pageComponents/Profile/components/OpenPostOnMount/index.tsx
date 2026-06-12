@@ -14,8 +14,7 @@ export default function OpenPostOnMount({ post }: OpenPostOnMountProps) {
 
    useEffect(() => {
       const state = usePostViewModal.getState();
-      const currentPostId = typeof state.post === 'string' ? state.post : state.post?.id;
-      if (!state.isOpen || currentPostId !== postId) {
+      if (!state.isOpen || state.postId !== postId) {
          open(post, { suppressAnimation: true });
       }
    }, [open, post, postId]);

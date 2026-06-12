@@ -16,7 +16,8 @@ import PostModalComments from './PostModalComments';
 export default function PostFullViewModal() {
    const {
       isOpen,
-      post: postOrPostId,
+      postId,
+      preloadedPost,
       close,
       initialImageIndex,
       returnPath,
@@ -24,13 +25,11 @@ export default function PostFullViewModal() {
    } = usePostViewModal();
    const router = useRouter();
 
-   const postId = typeof postOrPostId === 'string' ? postOrPostId : postOrPostId?.id;
-
    const { data: post } = useQuery({
       queryKey: postId ? queryKeys.post(postId) : ['post'],
       queryFn: () => getPost(postId ?? ''),
       enabled: !!postId,
-      initialData: typeof postOrPostId !== 'string' ? postOrPostId : undefined,
+      initialData: preloadedPost ?? undefined,
    });
 
    if (!post) return null;

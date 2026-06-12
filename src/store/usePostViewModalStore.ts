@@ -9,7 +9,8 @@ interface OpenOptions {
 
 interface PostViewModal {
    isOpen: boolean;
-   post: PostWithMedia | null | string;
+   postId: string | null;
+   preloadedPost: PostWithMedia | null;
    initialImageIndex: number;
    returnPath: string | null;
    suppressAnimation: boolean;
@@ -18,16 +19,26 @@ interface PostViewModal {
    toggle: () => void;
 }
 
+function resolvePostId(post: PostWithMedia | string) {
+   return typeof post === 'string' ? post : post.id;
+}
+
+function resolvePreloaded(post: PostWithMedia | string) {
+   return typeof post === 'string' ? null : post;
+}
+
 export const usePostViewModal = create<PostViewModal>(set => ({
    isOpen: false,
-   post: null,
+   postId: null,
+   preloadedPost: null,
    initialImageIndex: 0,
    returnPath: null,
    suppressAnimation: false,
    open: (post, options = {}) =>
       set({
          isOpen: true,
-         post,
+         postId: resolvePostId(post),
+         preloadedPost: resolvePreloaded(post),
          initialImageIndex: options.initialImageIndex ?? 0,
          returnPath: options.returnPath ?? null,
          suppressAnimation: options.suppressAnimation ?? false,
@@ -35,7 +46,8 @@ export const usePostViewModal = create<PostViewModal>(set => ({
    close: () =>
       set({
          isOpen: false,
-         post: null,
+         postId: null,
+         preloadedPost: null,
          initialImageIndex: 0,
          returnPath: null,
          suppressAnimation: false,

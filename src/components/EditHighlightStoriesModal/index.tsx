@@ -11,7 +11,7 @@ import { updateHighlightStories } from '@/src/actions/story/updateHighlightStori
 import { useEditHighlightStoriesModalStore } from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import SelectStoriesStep from '../NewHighlightModal/components/SelectStoriesStep';
-import { styles } from '../NewHighlightModal/index.stylex';
+import { styles } from './index.stylex';
 
 export default function EditHighlightStoriesModal() {
    const { isOpen, data, close } = useEditHighlightStoriesModalStore();
