@@ -49,3 +49,7 @@ type HighlightActionsData = {
    closeHref: string;
 };
 export const useHighlightActionsModalStore = createModalStoreWithData<HighlightActionsData>();
+
+type EditHighlightStoriesData = { highlightId: string };
+export const useEditHighlightStoriesModalStore =
+   createModalStoreWithData<EditHighlightStoriesData>();

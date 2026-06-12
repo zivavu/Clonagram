@@ -12,7 +12,7 @@ export const styles = stylex.create({
       width: 'min(400px, 90dvw)',
       display: 'flex',
       flexDirection: 'column',
-      zIndex: 4,
+      zIndex: 51,
       outline: 'none',
       overflow: 'hidden',
    },
@@ -32,9 +32,8 @@ export const styles = stylex.create({
       fontWeight: 600,
       color: colors.textPrimary,
    },
-   closeButton: {
+   iconButton: {
       position: 'absolute',
-      right: '8px',
       top: '50%',
       transform: 'translateY(-50%)',
       display: 'flex',
@@ -49,6 +48,12 @@ export const styles = stylex.create({
       ':hover': {
          backgroundColor: colors.buttonHover,
       },
+   },
+   closeButton: {
+      right: '8px',
+   },
+   backButton: {
+      left: '8px',
    },
    actionButton: {
       width: '100%',

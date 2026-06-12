@@ -4,10 +4,13 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { IoCloseOutline } from 'react-icons/io5';
+import { IoArrowBack, IoCloseOutline } from 'react-icons/io5';
 import { deleteHighlight } from '@/src/actions/story/deleteHighlight';
 import { editHighlight } from '@/src/actions/story/editHighlight';
-import { useHighlightActionsModalStore } from '@/src/store/createModalStore';
+import {
+   useEditHighlightStoriesModalStore,
+   useHighlightActionsModalStore,
+} from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 
@@ -15,6 +18,7 @@ type Step = 'list' | 'rename' | 'confirm-delete';
 
 export default function HighlightActionsModal() {
    const { isOpen, data, close } = useHighlightActionsModalStore();
+   const openEditStories = useEditHighlightStoriesModalStore(s => s.open);
    const [step, setStep] = useState<Step>('list');
    const [title, setTitle] = useState('');
    const [loading, setLoading] = useState(false);
@@ -32,6 +36,12 @@ export default function HighlightActionsModal() {
    function handleOpenRename() {
       setTitle(data?.title ?? '');
       setStep('rename');
+   }
+
+   function handleEditStories() {
+      if (!data) return;
+      close();
+      openEditStories({ highlightId: data.highlightId });
    }
 
    async function handleSaveRename() {
@@ -62,20 +72,31 @@ export default function HighlightActionsModal() {
          <Dialog.Portal>
             <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)}>
+               <Dialog.Description style={{ display: 'none' }}>
+                  Manage this highlight
+               </Dialog.Description>
                {step === 'list' && (
                   <>
                      <div {...stylex.props(styles.header)}>
-                        <Dialog.Title {...stylex.props(styles.title)}>Highlight</Dialog.Title>
+                        <Dialog.Title {...stylex.props(styles.title)}>Highlight </Dialog.Title>
                         <Dialog.Close asChild>
                            <button
                               type="button"
                               aria-label="Close"
-                              {...stylex.props(styles.closeButton)}
+                              {...stylex.props(styles.iconButton, styles.closeButton)}
                            >
                               <IoCloseOutline size={22} />
                            </button>
                         </Dialog.Close>
                      </div>
+                     <button
+                        type="button"
+                        onClick={handleEditStories}
+                        {...stylex.props(styles.actionButton)}
+                     >
+                        Edit stories
+                     </button>
+                     <div {...stylex.props(styles.separator)} />
                      <button
                         type="button"
                         onClick={handleOpenRename}
@@ -89,7 +110,7 @@ export default function HighlightActionsModal() {
                         onClick={() => setStep('confirm-delete')}
                         {...stylex.props(styles.actionButton, styles.dangerButton)}
                      >
-                        Delete highlight
+                        Delete
                      </button>
                   </>
                )}
@@ -97,12 +118,20 @@ export default function HighlightActionsModal() {
                {step === 'rename' && (
                   <>
                      <div {...stylex.props(styles.header)}>
+                        <button
+                           type="button"
+                           aria-label="Back"
+                           onClick={() => setStep('list')}
+                           {...stylex.props(styles.iconButton, styles.backButton)}
+                        >
+                           <IoArrowBack size={20} />
+                        </button>
                         <Dialog.Title {...stylex.props(styles.title)}>Edit highlight</Dialog.Title>
                         <Dialog.Close asChild>
                            <button
                               type="button"
                               aria-label="Close"
-                              {...stylex.props(styles.closeButton)}
+                              {...stylex.props(styles.iconButton, styles.closeButton)}
                            >
                               <IoCloseOutline size={22} />
                            </button>

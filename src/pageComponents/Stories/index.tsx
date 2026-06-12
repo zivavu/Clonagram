@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { MdClose } from 'react-icons/md';
 import { recordStoryView } from '@/src/actions/story/recordStoryView';
+import EditHighlightStoriesModal from '../../components/EditHighlightStoriesModal';
 import HighlightActionsModal from '../../components/HighlightActionsModal';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
@@ -138,6 +139,7 @@ export default function StoriesPage({
             <MdClose size={38} />
          </Link>
          {showHighlightActions && <HighlightActionsModal />}
+         {showHighlightActions && <EditHighlightStoriesModal />}
          {ready && (
             <>
                <StoryNavigationButton
