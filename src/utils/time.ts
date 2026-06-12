@@ -1,15 +1,19 @@
 const DAY_MS = 86_400_000;
+const MINUTE_MS = 60_000;
+const HOUR_MS = 60 * MINUTE_MS;
+const WEEK_MS = 7 * DAY_MS;
 
-function getDateDiff(isoString: string): {
-   date: Date;
-   now: Date;
-   diff: number;
-   days: number;
-} {
+function getDateDiff(isoString: string) {
    const date = new Date(isoString);
    const now = new Date();
    const diff = now.getTime() - date.getTime();
    return { date, now, diff, days: Math.floor(diff / DAY_MS) };
+}
+
+function getRelativeDiff(timestamp: string) {
+   const date = new Date(timestamp);
+   const diff = Number.isNaN(date.getTime()) ? NaN : Date.now() - date.getTime();
+   return { date, diff };
 }
 
 export function isOlderThan24h(isoString: string): boolean {
@@ -49,7 +53,7 @@ export function formatTimestamp(isoString: string): string {
    const { date, diff, days } = getDateDiff(isoString);
 
    if (days === 0) {
-      const diffMinutes = Math.floor(diff / 60_000);
+      const diffMinutes = Math.floor(diff / MINUTE_MS);
       if (diffMinutes < 1) return 'now';
       if (diffMinutes < 60) return `${diffMinutes}m`;
       const diffHours = Math.floor(diffMinutes / 60);
@@ -60,41 +64,30 @@ export function formatTimestamp(isoString: string): string {
    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-export function formatRelativeTimeLongUnit(timestamp: string): string {
-   const date = new Date(timestamp);
-   if (Number.isNaN(date.getTime())) return '';
+function formatRelativeTime(timestamp: string, longUnit: boolean): string {
+   const { date, diff } = getRelativeDiff(timestamp);
+   if (Number.isNaN(diff)) return '';
 
-   const diff = Date.now() - date.getTime();
-   const MINUTE = 60_000;
-   const HOUR = 60 * MINUTE;
-   const DAY = 24 * HOUR;
-   const WEEK = 7 * DAY;
-
-   if (diff >= WEEK) {
-      return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+   if (longUnit) {
+      if (diff >= WEEK_MS) {
+         return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+      }
+      const days = Math.floor(diff / DAY_MS);
+      if (diff >= DAY_MS) return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+      const hours = Math.floor(diff / HOUR_MS);
+      if (diff >= HOUR_MS) return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+      const minutes = Math.floor(diff / MINUTE_MS);
+      if (diff >= MINUTE_MS) return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+      return 'just now';
    }
-   const days = Math.floor(diff / DAY);
-   if (diff >= DAY) return `${days} ${days === 1 ? 'day' : 'days'} ago`;
-   const hours = Math.floor(diff / HOUR);
-   if (diff >= HOUR) return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-   const minutes = Math.floor(diff / MINUTE);
-   if (diff >= MINUTE) return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
-   return 'just now';
-}
 
-export function formatRelativeTimeShortUnit(timestamp: string): string {
-   const date = new Date(timestamp);
-   if (Number.isNaN(date.getTime())) return '';
-
-   const diff = Date.now() - date.getTime();
-   const MINUTE = 60_000;
    const units: [number, string][] = [
-      [365 * 24 * 60 * MINUTE, 'y'],
-      [30 * 24 * 60 * MINUTE, 'mo'],
-      [7 * 24 * 60 * MINUTE, 'w'],
-      [24 * 60 * MINUTE, 'd'],
-      [60 * MINUTE, 'h'],
-      [MINUTE, 'm'],
+      [365 * 24 * MINUTE_MS, 'y'],
+      [30 * 24 * MINUTE_MS, 'mo'],
+      [7 * 24 * MINUTE_MS, 'w'],
+      [24 * MINUTE_MS, 'd'],
+      [HOUR_MS, 'h'],
+      [MINUTE_MS, 'm'],
    ];
 
    for (const [milliseconds, label] of units) {
@@ -102,4 +95,12 @@ export function formatRelativeTimeShortUnit(timestamp: string): string {
    }
 
    return 'just now';
+}
+
+export function formatRelativeTimeLongUnit(timestamp: string): string {
+   return formatRelativeTime(timestamp, true);
+}
+
+export function formatRelativeTimeShortUnit(timestamp: string): string {
+   return formatRelativeTime(timestamp, false);
 }

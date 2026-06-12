@@ -9,6 +9,7 @@ import { deletePost } from '../../actions/post/deletePost';
 import { useOwnerActionsModal } from '../../store/createModalStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
+import DialogOverlay from '../DialogOverlay';
 import EditPostModal from '../EditPostModal';
 import { styles } from './OwnerActionsModal.stylex';
 
@@ -81,7 +82,7 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
       <>
          <Dialog.Root open={isOpen} onOpenChange={close}>
             <Dialog.Portal>
-               <Dialog.Overlay {...stylex.props(styles.overlay)} />
+               <DialogOverlay zIndex={50} />
                <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
                   <Dialog.Title style={{ display: 'none' }}>Post Actions</Dialog.Title>
                   <Dialog.Description style={{ display: 'none' }}>

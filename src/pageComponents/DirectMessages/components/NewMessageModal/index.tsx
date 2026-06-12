@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
 import { createConversation } from '@/src/actions/dm/createConversation';
 import { toast } from '@/src/components/AppToast';
+import DialogOverlay from '@/src/components/DialogOverlay';
 import { UserListItem } from '@/src/components/UserListItem';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
@@ -99,7 +100,7 @@ export default function NewMessageModal() {
    return (
       <Dialog.Root open={isOpen} onOpenChange={close}>
          <Dialog.Portal>
-            <Dialog.Overlay {...stylex.props(styles.overlay)} />
+            <DialogOverlay zIndex={50} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
                <Dialog.Description style={{ display: 'none' }}>
                   Start a new direct message

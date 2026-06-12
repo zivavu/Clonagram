@@ -14,6 +14,7 @@ import StepHeader, {
 } from '@/src/components/CreatePostModal/components/StepHeader';
 import type { PostLocation, PostSettings } from '@/src/components/CreatePostModal/types';
 import { DEFAULT_POST_SETTINGS } from '@/src/components/CreatePostModal/types';
+import DialogOverlay from '@/src/components/DialogOverlay';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { styles } from './index.stylex';
 
@@ -85,7 +86,7 @@ export default function EditPostModal({ isOpen, postId, onClose }: EditPostModal
    return (
       <Dialog.Root open={isOpen} onOpenChange={open => !open && handleClose()}>
          <Dialog.Portal>
-            <Dialog.Overlay {...stylex.props(styles.overlay)} />
+            <DialogOverlay zIndex={50} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={handleClose}>
                <Dialog.Title style={{ display: 'none' }}>Edit post</Dialog.Title>
                <Dialog.Description style={{ display: 'none' }}>
