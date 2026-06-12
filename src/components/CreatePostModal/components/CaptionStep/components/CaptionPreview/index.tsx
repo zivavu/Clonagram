@@ -2,17 +2,17 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
+import PreviewArrows from '@/src/components/CreatePostModal/components/PreviewArrows';
+import VideoPlayOverlay from '@/src/components/CreatePostModal/components/VideoPlayOverlay';
+import { useContainerSize } from '@/src/components/CreatePostModal/hooks/useContainerSize';
+import { useCropDimensions } from '@/src/components/CreatePostModal/hooks/useCropDimensions';
+import { useMediaNaturalSize } from '@/src/components/CreatePostModal/hooks/useMediaNaturalSize';
+import { useWebGLFilter } from '@/src/components/CreatePostModal/hooks/useWebGLFilter';
+import type { AspectRatio, PostMedia } from '@/src/components/CreatePostModal/types';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import VolumeControl from '@/src/components/VolumeControl';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import type { PartialUser } from '@/src/types/global';
-import { useContainerSize } from '../../../../hooks/useContainerSize';
-import { useCropDimensions } from '../../../../hooks/useCropDimensions';
-import { useMediaNaturalSize } from '../../../../hooks/useMediaNaturalSize';
-import { useWebGLFilter } from '../../../../hooks/useWebGLFilter';
-import type { AspectRatio, PostMedia } from '../../../../types';
-import PreviewArrows from '../../../PreviewArrows';
-import VideoPlayOverlay from '../../../VideoPlayOverlay';
 import TagPin from '../TagPin';
 
 import { styles } from './index.stylex';

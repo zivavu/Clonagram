@@ -2,7 +2,7 @@
 
 import type { StyleXStyles } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
-import { useAuthUser } from '../../../hooks/useAuthUser';
+import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { styles } from '../username.stylex';
 
 export type CurrentUserNameProps = {

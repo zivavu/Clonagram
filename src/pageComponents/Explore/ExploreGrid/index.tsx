@@ -8,8 +8,8 @@ import { FaComment } from 'react-icons/fa6';
 import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
 import type { PostsWithMedia } from '@/src/queries/posts';
 import { usePostViewModal } from '@/src/store/usePostViewModalStore';
+import { getPostThumbnail } from '@/src/utils/posts';
 import { colors } from '../../../styles/tokens.stylex';
-import { getPostThumbnail } from '../../../utils/posts';
 import { styles } from './index.stylex';
 
 interface ExploreGridProps {

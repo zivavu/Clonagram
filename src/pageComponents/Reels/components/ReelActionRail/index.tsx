@@ -7,8 +7,7 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
-import { dislikePost } from '@/src/actions/likes/dislikePost';
-import { likePost } from '@/src/actions/likes/likePost';
+import { togglePostLike } from '@/src/actions/likes/togglePostLike';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import type { Reel } from '@/src/queries/posts';
@@ -49,11 +48,7 @@ export default function ReelActionRail({
       setIsLiked(next);
       setLikeCount(prev => prev + (next ? 1 : -1));
       try {
-         if (next) {
-            await likePost({ postId: reel.id });
-         } else {
-            await dislikePost({ postId: reel.id });
-         }
+         await togglePostLike({ postId: reel.id, isLiked: !next });
       } catch {
          setIsLiked(!next);
          setLikeCount(prev => prev + (next ? -1 : 1));

@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { useRef } from 'react';
 import { IoClose } from 'react-icons/io5';
-import type { TaggedPerson } from '../../../../types';
+import type { TaggedPerson } from '@/src/components/CreatePostModal/types';
 import { styles } from './index.stylex';
 
 interface TagPinProps {

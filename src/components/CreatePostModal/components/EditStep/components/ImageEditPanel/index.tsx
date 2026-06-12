@@ -1,8 +1,12 @@
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
-import { useFilterThumbnails } from '../../../../hooks/useFilterThumbnails';
-import { type Adjustments, DEFAULT_ADJUSTMENTS, type PostMedia } from '../../../../types';
-import StyledSlider from '../../../StyledSlider';
+import StyledSlider from '@/src/components/CreatePostModal/components/StyledSlider';
+import { useFilterThumbnails } from '@/src/components/CreatePostModal/hooks/useFilterThumbnails';
+import {
+   type Adjustments,
+   DEFAULT_ADJUSTMENTS,
+   type PostMedia,
+} from '@/src/components/CreatePostModal/types';
 import AdjustmentSliders from '../AdjustmentSliders';
 import type { FilterPreset } from '../FilterGrid';
 import FilterGrid from '../FilterGrid';

@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
-import type { Adjustments } from '../../../../types';
-import StyledSlider from '../../../StyledSlider';
+import StyledSlider from '@/src/components/CreatePostModal/components/StyledSlider';
+import type { Adjustments } from '@/src/components/CreatePostModal/types';
 import { styles } from './index.stylex';
 
 interface AdjustmentDef {

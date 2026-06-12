@@ -7,8 +7,8 @@ import { BsPlus } from 'react-icons/bs';
 import { MdExpandCircleDown } from 'react-icons/md';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import UserAvatar from '@/src/components/UserAvatar';
+import type { Profile } from '@/src/lib/supabase/getAuthProfile';
 import { useCreateStoryModalStore } from '@/src/store/createModalStore';
-import type { Profile } from '../../../../../../lib/supabase/getAuthProfile';
 import { colors } from '../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 

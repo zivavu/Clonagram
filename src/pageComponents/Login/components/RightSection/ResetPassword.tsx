@@ -5,9 +5,9 @@ import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
+import FloatingInput from '@/src/components/FloatingInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import { supabase } from '@/src/lib/supabase/client';
-import FloatingInput from '../../../../components/FloatingInput';
 import { styles } from './index.stylex';
 
 const resetSchema = z

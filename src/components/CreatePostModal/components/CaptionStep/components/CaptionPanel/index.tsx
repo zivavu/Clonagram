@@ -5,14 +5,14 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { IoPersonAddOutline } from 'react-icons/io5';
 import { MdExpandMore, MdOutlineEmojiEmotions } from 'react-icons/md';
+import type { PostLocation, PostMedia, PostSettings } from '@/src/components/CreatePostModal/types';
 import LocationAutocomplete from '@/src/components/LocationAutocomplete';
 import Toggle from '@/src/components/Toggle';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
+import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import type { PartialUser } from '@/src/types/global';
-import { useAuthUser } from '../../../../../../hooks/useAuthUser';
-import type { PostLocation, PostMedia, PostSettings } from '../../../../types';
 import { styles } from './index.stylex';
 
 const MAX_CAPTION = 2200;

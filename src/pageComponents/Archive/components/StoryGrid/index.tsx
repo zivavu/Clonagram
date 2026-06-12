@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import StoryCard from '../../../../components/StoryCard';
+import StoryCard from '@/src/components/StoryCard';
 import type { MonthGroup } from '../../types';
 import { styles } from './index.stylex';
 

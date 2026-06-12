@@ -6,8 +6,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { sendPasswordResetEmail } from '@/src/actions/auth/sendPasswordResetEmail';
+import FloatingInput from '@/src/components/FloatingInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
-import FloatingInput from '../../../../components/FloatingInput';
 import { styles } from './index.stylex';
 
 const forgotSchema = z.object({

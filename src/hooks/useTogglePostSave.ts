@@ -1,5 +1,4 @@
-import { savePost } from '@/src/actions/saves/savePost';
-import { unsavePost } from '@/src/actions/saves/unsavePost';
+import { toggleSavePost } from '@/src/actions/saves/toggleSavePost';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useOptimisticToggle } from '@/src/hooks/useOptimisticToggle';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -13,7 +12,7 @@ export function useTogglePostSave(post: SaveablePost) {
 
    return useOptimisticToggle<PostWithMedia>({
       queryKey: queryKeys.post(post.id),
-      mutationFn: () => (isSaved ? unsavePost({ postId: post.id }) : savePost({ postId: post.id })),
+      mutationFn: () => toggleSavePost({ postId: post.id, isSaved }),
       updater: old => {
          if (!authUser) return old;
          return {

@@ -11,12 +11,12 @@ import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import { replyToStory } from '@/src/actions/story/replyToStory';
 import { toggleStoryReaction } from '@/src/actions/story/toggleStoryReaction';
 import { toast } from '@/src/components/AppToast';
+import UserAvatar from '@/src/components/UserAvatar';
+import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import VolumeControl from '@/src/components/VolumeControl';
 import { useHighlightActionsModalStore } from '@/src/store/createModalStore';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import UserAvatar from '../../../components/UserAvatar';
-import OtherUserUsername from '../../../components/Username/OtherUserUsername';
 import { styles } from '../index.stylex';
 
 interface ActiveStoryOverlayProps {

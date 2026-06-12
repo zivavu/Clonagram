@@ -55,8 +55,8 @@ export const CreateConversationSchema = z.object({
 export const DeletePostSchema = z.object({ postId: uuid });
 export const DeleteCommentSchema = z.object({ commentId: uuid });
 export const LikeCommentSchema = z.object({ commentId: uuid });
-export const UnsavePostSchema = z.object({ postId: uuid });
-export const DislikePostSchema = z.object({ postId: uuid });
+export const TogglePostLikeSchema = z.object({ postId: uuid, isLiked: z.boolean() });
+export const TogglePostSaveSchema = z.object({ postId: uuid, isSaved: z.boolean() });
 
 export const CreateNoteSchema = z.object({
    content: z.string().min(1).max(100),

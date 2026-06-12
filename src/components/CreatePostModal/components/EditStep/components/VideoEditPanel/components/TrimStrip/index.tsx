@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef } from 'react';
-import { useContainerSize } from '../../../../../../hooks/useContainerSize';
+import { useContainerSize } from '@/src/components/CreatePostModal/hooks/useContainerSize';
 import { styles } from './index.stylex';
 
 interface TrimStripProps {

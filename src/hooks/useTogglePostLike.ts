@@ -1,5 +1,4 @@
-import { dislikePost } from '@/src/actions/likes/dislikePost';
-import { likePost } from '@/src/actions/likes/likePost';
+import { togglePostLike } from '@/src/actions/likes/togglePostLike';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useOptimisticToggle } from '@/src/hooks/useOptimisticToggle';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -11,8 +10,7 @@ export function useTogglePostLike(post: PostWithMedia) {
 
    return useOptimisticToggle<PostWithMedia>({
       queryKey: queryKeys.post(post.id),
-      mutationFn: () =>
-         isLiked ? dislikePost({ postId: post.id }) : likePost({ postId: post.id }),
+      mutationFn: () => togglePostLike({ postId: post.id, isLiked }),
       updater: old => {
          if (!authUser) return old;
          return {

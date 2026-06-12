@@ -5,8 +5,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { BiNotificationOff } from 'react-icons/bi';
 import { useInView } from 'react-intersection-observer';
-import { getHomeFeedPosts } from '../../../../../../actions/post/getHomeFeedPosts';
-import { queryKeys } from '../../../../../../lib/queryKeys';
+import { getHomeFeedPosts } from '@/src/actions/post/getHomeFeedPosts';
+import { queryKeys } from '@/src/lib/queryKeys';
 import HomepagePost from './HomepagePost';
 import { styles } from './index.stylex';
 

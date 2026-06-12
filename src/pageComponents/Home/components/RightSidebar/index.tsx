@@ -8,7 +8,7 @@ import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { createServerClient } from '../../../../lib/supabase/server';
+import { createServerClient } from '@/src/lib/supabase/server';
 import { styles } from './index.stylex';
 import LogoutButton from './LogoutButton';
 

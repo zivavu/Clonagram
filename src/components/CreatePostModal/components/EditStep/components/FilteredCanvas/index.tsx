@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
-import { useWebGLFilter } from '../../../../hooks/useWebGLFilter';
-import type { Adjustments } from '../../../../types';
+import { useWebGLFilter } from '@/src/components/CreatePostModal/hooks/useWebGLFilter';
+import type { Adjustments } from '@/src/components/CreatePostModal/types';
 import { styles } from './index.stylex';
 
 interface FilteredCanvasProps {

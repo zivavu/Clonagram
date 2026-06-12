@@ -6,7 +6,7 @@ import { IoClose } from 'react-icons/io5';
 import { MdAdd, MdOutlineAspectRatio, MdZoomIn } from 'react-icons/md';
 import { PiImagesSquareLight } from 'react-icons/pi';
 import CarouselArrow from '@/src/components/CarouselArrow';
-import type { AspectRatio, PostMedia } from '../../../../types';
+import type { AspectRatio, PostMedia } from '@/src/components/CreatePostModal/types';
 import { styles } from './index.stylex';
 
 const ASPECT_RATIOS: { key: AspectRatio; label: string; icon: string }[] = [

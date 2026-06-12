@@ -2,8 +2,8 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
-import { useContainerSize } from '../../../../../../hooks/useContainerSize';
-import type { PostMedia } from '../../../../../../types';
+import { useContainerSize } from '@/src/components/CreatePostModal/hooks/useContainerSize';
+import type { PostMedia } from '@/src/components/CreatePostModal/types';
 import { styles } from './index.stylex';
 
 interface CoverPhotoProps {

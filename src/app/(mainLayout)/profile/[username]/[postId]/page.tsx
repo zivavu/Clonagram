@@ -1,5 +1,5 @@
-import { getPost } from '../../../../../actions/post/getPost';
-import ProfilePage from '../../../../../pageComponents/Profile';
+import { getPost } from '@/src/actions/post/getPost';
+import ProfilePage from '@/src/pageComponents/Profile';
 import { loadProfilePage } from '../loadProfilePage';
 
 interface ProfilePostPageProps {

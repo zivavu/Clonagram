@@ -1,10 +1,10 @@
-import { getUserNote } from '../../../actions/notes/getUserNote';
-import { getUserProfileWithPosts } from '../../../actions/profile/getUserProfileWithPosts';
-import { getSavedPosts } from '../../../actions/saves/getSavedPosts';
-import { getRingState } from '../../../actions/story/getRingState';
-import { getUserHighlights } from '../../../actions/story/getUserHighlights';
-import { getAuthProfile } from '../../../lib/supabase/getAuthProfile';
-import ProfilePage from '../../../pageComponents/Profile';
+import { getUserNote } from '@/src/actions/notes/getUserNote';
+import { getUserProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
+import { getSavedPosts } from '@/src/actions/saves/getSavedPosts';
+import { getRingState } from '@/src/actions/story/getRingState';
+import { getUserHighlights } from '@/src/actions/story/getUserHighlights';
+import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
+import ProfilePage from '@/src/pageComponents/Profile';
 
 export default async function Profile() {
    const profile = await getAuthProfile();

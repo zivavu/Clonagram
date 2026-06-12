@@ -1,12 +1,12 @@
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
+import PreviewArrows from '@/src/components/CreatePostModal/components/PreviewArrows';
+import VideoPlayOverlay from '@/src/components/CreatePostModal/components/VideoPlayOverlay';
+import { useContainerSize } from '@/src/components/CreatePostModal/hooks/useContainerSize';
+import { useCropDimensions } from '@/src/components/CreatePostModal/hooks/useCropDimensions';
+import type { AspectRatio, PostMedia } from '@/src/components/CreatePostModal/types';
 import VolumeControl from '@/src/components/VolumeControl';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
-import { useContainerSize } from '../../../../hooks/useContainerSize';
-import { useCropDimensions } from '../../../../hooks/useCropDimensions';
-import type { AspectRatio, PostMedia } from '../../../../types';
-import PreviewArrows from '../../../PreviewArrows';
-import VideoPlayOverlay from '../../../VideoPlayOverlay';
 import { styles } from './index.stylex';
 
 const GRID_LINES: [number, number, number, number][] = [

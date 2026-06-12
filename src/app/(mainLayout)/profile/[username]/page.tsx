@@ -1,4 +1,4 @@
-import ProfilePage from '../../../../pageComponents/Profile';
+import ProfilePage from '@/src/pageComponents/Profile';
 import { loadProfilePage } from './loadProfilePage';
 
 interface ProfilePageProps {
