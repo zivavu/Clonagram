@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useDebouncedValue } from '@/src/hooks/useDebouncedValue';
 import { supabase } from '@/src/lib/supabase/client';
 
 export type UsernameStatus = 'idle' | 'checking' | 'available' | 'taken';
@@ -12,27 +13,27 @@ interface Options {
 
 export function useUsernameAvailability(value: string, options?: Options): UsernameStatus {
    const [status, setStatus] = useState<UsernameStatus>('idle');
+   const debouncedValue = useDebouncedValue(value, 500);
 
    useEffect(() => {
-      if (!value) {
+      if (!debouncedValue) {
          setStatus('idle');
          return;
       }
-      if (options?.skip && value === options.skip) {
+      if (options?.skip && debouncedValue === options.skip) {
          setStatus('available');
          return;
       }
       setStatus('checking');
-      const timer = setTimeout(async () => {
-         const { data } = await supabase
-            .from('profiles')
-            .select('username')
-            .eq('username', value)
-            .maybeSingle();
-         setStatus(data ? 'taken' : 'available');
-      }, 500);
-      return () => clearTimeout(timer);
-   }, [value, options?.skip]);
+      supabase
+         .from('profiles')
+         .select('username')
+         .eq('username', debouncedValue)
+         .maybeSingle()
+         .then(({ data }) => {
+            setStatus(data ? 'taken' : 'available');
+         });
+   }, [debouncedValue, options?.skip]);
 
    return status;
 }

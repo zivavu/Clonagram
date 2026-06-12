@@ -2,7 +2,6 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
@@ -10,6 +9,7 @@ import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'reac
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
+import { useOpenPostModal } from '@/src/hooks/useOpenPostModal';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { getPost } from '../../../../../../../actions/post/getPost';
@@ -19,7 +19,6 @@ import { useTogglePostLike } from '../../../../../../../hooks/useTogglePostLike'
 import { useTogglePostSave } from '../../../../../../../hooks/useTogglePostSave';
 import { queryKeys } from '../../../../../../../lib/queryKeys';
 import { useOwnerActionsModal } from '../../../../../../../store/createModalStore';
-import { usePostViewModal } from '../../../../../../../store/usePostViewModalStore';
 import { colors } from '../../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
 
@@ -50,17 +49,11 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
-   const { open: openPostModal } = usePostViewModal();
-   const pathname = usePathname();
+   const { openPostModal } = useOpenPostModal();
    const currentImageIndex = useRef(0);
 
    function handleOpenPostModal(post: PostWithMedia, index = 0) {
-      openPostModal(post, { initialImageIndex: index, returnPath: pathname });
-      window.history.pushState(
-         { postModal: true },
-         '',
-         `/profile/${post.user.username}/${post.id}`,
-      );
+      openPostModal(post, { initialImageIndex: index });
    }
 
    const { data: post } = useQuery({

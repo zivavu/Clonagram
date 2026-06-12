@@ -2,11 +2,10 @@
 
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { FaComment } from 'react-icons/fa6';
 import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
-import { usePostViewModal } from '../../store/usePostViewModalStore';
+import { useOpenPostModal } from '../../hooks/useOpenPostModal';
 import { colors } from '../../styles/tokens.stylex';
 import { getPostThumbnail } from '../../utils/posts';
 import { styles } from './index.stylex';
@@ -33,9 +32,7 @@ export default function PostGrid({
    emptyText,
    alwaysShowPlayBadge = false,
 }: PostGridProps) {
-   const pathname = usePathname();
-   const { open } = usePostViewModal();
-
+   const { openPostModal } = useOpenPostModal();
    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
    if (!posts || posts.length === 0) {
@@ -63,14 +60,7 @@ export default function PostGrid({
                   {...stylex.props(styles.postContainer)}
                   onMouseEnter={() => setHoveredId(post.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  onClick={() => {
-                     open(post.id, { returnPath: pathname });
-                     window.history.pushState(
-                        { postModal: true },
-                        '',
-                        `/profile/${username}/${post.id}`,
-                     );
-                  }}
+                  onClick={() => openPostModal(post.id, username)}
                >
                   <Image
                      src={thumbnail}

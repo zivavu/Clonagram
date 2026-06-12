@@ -2,11 +2,12 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { MdLocationOn } from 'react-icons/md';
 import Autocomplete from '@/src/components/Autocomplete';
 import type { PostLocation } from '@/src/components/CreatePostModal/types';
+import { useDebouncedValue } from '@/src/hooks/useDebouncedValue';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { styles } from './index.stylex';
 
@@ -50,12 +51,7 @@ interface LocationAutocompleteProps {
 export default function LocationAutocomplete({ value, onChange }: LocationAutocompleteProps) {
    const [open, setOpen] = useState(false);
    const [query, setQuery] = useState('');
-   const [debouncedQuery, setDebouncedQuery] = useState('');
-
-   useEffect(() => {
-      const timer = setTimeout(() => setDebouncedQuery(query), 350);
-      return () => clearTimeout(timer);
-   }, [query]);
+   const debouncedQuery = useDebouncedValue(query, 350);
 
    const { data: locations = [] } = useQuery({
       queryKey: queryKeys.locationSearch(debouncedQuery),
@@ -67,7 +63,6 @@ export default function LocationAutocomplete({ value, onChange }: LocationAutoco
       onChange(location);
       setOpen(false);
       setQuery('');
-      setDebouncedQuery('');
    };
 
    const handleOpen = () => {
@@ -78,7 +73,6 @@ export default function LocationAutocomplete({ value, onChange }: LocationAutoco
    const handleClear = () => {
       onChange(null);
       setQuery('');
-      setDebouncedQuery('');
       setOpen(false);
    };
 
