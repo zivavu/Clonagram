@@ -3,9 +3,15 @@ import 'server-only';
 
 import { revalidatePath } from 'next/cache';
 import { throwIfError } from '@/src/lib/unwrap';
+import { CreateHighlightSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function createHighlight(title: string, storyIds: string[], coverUrl: string | null) {
+export async function createHighlight(params: {
+   title: string;
+   storyIds: string[];
+   coverUrl: string | null;
+}) {
+   const { title, storyIds, coverUrl } = validate(CreateHighlightSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { data: highlight, error: highlightError } = await supabase

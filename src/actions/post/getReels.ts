@@ -1,11 +1,14 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
-import { hideLikesForNonOwners, throwIfError } from '@/src/lib/unwrap';
+import { throwIfError } from '@/src/lib/unwrap';
+import { CursorNullableSchema, validate } from '@/src/lib/validation';
 import type { Reels } from '@/src/queries/posts';
 import { REELS_PAGE_SIZE } from '@/src/queries/posts';
+import { hideLikesForNonOwners } from '@/src/utils/posts';
 
-export async function getReels(cursor?: string | null): Promise<Reels> {
+export async function getReels(params: { cursor?: string | null }): Promise<Reels> {
+   const { cursor } = validate(CursorNullableSchema, params);
    const supabase = await createServerClient();
    const {
       data: { user },

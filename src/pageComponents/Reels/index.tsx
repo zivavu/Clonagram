@@ -16,7 +16,7 @@ export default function Reels() {
 
    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
       queryKey: queryKeys.reels(),
-      queryFn: async ({ pageParam }) => getReels(pageParam),
+      queryFn: async ({ pageParam }) => getReels({ cursor: pageParam }),
       initialPageParam: null as string | null,
       getNextPageParam: lastPage =>
          lastPage.length === REELS_PAGE_SIZE ? lastPage[lastPage.length - 1].created_at : null,

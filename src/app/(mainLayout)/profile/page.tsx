@@ -13,13 +13,13 @@ export default async function Profile() {
 
    const [{ userProfile, posts, followStatus }, note, savedPosts] = await Promise.all([
       getUserProfileWithPosts({ username: profile.username }),
-      getUserNote(profile.id),
+      getUserNote({ userId: profile.id }),
       getSavedPosts(),
    ]);
 
    const [ringState, highlights] = await Promise.all([
-      getRingState(userProfile.id),
-      getUserHighlights(userProfile.id),
+      getRingState({ targetUserId: userProfile.id }),
+      getUserHighlights({ userId: userProfile.id }),
    ]);
 
    return (

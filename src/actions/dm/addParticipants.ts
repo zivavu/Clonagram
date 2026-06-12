@@ -2,8 +2,14 @@
 import 'server-only';
 import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
+import { ConversationIdSchema, validate } from '@/src/lib/validation';
 
-export async function addParticipants(conversationId: string, userIds: string[]): Promise<void> {
+export async function addParticipants(params: {
+   conversationId: string;
+   userIds: string[];
+}): Promise<void> {
+   const { conversationId, userIds } = params;
+   validate(ConversationIdSchema, { conversationId });
    const { supabase, user } = await getAuthUser();
 
    const { data: followers } = await supabase

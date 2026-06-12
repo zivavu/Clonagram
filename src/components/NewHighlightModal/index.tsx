@@ -81,7 +81,7 @@ export default function NewHighlightModal() {
             ? (stories.find(s => s.id === effectiveCoverId) ?? null)
             : null;
          const coverUrl = coverStory ? getThumbnailUrl(coverStory) : null;
-         await createHighlight(name, [...selectedIds], coverUrl);
+         await createHighlight({ title: name, storyIds: [...selectedIds], coverUrl });
          handleClose();
       } finally {
          setSubmitting(false);

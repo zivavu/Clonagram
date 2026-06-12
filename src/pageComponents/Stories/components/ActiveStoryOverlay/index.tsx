@@ -61,7 +61,7 @@ export default function ActiveStoryOverlay({
       const text = replyText;
       setReplyText('');
       try {
-         await replyToStory(storyId, text);
+         await replyToStory({ storyId, content: text });
          toast('Message sent');
       } catch {
          setReplyText(text);

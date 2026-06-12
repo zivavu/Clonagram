@@ -60,25 +60,29 @@ export default function ConversationItem({
       queryClient.invalidateQueries({ queryKey: queryKeys.conversations(folder, authUserId) });
 
    const { mutate: markUnread } = useMutation({
-      mutationFn: () => markConversationUnread(conv.id),
+      mutationFn: () => markConversationUnread({ conversationId: conv.id }),
       onSuccess: invalidate,
       onError: (e: Error) => toast(e.message),
    });
 
    const { mutate: muteToggle } = useMutation({
-      mutationFn: () => toggleMute(conv.id, !isMuted),
+      mutationFn: () => toggleMute({ conversationId: conv.id, muted: !isMuted }),
       onSuccess: invalidate,
       onError: (e: Error) => toast(e.message),
    });
 
    const { mutate: doDelete } = useMutation({
-      mutationFn: () => deleteConversation(conv.id),
+      mutationFn: () => deleteConversation({ conversationId: conv.id }),
       onSuccess: invalidate,
       onError: (e: Error) => toast(e.message),
    });
 
    const { mutate: doMove } = useMutation({
-      mutationFn: () => moveConversation(conv.id, folder === 'primary' ? 'general' : 'primary'),
+      mutationFn: () =>
+         moveConversation({
+            conversationId: conv.id,
+            folder: folder === 'primary' ? 'general' : 'primary',
+         }),
       onSuccess: () => {
          queryClient.invalidateQueries({
             queryKey: queryKeys.conversations('primary', authUserId),

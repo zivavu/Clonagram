@@ -11,7 +11,7 @@ import { updateProfile } from '@/src/actions/profile/updateProfile';
 import { toast } from '@/src/components/AppToast';
 import { supabase } from '@/src/lib/supabase/client';
 import type { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { usernameSchema } from '@/src/lib/validation/username';
+import { usernameSchema } from '@/src/lib/validation';
 import AuthPagesFooter from '../../components/AuthPagesFooter';
 import AvatarCard from './components/AvatarCard';
 import BioField from './components/BioField';

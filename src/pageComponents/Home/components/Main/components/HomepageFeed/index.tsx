@@ -13,7 +13,7 @@ import { styles } from './index.stylex';
 export default function HomepageFeed({ variant }: { variant: 'home' | 'following' }) {
    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
       queryKey: queryKeys.homeFeed(variant),
-      queryFn: ({ pageParam }) => getHomeFeedPosts(variant, pageParam),
+      queryFn: ({ pageParam }) => getHomeFeedPosts({ variant, cursor: pageParam }),
       initialPageParam: null as string | null,
       getNextPageParam: lastPage => lastPage.nextCursor,
    });

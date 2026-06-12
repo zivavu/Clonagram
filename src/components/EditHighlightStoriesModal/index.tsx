@@ -22,12 +22,13 @@ export default function EditHighlightStoriesModal() {
    useEffect(() => {
       if (!isOpen || !data) return;
       setStories(null);
-      Promise.all([getArchivedStories(), getHighlightStoryIds(data.highlightId)]).then(
-         ([fetchedStories, ids]) => {
-            setStories(fetchedStories);
-            setSelectedIds(new Set(ids));
-         },
-      );
+      Promise.all([
+         getArchivedStories(),
+         getHighlightStoryIds({ highlightId: data.highlightId }),
+      ]).then(([fetchedStories, ids]) => {
+         setStories(fetchedStories);
+         setSelectedIds(new Set(ids));
+      });
    }, [isOpen, data]);
 
    function handleClose() {
@@ -51,7 +52,10 @@ export default function EditHighlightStoriesModal() {
       if (!data || selectedIds.size === 0) return;
       setLoading(true);
       try {
-         await updateHighlightStories(data.highlightId, [...selectedIds]);
+         await updateHighlightStories({
+            highlightId: data.highlightId,
+            storyIds: [...selectedIds],
+         });
          handleClose();
       } finally {
          setLoading(false);

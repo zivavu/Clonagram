@@ -17,7 +17,7 @@ export default async function ExplorePage({ variant }: { variant: string | null 
       isAnonymous || variant === 'nonpersonalized' ? 'nonpersonalized' : 'for_you';
    const isForYou = activeVariant === 'for_you';
 
-   const { posts } = await getExplorePosts(activeVariant);
+   const { posts } = await getExplorePosts({ variant: activeVariant });
 
    return (
       <div {...stylex.props(styles.page)}>

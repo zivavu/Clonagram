@@ -48,7 +48,7 @@ export default function HighlightActionsModal() {
       if (!data || !title.trim()) return;
       setLoading(true);
       try {
-         await editHighlight(data.highlightId, title.trim());
+         await editHighlight({ id: data.highlightId, title: title.trim() });
          handleClose();
       } finally {
          setLoading(false);
@@ -59,7 +59,7 @@ export default function HighlightActionsModal() {
       if (!data) return;
       setLoading(true);
       try {
-         await deleteHighlight(data.highlightId);
+         await deleteHighlight({ id: data.highlightId });
          close();
          router.push(data.closeHref);
       } finally {

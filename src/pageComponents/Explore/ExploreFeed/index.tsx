@@ -16,7 +16,7 @@ interface ExploreFeedProps {
 export default function ExploreFeed({ variant, initialPosts }: ExploreFeedProps) {
    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
       queryKey: queryKeys.explore(variant),
-      queryFn: ({ pageParam }) => getExplorePosts(variant, pageParam),
+      queryFn: ({ pageParam }) => getExplorePosts({ variant, cursor: pageParam }),
       initialPageParam: null as string | null,
       getNextPageParam: lastPage => lastPage.nextCursor,
       initialData: { pages: [{ posts: initialPosts, nextCursor: null }], pageParams: [null] },

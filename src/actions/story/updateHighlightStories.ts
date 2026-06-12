@@ -3,9 +3,11 @@ import 'server-only';
 
 import { revalidatePath } from 'next/cache';
 import { throwIfError } from '@/src/lib/unwrap';
+import { UpdateHighlightStoriesSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function updateHighlightStories(highlightId: string, storyIds: string[]) {
+export async function updateHighlightStories(params: { highlightId: string; storyIds: string[] }) {
+   const { highlightId, storyIds } = validate(UpdateHighlightStoriesSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { data: highlight } = await supabase

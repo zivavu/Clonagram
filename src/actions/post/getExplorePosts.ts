@@ -1,9 +1,11 @@
 'use server';
 import 'server-only';
+import { CursorSchema, validate } from '@/src/lib/validation';
 import { createServerClient } from '../../lib/supabase/server';
-import { hideLikesForNonOwners, throwIfError } from '../../lib/unwrap';
+import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
+import { hideLikesForNonOwners } from '../../utils/posts';
 
 export interface ExploreFeedPage {
    posts: PostsWithMedia;
@@ -12,10 +14,11 @@ export interface ExploreFeedPage {
 
 const PAGE_SIZE = 45;
 
-export async function getExplorePosts(
-   variant: 'for_you' | 'nonpersonalized',
-   cursor?: string | null,
-): Promise<ExploreFeedPage> {
+export async function getExplorePosts(params: {
+   variant: 'for_you' | 'nonpersonalized';
+   cursor?: string | null;
+}): Promise<ExploreFeedPage> {
+   const { variant, cursor } = validate(CursorSchema, params);
    const supabase = await createServerClient();
    const {
       data: { user },

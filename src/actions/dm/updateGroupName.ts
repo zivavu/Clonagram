@@ -2,8 +2,13 @@
 import 'server-only';
 import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
+import { ConversationWithTitleSchema, validate } from '@/src/lib/validation';
 
-export async function updateGroupName(conversationId: string, title: string): Promise<void> {
+export async function updateGroupName(params: {
+   conversationId: string;
+   title: string;
+}): Promise<void> {
+   const { conversationId, title } = validate(ConversationWithTitleSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { data: participant } = await supabase

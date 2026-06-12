@@ -37,7 +37,7 @@ export default function ForgotPassword({ onBack, initialError }: ForgotPasswordP
       setIsLoading(true);
       clearErrors();
       try {
-         await sendPasswordResetEmail(formData.email);
+         await sendPasswordResetEmail({ email: formData.email });
          setResetSent(true);
       } catch (e) {
          setError('root', { message: e instanceof Error ? e.message : 'Something went wrong' });

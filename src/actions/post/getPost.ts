@@ -1,10 +1,13 @@
 'use server';
 import 'server-only';
+import { PostIdSchema, validate } from '@/src/lib/validation';
 import { createServerClient } from '../../lib/supabase/server';
-import { hideLikesForNonOwners, throwIfError } from '../../lib/unwrap';
+import { throwIfError } from '../../lib/unwrap';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
+import { hideLikesForNonOwners } from '../../utils/posts';
 
-export async function getPost(postId: string) {
+export async function getPost(params: { postId: string }) {
+   const { postId } = validate(PostIdSchema, params);
    const supabase = await createServerClient();
    const {
       data: { user },

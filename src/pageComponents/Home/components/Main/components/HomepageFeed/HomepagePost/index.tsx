@@ -60,7 +60,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
       initialData: initialPost,
       initialDataUpdatedAt: Date.now(),
       queryKey: queryKeys.post(initialPost.id),
-      queryFn: () => getPost(initialPost.id),
+      queryFn: () => getPost({ postId: initialPost.id }),
       staleTime: Infinity,
    });
 

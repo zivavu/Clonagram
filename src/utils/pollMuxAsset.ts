@@ -7,7 +7,7 @@ export async function pollMuxAsset(
    uploadId: string,
 ): Promise<{ assetId: string; playbackId: string; duration: number }> {
    for (let attempt = 0; attempt < MUX_POLL_MAX_ATTEMPTS; attempt++) {
-      const info = await getMuxUploadInfo(uploadId);
+      const info = await getMuxUploadInfo({ uploadId });
 
       if (
          info.status === 'asset_created' &&

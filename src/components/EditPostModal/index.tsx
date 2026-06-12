@@ -29,7 +29,7 @@ export default function EditPostModal({ isOpen, postId, onClose }: EditPostModal
 
    const { data: post } = useQuery({
       queryKey: postId ? queryKeys.postForEdit(postId) : ['post-for-edit'],
-      queryFn: () => getPostForEdit(postId ?? ''),
+      queryFn: () => getPostForEdit({ postId: postId ?? '' }),
       enabled: isOpen && !!postId,
       staleTime: 0,
    });

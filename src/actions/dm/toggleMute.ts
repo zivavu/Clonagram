@@ -2,8 +2,13 @@
 import 'server-only';
 import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
+import { ConversationWithMutedSchema, validate } from '@/src/lib/validation';
 
-export async function toggleMute(conversationId: string, muted: boolean): Promise<void> {
+export async function toggleMute(params: {
+   conversationId: string;
+   muted: boolean;
+}): Promise<void> {
+   const { conversationId, muted } = validate(ConversationWithMutedSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { error } = await supabase

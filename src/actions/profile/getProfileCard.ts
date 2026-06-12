@@ -2,10 +2,12 @@
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
+import { UserIdSchema, validate } from '@/src/lib/validation';
 import type { UserRecentPosts } from '@/src/queries/posts';
 import type { UserProfileCard } from '@/src/queries/userProfiles';
 
-export async function getProfileCard(userId: string): Promise<UserProfileCard | null> {
+export async function getProfileCard(params: { userId: string }): Promise<UserProfileCard | null> {
+   const { userId } = validate(UserIdSchema, params);
    const supabase = await createServerClient();
    const { data, error } = await supabase
       .from('profiles')

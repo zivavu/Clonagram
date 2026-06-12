@@ -12,9 +12,9 @@ export async function loadProfilePage(username: string) {
 
    const isOwnProfile = authProfile?.username === username;
    const [note, ringState, highlights] = await Promise.all([
-      getUserNote(userProfile.id),
-      getRingState(userProfile.id),
-      getUserHighlights(userProfile.id),
+      getUserNote({ userId: userProfile.id }),
+      getRingState({ targetUserId: userProfile.id }),
+      getUserHighlights({ userId: userProfile.id }),
    ]);
 
    return { userProfile, posts, followStatus, isOwnProfile, note, ringState, highlights };

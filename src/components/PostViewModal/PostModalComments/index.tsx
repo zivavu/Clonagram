@@ -62,7 +62,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const { data: post } = useQuery({
       initialData: initialPost,
       queryKey: postKey,
-      queryFn: () => getPost(initialPost.id),
+      queryFn: () => getPost({ postId: initialPost.id }),
    });
 
    const { data: comments = [], isLoading: commentsLoading } = useQuery({

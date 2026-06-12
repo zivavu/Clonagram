@@ -3,6 +3,7 @@ import 'server-only';
 
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
+import { UserIdSchema, validate } from '@/src/lib/validation';
 
 export type UserHighlight = {
    id: string;
@@ -10,7 +11,8 @@ export type UserHighlight = {
    coverUrl: string | null;
 };
 
-export async function getUserHighlights(userId: string): Promise<UserHighlight[]> {
+export async function getUserHighlights(params: { userId: string }): Promise<UserHighlight[]> {
+   const { userId } = validate(UserIdSchema, params);
    const supabase = await createServerClient();
 
    const { data, error } = await supabase

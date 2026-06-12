@@ -2,11 +2,13 @@
 import 'server-only';
 import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
+import { ConversationWithFolderSchema, validate } from '@/src/lib/validation';
 
-export async function moveConversation(
-   conversationId: string,
-   folder: 'primary' | 'general',
-): Promise<void> {
+export async function moveConversation(params: {
+   conversationId: string;
+   folder: 'primary' | 'general';
+}): Promise<void> {
+   const { conversationId, folder } = validate(ConversationWithFolderSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { error } = await supabase

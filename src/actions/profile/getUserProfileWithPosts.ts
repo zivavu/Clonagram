@@ -1,14 +1,16 @@
 'use server';
 import 'server-only';
+import { UsernameParamSchema, validate } from '@/src/lib/validation';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
-import { hideLikesForNonOwners, throwIfError } from '../../lib/unwrap';
+import { throwIfError } from '../../lib/unwrap';
 import { getFollowStatus } from '../../queries/followStatus';
+import { hideLikesForNonOwners } from '../../utils/posts';
 import { getAuthUser } from '../getAuthUser';
 
 type CountAggregate = [{ count: number }];
 
 export async function getUserProfileWithPosts(params: { username: string }) {
-   const { username } = params;
+   const { username } = validate(UsernameParamSchema, params);
    const { supabase } = await getAuthUser();
    const authProfile = await getAuthProfile(supabase);
 

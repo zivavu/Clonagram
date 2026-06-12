@@ -58,6 +58,92 @@ export const LikeCommentSchema = z.object({ commentId: uuid });
 export const TogglePostLikeSchema = z.object({ postId: uuid, isLiked: z.boolean() });
 export const TogglePostSaveSchema = z.object({ postId: uuid, isSaved: z.boolean() });
 
+export const usernameSchema = z
+   .string()
+   .min(1)
+   .max(30)
+   .regex(/^[a-zA-Z0-9_.]+$/, 'Only letters, numbers, underscores, and dots are allowed');
+
+export const ConversationIdSchema = z.object({ conversationId: uuid });
+export const ConversationWithUserSchema = z.object({
+   conversationId: uuid,
+   userId: uuid,
+});
+export const ConversationWithFolderSchema = z.object({
+   conversationId: uuid,
+   folder: z.enum(['primary', 'general']),
+});
+export const ConversationWithTitleSchema = z.object({
+   conversationId: uuid,
+   title: z.string().min(1).max(100),
+});
+export const ConversationWithMutedSchema = z.object({
+   conversationId: uuid,
+   muted: z.boolean(),
+});
+export const ConversationWithBlockSchema = z.object({
+   conversationId: uuid,
+   senderUserId: uuid,
+});
+
+export const CreateHighlightSchema = z.object({
+   title: z.string().min(1).max(100),
+   storyIds: z.array(uuid).min(1),
+   coverUrl: z.string().nullable(),
+});
+export const EditHighlightSchema = z.object({
+   id: uuid,
+   title: z.string().min(1).max(100),
+});
+export const DeleteHighlightSchema = z.object({ id: uuid });
+export const UpdateHighlightStoriesSchema = z.object({
+   highlightId: uuid,
+   storyIds: z.array(uuid).min(1),
+});
+export const ReplyToStorySchema = z.object({
+   storyId: uuid,
+   content: z.string().min(1).max(2000),
+});
+export const StoryMediaSchema = z.object({
+   mediaResult: z.discriminatedUnion('type', [
+      z.object({ type: z.literal('image'), url: z.string(), blurDataUrl: z.string() }),
+      z.object({
+         type: z.literal('video'),
+         assetId: z.string(),
+         playbackId: z.string(),
+         duration: z.number(),
+      }),
+   ]),
+});
+
+export const UpdateAvatarSchema = z.object({
+   avatarUrl: z.string().url().nullable(),
+});
+
+export const SendPasswordResetSchema = z.object({ email: z.string().email() });
+export const ImageAltTextSchema = z.object({
+   imageId: uuid,
+   imageUrl: z.string().url(),
+});
+
+export const UserIdSchema = z.object({ userId: uuid });
+export const TargetUserIdSchema = z.object({ targetUserId: uuid });
+export const UsernameParamSchema = z.object({ username: z.string().min(1) });
+export const PostIdSchema = z.object({ postId: uuid });
+export const CursorSchema = z.object({
+   variant: z.enum(['home', 'following', 'for_you', 'nonpersonalized']),
+   cursor: z.string().nullable().optional(),
+});
+export const CursorNullableSchema = z.object({ cursor: z.string().nullable().optional() });
+export const SearchProfilesSchema = z.object({
+   search: z.string().optional(),
+   limit: z.number().int().min(1).max(100).optional(),
+   excludeId: uuid.optional(),
+});
+
+export const MuxUploadSchema = z.object({ uploadId: uuid });
+export const NoteContentSchema = z.object({ content: z.string().min(1).max(100) });
+
 export const CreateNoteSchema = z.object({
    content: z.string().min(1).max(100),
 });

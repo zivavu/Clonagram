@@ -27,7 +27,7 @@ export default function PostFullViewModal() {
 
    const { data: post } = useQuery({
       queryKey: postId ? queryKeys.post(postId) : ['post'],
-      queryFn: () => getPost(postId ?? ''),
+      queryFn: () => getPost({ postId: postId ?? '' }),
       enabled: !!postId,
       initialData: preloadedPost ?? undefined,
    });

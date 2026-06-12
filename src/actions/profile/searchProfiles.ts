@@ -2,15 +2,15 @@
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
+import { SearchProfilesSchema, validate } from '@/src/lib/validation';
 import type { UserProfiles } from '@/src/queries/userProfiles';
 
-interface SearchProfilesOptions {
+export async function searchProfiles(options: {
    search?: string;
    limit?: number;
    excludeId?: string;
-}
-
-export async function searchProfiles(options: SearchProfilesOptions): Promise<UserProfiles> {
+}): Promise<UserProfiles> {
+   const validated = validate(SearchProfilesSchema, options);
    const supabase = await createServerClient();
    const {
       data: { user },
@@ -20,14 +20,14 @@ export async function searchProfiles(options: SearchProfilesOptions): Promise<Us
       .from('profiles')
       .select('id, username, full_name, avatar_url, is_private')
       .order('created_at', { ascending: false })
-      .limit(options.limit ?? 10);
+      .limit(validated.limit ?? 10);
 
-   if (options.search) {
-      q = q.or(`username.ilike.%${options.search}%,full_name.ilike.%${options.search}%`);
+   if (validated.search) {
+      q = q.or(`username.ilike.%${validated.search}%,full_name.ilike.%${validated.search}%`);
    }
 
-   if (options.excludeId) {
-      q = q.neq('id', options.excludeId);
+   if (validated.excludeId) {
+      q = q.neq('id', validated.excludeId);
    } else if (user) {
       q = q.neq('id', user.id);
    }

@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 
+import { MuxUploadSchema, validate } from '@/src/lib/validation';
 import { getMuxClient } from '../lib/mux';
 
 export interface MuxUploadInfo {
@@ -11,7 +12,8 @@ export interface MuxUploadInfo {
    error: string | null;
 }
 
-export async function getMuxUploadInfo(uploadId: string): Promise<MuxUploadInfo> {
+export async function getMuxUploadInfo(params: { uploadId: string }): Promise<MuxUploadInfo> {
+   const { uploadId } = validate(MuxUploadSchema, params);
    const muxClient = getMuxClient();
    const upload = await muxClient.video.uploads.retrieve(uploadId);
 

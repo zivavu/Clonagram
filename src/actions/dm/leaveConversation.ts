@@ -2,8 +2,10 @@
 import 'server-only';
 import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
+import { ConversationIdSchema, validate } from '@/src/lib/validation';
 
-export async function leaveConversation(conversationId: string): Promise<void> {
+export async function leaveConversation(params: { conversationId: string }): Promise<void> {
+   const { conversationId } = validate(ConversationIdSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { data: self } = await supabase

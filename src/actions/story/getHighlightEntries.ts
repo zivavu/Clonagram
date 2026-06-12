@@ -4,6 +4,7 @@ import 'server-only';
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
+import { UsernameParamSchema, validate } from '@/src/lib/validation';
 import type { Database } from '@/src/types/database';
 import type { StoryEntry } from './getActiveStories';
 
@@ -27,10 +28,11 @@ function highlightEntriesQuery(supabase: SupabaseClient<Database>, userId: strin
 
 type HighlightEntriesData = QueryData<ReturnType<typeof highlightEntriesQuery>>;
 
-export async function getHighlightEntries(username: string): Promise<{
+export async function getHighlightEntries(params: { username: string }): Promise<{
    entries: StoryEntry[];
    profileUserId: string;
 }> {
+   const { username } = validate(UsernameParamSchema, params);
    const supabase = await createServerClient();
 
    const { data: profile, error: profileError } = await supabase

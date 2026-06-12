@@ -5,11 +5,12 @@ import { randomUUID } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import { getStoryThumbnail } from '@/src/lib/getStoryThumbnail';
 import { throwIfError } from '@/src/lib/unwrap';
+import { ReplyToStorySchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function replyToStory(storyId: string, content: string) {
+export async function replyToStory(params: { storyId: string; content: string }) {
+   const { storyId, content } = validate(ReplyToStorySchema, params);
    const trimmed = content.trim();
-   if (!trimmed || trimmed.length > 2000) throw new Error('Invalid content');
    const { supabase, user } = await getAuthUser();
 
    const { data: story } = await supabase

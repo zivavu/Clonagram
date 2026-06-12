@@ -4,9 +4,11 @@ import 'server-only';
 import { revalidatePath } from 'next/cache';
 import type { StoryMediaResult } from '@/src/components/CreateStoryModal/types';
 import { throwIfError } from '@/src/lib/unwrap';
+import { StoryMediaSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
 export async function createStory(params: { mediaResult: StoryMediaResult }) {
+   const { mediaResult } = validate(StoryMediaSchema, params);
    const { supabase, user } = await getAuthUser();
 
    const { data: story, error: storyError } = await supabase
@@ -17,8 +19,6 @@ export async function createStory(params: { mediaResult: StoryMediaResult }) {
 
    throwIfError({ error: storyError }, 'Failed to create story');
    if (!story) throw new Error('Failed to create story: no data returned');
-
-   const { mediaResult } = params;
 
    if (mediaResult.type === 'image') {
       const { error } = await supabase.from('story_images').insert({

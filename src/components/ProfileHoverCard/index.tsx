@@ -36,7 +36,7 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
 
    const { data: profile } = useQuery({
       queryKey: queryKeys.profileCard(userId),
-      queryFn: async () => getProfileCard(userId),
+      queryFn: async () => getProfileCard({ userId }),
       enabled: open,
       staleTime: Infinity,
    });

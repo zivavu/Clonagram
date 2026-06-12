@@ -50,7 +50,10 @@ async function callOpenRouter(imageUrl: string): Promise<string> {
    return content;
 }
 
-export async function generateImageAltText(imageId: string, imageUrl: string) {
+import { ImageAltTextSchema, validate } from '@/src/lib/validation';
+
+export async function generateImageAltText(params: { imageId: string; imageUrl: string }) {
+   const { imageId, imageUrl } = validate(ImageAltTextSchema, params);
    const altText = await callOpenRouter(imageUrl);
 
    const supabase = await createServerClient();

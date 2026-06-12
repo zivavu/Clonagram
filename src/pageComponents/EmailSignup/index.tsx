@@ -16,7 +16,7 @@ import UsernameSignupInput from '@/src/components/UsernameSignupInput';
 import ZetaLogo from '@/src/components/ZetaLogo';
 import type { UsernameStatus } from '@/src/hooks/useUsernameAvailability';
 import { supabase } from '@/src/lib/supabase/client';
-import { usernameSchema } from '@/src/lib/validation/username';
+import { usernameSchema } from '@/src/lib/validation';
 import { styles } from './index.stylex';
 
 const birthdateSchema = z

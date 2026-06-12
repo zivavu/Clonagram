@@ -69,7 +69,7 @@ export default function ChatDetailsPanel({
    const [isNavigating, setIsNavigating] = useState(false);
 
    const { mutate: saveName, isPending: isSavingName } = useMutation({
-      mutationFn: () => updateGroupName(conversationId, groupName),
+      mutationFn: () => updateGroupName({ conversationId, title: groupName }),
       onSuccess: () => {
          queryClient.invalidateQueries({ queryKey: convKey });
          setShowRenameModal(false);
@@ -78,7 +78,7 @@ export default function ChatDetailsPanel({
    });
 
    const { mutate: muteMutation, isPending: isMuting } = useMutation({
-      mutationFn: (muted: boolean) => toggleMute(conversationId, muted),
+      mutationFn: (muted: boolean) => toggleMute({ conversationId, muted }),
       onMutate: async muted => {
          await queryClient.cancelQueries({ queryKey: convKey });
          const prev = queryClient.getQueryData<ConversationDetail>(convKey);
@@ -100,17 +100,17 @@ export default function ChatDetailsPanel({
    });
 
    const { mutate: removeMember, isPending: isRemovingMember } = useMutation({
-      mutationFn: (userId: string) => removeParticipant(conversationId, userId),
+      mutationFn: (userId: string) => removeParticipant({ conversationId, userId }),
       onSuccess: () => queryClient.invalidateQueries({ queryKey: convKey }),
       onError: (e: Error) => toast(e.message),
    });
 
    const { mutate: addMembers, isPending: isAddingMembers } = useMutation({
       mutationFn: (users: PartialUser[]) =>
-         addParticipants(
+         addParticipants({
             conversationId,
-            users.map(u => u.id),
-         ),
+            userIds: users.map(u => u.id),
+         }),
       onSuccess: () => {
          queryClient.invalidateQueries({ queryKey: convKey });
          setShowAddPeople(false);
@@ -125,7 +125,7 @@ export default function ChatDetailsPanel({
    async function handleLeave() {
       setIsNavigating(true);
       try {
-         await leaveConversation(conversationId);
+         await leaveConversation({ conversationId });
          queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
          router.push('/direct');
       } catch (e) {
@@ -137,7 +137,7 @@ export default function ChatDetailsPanel({
    async function handleDelete() {
       setIsNavigating(true);
       try {
-         await deleteConversation(conversationId);
+         await deleteConversation({ conversationId });
          queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
          router.push('/direct');
       } catch (e) {

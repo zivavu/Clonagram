@@ -12,7 +12,7 @@ interface ProfilePostPageProps {
 export default async function ProfilePostPage({ params }: ProfilePostPageProps) {
    const { username, postId } = await params;
 
-   const [profileData, post] = await Promise.all([loadProfilePage(username), getPost(postId)]);
+   const [profileData, post] = await Promise.all([loadProfilePage(username), getPost({ postId })]);
 
    return (
       <ProfilePage

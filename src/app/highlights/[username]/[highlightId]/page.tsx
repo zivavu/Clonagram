@@ -13,7 +13,7 @@ interface HighlightViewerPageProps {
 export default async function HighlightViewerPage({ params }: HighlightViewerPageProps) {
    const { username, highlightId } = await params;
    const [{ entries, profileUserId }, authProfile] = await Promise.all([
-      getHighlightEntries(username),
+      getHighlightEntries({ username }),
       getAuthProfile(),
    ]);
 
