@@ -6,6 +6,7 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
+import { getMuxThumbnailUrl } from '@/src/utils/mux';
 import { usePlayerStore } from '../../../store/usePlayerStore';
 import { styles } from '../index.stylex';
 import type { Layout } from '../types';
@@ -161,7 +162,7 @@ export default function StoryCard({
                   />
                ) : (
                   <Image
-                     src={`https://image.mux.com/${currentMedia.url}/thumbnail.jpg`}
+                     src={getMuxThumbnailUrl(currentMedia.url)}
                      alt=""
                      fill
                      unoptimized

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/src/types/database';
+import { getMuxThumbnailUrl } from '@/src/utils/mux';
 
 export async function getStoryThumbnail(
    supabase: SupabaseClient<Database>,
@@ -24,7 +25,7 @@ export async function getStoryThumbnail(
       .maybeSingle();
 
    if (storyVideo?.mux_playback_id) {
-      return `https://image.mux.com/${storyVideo.mux_playback_id}/thumbnail.jpg`;
+      return getMuxThumbnailUrl(storyVideo.mux_playback_id);
    }
 
    return null;

@@ -3,12 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { IoCheckmark } from 'react-icons/io5';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
+import { getMuxThumbnailUrl } from '@/src/utils/mux';
 import DateBadge from '../../pageComponents/Archive/components/DateBadge';
 import { styles } from './index.stylex';
 
 export function getThumbnailUrl(story: ArchivedStory) {
    if (story.type === 'image') return story.url;
-   return `https://image.mux.com/${story.url}/thumbnail.jpg`;
+   return getMuxThumbnailUrl(story.url);
 }
 
 interface StoryCardProps {
