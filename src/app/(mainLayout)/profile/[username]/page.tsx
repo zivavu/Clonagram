@@ -19,6 +19,7 @@ export default async function Profile({ params }: ProfilePageProps) {
          isOwnProfile={profileData.isOwnProfile}
          note={profileData.note}
          ringState={profileData.ringState}
+         highlights={profileData.highlights}
       />
    );
 }

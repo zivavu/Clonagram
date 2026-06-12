@@ -17,6 +17,30 @@ export const styles = stylex.create({
       gap: spacing.sm,
       flexShrink: 0,
    },
+   highlightCircle: {
+      width: '87px',
+      height: '87px',
+      borderRadius: radius.full,
+      overflow: 'hidden',
+      position: 'relative',
+      backgroundColor: colors.bgSecondary,
+      display: 'block',
+      flexShrink: 0,
+   },
+   coverPlaceholder: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: colors.bgSecondary,
+   },
+   highlightInner: {
+      position: 'absolute',
+      inset: 0,
+      borderRadius: radius.full,
+      borderColor: colors.bg,
+      borderWidth: '3px',
+      borderStyle: 'solid',
+      zIndex: 1,
+   },
    newHighlightButton: {
       width: '87px',
       height: '87px',
@@ -26,7 +50,6 @@ export const styles = stylex.create({
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.bgSecondary,
-      cursor: 'pointer',
       position: 'relative',
    },
    newHighlightInner: {
@@ -41,7 +64,6 @@ export const styles = stylex.create({
       borderWidth: '4px',
       borderStyle: 'solid',
    },
-
    highlightLabel: {
       fontSize: '12px',
       color: colors.textPrimary,

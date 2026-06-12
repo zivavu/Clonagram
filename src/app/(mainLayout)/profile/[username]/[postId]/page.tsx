@@ -23,6 +23,7 @@ export default async function ProfilePostPage({ params }: ProfilePostPageProps) 
          note={profileData.note}
          initialPost={post}
          ringState={profileData.ringState}
+         highlights={profileData.highlights}
       />
    );
 }

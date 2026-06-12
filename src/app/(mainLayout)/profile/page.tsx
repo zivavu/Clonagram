@@ -2,6 +2,7 @@ import { getUserNote } from '../../../actions/notes/getUserNote';
 import { getUserProfileWithPosts } from '../../../actions/profile/getUserProfileWithPosts';
 import { getSavedPosts } from '../../../actions/saves/getSavedPosts';
 import { getRingState } from '../../../actions/story/getRingState';
+import { getUserHighlights } from '../../../actions/story/getUserHighlights';
 import { getAuthProfile } from '../../../lib/supabase/getAuthProfile';
 import ProfilePage from '../../../pageComponents/Profile';
 
@@ -16,7 +17,10 @@ export default async function Profile() {
       getSavedPosts(),
    ]);
 
-   const ringState = await getRingState(userProfile.id);
+   const [ringState, highlights] = await Promise.all([
+      getRingState(userProfile.id),
+      getUserHighlights(userProfile.id),
+   ]);
 
    return (
       <ProfilePage
@@ -27,6 +31,7 @@ export default async function Profile() {
          note={note}
          savedPosts={savedPosts}
          ringState={ringState}
+         highlights={highlights}
       />
    );
 }

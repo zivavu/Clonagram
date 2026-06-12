@@ -41,3 +41,4 @@ export const useNewMessageModalStore = createModalStore();
 export const useSettingsPopoverStore = createModalStore();
 export const useNewNoteModalStore = createModalStore();
 export const useOwnerActionsModal = createModalStoreWithData<string>();
+export const useNewHighlightModalStore = createModalStore();
