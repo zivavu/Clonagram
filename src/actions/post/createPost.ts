@@ -2,7 +2,6 @@
 import 'server-only';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { revalidatePath } from 'next/cache';
 import { throwIfError } from '@/src/lib/unwrap';
 import type { Database } from '@/src/types/database';
 import type { CreatePostParams, TaggedPerson } from '../../components/CreatePostModal/types';
@@ -211,8 +210,4 @@ export async function createPost(params: CreatePostParams) {
          })
          .map(img => generateImageAltText({ imageId: img.id, imageUrl: img.url })),
    );
-
-   revalidatePath('/');
-   revalidatePath('/[username]', 'page');
-   if (isReel) revalidatePath('/reels');
 }

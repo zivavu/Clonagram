@@ -36,4 +36,5 @@ export async function createHighlight(params: {
    }
 
    revalidatePath('/profile');
+   revalidatePath('/profile/[username]', 'page');
 }

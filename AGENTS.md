@@ -199,6 +199,19 @@ Just don't use them. Don't use the explicit return types at all.
 
 <!-- END:return-types -->
 
+<!-- BEGIN:fetch-pattern-rules -->
+
+# Data Fetching Pattern
+
+Two fetch patterns are used; use the right one for the context:
+
+- **Server actions** (`'use server'` in `src/actions/`): use for authenticated reads — feeds, posts, profiles, stories, notifications. These run on the server and handle RLS automatically via the server-side Supabase client.
+- **Client-direct query builders** (`src/queries/`): use inside `queryFn` in the DM section and anywhere that requires a client-side Supabase instance (e.g. realtime subscriptions). Pass the `supabase` client from `@/src/lib/supabase/client`.
+
+Never call `supabase.auth.getUser()` inside a `queryFn`. Use the `useAuthUser` hook to get the current user outside the query function, and guard with `enabled: !!authUser?.id`.
+
+<!-- END:fetch-pattern-rules -->
+
 <!-- BEGIN:html-nesting-rules -->
 
 # HTML Nesting

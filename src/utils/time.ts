@@ -82,10 +82,10 @@ function formatRelativeTime(timestamp: string, longUnit: boolean): string {
    }
 
    const units: [number, string][] = [
-      [365 * 24 * MINUTE_MS, 'y'],
-      [30 * 24 * MINUTE_MS, 'mo'],
-      [7 * 24 * MINUTE_MS, 'w'],
-      [24 * MINUTE_MS, 'd'],
+      [365 * 24 * HOUR_MS, 'y'],
+      [30 * 24 * HOUR_MS, 'mo'],
+      [7 * 24 * HOUR_MS, 'w'],
+      [24 * HOUR_MS, 'd'],
       [HOUR_MS, 'h'],
       [MINUTE_MS, 'm'],
    ];

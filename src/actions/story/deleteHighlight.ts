@@ -18,4 +18,5 @@ export async function deleteHighlight(params: { id: string }) {
 
    throwIfError({ error }, 'Failed to delete highlight');
    revalidatePath('/profile');
+   revalidatePath('/profile/[username]', 'page');
 }

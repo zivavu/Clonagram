@@ -37,6 +37,6 @@ export async function updateProfile(params: UpdateProfileParams) {
 
    throwIfError({ error }, 'Failed to update profile');
    revalidatePath('/', 'layout');
-   revalidatePath('/[username]', 'page');
+   revalidatePath('/profile/[username]', 'page');
    return {};
 }

@@ -14,7 +14,6 @@ interface DeleteConfirmModalProps {
    title?: string;
    description?: string;
    confirmLabel?: string;
-   hideHeader?: boolean;
 }
 
 export default function DeleteConfirmModal({
@@ -25,17 +24,13 @@ export default function DeleteConfirmModal({
    title = 'Delete post?',
    description = 'Are you sure you want to delete this post?',
    confirmLabel = 'Delete',
-   hideHeader = false,
 }: DeleteConfirmModalProps) {
    return (
       <Dialog.Root open={open} onOpenChange={onOpenChange}>
          <Dialog.Portal>
             <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)}>
-               <div
-                  {...stylex.props(styles.header)}
-                  style={{ display: hideHeader ? 'none' : 'flex' }}
-               >
+               <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>{title}</Dialog.Title>
                   <Dialog.Description {...stylex.props(styles.description)}>
                      {description}

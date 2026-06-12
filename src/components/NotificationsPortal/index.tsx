@@ -203,10 +203,7 @@ export default function NotificationsPortal() {
 
    const { data: notificationRows = [] } = useQuery({
       queryKey: authUser?.id ? queryKeys.notifications(authUser.id) : ['notifications'],
-      queryFn: async () => {
-         if (!authUser?.id) return [];
-         return getNotifications() as Promise<NotificationRow[]>;
-      },
+      queryFn: () => getNotifications() as Promise<NotificationRow[]>,
       enabled: isOpen && !!authUser?.id,
       staleTime: 30_000,
    });

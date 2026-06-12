@@ -18,4 +18,5 @@ export async function editHighlight(params: { id: string; title: string }) {
 
    throwIfError({ error }, 'Failed to update highlight');
    revalidatePath('/profile');
+   revalidatePath('/profile/[username]', 'page');
 }

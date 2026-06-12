@@ -59,8 +59,6 @@ type EditHighlightStoriesData = { highlightId: string };
 export const useEditHighlightStoriesModalStore =
    createModalStoreWithData<EditHighlightStoriesData>();
 
-// — Hand-rolled stores (migrated here) —
-
 export type CreatePostMode = 'post' | 'reel';
 
 interface CreatePostModalStore extends ModalStore {
@@ -82,8 +80,7 @@ interface FollowListModalStore {
    isOpen: boolean;
    type: FollowListType;
    userId: string;
-   username: string;
-   open: (type: FollowListType, userId: string, username: string) => void;
+   open: (type: FollowListType, userId: string) => void;
    close: () => void;
 }
 
@@ -91,7 +88,6 @@ export const useFollowListModal = create<FollowListModalStore>(set => ({
    isOpen: false,
    type: 'followers',
    userId: '',
-   username: '',
-   open: (type, userId, username) => set({ isOpen: true, type, userId, username }),
+   open: (type, userId) => set({ isOpen: true, type, userId }),
    close: () => set({ isOpen: false }),
 }));

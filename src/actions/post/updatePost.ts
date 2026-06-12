@@ -1,6 +1,5 @@
 'use server';
 import 'server-only';
-import { revalidatePath } from 'next/cache';
 import type { PostLocation } from '@/src/components/CreatePostModal/types';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { throwIfError } from '@/src/lib/unwrap';
@@ -48,7 +47,4 @@ export async function updatePost({
       .eq('user_id', authProfile.id);
 
    throwIfError({ error }, 'Failed to update post');
-   revalidatePath('/');
-   revalidatePath('/[username]', 'page');
-   revalidatePath('/reels');
 }

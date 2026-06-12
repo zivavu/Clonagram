@@ -2,8 +2,6 @@ import { z } from 'zod';
 
 const uuid = z.string().uuid();
 
-export const LikePostSchema = z.object({ postId: uuid });
-export const SavePostSchema = z.object({ postId: uuid });
 export const FollowUserSchema = z.object({ targetUserId: uuid });
 export const SendMessageSchema = z.object({
    conversationId: uuid,
@@ -65,6 +63,10 @@ export const usernameSchema = z
    .regex(/^[a-zA-Z0-9_.]+$/, 'Only letters, numbers, underscores, and dots are allowed');
 
 export const ConversationIdSchema = z.object({ conversationId: uuid });
+export const AddParticipantsSchema = z.object({
+   conversationId: uuid,
+   userIds: z.array(uuid).min(1).max(100),
+});
 export const ConversationWithUserSchema = z.object({
    conversationId: uuid,
    userId: uuid,

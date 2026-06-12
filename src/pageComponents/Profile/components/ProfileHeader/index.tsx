@@ -92,18 +92,14 @@ export default function ProfileHeader({
                   <button
                      type="button"
                      {...stylex.props(styles.statButton)}
-                     onClick={() =>
-                        openFollowList('followers', userProfile.id, userProfile.username)
-                     }
+                     onClick={() => openFollowList('followers', userProfile.id)}
                   >
                      <strong>{followersCount}</strong> followers
                   </button>
                   <button
                      type="button"
                      {...stylex.props(styles.statButton)}
-                     onClick={() =>
-                        openFollowList('following', userProfile.id, userProfile.username)
-                     }
+                     onClick={() => openFollowList('following', userProfile.id)}
                   >
                      <strong>{followingCount}</strong> following
                   </button>

@@ -36,4 +36,5 @@ export async function updateHighlightStories(params: { highlightId: string; stor
    }
 
    revalidatePath('/profile');
+   revalidatePath('/profile/[username]', 'page');
 }

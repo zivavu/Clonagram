@@ -40,7 +40,7 @@ export function useChatScrollAndRead({
       if (messagesCount === lastReadCountRef.current) return;
       lastReadCountRef.current = messagesCount;
       const hasUnread = messages.some(m => m.sender_id !== authUserId && !m.read_at);
-      if (hasUnread) markChatRead({ conversationId });
+      if (hasUnread) markChatRead({ conversationId }).catch(() => {});
    };
 
    // biome-ignore lint/correctness/useExhaustiveDependencies: runs once per conversation — syncs read ref, marks read if needed, scrolls to bottom, attaches stable scroll listener
@@ -52,7 +52,7 @@ export function useChatScrollAndRead({
          !self?.last_read_at ||
          (initialConversation?.last_message_at &&
             new Date(initialConversation.last_message_at) > new Date(self.last_read_at));
-      if (isUnread) markChatRead({ conversationId });
+      if (isUnread) markChatRead({ conversationId }).catch(() => {});
 
       endRef.current?.scrollIntoView({ behavior: 'instant' });
 

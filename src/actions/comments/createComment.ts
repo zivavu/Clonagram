@@ -1,6 +1,5 @@
 'use server';
 import 'server-only';
-import { revalidatePath } from 'next/cache';
 import { throwIfError } from '@/src/lib/unwrap';
 import type { PostComment } from '@/src/queries/comments';
 import { CreateCommentSchema, validate } from '../../lib/validation';
@@ -39,9 +38,5 @@ export async function createComment(params: {
 
    throwIfError({ error }, 'Failed to post comment');
    if (!data) throw new Error('Failed to post comment: no data returned');
-   revalidatePath('/');
-   revalidatePath('/reels');
-   revalidatePath('/explore');
-   revalidatePath('/profile/[username]', 'page');
    return data;
 }

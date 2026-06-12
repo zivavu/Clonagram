@@ -2,7 +2,6 @@
 import 'server-only';
 
 import { randomUUID } from 'node:crypto';
-import { revalidatePath } from 'next/cache';
 import { getStoryThumbnail } from '@/src/lib/getStoryThumbnail';
 import { throwIfError } from '@/src/lib/unwrap';
 import { ReplyToStorySchema, validate } from '@/src/lib/validation';
@@ -76,7 +75,4 @@ export async function replyToStory(params: { storyId: string; content: string })
       story_id: storyId,
    });
    throwIfError({ error: notifError }, 'Failed to insert notification');
-
-   revalidatePath('/');
-   revalidatePath('/stories/[username]', 'page');
 }

@@ -1,7 +1,5 @@
 'use server';
 import 'server-only';
-
-import { revalidatePath } from 'next/cache';
 import { throwIfError } from '@/src/lib/unwrap';
 import { RecordStoryViewSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
@@ -16,6 +14,4 @@ export async function recordStoryView(storyId: string) {
          { onConflict: 'story_id,viewer_id', ignoreDuplicates: true },
       );
    throwIfError({ error }, 'Failed to record story view');
-   revalidatePath('/');
-   revalidatePath('/stories/[username]', 'page');
 }

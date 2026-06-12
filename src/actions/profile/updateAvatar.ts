@@ -19,5 +19,5 @@ export async function updateAvatar(params: { avatarUrl: string | null }) {
 
    throwIfError({ error }, 'Failed to update avatar');
    revalidatePath('/', 'layout');
-   revalidatePath('/[username]', 'page');
+   revalidatePath('/profile/[username]', 'page');
 }

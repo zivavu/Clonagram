@@ -10,14 +10,18 @@ import { createConversation } from '@/src/actions/dm/createConversation';
 import { toast } from '@/src/components/AppToast';
 import DialogOverlay from '@/src/components/DialogOverlay';
 import { UserListItem } from '@/src/components/UserListItem';
+import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
+import { followedUsersQuery } from '@/src/queries/follows';
+import { userProfilesQuery } from '@/src/queries/userProfiles';
 import { useNewMessageModalStore } from '@/src/store/createModalStore';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { styles } from './index.stylex';
 
 export default function NewMessageModal() {
    const { isOpen, close } = useNewMessageModalStore();
+   const { data: authUser } = useAuthUser();
    const [query, setQuery] = useState('');
    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
    const [creating, setCreating] = useState(false);
@@ -26,16 +30,11 @@ export default function NewMessageModal() {
    const { data: followedUsers = [] } = useQuery({
       queryKey: queryKeys.followedUsers(),
       queryFn: async () => {
-         const {
-            data: { user },
-         } = await supabase.auth.getUser();
-         if (!user) return [];
-         const { data } = await supabase
-            .from('follows')
-            .select('user:profiles!following_id(id, username, full_name, avatar_url)')
-            .eq('follower_id', user.id);
+         if (!authUser?.id) return [];
+         const { data } = await followedUsersQuery(supabase, authUser.id);
          return (data ?? []).map(r => r.user).filter(Boolean);
       },
+      enabled: !!authUser?.id,
       staleTime: Infinity,
    });
 
@@ -43,11 +42,7 @@ export default function NewMessageModal() {
       queryKey: queryKeys.userSearch(query),
       queryFn: async () => {
          if (!query.trim()) return [];
-         const { data } = await supabase
-            .from('profiles')
-            .select('id, username, full_name, avatar_url')
-            .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
-            .limit(20);
+         const { data } = await userProfilesQuery(supabase, { search: query, limit: 20 });
          return data ?? [];
       },
       staleTime: 30_000,

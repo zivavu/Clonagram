@@ -48,7 +48,7 @@ export default function ReelActionRail({
       setIsLiked(next);
       setLikeCount(prev => prev + (next ? 1 : -1));
       try {
-         await togglePostLike({ postId: reel.id, isLiked: !next });
+         await togglePostLike({ postId: reel.id, isLiked });
       } catch {
          setIsLiked(!next);
          setLikeCount(prev => prev + (next ? -1 : 1));

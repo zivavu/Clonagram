@@ -57,7 +57,7 @@ export default function StoriesPage({
       if (!storyId) return;
       if (recordedSet.current.has(storyId)) return;
       recordedSet.current.add(storyId);
-      recordStoryView(storyId);
+      recordStoryView(storyId).catch(() => {});
    };
 
    useLayoutEffect(() => {
@@ -65,7 +65,7 @@ export default function StoriesPage({
       const storyId = entry?.stories[0]?.userId;
       if (storyId && !recordedSet.current.has(storyId)) {
          recordedSet.current.add(storyId);
-         recordStoryView(storyId);
+         recordStoryView(storyId).catch(() => {});
       }
    }, [entries, startIndex]);
 

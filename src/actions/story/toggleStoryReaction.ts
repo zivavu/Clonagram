@@ -2,7 +2,6 @@
 import 'server-only';
 
 import { randomUUID } from 'node:crypto';
-import { revalidatePath } from 'next/cache';
 import { getStoryThumbnail } from '@/src/lib/getStoryThumbnail';
 import { throwIfError } from '@/src/lib/unwrap';
 import { ReactToStorySchema, validate } from '@/src/lib/validation';
@@ -53,8 +52,6 @@ export async function toggleStoryReaction(
          await supabase.from('messages').update({ is_deleted: true }).eq('id', likeMessage.id);
       }
 
-      revalidatePath('/');
-      revalidatePath('/stories/[username]', 'page');
       return { liked: false };
    }
 
@@ -118,7 +115,5 @@ export async function toggleStoryReaction(
    });
    throwIfError({ error: notifError }, 'Failed to insert notification');
 
-   revalidatePath('/');
-   revalidatePath('/stories/[username]', 'page');
    return { liked: true };
 }
