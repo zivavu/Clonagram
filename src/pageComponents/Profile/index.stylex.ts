@@ -11,7 +11,7 @@ export const styles = stylex.create({
       paddingRight: '100px',
       minHeight: '100dvh',
       maxWidth: '1255px',
-      padding: '58px 0',
+      padding: '38px 0',
       margin: '0 auto',
 
       '@media (max-width: 768px)': {

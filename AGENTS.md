@@ -99,7 +99,7 @@ Do not use custom inline SVG or raw SVG files.
 # TypeScript
 
 Never use `any`.
-Always define proper types and interfaces. Prefer explicit return types on exported functions.
+Always define proper types and interfaces. 
 
 <!-- END:typescript-rules -->
 

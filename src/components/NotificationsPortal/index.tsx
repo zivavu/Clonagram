@@ -113,7 +113,13 @@ function groupNotifications(rows: NotificationRow[]): GroupedNotification[] {
    return groups;
 }
 
-function NotificationRowComponent({ notification }: { notification: GroupedNotification }) {
+function NotificationRowComponent({
+   notification,
+   authUsername,
+}: {
+   notification: GroupedNotification;
+   authUsername: string | undefined;
+}) {
    const firstActor = notification.actors[0];
    const othersCount = notification.actors.length - 1;
    const actorName = (
@@ -154,6 +160,7 @@ function NotificationRowComponent({ notification }: { notification: GroupedNotif
                username={firstActor.username}
                userId={firstActor.id}
                useHoverCard={false}
+               disableLink={true}
             />
          </div>
          <div {...stylex.props(styles.notificationBody)}>
@@ -170,9 +177,13 @@ function NotificationRowComponent({ notification }: { notification: GroupedNotif
    const href =
       notification.type === 'follow'
          ? `/profile/${firstActor.username}`
-         : notification.postAuthorUsername && notification.postId
-           ? `/profile/${notification.postAuthorUsername}/${notification.postId}`
-           : null;
+         : (notification.type === 'story_like' || notification.type === 'story_reply') &&
+             notification.storyId &&
+             authUsername
+           ? `/stories/${authUsername}/${notification.storyId}`
+           : notification.postAuthorUsername && notification.postId
+             ? `/profile/${notification.postAuthorUsername}/${notification.postId}`
+             : null;
 
    if (href) {
       return (
@@ -263,7 +274,7 @@ export default function NotificationsPortal() {
                      <div key={group.label}>
                         <div {...stylex.props(styles.groupHeader)}>{group.label}</div>
                         {group.items.map(n => (
-                           <NotificationRowComponent key={n.id} notification={n} />
+                           <NotificationRowComponent key={n.id} notification={n} authUsername={authUser?.username} />
                         ))}
                      </div>
                   ))}

@@ -43,7 +43,6 @@ export default function ProfileStoryHighlights({
                   ) : (
                      <div {...stylex.props(styles.coverPlaceholder)} />
                   )}
-                  <div {...stylex.props(styles.highlightInner)} />
                </Link>
                <span {...stylex.props(styles.highlightLabel)}>{highlight.title}</span>
             </div>

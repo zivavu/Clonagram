@@ -16,6 +16,7 @@ export const styles = stylex.create({
    mainRow: {
       display: 'flex',
       flexDirection: 'row',
+      alignItems: 'center',
       gap: spacing.lg,
    },
    avatarSection: {
@@ -59,7 +60,7 @@ export const styles = stylex.create({
    },
    statsRow: {
       display: 'flex',
-      gap: spacing.lg,
+      gap: spacing.md,
       fontSize: '16px',
       color: colors.textPrimary,
    },

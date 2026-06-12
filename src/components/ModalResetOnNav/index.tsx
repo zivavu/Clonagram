@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
    useNotificationsPortalStore,
    useOwnerActionsModal,
@@ -11,26 +11,8 @@ import { usePostViewModal } from '../../store/usePostViewModalStore';
 
 const POST_URL_PATTERN = /^\/profile\/[^/]+\/[^/]+$/;
 
-function useIsMobile() {
-   const [isMobile, setIsMobile] = useState(false);
-
-   useEffect(() => {
-      if (typeof window === 'undefined') return;
-      const mq = window.matchMedia('(max-width: 767px)');
-      setIsMobile(mq.matches);
-      function onChange(e: MediaQueryListEvent) {
-         setIsMobile(e.matches);
-      }
-      mq.addEventListener('change', onChange);
-      return () => mq.removeEventListener('change', onChange);
-   }, []);
-
-   return isMobile;
-}
-
 export default function ModalResetOnNav() {
    const pathname = usePathname();
-   const isMobile = useIsMobile();
    const closePostViewModal = usePostViewModal(state => state.close);
    const closeOwnerActionsModal = useOwnerActionsModal(state => state.close);
    const closeNotificationsModal = useNotificationsPortalStore(state => state.close);
@@ -46,14 +28,13 @@ export default function ModalResetOnNav() {
       closePostViewModal();
       closeOwnerActionsModal();
       closeNotificationsModal();
-      if (isMobile) closeSearchPortal();
+      closeSearchPortal();
    }, [
       pathname,
       closePostViewModal,
       closeOwnerActionsModal,
       closeNotificationsModal,
       closeSearchPortal,
-      isMobile,
    ]);
 
    useEffect(() => {

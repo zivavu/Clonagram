@@ -4,7 +4,7 @@ import { colors } from '../../styles/tokens.stylex';
 export const styles = stylex.create({
    noteBubble: {
       position: 'absolute',
-      top: '-34px',
+      top: '-38px',
       left: '50%',
       transform: 'translateX(-50%)',
       backgroundColor: colors.bgBubble,
