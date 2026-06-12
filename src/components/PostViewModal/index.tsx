@@ -9,7 +9,7 @@ import { getPost } from '../../actions/post/getPost';
 import { queryKeys } from '../../lib/queryKeys';
 import { usePostViewModal } from '../../store/usePostViewModalStore';
 import DialogOverlay from '../DialogOverlay';
-import PostMediaCarousel from '../PostMediaCarousel/PostMediaCarousel';
+import PostMediaCarousel from '../PostMediaCarousel';
 import { styles } from './index.stylex';
 import PostModalComments from './PostModalComments';
 

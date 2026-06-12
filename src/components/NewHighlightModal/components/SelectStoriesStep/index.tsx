@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
-import StoryCard from '@/src/components/StoryCard';
+import ArchivedStoryCard from '@/src/components/ArchivedStoryCard';
 import { styles } from './index.stylex';
 
 interface SelectStoriesStepProps {
@@ -28,7 +28,7 @@ export default function SelectStoriesStep({
       <div {...stylex.props(styles.root)}>
          <div {...stylex.props(styles.grid)}>
             {stories.map(story => (
-               <StoryCard
+               <ArchivedStoryCard
                   key={story.id}
                   story={story}
                   selected={selectedIds.has(story.id)}

@@ -8,7 +8,7 @@ import { LuSend } from 'react-icons/lu';
 import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
 import { getPost } from '@/src/actions/post/getPost';
-import PostMediaCarousel from '@/src/components/PostMediaCarousel/PostMediaCarousel';
+import PostMediaCarousel from '@/src/components/PostMediaCarousel';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';

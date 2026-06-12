@@ -4,7 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
+import { useCreatePostModalStore } from '@/src/store/createModalStore';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import type { PartialUser } from '@/src/types/global';
 import { extractVideoFrames } from '@/src/utils/extractVideoFrames';

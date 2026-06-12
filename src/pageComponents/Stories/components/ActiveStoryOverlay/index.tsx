@@ -17,7 +17,7 @@ import VolumeControl from '@/src/components/VolumeControl';
 import { useHighlightActionsModalStore } from '@/src/store/createModalStore';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { styles } from '../index.stylex';
+import { styles } from '../../index.stylex';
 
 interface ActiveStoryOverlayProps {
    story: StoryEntry;

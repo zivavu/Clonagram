@@ -10,7 +10,7 @@ import { usePostViewModal } from '../../store/usePostViewModalStore';
 import CarouselArrow from '../CarouselArrow';
 import ImageTagPin from './components/ImageTagPin';
 import FeedVideoSlide from './FeedVideoSlide';
-import { styles } from './PostMediaCarousel.stylex';
+import { styles } from './index.stylex';
 
 interface ImageTag {
    id: string;

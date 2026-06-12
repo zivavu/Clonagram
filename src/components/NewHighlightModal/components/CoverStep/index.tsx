@@ -3,7 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
-import { getThumbnailUrl } from '@/src/components/StoryCard';
+import { getThumbnailUrl } from '@/src/components/ArchivedStoryCard';
 import { styles } from './index.stylex';
 
 interface CoverStepProps {

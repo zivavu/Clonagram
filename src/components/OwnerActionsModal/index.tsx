@@ -11,7 +11,7 @@ import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
 import DialogOverlay from '../DialogOverlay';
 import EditPostModal from '../EditPostModal';
-import { styles } from './OwnerActionsModal.stylex';
+import { styles } from './index.stylex';
 
 interface Action {
    label: string;

@@ -3,8 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { IoCheckmark } from 'react-icons/io5';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
+import DateBadge from '@/src/pageComponents/Archive/components/DateBadge';
 import { getMuxThumbnailUrl } from '@/src/utils/mux';
-import DateBadge from '../../pageComponents/Archive/components/DateBadge';
 import { styles } from './index.stylex';
 
 export function getThumbnailUrl(story: ArchivedStory) {

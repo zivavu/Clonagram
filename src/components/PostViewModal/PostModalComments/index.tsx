@@ -18,7 +18,7 @@ import { getPost } from '@/src/actions/post/getPost';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
 import EmojiInput, { type EmojiInputRef } from '@/src/components/EmojiInput';
 import FollowButton from '@/src/components/FollowButton';
-import OwnerActionsModal from '@/src/components/OwnerActionsModal/OwnerActionsModal';
+import OwnerActionsModal from '@/src/components/OwnerActionsModal';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';

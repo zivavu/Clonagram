@@ -8,10 +8,10 @@ import { useEffect, useRef, useState } from 'react';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import { getMuxThumbnailUrl } from '@/src/utils/mux';
-import { styles } from '../index.stylex';
-import type { Layout } from '../types';
-import ActiveStoryOverlay from './ActiveStoryOverlay';
-import SideStoryOverlay from './SideStoryOverlay';
+import { styles } from '../../index.stylex';
+import type { Layout } from '../../types';
+import ActiveStoryOverlay from '../ActiveStoryOverlay';
+import SideStoryOverlay from '../SideStoryOverlay';
 
 const PICTURE_DURATION = 6000;
 

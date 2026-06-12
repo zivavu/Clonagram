@@ -8,8 +8,7 @@ import { BsImages } from 'react-icons/bs';
 import { FaRegSquarePlus, FaSquarePlus } from 'react-icons/fa6';
 import { LuCircleFadingPlus } from 'react-icons/lu';
 import { MdOutlineSmartDisplay } from 'react-icons/md';
-import { useCreateStoryModalStore } from '@/src/store/createModalStore';
-import { useCreatePostModalStore } from '@/src/store/useCreatePostModalStore';
+import { useCreatePostModalStore, useCreateStoryModalStore } from '@/src/store/createModalStore';
 import type { MainSidebarStyles } from '../MainNavbar/index.stylex';
 import { styles } from './index.stylex';
 

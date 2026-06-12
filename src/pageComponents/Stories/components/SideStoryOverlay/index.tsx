@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
-import { styles } from '../index.stylex';
+import { styles } from '../../index.stylex';
 
 interface SideStoryOverlayProps {
    story: StoryEntry;

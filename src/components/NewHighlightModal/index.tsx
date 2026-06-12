@@ -7,7 +7,7 @@ import { IoArrowBack, IoCloseOutline } from 'react-icons/io5';
 import { createHighlight } from '@/src/actions/story/createHighlight';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
 import { getArchivedStories } from '@/src/actions/story/getArchivedStories';
-import { getThumbnailUrl } from '@/src/components/StoryCard';
+import { getThumbnailUrl } from '@/src/components/ArchivedStoryCard';
 import { useNewHighlightModalStore } from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import CoverStep from './components/CoverStep';
