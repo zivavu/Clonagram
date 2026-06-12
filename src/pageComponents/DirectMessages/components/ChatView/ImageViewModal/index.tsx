@@ -26,7 +26,10 @@ export default function ImageViewModal({ src, open, onClose }: ImageViewModalPro
                   <Dialog.Description style={{ display: 'none' }}>
                      View full image
                   </Dialog.Description>
-                  {src && <img src={src} alt="" {...stylex.props(styles.image)} />}
+                  {src && (
+                     /* biome-ignore lint/performance/noImgElement: dynamic fullscreen viewer with CSS max-dimensions — Image with fill requires explicit container size */
+                     <img src={src} alt="" {...stylex.props(styles.image)} />
+                  )}
                   <button type="button" {...stylex.props(styles.closeButton)} onClick={onClose}>
                      <IoCloseOutline />
                   </button>
