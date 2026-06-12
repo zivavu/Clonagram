@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors } from '../../../../styles/tokens.stylex';
+import { colors, radius } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
@@ -8,17 +8,19 @@ export const styles = stylex.create({
    },
    input: {
       width: '100%',
-      padding: '12px 0',
-      backgroundColor: 'transparent',
+      padding: '8px 12px',
+      margin: '8px 0',
+      backgroundColor: colors.bgSecondary,
+      borderRadius: radius.sm,
       border: 'none',
-      borderBottomWidth: '1px',
-      borderBottomStyle: 'solid',
-      borderBottomColor: colors.border,
       fontSize: '16px',
       color: colors.textPrimary,
       outline: 'none',
       '::placeholder': {
          color: colors.textMuted,
+      },
+      ':focus': {
+         outline: `1px solid ${colors.border}`,
       },
    },
 });

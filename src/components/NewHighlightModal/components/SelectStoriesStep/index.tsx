@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
-import StoryCard from '@/src/pageComponents/Archive/components/StoryCard';
+import StoryCard from '@/src/components/StoryCard';
 import { styles } from './index.stylex';
 
 interface SelectStoriesStepProps {

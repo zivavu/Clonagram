@@ -17,6 +17,7 @@ export interface StoriesPageProps {
    basePath: string;
    showReply?: boolean;
    closeHref?: string;
+   showHighlightActions?: boolean;
    entries: Awaited<ReturnType<typeof getActiveStories>>['entries'];
    viewedStoryIds: string[];
    reactedStoryIds: string[];

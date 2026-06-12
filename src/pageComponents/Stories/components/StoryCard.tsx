@@ -23,6 +23,8 @@ interface StoryCardProps {
    goToNextStoryMedia: () => void;
    closeHref: string;
    showReply?: boolean;
+   showHighlightActions?: boolean;
+   currentUserId?: string | null;
    reactedStoryIds: string[];
 }
 
@@ -35,6 +37,8 @@ export default function StoryCard({
    goToNextStoryMedia,
    closeHref,
    showReply = true,
+   showHighlightActions = false,
+   currentUserId = null,
    reactedStoryIds,
 }: StoryCardProps) {
    const [displayedIndex, setDisplayedIndex] = useState(0);
@@ -117,6 +121,7 @@ export default function StoryCard({
                currentStoryMediaIndex={currentStoryMediaIndex}
                closeHref={closeHref}
                showReply={showReply}
+               showHighlightActions={showHighlightActions && currentUserId === story.userId}
                reactedStoryIds={reactedStoryIds}
             />
          )}
@@ -132,27 +137,37 @@ export default function StoryCard({
             }}
          >
             {isVideo ? (
-               <MuxPlayer
-                  key={currentMedia.userId}
-                  ref={muxPlayerRef}
-                  disableCookies
-                  volume={volume}
-                  style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
-                  playbackId={currentMedia.url ?? ''}
-                  autoPlay="always"
-                  onTimeUpdate={() => {
-                     const time = muxPlayerRef.current?.media?.currentTime;
-                     if (time) setPlayTime(time * 1000);
-                  }}
-                  onDurationChange={() => {
-                     const duration = muxPlayerRef.current?.media?.duration;
-                     if (duration && duration > 0) setVideoDuration(duration * 1000);
-                  }}
-                  onEnded={goToNextStoryMedia}
-                  onPause={() => setIsPlayingLocal(false)}
-                  onPlay={() => setIsPlayingLocal(true)}
-                  paused={!isPlaying}
-               />
+               isCurrent ? (
+                  <MuxPlayer
+                     key={currentMedia.userId}
+                     ref={muxPlayerRef}
+                     disableCookies
+                     volume={volume}
+                     style={{ width: '100%', height: '100%', '--bottom-controls': 'none' }}
+                     playbackId={currentMedia.url ?? ''}
+                     autoPlay="always"
+                     onTimeUpdate={() => {
+                        const time = muxPlayerRef.current?.media?.currentTime;
+                        if (time) setPlayTime(time * 1000);
+                     }}
+                     onDurationChange={() => {
+                        const duration = muxPlayerRef.current?.media?.duration;
+                        if (duration && duration > 0) setVideoDuration(duration * 1000);
+                     }}
+                     onEnded={goToNextStoryMedia}
+                     onPause={() => setIsPlayingLocal(false)}
+                     onPlay={() => setIsPlayingLocal(true)}
+                     paused={!isPlaying}
+                  />
+               ) : (
+                  <Image
+                     src={`https://image.mux.com/${currentMedia.url}/thumbnail.jpg`}
+                     alt=""
+                     fill
+                     unoptimized
+                     style={{ objectFit: 'cover' }}
+                  />
+               )
             ) : (
                currentMedia.url && (
                   <Image

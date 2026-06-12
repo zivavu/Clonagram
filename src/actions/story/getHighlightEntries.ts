@@ -2,8 +2,8 @@
 import 'server-only';
 
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/src/types/database';
 import { createServerClient } from '@/src/lib/supabase/server';
+import type { Database } from '@/src/types/database';
 import type { StoryEntry } from './getActiveStories';
 
 function highlightEntriesQuery(supabase: SupabaseClient<Database>, userId: string) {

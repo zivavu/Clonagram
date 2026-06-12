@@ -137,6 +137,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
+      userSelect: 'none',
    },
    activeStoryTopBar: {
       backgroundImage: 'linear-gradient(rgba(38, 38, 38, 0.8), rgba(38, 38, 38, 0))',

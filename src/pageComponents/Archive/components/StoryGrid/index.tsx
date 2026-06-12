@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
+import StoryCard from '../../../../components/StoryCard';
 import type { MonthGroup } from '../../types';
-import StoryCard from '../StoryCard';
 import { styles } from './index.stylex';
 
 export default function StoryGrid({ groups }: { groups: MonthGroup[] }) {

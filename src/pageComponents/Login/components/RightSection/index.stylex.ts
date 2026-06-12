@@ -4,7 +4,7 @@ import { colors } from '../../../../styles/tokens.stylex';
 export const styles = stylex.create({
    root: {
       minWidth: '650px',
-      backgroundColor: colors.bgElevated,
+      backgroundColor: colors.bgAuth,
       borderLeftWidth: '2px',
       borderLeftStyle: 'solid',
       borderLeftColor: colors.border,

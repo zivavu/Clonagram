@@ -42,3 +42,10 @@ export const useSettingsPopoverStore = createModalStore();
 export const useNewNoteModalStore = createModalStore();
 export const useOwnerActionsModal = createModalStoreWithData<string>();
 export const useNewHighlightModalStore = createModalStore();
+
+type HighlightActionsData = {
+   highlightId: string;
+   title: string;
+   closeHref: string;
+};
+export const useHighlightActionsModalStore = createModalStoreWithData<HighlightActionsData>();

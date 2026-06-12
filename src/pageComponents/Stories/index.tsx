@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { MdClose } from 'react-icons/md';
 import { recordStoryView } from '@/src/actions/story/recordStoryView';
+import HighlightActionsModal from '../../components/HighlightActionsModal';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, SWIPE_THRESHOLD } from './constants';
@@ -17,9 +18,11 @@ export default function StoriesPage({
    basePath,
    showReply = true,
    closeHref = '/',
+   showHighlightActions = false,
    entries,
    viewedStoryIds,
    reactedStoryIds,
+   currentUserId = null,
 }: StoriesPageProps) {
    const startIndex = Math.max(
       0,
@@ -134,6 +137,7 @@ export default function StoriesPage({
          <Link href={closeHref} {...stylex.props(styles.closeLink)}>
             <MdClose size={38} />
          </Link>
+         {showHighlightActions && <HighlightActionsModal />}
          {ready && (
             <>
                <StoryNavigationButton
@@ -162,6 +166,8 @@ export default function StoriesPage({
                         goToNextStoryMedia={goToNextStoryMedia}
                         closeHref={closeHref}
                         showReply={showReply}
+                        showHighlightActions={showHighlightActions}
+                        currentUserId={currentUserId}
                         reactedStoryIds={reactedStoryIds}
                      />
                   ))}

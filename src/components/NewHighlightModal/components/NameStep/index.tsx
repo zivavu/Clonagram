@@ -16,7 +16,7 @@ export default function NameStep({ name, onChange }: NameStepProps) {
             placeholder="Highlight Name"
             value={name}
             onChange={e => onChange(e.target.value)}
-            maxLength={100}
+            maxLength={60}
             {...stylex.props(styles.input)}
          />
       </div>

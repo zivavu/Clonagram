@@ -68,6 +68,7 @@ function getGroupLabel(date: Date): string | null {
 }
 
 function getTargetGroupKey(row: NotificationRow): string {
+   if (row.type === 'follow') return `${row.type}-${row.id}`;
    return `${row.type}-${row.post_id ?? ''}-${row.story_id ?? ''}-${row.comment_id ?? ''}`;
 }
 
@@ -152,7 +153,7 @@ function NotificationRowComponent({ notification }: { notification: GroupedNotif
                size={44}
                username={firstActor.username}
                userId={firstActor.id}
-               disableLink
+               useHoverCard={false}
             />
          </div>
          <div {...stylex.props(styles.notificationBody)}>

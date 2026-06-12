@@ -7,7 +7,7 @@ import { IoArrowBack, IoCloseOutline } from 'react-icons/io5';
 import { createHighlight } from '@/src/actions/story/createHighlight';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
 import { getArchivedStories } from '@/src/actions/story/getArchivedStories';
-import { getThumbnailUrl } from '@/src/pageComponents/Archive/components/StoryCard';
+import { getThumbnailUrl } from '@/src/components/StoryCard';
 import { useNewHighlightModalStore } from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import CoverStep from './components/CoverStep';
@@ -120,7 +120,7 @@ export default function NewHighlightModal() {
                         onClick={handleClose}
                         {...stylex.props(styles.iconButton, styles.closeButton)}
                      >
-                        <IoCloseOutline size={22} />
+                        <IoCloseOutline size={36} />
                      </button>
                   </Dialog.Close>
                </div>

@@ -12,7 +12,7 @@ interface HighlightViewerPageProps {
 
 export default async function HighlightViewerPage({ params }: HighlightViewerPageProps) {
    const { username, highlightId } = await params;
-   const [{ entries }, authProfile] = await Promise.all([
+   const [{ entries, profileUserId }, authProfile] = await Promise.all([
       getHighlightEntries(username),
       getAuthProfile(),
    ]);
@@ -20,6 +20,7 @@ export default async function HighlightViewerPage({ params }: HighlightViewerPag
    if (entries.length === 0) notFound();
 
    const startSlug = entries.some(e => e.slug === highlightId) ? highlightId : entries[0].slug;
+   const isOwner = !!authProfile && authProfile.id === profileUserId;
 
    return (
       <StoriesPage
@@ -27,6 +28,7 @@ export default async function HighlightViewerPage({ params }: HighlightViewerPag
          basePath={`/highlights/${username}`}
          showReply={false}
          closeHref={`/profile/${username}`}
+         showHighlightActions={isOwner}
          entries={entries}
          viewedStoryIds={[]}
          reactedStoryIds={[]}

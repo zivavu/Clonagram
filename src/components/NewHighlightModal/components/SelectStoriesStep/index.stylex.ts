@@ -5,6 +5,7 @@ export const styles = stylex.create({
    root: {
       flex: 1,
       overflowY: 'auto',
+      overflowX: 'hidden',
    },
    grid: {
       display: 'grid',
