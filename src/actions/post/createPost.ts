@@ -3,6 +3,7 @@ import 'server-only';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { revalidatePath } from 'next/cache';
+import { throwIfError } from '@/src/lib/unwrap';
 import type { Database } from '@/src/types/database';
 import type { CreatePostParams, TaggedPerson } from '../../components/CreatePostModal/types';
 import { generateImageAltText } from '../ai/generateImageAltText';
@@ -77,7 +78,8 @@ async function saveMedia(
          .from('post_images')
          .insert(imageInserts)
          .select('id, url');
-      if (error || !insertedImages) throw new Error(`Failed to insert images: ${error?.message}`);
+      throwIfError({ error }, 'Failed to insert images');
+      if (!insertedImages) throw new Error('Failed to insert images: no data returned');
 
       insertedImageIds = insertedImages;
 
@@ -88,7 +90,7 @@ async function saveMedia(
 
    if (videoInserts.length > 0) {
       const { error } = await supabase.from('post_videos').insert(videoInserts);
-      if (error) throw new Error(`Failed to insert videos: ${error.message}`);
+      throwIfError({ error }, 'Failed to insert videos');
    }
 
    return insertedImageIds;
@@ -107,7 +109,7 @@ async function saveImageTags(
 
    if (tagInserts.length === 0) return;
    const { error } = await supabase.from('post_image_tags').insert(tagInserts);
-   if (error) throw new Error(`Failed to insert image tags: ${error.message}`);
+   throwIfError({ error }, 'Failed to insert image tags');
 }
 
 async function saveCollaborators(
@@ -119,7 +121,7 @@ async function saveCollaborators(
 
    const inserts = collaborators.map(c => ({ post_id: postId, user_id: c.id }));
    const { error } = await supabase.from('post_collaborators').insert(inserts);
-   if (error) throw new Error(`Failed to insert collaborators: ${error.message}`);
+   throwIfError({ error }, 'Failed to insert collaborators');
 }
 
 async function saveHashtags(
@@ -135,7 +137,7 @@ async function saveHashtags(
       .select('id, name')
       .in('name', hashtags);
 
-   if (fetchError) throw new Error(`Failed to fetch hashtags: ${fetchError.message}`);
+   throwIfError({ error: fetchError }, 'Failed to fetch hashtags');
 
    const existingNames = new Set(existing?.map(h => h.name) ?? []);
    const newHashtags = hashtags.filter(name => !existingNames.has(name)).map(name => ({ name }));
@@ -148,9 +150,8 @@ async function saveHashtags(
          .insert(newHashtags)
          .select('id');
 
-      if (insertError || !inserted) {
-         throw new Error(`Failed to insert hashtags: ${insertError?.message ?? 'unknown error'}`);
-      }
+      throwIfError({ error: insertError }, 'Failed to insert hashtags');
+      if (!inserted) throw new Error('Failed to insert hashtags: no data returned');
 
       allHashtagIds = [...allHashtagIds, ...inserted.map(h => h.id)];
    }
@@ -161,7 +162,7 @@ async function saveHashtags(
          hashtag_id: hashtagId,
       }));
       const { error: linkError } = await supabase.from('post_hashtags').insert(postHashtagInserts);
-      if (linkError) throw new Error(`Failed to link hashtags: ${linkError.message}`);
+      throwIfError({ error: linkError }, 'Failed to link hashtags');
    }
 }
 
@@ -190,9 +191,8 @@ export async function createPost(params: CreatePostParams) {
       .select('id')
       .single();
 
-   if (postError || !post) {
-      throw new Error(`Failed to create post: ${postError?.message ?? 'unknown error'}`);
-   }
+   throwIfError({ error: postError }, 'Failed to create post');
+   if (!post) throw new Error('Failed to create post: no data returned');
 
    const postId = post.id;
 

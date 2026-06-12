@@ -3,6 +3,7 @@ import 'server-only';
 
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 import type { Database } from '@/src/types/database';
 import type { StoryEntry } from './getActiveStories';
 
@@ -32,15 +33,17 @@ export async function getHighlightEntries(username: string): Promise<{
 }> {
    const supabase = await createServerClient();
 
-   const { data: profile } = await supabase
+   const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('id, avatar_url')
       .eq('username', username)
       .single();
+   throwIfError({ error: profileError }, 'Failed to fetch profile');
 
    if (!profile) return { entries: [], profileUserId: '' };
 
-   const { data: raw } = await highlightEntriesQuery(supabase, profile.id);
+   const { data: raw, error: entriesError } = await highlightEntriesQuery(supabase, profile.id);
+   throwIfError({ error: entriesError }, 'Failed to fetch highlight entries');
 
    const highlights: HighlightEntriesData = raw ?? [];
 

@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 const EDIT_SELECT = `id, caption, hide_likes, comments_off, aspect_ratio,
    location_name, location_lat, location_lon,
@@ -16,8 +17,8 @@ export async function getPostForEdit(postId: string) {
       .eq('id', postId)
       .single();
 
-   if (error || !data)
-      throw new Error(`Failed to fetch post: ${error?.message ?? 'unknown error'}`);
+   throwIfError({ error }, 'Failed to fetch post');
+   if (!data) throw new Error('Failed to fetch post: no data returned');
 
    return data;
 }

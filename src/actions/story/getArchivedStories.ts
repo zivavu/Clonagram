@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 
+import { throwIfError } from '@/src/lib/unwrap';
 import { getAuthUser } from '../getAuthUser';
 
 export type ArchivedStory = {
@@ -18,13 +19,13 @@ export async function getArchivedStories() {
       .from('stories')
       .select(
          `id, created_at,
-          story_images(url, blur_data_url),
-          story_videos(mux_playback_id)`,
+         story_images(url, blur_data_url),
+         story_videos(mux_playback_id)`,
       )
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
-   if (error) throw new Error(`Failed to fetch archived stories: ${error.message}`);
+   throwIfError({ error }, 'Failed to fetch archived stories');
 
    const stories: ArchivedStory[] = [];
    for (const row of data ?? []) {

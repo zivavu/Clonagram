@@ -2,6 +2,7 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
 import { getAuthUser } from '@/src/actions/getAuthUser';
+import { throwIfError } from '@/src/lib/unwrap';
 import { CreateConversationSchema, validate } from '@/src/lib/validation';
 
 export async function createConversation(participantIds: string[]): Promise<string> {
@@ -24,7 +25,7 @@ export async function createConversation(participantIds: string[]): Promise<stri
    const { error: convError } = await supabase
       .from('conversations')
       .insert({ id: convId, title: null });
-   if (convError) throw convError;
+   throwIfError({ error: convError }, 'Failed to create conversation');
 
    const { data: followers } = await supabase
       .from('follows')
@@ -46,7 +47,7 @@ export async function createConversation(participantIds: string[]): Promise<stri
    const { error: partError } = await supabase
       .from('conversation_participants')
       .insert(participants);
-   if (partError) throw partError;
+   throwIfError({ error: partError }, 'Failed to add participants');
 
    return convId;
 }

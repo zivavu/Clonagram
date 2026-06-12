@@ -3,6 +3,7 @@ import 'server-only';
 import { revalidatePath } from 'next/cache';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
 import { createServerClient } from '../../lib/supabase/server';
+import { throwIfError } from '../../lib/unwrap';
 
 export async function updateAvatar({ avatarUrl }: { avatarUrl: string | null }) {
    const supabase = await createServerClient();
@@ -14,7 +15,7 @@ export async function updateAvatar({ avatarUrl }: { avatarUrl: string | null }) 
       .update({ avatar_url: avatarUrl })
       .eq('id', authProfile.id);
 
-   if (error) throw new Error(error.message);
+   throwIfError({ error }, 'Failed to update avatar');
    revalidatePath('/', 'layout');
    revalidatePath('/[username]', 'page');
 }

@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { revalidatePath } from 'next/cache';
+import { throwIfError } from '@/src/lib/unwrap';
 import { DeleteCommentSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
@@ -24,7 +25,7 @@ export async function deleteComment(params: { commentId: string }) {
 
    const { error } = await supabase.from('comments').delete().eq('id', commentId);
 
-   if (error) throw new Error(`Failed to delete comment: ${error.message}`);
+   throwIfError({ error }, 'Failed to delete comment');
 
    revalidatePath('/');
    revalidatePath('/reels');

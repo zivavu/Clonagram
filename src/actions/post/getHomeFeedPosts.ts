@@ -1,7 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '../../lib/supabase/server';
-import { hideLikesForNonOwners } from '../../lib/unwrap';
+import { hideLikesForNonOwners, throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 
@@ -32,7 +32,7 @@ export async function getHomeFeedPosts(
          query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
       }
       const { data, error } = await query;
-      if (error) throw new Error(`Failed to fetch home feed: ${error.message}`);
+      throwIfError({ error }, 'Failed to fetch home feed');
       const posts = data ?? [];
       const nextCursor =
          posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
@@ -56,7 +56,7 @@ export async function getHomeFeedPosts(
       },
    );
 
-   if (rpcError) throw new Error(`Failed to fetch following feed: ${rpcError.message}`);
+   throwIfError({ error: rpcError }, 'Failed to fetch following feed');
    const ids = postIds as { id: string; created_at: string }[] | null;
    if (!ids || ids.length === 0) {
       return { posts: [], nextCursor: null };
@@ -73,7 +73,9 @@ export async function getHomeFeedPosts(
       .eq('likes.user_id', user.id)
       .eq('saves.user_id', user.id);
 
-   if (postsError) throw new Error(`Failed to fetch following feed: ${postsError.message}`);
-   const nextCursor = posts.length === PAGE_SIZE ? (ids[ids.length - 1].created_at ?? null) : null;
-   return { posts: hideLikesForNonOwners(posts ?? [], user?.id), nextCursor };
+   throwIfError({ error: postsError }, 'Failed to fetch following feed');
+   const safePosts = posts ?? [];
+   const nextCursor =
+      safePosts.length === PAGE_SIZE ? (ids[ids.length - 1].created_at ?? null) : null;
+   return { posts: hideLikesForNonOwners(safePosts, user?.id), nextCursor };
 }

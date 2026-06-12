@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 import type { UserProfiles } from '@/src/queries/userProfiles';
 
 interface SearchProfilesOptions {
@@ -32,6 +33,6 @@ export async function searchProfiles(options: SearchProfilesOptions): Promise<Us
    }
 
    const { data, error } = await q;
-   if (error) throw new Error(`Failed to search profiles: ${error.message}`);
+   throwIfError({ error }, 'Failed to search profiles');
    return data ?? [];
 }

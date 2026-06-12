@@ -1,7 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '../../lib/supabase/server';
-import { hideLikesForNonOwners } from '../../lib/unwrap';
+import { hideLikesForNonOwners, throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 
@@ -30,7 +30,7 @@ export async function getExplorePosts(
 
    if (!user) {
       const { data, error } = await query.limit(PAGE_SIZE);
-      if (error) throw new Error(`Failed to fetch explore feed: ${error.message}`);
+      throwIfError({ error }, 'Failed to fetch explore feed');
       const posts = data ?? [];
       const nextCursor =
          posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
@@ -44,7 +44,7 @@ export async function getExplorePosts(
       .select('following_id')
       .eq('follower_id', user.id);
 
-   if (followError) throw new Error(`Failed to fetch followed users: ${followError.message}`);
+   throwIfError({ error: followError }, 'Failed to fetch followed users');
 
    const followedIds = followedData?.map(f => f.following_id) ?? [];
 
@@ -57,7 +57,7 @@ export async function getExplorePosts(
    }
 
    const { data, error } = await query.limit(PAGE_SIZE);
-   if (error) throw new Error(`Failed to fetch explore feed: ${error.message}`);
+   throwIfError({ error }, 'Failed to fetch explore feed');
    const posts = data ?? [];
    const nextCursor =
       posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;

@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { revalidatePath } from 'next/cache';
+import { throwIfError } from '@/src/lib/unwrap';
 import { DeletePostSchema, validate } from '@/src/lib/validation';
 import { getMuxClient } from '../../lib/mux';
 import { getAuthUser } from '../getAuthUser';
@@ -23,7 +24,7 @@ export async function deletePost(params: { postId: string }) {
       .delete({ count: 'exact' })
       .eq('id', postId);
 
-   if (error) throw new Error(`Failed to delete post: ${error.message}`);
+   throwIfError({ error }, 'Failed to delete post');
    if (count === 0) throw new Error('Post not found or not authorized');
 
    const cleanupTasks: Promise<unknown>[] = [];

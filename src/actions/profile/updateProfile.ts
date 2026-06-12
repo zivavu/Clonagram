@@ -2,6 +2,7 @@
 import 'server-only';
 import { revalidatePath } from 'next/cache';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
+import { throwIfError } from '../../lib/unwrap';
 import { UpdateProfileSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
@@ -34,7 +35,7 @@ export async function updateProfile(params: UpdateProfileParams) {
       .update({ full_name: fullName, username, bio, website, gender })
       .eq('id', authProfile.id);
 
-   if (error) throw new Error(error.message);
+   throwIfError({ error }, 'Failed to update profile');
    revalidatePath('/', 'layout');
    revalidatePath('/[username]', 'page');
    return {};

@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { revalidatePath } from 'next/cache';
+import { throwIfError } from '@/src/lib/unwrap';
 import { getAuthUser } from '../getAuthUser';
 
 export async function editHighlight(id: string, title: string) {
@@ -13,6 +14,6 @@ export async function editHighlight(id: string, title: string) {
       .eq('id', id)
       .eq('user_id', user.id);
 
-   if (error) throw new Error(`Failed to update highlight: ${error.message}`);
+   throwIfError({ error }, 'Failed to update highlight');
    revalidatePath('/profile');
 }

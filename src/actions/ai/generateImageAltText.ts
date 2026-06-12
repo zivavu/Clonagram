@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 const OPENROUTER_MODEL = 'qwen/qwen3.5-flash-02-23';
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -58,7 +59,7 @@ export async function generateImageAltText(imageId: string, imageUrl: string) {
       .update({ alt_text: altText })
       .eq('id', imageId);
 
-   if (error) throw new Error(`Failed to update alt text: ${error.message}`);
+   throwIfError({ error }, 'Failed to update alt text');
 
    return altText;
 }

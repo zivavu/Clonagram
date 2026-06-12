@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export type UserHighlight = {
    id: string;
@@ -18,7 +19,7 @@ export async function getUserHighlights(userId: string): Promise<UserHighlight[]
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
-   if (error) throw new Error(`Failed to fetch highlights: ${error.message}`);
+   throwIfError({ error }, 'Failed to fetch highlights');
 
    return (data ?? []).map(row => ({
       id: row.id,

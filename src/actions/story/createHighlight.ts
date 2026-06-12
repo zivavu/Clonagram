@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { revalidatePath } from 'next/cache';
+import { throwIfError } from '@/src/lib/unwrap';
 import { getAuthUser } from '../getAuthUser';
 
 export async function createHighlight(title: string, storyIds: string[], coverUrl: string | null) {
@@ -13,7 +14,8 @@ export async function createHighlight(title: string, storyIds: string[], coverUr
       .select('id')
       .single();
 
-   if (highlightError) throw new Error(`Failed to create highlight: ${highlightError.message}`);
+   throwIfError({ error: highlightError }, 'Failed to create highlight');
+   if (!highlight) throw new Error('Failed to create highlight: no data returned');
 
    if (storyIds.length > 0) {
       const items = storyIds.map((storyId, index) => ({
@@ -24,7 +26,7 @@ export async function createHighlight(title: string, storyIds: string[], coverUr
 
       const { error: itemsError } = await supabase.from('story_highlight_items').insert(items);
 
-      if (itemsError) throw new Error(`Failed to add stories to highlight: ${itemsError.message}`);
+      throwIfError({ error: itemsError }, 'Failed to add stories to highlight');
    }
 
    revalidatePath('/profile');

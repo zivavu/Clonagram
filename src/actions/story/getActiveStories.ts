@@ -1,8 +1,9 @@
 'use server';
 import 'server-only';
 
-import { createServerClient } from '../../lib/supabase/server';
-import { activeStoriesQuery } from '../../queries/stories';
+import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
+import { activeStoriesQuery } from '@/src/queries/stories';
 
 export async function getActiveStories() {
    const supabase = await createServerClient();
@@ -13,7 +14,7 @@ export async function getActiveStories() {
 
    const { data, error } = await activeStoriesQuery(supabase);
 
-   if (error) throw new Error(`Failed to fetch stories: ${error.message}`);
+   throwIfError({ error }, 'Failed to fetch stories');
 
    const grouped = new Map<
       string,

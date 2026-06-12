@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { createServerClient } from '../../lib/supabase/server';
+import { throwIfError } from '../../lib/unwrap';
 
 export type NoteEntry = {
    userId: string;
@@ -26,7 +27,7 @@ export async function getNotesForFeed(): Promise<{
       .from('notes')
       .select('id, user_id, content, profiles!notes_user_id_fkey(username, avatar_url)');
 
-   if (error) throw new Error(`Failed to fetch notes: ${error.message}`);
+   throwIfError({ error }, 'Failed to fetch notes');
 
    let ownNote: string | null = null;
    let ownNoteId: string | null = null;

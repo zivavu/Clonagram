@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { throwIfError } from '@/src/lib/unwrap';
 import { TogglePostLikeSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
@@ -13,9 +14,9 @@ export async function togglePostLike(params: { postId: string; isLiked: boolean 
          .delete()
          .eq('post_id', postId)
          .eq('user_id', user.id);
-      if (error) throw new Error(`Failed to unlike post: ${error.message}`);
+      throwIfError({ error }, 'Failed to unlike post');
    } else {
       const { error } = await supabase.from('likes').insert({ post_id: postId, user_id: user.id });
-      if (error) throw new Error(`Failed to like post: ${error.message}`);
+      throwIfError({ error }, 'Failed to like post');
    }
 }

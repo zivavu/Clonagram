@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 import type { Notifications } from '@/src/queries/notifications';
 
 export async function getNotifications(): Promise<Notifications> {
@@ -26,6 +27,6 @@ export async function getNotifications(): Promise<Notifications> {
       .order('created_at', { ascending: false })
       .limit(50);
 
-   if (error) throw new Error(`Failed to fetch notifications: ${error.message}`);
+   throwIfError({ error }, 'Failed to fetch notifications');
    return data ?? [];
 }

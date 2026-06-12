@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { throwIfError } from '@/src/lib/unwrap';
 import { LikeCommentSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
@@ -16,11 +17,11 @@ export async function toggleCommentLike(params: {
          .delete()
          .eq('comment_id', commentId)
          .eq('user_id', user.id);
-      if (error) throw new Error(`Failed to unlike comment: ${error.message}`);
+      throwIfError({ error }, 'Failed to unlike comment');
    } else {
       const { error } = await supabase
          .from('comment_likes')
          .insert({ comment_id: commentId, user_id: user.id });
-      if (error) throw new Error(`Failed to like comment: ${error.message}`);
+      throwIfError({ error }, 'Failed to like comment');
    }
 }

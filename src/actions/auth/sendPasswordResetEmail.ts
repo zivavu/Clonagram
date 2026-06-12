@@ -2,6 +2,7 @@
 import 'server-only';
 import { headers } from 'next/headers';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 
 export async function sendPasswordResetEmail(email: string) {
    const supabase = await createServerClient();
@@ -14,5 +15,5 @@ export async function sendPasswordResetEmail(email: string) {
       redirectTo: `${origin}/auth/reset-callback`,
    });
 
-   if (error) throw new Error(error.message);
+   throwIfError({ error }, 'Failed to send password reset email');
 }

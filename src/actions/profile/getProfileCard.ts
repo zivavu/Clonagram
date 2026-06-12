@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { throwIfError } from '@/src/lib/unwrap';
 import type { UserRecentPosts } from '@/src/queries/posts';
 import type { UserProfileCard } from '@/src/queries/userProfiles';
 
@@ -17,7 +18,7 @@ export async function getProfileCard(userId: string): Promise<UserProfileCard | 
       .eq('id', userId)
       .single();
 
-   if (error) throw new Error(`Failed to fetch profile card: ${error.message}`);
+   throwIfError({ error }, 'Failed to fetch profile card');
    return data as UserProfileCard | null;
 }
 
@@ -32,6 +33,6 @@ export async function getUserRecentPosts(userId: string): Promise<UserRecentPost
       .order('created_at', { ascending: false })
       .limit(3);
 
-   if (error) throw new Error(`Failed to fetch recent posts: ${error.message}`);
+   throwIfError({ error }, 'Failed to fetch recent posts');
    return data ?? [];
 }

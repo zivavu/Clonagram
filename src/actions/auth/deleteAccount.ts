@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { throwIfError } from '@/src/lib/unwrap';
 import { getMuxClient } from '../../lib/mux';
 import { getAuthUser } from '../getAuthUser';
 
@@ -20,7 +21,7 @@ export async function deleteAccount() {
    ]);
 
    const { error } = await supabase.rpc('delete_user');
-   if (error) throw new Error(`Failed to delete account: ${error.message}`);
+   throwIfError({ error }, 'Failed to delete account');
 
    const assetIds = [
       ...(postVideos ?? []).map(v => v.mux_asset_id as string),

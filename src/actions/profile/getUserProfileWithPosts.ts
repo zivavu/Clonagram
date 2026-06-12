@@ -1,7 +1,7 @@
 'use server';
 import 'server-only';
 import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
-import { hideLikesForNonOwners } from '../../lib/unwrap';
+import { hideLikesForNonOwners, throwIfError } from '../../lib/unwrap';
 import { getFollowStatus } from '../../queries/followStatus';
 import { getAuthUser } from '../getAuthUser';
 
@@ -35,8 +35,8 @@ export async function getUserProfileWithPosts(params: { username: string }) {
 
    const { data, error } = await query.single();
 
-   if (error || !data)
-      throw new Error(`Failed to fetch profile with posts: ${error?.message ?? 'unknown error'}`);
+   throwIfError({ error }, 'Failed to fetch profile with posts');
+   if (!data) throw new Error('Failed to fetch profile with posts: no data returned');
 
    const followStatus =
       authProfile && authProfile.id !== data.id

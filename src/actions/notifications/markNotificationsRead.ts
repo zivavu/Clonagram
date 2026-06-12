@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { throwIfError } from '@/src/lib/unwrap';
 import { MarkNotificationsReadSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
@@ -13,5 +14,5 @@ export async function markNotificationsRead(ids: string[]) {
       .eq('user_id', user.id)
       .in('id', validatedIds);
 
-   if (error) throw new Error(`Failed to mark notifications as read: ${error.message}`);
+   throwIfError({ error }, 'Failed to mark notifications as read');
 }

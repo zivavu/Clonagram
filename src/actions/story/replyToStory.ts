@@ -4,6 +4,7 @@ import 'server-only';
 import { randomUUID } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import { getStoryThumbnail } from '@/src/lib/getStoryThumbnail';
+import { throwIfError } from '@/src/lib/unwrap';
 import { getAuthUser } from '../getAuthUser';
 
 export async function replyToStory(storyId: string, content: string) {
@@ -34,7 +35,7 @@ export async function replyToStory(storyId: string, content: string) {
       const { error: convError } = await supabase
          .from('conversations')
          .insert({ id: conversationId, title: null });
-      if (convError) throw convError;
+      throwIfError({ error: convError }, 'Failed to create conversation');
 
       const { data: followerData } = await supabase
          .from('follows')
@@ -55,7 +56,7 @@ export async function replyToStory(storyId: string, content: string) {
             folder,
          },
       ]);
-      if (partError) throw partError;
+      throwIfError({ error: partError }, 'Failed to add conversation participants');
    }
 
    const { error: msgError } = await supabase.from('messages').insert({
@@ -65,7 +66,7 @@ export async function replyToStory(storyId: string, content: string) {
       story_id: storyId,
       media_url: storyThumbnailUrl,
    });
-   if (msgError) throw msgError;
+   throwIfError({ error: msgError }, 'Failed to insert message');
 
    const { error: notifError } = await supabase.from('notifications').insert({
       user_id: storyOwnerId,
@@ -73,7 +74,7 @@ export async function replyToStory(storyId: string, content: string) {
       type: 'story_reply',
       story_id: storyId,
    });
-   if (notifError) throw notifError;
+   throwIfError({ error: notifError }, 'Failed to insert notification');
 
    revalidatePath('/');
    revalidatePath('/stories/[username]', 'page');

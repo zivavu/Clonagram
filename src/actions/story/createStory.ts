@@ -3,6 +3,7 @@ import 'server-only';
 
 import { revalidatePath } from 'next/cache';
 import type { StoryMediaResult } from '@/src/components/CreateStoryModal/types';
+import { throwIfError } from '@/src/lib/unwrap';
 import { getAuthUser } from '../getAuthUser';
 
 export async function createStory(params: { mediaResult: StoryMediaResult }) {
@@ -14,9 +15,8 @@ export async function createStory(params: { mediaResult: StoryMediaResult }) {
       .select('id')
       .single();
 
-   if (storyError || !story) {
-      throw new Error(`Failed to create story: ${storyError?.message ?? 'unknown error'}`);
-   }
+   throwIfError({ error: storyError }, 'Failed to create story');
+   if (!story) throw new Error('Failed to create story: no data returned');
 
    const { mediaResult } = params;
 
@@ -27,7 +27,7 @@ export async function createStory(params: { mediaResult: StoryMediaResult }) {
          url: mediaResult.url,
          blur_data_url: mediaResult.blurDataUrl,
       });
-      if (error) throw new Error(`Failed to insert story image: ${error.message}`);
+      throwIfError({ error }, 'Failed to insert story image');
    } else {
       const { error } = await supabase.from('story_videos').insert({
          story_id: story.id,
@@ -37,7 +37,7 @@ export async function createStory(params: { mediaResult: StoryMediaResult }) {
          mux_status: 'ready',
          duration: mediaResult.duration,
       });
-      if (error) throw new Error(`Failed to insert story video: ${error.message}`);
+      throwIfError({ error }, 'Failed to insert story video');
    }
 
    revalidatePath('/');

@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { revalidatePath } from 'next/cache';
+import { throwIfError } from '@/src/lib/unwrap';
 import type { PostComment } from '@/src/queries/comments';
 import { CreateCommentSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
@@ -36,8 +37,8 @@ export async function createComment(params: {
       )
       .single();
 
-   if (error || !data)
-      throw new Error(`Failed to post comment: ${error?.message ?? 'unknown error'}`);
+   throwIfError({ error }, 'Failed to post comment');
+   if (!data) throw new Error('Failed to post comment: no data returned');
    revalidatePath('/');
    revalidatePath('/reels');
    revalidatePath('/explore');

@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { revalidatePath } from 'next/cache';
+import { throwIfError } from '@/src/lib/unwrap';
 import { getAuthUser } from '../getAuthUser';
 
 export async function updateHighlightStories(highlightId: string, storyIds: string[]) {
@@ -16,7 +17,11 @@ export async function updateHighlightStories(highlightId: string, storyIds: stri
 
    if (!highlight) throw new Error('Highlight not found');
 
-   await supabase.from('story_highlight_items').delete().eq('highlight_id', highlightId);
+   const { error: deleteError } = await supabase
+      .from('story_highlight_items')
+      .delete()
+      .eq('highlight_id', highlightId);
+   throwIfError({ error: deleteError }, 'Failed to clear highlight items');
 
    if (storyIds.length > 0) {
       const items = storyIds.map((storyId, index) => ({
@@ -24,7 +29,8 @@ export async function updateHighlightStories(highlightId: string, storyIds: stri
          story_id: storyId,
          position: index,
       }));
-      await supabase.from('story_highlight_items').insert(items);
+      const { error: insertError } = await supabase.from('story_highlight_items').insert(items);
+      throwIfError({ error: insertError }, 'Failed to insert highlight items');
    }
 
    revalidatePath('/profile');
