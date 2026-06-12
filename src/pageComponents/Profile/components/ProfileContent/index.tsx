@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import type { ProfileWithPosts } from '../../../../actions/profile/getUserProfileWithPosts';
-import type { PostWithMedia } from '../../../../queries/posts';
-import ProfilePostGrid from '../ProfilePostGrid';
-import ProfileReelsGrid from '../ProfileReelsGrid';
-import ProfileSavedGrid from '../ProfileSavedGrid';
+import type { ProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
+import PostGrid from '@/src/components/PostGrid';
+import type { PostWithMedia } from '@/src/queries/posts';
 import ProfileTabs from '../ProfileTabs';
 
 interface ProfileContentProps {
@@ -32,10 +30,19 @@ export default function ProfileContent({
             activeTab={activeTab}
             onTabChange={setActiveTab}
          />
-         {activeTab === 'posts' && <ProfilePostGrid posts={posts} username={username} />}
-         {activeTab === 'reels' && <ProfileReelsGrid reels={reels} username={username} />}
+         {activeTab === 'posts' && (
+            <PostGrid posts={posts} username={username} emptyText="No posts yet" />
+         )}
+         {activeTab === 'reels' && (
+            <PostGrid
+               posts={reels}
+               username={username}
+               emptyText="No reels yet"
+               alwaysShowPlayBadge
+            />
+         )}
          {activeTab === 'saved' && (
-            <ProfileSavedGrid posts={savedPosts ?? []} username={username} />
+            <PostGrid posts={savedPosts ?? []} username={username} emptyText="No saved posts yet" />
          )}
       </>
    );

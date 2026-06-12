@@ -14,6 +14,7 @@ import { removeParticipant } from '@/src/actions/dm/removeParticipant';
 import { toggleMute } from '@/src/actions/dm/toggleMute';
 import { updateGroupName } from '@/src/actions/dm/updateGroupName';
 import { toast } from '@/src/components/AppToast';
+import DeleteConfirmModal from '@/src/components/DeleteConfirmModal';
 import Toggle from '@/src/components/Toggle';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -22,7 +23,6 @@ import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import type { PartialUser } from '@/src/types/global';
-import DeleteChatConfirmModal from '../DeleteChatConfirmModal';
 import { styles } from './index.stylex';
 
 interface ChatDetailsPanelProps {
@@ -358,11 +358,13 @@ export default function ChatDetailsPanel({
                   Delete chat
                </button>
 
-               <DeleteChatConfirmModal
+               <DeleteConfirmModal
                   open={showDeleteConfirm}
                   onOpenChange={setShowDeleteConfirm}
                   onConfirm={handleDelete}
-                  disabled={isLoading}
+                  isLoading={isLoading}
+                  title="Delete chat from inbox?"
+                  description="This will remove the chat from your inbox and erase the chat history. To stop receiving new messages from this account, first block the account then delete the chat."
                />
             </>
          )}

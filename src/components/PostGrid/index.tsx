@@ -6,18 +6,33 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { FaComment } from 'react-icons/fa6';
 import { MdCollections, MdFavorite, MdPlayArrow } from 'react-icons/md';
-import type { PostWithMedia } from '../../../../queries/posts';
-import { usePostViewModal } from '../../../../store/usePostViewModalStore';
-import { colors } from '../../../../styles/tokens.stylex';
-import { getPostThumbnail } from '../../../../utils/posts';
-import { styles } from '../ProfilePostGrid/index.stylex';
+import { usePostViewModal } from '../../store/usePostViewModalStore';
+import { colors } from '../../styles/tokens.stylex';
+import { getPostThumbnail } from '../../utils/posts';
+import { styles } from './index.stylex';
 
-interface ProfileSavedGridProps {
-   posts: PostWithMedia[];
-   username: string;
+interface PostGridPost {
+   id: string;
+   hide_likes: boolean;
+   like_count: number;
+   comment_count: number;
+   images: { position: number; url: string | null }[];
+   videos: { position: number; mux_playback_id: string | null }[];
 }
 
-export default function ProfileSavedGrid({ posts, username }: ProfileSavedGridProps) {
+interface PostGridProps {
+   posts: PostGridPost[];
+   username: string;
+   emptyText: string;
+   alwaysShowPlayBadge?: boolean;
+}
+
+export default function PostGrid({
+   posts,
+   username,
+   emptyText,
+   alwaysShowPlayBadge = false,
+}: PostGridProps) {
    const pathname = usePathname();
    const { open } = usePostViewModal();
 
@@ -26,7 +41,7 @@ export default function ProfileSavedGrid({ posts, username }: ProfileSavedGridPr
    if (!posts || posts.length === 0) {
       return (
          <div {...stylex.props(styles.emptyState)}>
-            <span {...stylex.props(styles.emptyText)}>No saved posts yet</span>
+            <span {...stylex.props(styles.emptyText)}>{emptyText}</span>
          </div>
       );
    }
@@ -76,15 +91,23 @@ export default function ProfileSavedGrid({ posts, username }: ProfileSavedGridPr
                         <span {...stylex.props(styles.statText)}>{post.comment_count ?? 0}</span>
                      </div>
                   </div>
-                  {hasMultipleImages && (
-                     <div {...stylex.props(styles.badge)}>
-                        <MdCollections size={18} color={colors.white} />
-                     </div>
-                  )}
-                  {isVideoOnly && (
+                  {alwaysShowPlayBadge ? (
                      <div {...stylex.props(styles.badge)}>
                         <MdPlayArrow size={18} color={colors.white} />
                      </div>
+                  ) : (
+                     <>
+                        {hasMultipleImages && (
+                           <div {...stylex.props(styles.badge)}>
+                              <MdCollections size={18} color={colors.white} />
+                           </div>
+                        )}
+                        {isVideoOnly && (
+                           <div {...stylex.props(styles.badge)}>
+                              <MdPlayArrow size={18} color={colors.white} />
+                           </div>
+                        )}
+                     </>
                   )}
                </button>
             );

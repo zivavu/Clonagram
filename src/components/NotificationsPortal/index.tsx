@@ -274,7 +274,11 @@ export default function NotificationsPortal() {
                      <div key={group.label}>
                         <div {...stylex.props(styles.groupHeader)}>{group.label}</div>
                         {group.items.map(n => (
-                           <NotificationRowComponent key={n.id} notification={n} authUsername={authUser?.username} />
+                           <NotificationRowComponent
+                              key={n.id}
+                              notification={n}
+                              authUsername={authUser?.username}
+                           />
                         ))}
                      </div>
                   ))}

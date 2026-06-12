@@ -18,6 +18,7 @@ import { markConversationUnread } from '@/src/actions/dm/markConversationUnread'
 import { moveConversation } from '@/src/actions/dm/moveConversation';
 import { toggleMute } from '@/src/actions/dm/toggleMute';
 import { toast } from '@/src/components/AppToast';
+import DeleteConfirmModal from '@/src/components/DeleteConfirmModal';
 import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
 import type { ConversationSummary } from '@/src/queries/conversations';
@@ -27,7 +28,6 @@ import {
    isUnread,
 } from '@/src/utils/conversations';
 import { formatTimestamp } from '@/src/utils/time';
-import DeleteChatConfirmModal from '../DeleteChatConfirmModal';
 import { styles as sidebarStyles } from '../RecipientsSidebar/index.stylex';
 import { styles } from './index.stylex';
 
@@ -200,10 +200,12 @@ export default function ConversationItem({
             </DropdownMenu.Root>
          </div>
 
-         <DeleteChatConfirmModal
+         <DeleteConfirmModal
             open={showDeleteConfirm}
             onOpenChange={setShowDeleteConfirm}
             onConfirm={() => doDelete()}
+            title="Delete chat from inbox?"
+            description="This will remove the chat from your inbox and erase the chat history. To stop receiving new messages from this account, first block the account then delete the chat."
          />
       </li>
    );

@@ -1,5 +1,5 @@
 interface PostMediaSource {
-   images: { position: number; url: string }[];
+   images: { position: number; url: string | null }[];
    videos: { position: number; mux_playback_id: string | null }[];
 }
 
