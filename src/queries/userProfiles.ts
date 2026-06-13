@@ -1,4 +1,5 @@
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
+import { PROFILE_LIST_SELECT } from '@/src/lib/profileSelect';
 import type { Database } from '@/src/types/database';
 
 interface UserProfilesQueryOptions {
@@ -14,7 +15,7 @@ export function userProfilesQuery(
 ) {
    let q = supabase
       .from('profiles')
-      .select(`id, username, full_name, avatar_url, is_private`)
+      .select(`${PROFILE_LIST_SELECT}, is_private`)
       .order('created_at', { ascending: order === 'asc' })
       .limit(limit ?? 10);
 
@@ -36,7 +37,7 @@ export function userProfileCardQuery(supabase: SupabaseClient<Database>, userId:
    return supabase
       .from('profiles')
       .select(
-         `id, username, full_name, avatar_url, is_private,
+         `${PROFILE_LIST_SELECT}, is_private,
          followers:follows!following_id(count),
          following:follows!follower_id(count),
          posts!posts_user_id_fkey(count)`,

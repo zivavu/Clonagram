@@ -1,4 +1,5 @@
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
+import { PROFILE_LIST_SELECT, PROFILE_LIST_SELECT_BADGES } from '@/src/lib/profileSelect';
 import type { Database } from '@/src/types/database';
 
 export const POST_WITH_MEDIA_SELECT = `
@@ -6,11 +7,11 @@ export const POST_WITH_MEDIA_SELECT = `
    like_count, comment_count,
    likes(user_id),
    saves(user_id),
-   user:profiles!user_id(id, username, avatar_url, is_private),
-   collaborators:post_collaborators(user:profiles!user_id(id, username, avatar_url)),
-   images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(id, username, avatar_url))),
-   videos:post_videos(id, mux_playback_id, duration, position, width, height)
-`;
+   user:profiles!user_id(${PROFILE_LIST_SELECT_BADGES}),
+   collaborators:post_collaborators(user:profiles!user_id(${PROFILE_LIST_SELECT})),
+   images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(${PROFILE_LIST_SELECT}))),
+    videos:post_videos(id, mux_playback_id, duration, position, width, height)
+` as const;
 
 export function postsWithMediaQuery(supabase: SupabaseClient<Database>) {
    return supabase
@@ -52,7 +53,7 @@ export function reelsQuery(
            like_count, comment_count, location_name,
            likes(user_id),
            saves(user_id),
-           user:profiles!user_id(id, username, avatar_url, is_verified),
+           user:profiles!user_id(${PROFILE_LIST_SELECT_BADGES}),
            videos:post_videos(id, mux_playback_id, duration, position, width, height)
         `,
       )

@@ -1,4 +1,5 @@
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
+import { PROFILE_LIST_SELECT } from '@/src/lib/profileSelect';
 import type { Database } from '@/src/types/database';
 
 export function getConversationsQuery(
@@ -24,7 +25,7 @@ export function getConversationsQuery(
             participants:conversation_participants(
                user_id,
                role,
-               user:profiles!user_id(id, username, full_name, avatar_url)
+               user:profiles!user_id(${PROFILE_LIST_SELECT})
             )
          )`,
       )
@@ -47,7 +48,7 @@ export function getConversationQuery(supabase: SupabaseClient<Database>, convers
             is_muted,
             folder,
             last_read_at,
-            user:profiles!user_id(id, username, full_name, avatar_url)
+            user:profiles!user_id(${PROFILE_LIST_SELECT})
          )`,
       )
       .eq('id', conversationId)

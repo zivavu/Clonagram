@@ -1,10 +1,9 @@
 'use server';
 import 'server-only';
+import { PROFILE_LIST_SELECT_BADGES } from '@/src/lib/profileSelect';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 import { GetFollowsSchema, validate } from '@/src/lib/validation';
-
-const PROFILE_COLUMNS = 'id, username, full_name, avatar_url, is_private, is_verified';
 
 export interface FollowUser {
    id: string;
@@ -35,7 +34,7 @@ async function getFollowList(
    if (direction === 'followers') {
       const { data, error, count } = await supabase
          .from('follows')
-         .select(`follower:profiles!follows_follower_id_fkey(${PROFILE_COLUMNS})`, {
+         .select(`follower:profiles!follows_follower_id_fkey(${PROFILE_LIST_SELECT_BADGES})`, {
             count: 'exact',
             head: false,
          })
@@ -53,7 +52,7 @@ async function getFollowList(
 
    const { data, error, count } = await supabase
       .from('follows')
-      .select(`following:profiles!follows_following_id_fkey(${PROFILE_COLUMNS})`, {
+      .select(`following:profiles!follows_following_id_fkey(${PROFILE_LIST_SELECT_BADGES})`, {
          count: 'exact',
          head: false,
       })
