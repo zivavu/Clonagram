@@ -120,7 +120,7 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
          div.innerHTML = '';
          div.textContent = trimmed;
       }
-      setIsEmpty(!(div.textContent?.trim() || div.querySelector('img')));
+      setIsEmpty(!div.textContent?.trim());
    }
 
    function handleBeforeInputWithToast(e: React.FormEvent<HTMLDivElement>) {
@@ -158,7 +158,35 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
             style={{ display: 'none' }}
             onChange={handleFileInputChange}
          />
-         <div {...stylex.props(styles.inputWrapper)}>
+         <div ref={pickerContainerRef} style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {pickerOpen && (
+               <div
+                  style={{
+                     position: 'absolute',
+                     bottom: '100%',
+                     left: 0,
+                     zIndex: 100,
+                     marginBottom: 8,
+                     borderRadius: radius.sm,
+                     overflow: 'hidden',
+                     boxShadow: '0 2px 8px 1px rgba(0, 0, 0, 0.2)',
+                  }}
+               >
+                  <style href="clonagram-emoji-picker-override" precedence="default">
+                     {pickerOverrideCSS}
+                  </style>
+                  <EmojiPicker
+                     onEmojiClick={insertEmoji}
+                     theme={isDark ? Theme.DARK : Theme.LIGHT}
+                     emojiStyle={EmojiStyle.FACEBOOK}
+                     className={PICKER_CLASS}
+                     width={320}
+                     height={320}
+                     previewConfig={{ showPreview: false }}
+                  />
+               </div>
+            )}
+            <div {...stylex.props(styles.inputWrapper)}>
             {pendingImages.length > 0 && (
                <ImagePreviewStrip
                   images={pendingImages}
@@ -167,40 +195,10 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
                />
             )}
             <div {...stylex.props(styles.inputRow)}>
-               <div ref={pickerContainerRef} style={{ position: 'relative', display: 'flex' }}>
-                  <AiOutlineSmile
-                     {...stylex.props(styles.inputIcon)}
-                     onClick={() => setPickerOpen(open => !open)}
-                  />
-                  {pickerOpen && (
-                     <div
-                        style={{
-                           position: 'absolute',
-                           bottom: '150%',
-                           left: 0,
-                           transform: 'translateX(-50%)',
-                           zIndex: 100,
-                           marginBottom: 8,
-                           borderRadius: radius.sm,
-                           overflow: 'hidden',
-                           boxShadow: '0 2px 8px 1px rgba(0, 0, 0, 0.2)',
-                        }}
-                     >
-                        <style href="clonagram-emoji-picker-override" precedence="default">
-                           {pickerOverrideCSS}
-                        </style>
-                        <EmojiPicker
-                           onEmojiClick={insertEmoji}
-                           theme={isDark ? Theme.DARK : Theme.LIGHT}
-                           emojiStyle={EmojiStyle.FACEBOOK}
-                           className={PICKER_CLASS}
-                           width={320}
-                           height={320}
-                           previewConfig={{ showPreview: false }}
-                        />
-                     </div>
-                  )}
-               </div>
+               <AiOutlineSmile
+                  {...stylex.props(styles.inputIcon)}
+                  onClick={() => setPickerOpen(open => !open)}
+               />
                <div {...stylex.props(styles.inputFieldWrapper)}>
                   {isEmpty && <span {...stylex.props(styles.inputPlaceholder)}>Message...</span>}
                   {/* biome-ignore lint/a11y/noStaticElementInteractions: contenteditable is inherently interactive */}
@@ -240,6 +238,7 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
                      <StickerPicker onSelect={onSendSticker} />
                   </>
                )}
+            </div>
             </div>
          </div>
       </div>

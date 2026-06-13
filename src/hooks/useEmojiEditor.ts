@@ -16,17 +16,7 @@ export const pickerOverrideCSS = `
 `;
 
 export function extractText(div: HTMLElement) {
-   let text = '';
-   for (const node of div.childNodes) {
-      if (node.nodeType === Node.TEXT_NODE) {
-         text += node.textContent ?? '';
-      } else if (node instanceof HTMLImageElement) {
-         text += node.dataset.emoji ?? '';
-      } else if (node instanceof HTMLElement) {
-         text += extractText(node);
-      }
-   }
-   return text;
+   return div.textContent ?? '';
 }
 
 export function useEmojiEditor(maxLength?: number) {
@@ -65,24 +55,20 @@ export function useEmojiEditor(maxLength?: number) {
       const div = editorRef.current;
       if (!div) return;
 
-      const img = document.createElement('img');
-      img.src = emojiData.imageUrl;
-      img.dataset.emoji = emojiData.emoji;
-      img.alt = emojiData.emoji;
-      img.style.cssText = 'width:18px;height:18px;vertical-align:middle;display:inline-block;';
+      const node = document.createTextNode(emojiData.emoji);
 
       div.focus();
       const sel = window.getSelection();
       if (sel?.rangeCount) {
          const range = sel.getRangeAt(0);
          range.deleteContents();
-         range.insertNode(img);
-         range.setStartAfter(img);
+         range.insertNode(node);
+         range.setStartAfter(node);
          range.collapse(true);
          sel.removeAllRanges();
          sel.addRange(range);
       } else {
-         div.appendChild(img);
+         div.appendChild(node);
       }
 
       setIsEmpty(false);

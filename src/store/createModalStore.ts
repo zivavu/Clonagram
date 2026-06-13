@@ -34,7 +34,6 @@ export function createModalStoreWithData<T>() {
    }));
 }
 
-// — Basic toggle stores —
 
 export const useNotificationsPortalStore = createModalStore();
 export const useSearchPortalStore = createModalStore();
@@ -44,7 +43,6 @@ export const useSettingsPopoverStore = createModalStore();
 export const useNewNoteModalStore = createModalStore();
 export const useNewHighlightModalStore = createModalStore();
 
-// — Stores with data —
 
 export const useOwnerActionsModal = createModalStoreWithData<string>();
 

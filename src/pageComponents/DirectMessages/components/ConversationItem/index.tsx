@@ -13,6 +13,7 @@ import {
    IoTrashOutline,
 } from 'react-icons/io5';
 import { TbArrowRight } from 'react-icons/tb';
+import EmojiText from '@/src/components/EmojiText';
 import { deleteConversation } from '@/src/actions/dm/deleteConversation';
 import { markConversationUnread } from '@/src/actions/dm/markConversationUnread';
 import { moveConversation } from '@/src/actions/dm/moveConversation';
@@ -128,7 +129,9 @@ export default function ConversationItem({
                         unread && sidebarStyles.threadPreviewUnread,
                      )}
                   >
-                     {conv.last_message_preview ?? 'No messages yet'}
+                     {conv.last_message_preview
+                        ? <EmojiText content={conv.last_message_preview} size={12} />
+                        : 'No messages yet'}
                   </span>
                   {conv.last_message_at && (
                      <span {...stylex.props(sidebarStyles.threadTimestamp)}>
