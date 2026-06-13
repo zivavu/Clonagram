@@ -7,7 +7,7 @@ export const styles = stylex.create({
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: '400px',
+      width: 'min(450px, 94dvw)',
       backgroundColor: colors.bgBubble,
       borderRadius: radius.xl,
       overflow: 'hidden',
@@ -48,13 +48,12 @@ export const styles = stylex.create({
       },
    },
    shareButton: {
-      fontSize: '0.9rem',
-      fontWeight: 600,
+      padding: '16px',
+      fontSize: '0.875rem',
+      fontWeight: 700,
       color: colors.accent,
-      padding: `${spacing.xs} ${spacing.sm}`,
-      borderRadius: radius.sm,
       ':hover': {
-         color: colors.accentHover,
+         backgroundColor: colors.buttonHover,
       },
       ':disabled': {
          color: colors.textMuted,
@@ -152,8 +151,20 @@ export const styles = stylex.create({
       marginLeft: 'auto',
    },
    deleteButton: {
-      fontSize: '0.85rem',
+      padding: '16px',
+      fontSize: '0.875rem',
+      fontWeight: 700,
       color: colors.danger,
-      fontWeight: 500,
+      ':hover': {
+         backgroundColor: colors.buttonHover,
+      },
+      ':disabled': {
+         opacity: 0.5,
+         cursor: 'default',
+      },
+   },
+   separator: {
+      height: '1px',
+      backgroundColor: colors.elevatedSeparator,
    },
 });

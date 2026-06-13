@@ -110,6 +110,9 @@ export const styles = stylex.create({
    },
    messageBubble: {
       position: 'absolute',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
       top: -34,
       left: -6,
       padding: '8px 12px',

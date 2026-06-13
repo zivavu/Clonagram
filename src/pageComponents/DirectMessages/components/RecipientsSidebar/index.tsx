@@ -6,6 +6,7 @@ import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
 import CurrentUserName from '@/src/components/Username/CurrentUserName';
+import { getUserNote } from '@/src/actions/notes/getUserNote';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import type { ConversationSummaries } from '@/src/queries/conversations';
 import { sharedStyles } from '@/src/styles/shared.stylex';
@@ -14,6 +15,7 @@ import ConversationList from '../ConversationList';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
 import { styles } from './index.stylex';
 import { RequestsContent } from './RequestsContent';
+import YourNoteTrigger from './YourNoteTrigger';
 
 export const messageFolders = [
    { key: 'primary', label: 'Primary', href: '/direct' },
@@ -37,6 +39,7 @@ export default async function RecipientsSidebar({
    initialConversations,
 }: RecipientsSidebarProps) {
    const profile = await getAuthProfile();
+   const ownNote = profile ? await getUserNote({ userId: profile.id }) : null;
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -101,7 +104,7 @@ export default async function RecipientsSidebar({
                         userId={profile?.id}
                         useHoverCard={false}
                      />
-                     <div {...stylex.props(styles.messageBubble)}>Ask friends anything...</div>
+                     <YourNoteTrigger note={ownNote} />
                      <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>
                   </div>
 

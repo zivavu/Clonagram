@@ -1,6 +1,7 @@
 'use client';
 
 import * as Dialog from '@radix-ui/react-dialog';
+import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
 import { type EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
@@ -108,6 +109,8 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
                <HiddenDialogTitle>New note</HiddenDialogTitle>
 
                <div {...stylex.props(styles.header)}>
+                  <div style={{ width: 32 }} />
+                  <span {...stylex.props(styles.title)}>New note</span>
                   <button
                      type="button"
                      {...stylex.props(styles.closeButton)}
@@ -115,15 +118,6 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
                      aria-label="Close"
                   >
                      <IoClose size={24} />
-                  </button>
-                  <span {...stylex.props(styles.title)}>New note</span>
-                  <button
-                     type="button"
-                     {...stylex.props(styles.shareButton)}
-                     onClick={handleShare}
-                     disabled={!text.trim() || loading}
-                  >
-                     Share
                   </button>
                </div>
 
@@ -193,8 +187,19 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
                   <IoChevronDownSharp {...stylex.props(styles.footerChevron)} />
                </div>
 
+               <Separator orientation="horizontal" {...stylex.props(styles.separator)} />
+               <button
+                  type="button"
+                  {...stylex.props(styles.shareButton)}
+                  onClick={handleShare}
+                  disabled={!text.trim() || loading}
+               >
+                  Share
+               </button>
+
                {ownNote && (
-                  <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0 12px' }}>
+                  <>
+                     <Separator orientation="horizontal" {...stylex.props(styles.separator)} />
                      <button
                         type="button"
                         {...stylex.props(styles.deleteButton)}
@@ -203,7 +208,7 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
                      >
                         Delete note
                      </button>
-                  </div>
+                  </>
                )}
             </Dialog.Content>
          </Dialog.Portal>
