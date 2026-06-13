@@ -7,7 +7,7 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots, TbRepeat } from 'react-icons/tb';
-import { togglePostLike } from '@/src/actions/likes/togglePostLike';
+import { togglePostLike } from '@/src/actions/post/togglePostLike';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import type { Reel } from '@/src/queries/posts';

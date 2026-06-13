@@ -1,4 +1,4 @@
-import { toggleSavePost } from '@/src/actions/saves/toggleSavePost';
+import { toggleSavePost } from '@/src/actions/post/saves/toggleSavePost';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useOptimisticToggle } from '@/src/hooks/useOptimisticToggle';
 import { queryKeys } from '@/src/lib/queryKeys';

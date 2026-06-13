@@ -1,6 +1,6 @@
 import { getUserNote } from '@/src/actions/notes/getUserNote';
+import { getSavedPosts } from '@/src/actions/post/saves/getSavedPosts';
 import { getUserProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
-import { getSavedPosts } from '@/src/actions/saves/getSavedPosts';
 import { getRingState } from '@/src/actions/story/getRingState';
 import { getUserHighlights } from '@/src/actions/story/getUserHighlights';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';

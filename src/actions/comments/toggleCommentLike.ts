@@ -8,10 +8,10 @@ export async function toggleCommentLike(params: {
    commentId: string;
    isLiked: boolean;
 }): Promise<void> {
-   const { commentId } = validate(LikeCommentSchema, { commentId: params.commentId });
+   const { commentId, isLiked } = validate(LikeCommentSchema, params);
    const { supabase, user } = await getAuthUser();
 
-   if (params.isLiked) {
+   if (isLiked) {
       const { error } = await supabase
          .from('comment_likes')
          .delete()

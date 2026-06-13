@@ -2,7 +2,7 @@
 import 'server-only';
 import { throwIfError } from '@/src/lib/unwrap';
 import { savedPostsQuery } from '@/src/queries/posts';
-import { getOptionalUser } from '../getAuthUser';
+import { getOptionalUser } from '../../getAuthUser';
 
 export async function getSavedPosts() {
    const { supabase, user } = await getOptionalUser();

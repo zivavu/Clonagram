@@ -2,7 +2,7 @@
 import 'server-only';
 import { throwIfError } from '@/src/lib/unwrap';
 import { TogglePostSaveSchema, validate } from '@/src/lib/validation';
-import { getAuthUser } from '../getAuthUser';
+import { getAuthUser } from '../../getAuthUser';
 
 export async function toggleSavePost(params: { postId: string; isSaved: boolean }) {
    const { postId, isSaved } = validate(TogglePostSaveSchema, params);

@@ -129,7 +129,7 @@ export function createProgram(
 
 export function loadTexture(
    gl: WebGL2RenderingContext,
-   image: HTMLImageElement | HTMLCanvasElement,
+   image: HTMLImageElement | HTMLCanvasElement | ImageBitmap,
 ) {
    const texture = gl.createTexture();
    gl.bindTexture(gl.TEXTURE_2D, texture);

@@ -1,4 +1,4 @@
-import { togglePostLike } from '@/src/actions/likes/togglePostLike';
+import { togglePostLike } from '@/src/actions/post/togglePostLike';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useOptimisticToggle } from '@/src/hooks/useOptimisticToggle';
 import { queryKeys } from '@/src/lib/queryKeys';

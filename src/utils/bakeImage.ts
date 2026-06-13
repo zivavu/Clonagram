@@ -6,6 +6,7 @@ import {
    FRAGMENT_SHADER,
    getFilterUniformLocations,
    getPreset,
+   loadTexture,
    setAdjustmentUniforms,
    setPresetUniforms,
    VERTEX_SHADER,
@@ -86,23 +87,6 @@ function buildVertexBuffer(
    ]);
 }
 
-function loadBitmapTexture(
-   gl: WebGL2RenderingContext,
-   image: HTMLImageElement | ImageBitmap,
-): WebGLTexture {
-   const texture = gl.createTexture();
-   if (!texture) throw new Error('Failed to create WebGL texture');
-   gl.bindTexture(gl.TEXTURE_2D, texture);
-   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-   return texture;
-}
-
 async function loadImage(src: string): Promise<HTMLImageElement> {
    return new Promise((resolve, reject) => {
       const img = new Image();
@@ -142,7 +126,7 @@ export async function bakeImage(
    gl.vertexAttribPointer(uvLoc, 2, gl.FLOAT, false, 16, 8);
    gl.viewport(0, 0, outW, outH);
 
-   const imageTexture = loadBitmapTexture(gl, img);
+   const imageTexture = loadTexture(gl, img);
 
    const preset = getPreset(media.filterPreset);
    const curvesTexture = createCurveTexture(gl, preset.curves);
