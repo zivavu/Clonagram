@@ -7,7 +7,7 @@ export const styles = stylex.create({
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      height: 'min(90vh, 900px)',
+      height: 'min(96dvh, 900px)',
       aspectRatio: '9 / 16',
       display: 'flex',
       flexDirection: 'column',

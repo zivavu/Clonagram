@@ -35,10 +35,10 @@ import { useRealtimeChat } from './hooks/useRealtimeChat';
 import ImageMessage from './ImageMessage';
 import ImageViewModal from './ImageViewModal';
 import MessageInput, { type MessageInputHandle } from './MessageInput';
-import MessageText from './MessageText';
 import RequestActions from './RequestActions';
 import StickerMessage from './StickerMessage';
 import StoryLikeMessage from './StoryLikeMessage';
+import MessageText from './MessageText';
 
 interface ChatViewProps {
    conversationId: string;
@@ -230,7 +230,7 @@ export default function ChatView({
                const isLastInGroup = !nextMsg || nextMsg.sender_id !== msg.sender_id;
                const gapToPrev = prevMsg
                   ? new Date(msg.created_at ?? '').getTime() -
-                    new Date(prevMsg.created_at ?? '').getTime()
+                  new Date(prevMsg.created_at ?? '').getTime()
                   : Infinity;
                const showSeparator = gapToPrev > DAY_MS;
 

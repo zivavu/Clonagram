@@ -8,7 +8,7 @@ export const styles = stylex.create({
       height: '100%',
       width: '100%',
       marginLeft: 'var(--main-sidebar-width)',
-      '@media (max-width: 1024px)': {
+      '@media (max-width: 768px)': {
          marginLeft: 0,
       },
    },
