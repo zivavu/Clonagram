@@ -158,7 +158,9 @@ export default function ActiveStoryOverlay({
                      {...stylex.props(styles.activeStoryUploadTimestamp)}
                      suppressHydrationWarning
                   >
-                     {formatRelativeTimeShortUnit(story.stories[currentStoryMediaIndex]?.timestamp ?? story.timestamp)}
+                     {formatRelativeTimeShortUnit(
+                        story.stories[currentStoryMediaIndex]?.timestamp ?? story.timestamp,
+                     )}
                   </span>
                </div>
                <div {...stylex.props(styles.activeStoryTopNavigationRight)}>

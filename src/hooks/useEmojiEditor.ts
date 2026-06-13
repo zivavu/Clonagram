@@ -28,7 +28,10 @@ export function useEmojiEditor(maxLength?: number) {
    useEffect(() => {
       function handleSelectionChange() {
          const sel = window.getSelection();
-         if (sel?.rangeCount && editorRef.current?.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+         if (
+            sel?.rangeCount &&
+            editorRef.current?.contains(sel.getRangeAt(0).commonAncestorContainer)
+         ) {
             savedRangeRef.current = sel.getRangeAt(0).cloneRange();
          }
       }

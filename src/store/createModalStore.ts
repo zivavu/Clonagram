@@ -34,7 +34,6 @@ export function createModalStoreWithData<T>() {
    }));
 }
 
-
 export const useNotificationsPortalStore = createModalStore();
 export const useSearchPortalStore = createModalStore();
 export const useCreateStoryModalStore = createModalStore();
@@ -42,7 +41,6 @@ export const useNewMessageModalStore = createModalStore();
 export const useSettingsPopoverStore = createModalStore();
 export const useNewNoteModalStore = createModalStore();
 export const useNewHighlightModalStore = createModalStore();
-
 
 export const useOwnerActionsModal = createModalStoreWithData<string>();
 

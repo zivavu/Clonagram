@@ -124,9 +124,11 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
                         <span {...stylex.props(styles.threadName)}>{displayName}</span>
                         <div {...stylex.props(styles.threadPreviewRow)}>
                            <span {...stylex.props(styles.threadPreview)}>
-                              {conv.last_message_preview
-                                 ? <EmojiText content={conv.last_message_preview} size={12} />
-                                 : ''}
+                              {conv.last_message_preview ? (
+                                 <EmojiText content={conv.last_message_preview} size={12} />
+                              ) : (
+                                 ''
+                              )}
                            </span>
                            {conv.last_message_at && (
                               <span {...stylex.props(styles.threadTimestamp)}>

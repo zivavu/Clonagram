@@ -158,7 +158,10 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
             style={{ display: 'none' }}
             onChange={handleFileInputChange}
          />
-         <div ref={pickerContainerRef} style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
+         <div
+            ref={pickerContainerRef}
+            style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}
+         >
             {pickerOpen && (
                <div
                   style={{
@@ -187,58 +190,58 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
                </div>
             )}
             <div {...stylex.props(styles.inputWrapper)}>
-            {pendingImages.length > 0 && (
-               <ImagePreviewStrip
-                  images={pendingImages}
-                  onRemove={removeImage}
-                  onAdd={addImageFiles}
-               />
-            )}
-            <div {...stylex.props(styles.inputRow)}>
-               <AiOutlineSmile
-                  {...stylex.props(styles.inputIcon)}
-                  onClick={() => setPickerOpen(open => !open)}
-               />
-               <div {...stylex.props(styles.inputFieldWrapper)}>
-                  {isEmpty && <span {...stylex.props(styles.inputPlaceholder)}>Message...</span>}
-                  {/* biome-ignore lint/a11y/noStaticElementInteractions: contenteditable is inherently interactive */}
-                  <div
-                     ref={editorRef}
-                     contentEditable
-                     suppressContentEditableWarning
-                     {...stylex.props(styles.inputField)}
-                     onInput={handleInput}
-                     onBeforeInput={handleBeforeInputWithToast}
-                     onPaste={handlePaste}
-                     onKeyDown={e => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                           e.preventDefault();
-                           handleSend();
-                        }
-                        if (e.key === 'Escape') setPickerOpen(false);
-                     }}
+               {pendingImages.length > 0 && (
+                  <ImagePreviewStrip
+                     images={pendingImages}
+                     onRemove={removeImage}
+                     onAdd={addImageFiles}
                   />
-               </div>
-               {hasContent ? (
-                  <button
-                     type="button"
-                     {...stylex.props(styles.sendButton)}
-                     onClick={handleSend}
-                     disabled={sending}
-                  >
-                     Send
-                  </button>
-               ) : (
-                  <>
-                     <IoMicOutline {...stylex.props(styles.inputIcon)} />
-                     <TbPhoto
-                        {...stylex.props(styles.inputIcon)}
-                        onClick={() => fileInputRef.current?.click()}
-                     />
-                     <StickerPicker onSelect={onSendSticker} />
-                  </>
                )}
-            </div>
+               <div {...stylex.props(styles.inputRow)}>
+                  <AiOutlineSmile
+                     {...stylex.props(styles.inputIcon)}
+                     onClick={() => setPickerOpen(open => !open)}
+                  />
+                  <div {...stylex.props(styles.inputFieldWrapper)}>
+                     {isEmpty && <span {...stylex.props(styles.inputPlaceholder)}>Message...</span>}
+                     {/* biome-ignore lint/a11y/noStaticElementInteractions: contenteditable is inherently interactive */}
+                     <div
+                        ref={editorRef}
+                        contentEditable
+                        suppressContentEditableWarning
+                        {...stylex.props(styles.inputField)}
+                        onInput={handleInput}
+                        onBeforeInput={handleBeforeInputWithToast}
+                        onPaste={handlePaste}
+                        onKeyDown={e => {
+                           if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              handleSend();
+                           }
+                           if (e.key === 'Escape') setPickerOpen(false);
+                        }}
+                     />
+                  </div>
+                  {hasContent ? (
+                     <button
+                        type="button"
+                        {...stylex.props(styles.sendButton)}
+                        onClick={handleSend}
+                        disabled={sending}
+                     >
+                        Send
+                     </button>
+                  ) : (
+                     <>
+                        <IoMicOutline {...stylex.props(styles.inputIcon)} />
+                        <TbPhoto
+                           {...stylex.props(styles.inputIcon)}
+                           onClick={() => fileInputRef.current?.click()}
+                        />
+                        <StickerPicker onSelect={onSendSticker} />
+                     </>
+                  )}
+               </div>
             </div>
          </div>
       </div>
