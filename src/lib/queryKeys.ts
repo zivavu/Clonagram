@@ -28,4 +28,5 @@ export const queryKeys = {
    followedUsers: () => ['followed-users'] as const,
    userSearch: (query: string) => ['user-search', query] as const,
    locationSearch: (query: string) => ['locations', 'search', query] as const,
+   profileStats: (userId: string) => ['profile-stats', userId] as const,
 };

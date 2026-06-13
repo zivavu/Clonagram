@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import {
+   useFollowListModal,
    useNotificationsPortalStore,
    useOwnerActionsModal,
    useSearchPortalStore,
@@ -17,6 +18,7 @@ export default function ModalResetOnNav() {
    const closeOwnerActionsModal = useOwnerActionsModal(state => state.close);
    const closeNotificationsModal = useNotificationsPortalStore(state => state.close);
    const closeSearchPortal = useSearchPortalStore(state => state.close);
+   const closeFollowListModal = useFollowListModal(state => state.close);
 
    // biome-ignore lint/correctness/useExhaustiveDependencies: The pathname dependency is intentional.
    useEffect(() => {
@@ -29,12 +31,14 @@ export default function ModalResetOnNav() {
       closeOwnerActionsModal();
       closeNotificationsModal();
       closeSearchPortal();
+      closeFollowListModal();
    }, [
       pathname,
       closePostViewModal,
       closeOwnerActionsModal,
       closeNotificationsModal,
       closeSearchPortal,
+      closeFollowListModal,
    ]);
 
    useEffect(() => {

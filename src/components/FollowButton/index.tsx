@@ -6,6 +6,7 @@ import { cancelFollowRequest } from '@/src/actions/follow/cancelFollowRequest';
 import { followUser } from '@/src/actions/follow/followUser';
 import { unfollowUser } from '@/src/actions/follow/unfollowUser';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type FollowState, getFollowStatus } from '@/src/queries/followStatus';
 import { styles } from './index.stylex';
@@ -59,6 +60,8 @@ export default function FollowButton({
       },
       onSettled: () => {
          queryClient.invalidateQueries({ queryKey });
+         queryClient.invalidateQueries({ queryKey: queryKeys.profileStats(targetUserId) });
+         queryClient.invalidateQueries({ queryKey: queryKeys.profileCard(targetUserId) });
       },
    });
 

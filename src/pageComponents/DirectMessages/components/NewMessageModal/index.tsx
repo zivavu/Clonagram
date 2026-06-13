@@ -155,7 +155,7 @@ export default function NewMessageModal() {
                                  avatarAlt={user.full_name || user.username}
                                  username={user.username}
                                  name={user.full_name || user.username}
-                                 subtitle={user.username}
+                                 fullName={user.username}
                                  rightElement={
                                     <div
                                        {...stylex.props(

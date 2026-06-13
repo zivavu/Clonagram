@@ -3,7 +3,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { IoCloseOutline } from 'react-icons/io5';
 import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { getPost } from '../../actions/post/getPost';
@@ -24,7 +23,6 @@ export default function PostFullViewModal() {
       returnPath,
       suppressAnimation,
    } = usePostViewModal();
-   const router = useRouter();
 
    const { data: post } = useQuery({
       queryKey: postId ? queryKeys.post(postId) : ['post'],
@@ -40,8 +38,6 @@ export default function PostFullViewModal() {
       close();
       if (returnPath) {
          history.replaceState(null, '', returnPath);
-      } else if (post) {
-         router.replace(`/profile/${post.user.username}`);
       }
    }
 

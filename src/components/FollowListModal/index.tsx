@@ -77,7 +77,7 @@ export default function FollowListModal() {
                         username={user.username}
                         userId={user.id}
                         name={user.username}
-                        subtitle={user.full_name}
+                        fullName={user.full_name}
                         rightElement={
                            authUser && authUser.id !== user.id ? (
                               <div style={{ marginRight: '16px' }}>

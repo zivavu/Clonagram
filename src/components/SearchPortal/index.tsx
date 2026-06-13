@@ -110,7 +110,7 @@ export default function SearchPortal() {
                                  )}
                               </span>
                            }
-                           subtitle={user.full_name ?? ''}
+                           fullName={user.full_name ?? ''}
                            href={`/profile/${user.username}`}
                         />
                      );

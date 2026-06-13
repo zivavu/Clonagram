@@ -60,7 +60,7 @@ export default async function PeoplePage({ tab }: { tab: string | null }) {
                      username={user.username}
                      userId={user.id}
                      name={<OtherUserUsername userProfile={user} useHoverCard={false} />}
-                     subtitle={subtitles[user.id] ?? 'Suggested for you'}
+                     fullName={subtitles[user.id] ?? 'Suggested for you'}
                      rightElement={
                         <FollowButton
                            targetUserId={user.id}

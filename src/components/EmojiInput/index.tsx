@@ -61,10 +61,9 @@ const EmojiInput = forwardRef<EmojiInputRef, EmojiInputProps>(function EmojiInpu
    return (
       <div {...stylex.props(styles.root)}>
          <div ref={pickerContainerRef} {...stylex.props(styles.emojiWrapper)}>
-            <FaRegFaceSmile
-               {...stylex.props(styles.emojiIcon)}
-               onClick={() => setPickerOpen(open => !open)}
-            />
+            <button type="button" onClick={() => setPickerOpen(open => !open)}>
+               <FaRegFaceSmile {...stylex.props(styles.emojiIcon)} />
+            </button>
             {pickerOpen && (
                <div {...stylex.props(styles.pickerWrapper)}>
                   <style href="clonagram-emoji-picker-override" precedence="default">

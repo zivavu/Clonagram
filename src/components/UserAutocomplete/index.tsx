@@ -70,7 +70,7 @@ export default function UserAutocomplete({
                avatarAlt={user.username}
                username={user.username}
                name={user.username}
-               subtitle={user.full_name ?? ''}
+               fullName={user.full_name ?? ''}
                rightElement={
                   multiSelect ? (
                      <div

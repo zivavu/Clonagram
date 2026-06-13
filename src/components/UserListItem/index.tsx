@@ -3,6 +3,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import UserAvatar from '@/src/components/UserAvatar';
+import OtherUserUsername from '../Username/OtherUserUsername';
 import { styles } from './index.stylex';
 
 function handleKeyDown(e: React.KeyboardEvent, callback: () => void) {
@@ -18,7 +19,7 @@ interface UserListItemProps {
    username: string;
    userId?: string;
    name: React.ReactNode;
-   subtitle: React.ReactNode;
+   fullName: React.ReactNode;
    rightElement?: React.ReactNode;
    onClick?: () => void;
    role?: string;
@@ -31,8 +32,7 @@ export function UserListItem({
    avatarAlt = 'User',
    username,
    userId,
-   name,
-   subtitle,
+   fullName,
    rightElement,
    onClick,
    role,
@@ -50,8 +50,12 @@ export function UserListItem({
                userId={userId}
             />
             <div {...stylex.props(styles.names)}>
-               <div {...stylex.props(styles.name)}>{name}</div>
-               <div {...stylex.props(styles.subtitle)}>{subtitle}</div>
+               {username && userId ? (
+                  <OtherUserUsername userProfile={{ username, id: userId }} />
+               ) : (
+                  <div {...stylex.props(styles.name)}>{username}</div>
+               )}
+               <div {...stylex.props(styles.subtitle)}>{fullName}</div>
             </div>
          </div>
          {rightElement && <div {...stylex.props(styles.right)}>{rightElement}</div>}
