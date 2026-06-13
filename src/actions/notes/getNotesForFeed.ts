@@ -1,8 +1,8 @@
 'use server';
 import 'server-only';
 
-import { createServerClient } from '../../lib/supabase/server';
 import { throwIfError } from '../../lib/unwrap';
+import { getOptionalUser } from '../getAuthUser';
 
 export type NoteEntry = {
    userId: string;
@@ -16,10 +16,7 @@ export async function getNotesForFeed(): Promise<{
    ownNote: string | null;
    ownNoteId: string | null;
 }> {
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
+   const { supabase, user } = await getOptionalUser();
 
    if (!user) return { notes: [], ownNote: null, ownNoteId: null };
 

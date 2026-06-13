@@ -1,14 +1,11 @@
 'use server';
 import 'server-only';
-import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 import type { Notifications } from '@/src/queries/notifications';
+import { getOptionalUser } from '../getAuthUser';
 
 export async function getNotifications(): Promise<Notifications> {
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
+   const { supabase, user } = await getOptionalUser();
    if (!user) return [];
 
    const { data, error } = await supabase

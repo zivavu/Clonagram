@@ -1,9 +1,9 @@
 'use server';
 import 'server-only';
-import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 import { SearchProfilesSchema, validate } from '@/src/lib/validation';
 import type { UserProfiles } from '@/src/queries/userProfiles';
+import { getOptionalUser } from '../getAuthUser';
 
 export async function searchProfiles(options: {
    search?: string;
@@ -11,10 +11,7 @@ export async function searchProfiles(options: {
    excludeId?: string;
 }): Promise<UserProfiles> {
    const validated = validate(SearchProfilesSchema, options);
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
+   const { supabase, user } = await getOptionalUser();
 
    let q = supabase
       .from('profiles')

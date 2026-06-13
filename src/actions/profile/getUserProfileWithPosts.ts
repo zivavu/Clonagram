@@ -1,7 +1,6 @@
 'use server';
 import 'server-only';
 import { UsernameParamSchema, validate } from '@/src/lib/validation';
-import { getAuthProfile } from '../../lib/supabase/getAuthProfile';
 import { throwIfError } from '../../lib/unwrap';
 import { getFollowStatus } from '../../queries/followStatus';
 import { hideLikesForNonOwners } from '../../utils/posts';
@@ -11,8 +10,7 @@ type CountAggregate = [{ count: number }];
 
 export async function getUserProfileWithPosts(params: { username: string }) {
    const { username } = validate(UsernameParamSchema, params);
-   const { supabase } = await getAuthUser();
-   const authProfile = await getAuthProfile(supabase);
+   const { supabase, user } = await getAuthUser();
 
    let query = supabase
       .from('profiles')
@@ -31,9 +29,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
       .eq('username', username)
       .order('created_at', { referencedTable: 'posts', ascending: false });
 
-   if (authProfile) {
-      query = query.eq('posts.likes.user_id', authProfile.id);
-   }
+   query = query.eq('posts.likes.user_id', user.id);
 
    const { data, error } = await query.single();
 
@@ -41,9 +37,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
    if (!data) throw new Error('Failed to fetch profile with posts: no data returned');
 
    const followStatus =
-      authProfile && authProfile.id !== data.id
-         ? await getFollowStatus(supabase, authProfile.id, data.id)
-         : 'none';
+      user.id !== data.id ? await getFollowStatus(supabase, user.id, data.id) : 'none';
 
    const userProfile = {
       ...data,
@@ -53,7 +47,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
 
    return {
       userProfile,
-      posts: hideLikesForNonOwners(data.posts ?? [], authProfile?.id),
+      posts: hideLikesForNonOwners(data.posts ?? [], user.id),
       followStatus,
    };
 }

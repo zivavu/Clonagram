@@ -1,7 +1,6 @@
 'use server';
 import 'server-only';
 import type { PostLocation } from '@/src/components/CreatePostModal/types';
-import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { throwIfError } from '@/src/lib/unwrap';
 import { UpdatePostSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
@@ -29,9 +28,6 @@ export async function updatePost({
       commentsOff: co,
    } = validate(UpdatePostSchema, { postId, caption, location, hideLikes, commentsOff });
    const { supabase, user } = await getAuthUser();
-   const authProfile = await getAuthProfile(supabase);
-
-   if (!authProfile || authProfile.id !== user.id) throw new Error('Not authorized');
 
    const { error } = await supabase
       .from('posts')
@@ -44,7 +40,7 @@ export async function updatePost({
          comments_off: co,
       })
       .eq('id', pid)
-      .eq('user_id', authProfile.id);
+      .eq('user_id', user.id);
 
    throwIfError({ error }, 'Failed to update post');
 }

@@ -5,6 +5,7 @@ import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 import { UsernameParamSchema, validate } from '@/src/lib/validation';
+import { extractStoryMedia } from '@/src/queries/stories';
 import type { Database } from '@/src/types/database';
 import type { StoryEntry } from './getActiveStories';
 
@@ -60,16 +61,13 @@ export async function getHighlightEntries(params: { username: string }): Promise
          for (const item of sorted) {
             const s = item.stories;
             if (!s) continue;
-            const isImage = s.story_images.length > 0;
-            const url = isImage
-               ? s.story_images[0].url
-               : (s.story_videos[0]?.mux_playback_id ?? '');
-            if (!url) continue;
+            const media = extractStoryMedia(s);
+            if (!media) continue;
             stories.push({
                userId: s.id,
-               type: isImage ? 'image' : 'video',
-               url,
-               blurDataUrl: isImage ? (s.story_images[0].blur_data_url ?? null) : null,
+               type: media.type,
+               url: media.url,
+               blurDataUrl: media.blurDataUrl,
             });
          }
 

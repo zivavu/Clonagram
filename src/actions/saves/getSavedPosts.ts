@@ -1,14 +1,11 @@
 'use server';
 import 'server-only';
-import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 import { savedPostsQuery } from '@/src/queries/posts';
+import { getOptionalUser } from '../getAuthUser';
 
 export async function getSavedPosts() {
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
+   const { supabase, user } = await getOptionalUser();
 
    if (!user) return [];
 

@@ -21,6 +21,31 @@ export function activeStoriesQuery(supabase: SupabaseClient<Database>) {
 export type ActiveStories = QueryData<ReturnType<typeof activeStoriesQuery>>;
 export type ActiveStory = ActiveStories[number];
 
+interface StoryMediaRow {
+   story_images: { url: string; blur_data_url: string | null }[];
+   story_videos: { mux_playback_id: string | null }[];
+}
+
+export function extractStoryMedia(
+   row: StoryMediaRow,
+): { type: 'image' | 'video'; url: string; blurDataUrl: string | null } | null {
+   if (row.story_images.length > 0) {
+      return {
+         type: 'image',
+         url: row.story_images[0].url,
+         blurDataUrl: row.story_images[0].blur_data_url ?? null,
+      };
+   }
+   if (row.story_videos.length > 0 && row.story_videos[0].mux_playback_id) {
+      return {
+         type: 'video',
+         url: row.story_videos[0].mux_playback_id,
+         blurDataUrl: null,
+      };
+   }
+   return null;
+}
+
 export async function getStoryRingState(
    supabase: SupabaseClient<Database>,
    userId: string,

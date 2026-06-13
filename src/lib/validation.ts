@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const uuid = z.string().uuid();
 
+export const GetFollowsSchema = z.object({ userId: uuid });
 export const FollowUserSchema = z.object({ targetUserId: uuid });
 export const SendMessageSchema = z.object({
    conversationId: uuid,

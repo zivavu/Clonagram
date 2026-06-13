@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
+import { getStoryRingState } from '@/src/queries/stories';
 
 export function useStoryStatus(userId: string | undefined) {
    const { data: authUser } = useAuthUser();
@@ -9,24 +10,8 @@ export function useStoryStatus(userId: string | undefined) {
    return useQuery({
       queryKey: userId ? queryKeys.storyStatus(userId) : ['storyStatus'],
       queryFn: async () => {
-         if (!userId || !authUser) {
-            return { hasStories: false, allStoriesViewed: false };
-         }
-
-         const { data, error } = await supabase
-            .from('stories')
-            .select('id, story_views(viewer_id)')
-            .eq('user_id', userId)
-            .gt('expires_at', new Date().toISOString());
-
-         if (error) throw new Error(`Failed to fetch story status: ${error.message}`);
-
-         const hasStories = data.length > 0;
-         const allStoriesViewed = data.every(story =>
-            story.story_views?.some(view => view.viewer_id === authUser.id),
-         );
-
-         return { hasStories, allStoriesViewed };
+         if (!userId) return { hasStories: false, allStoriesViewed: false };
+         return getStoryRingState(supabase, userId, authUser?.id ?? null);
       },
       enabled: !!userId && !!authUser,
       staleTime: 30_000,

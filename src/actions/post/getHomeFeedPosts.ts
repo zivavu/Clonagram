@@ -1,11 +1,11 @@
 'use server';
 import 'server-only';
 import { CursorSchema, validate } from '@/src/lib/validation';
-import { createServerClient } from '../../lib/supabase/server';
 import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 import { hideLikesForNonOwners, nextCursorFrom, scopeLikesAndSavesToUser } from '../../utils/posts';
+import { getOptionalUser } from '../getAuthUser';
 
 const PAGE_SIZE = 10;
 
@@ -19,10 +19,7 @@ export async function getHomeFeedPosts(params: {
    cursor?: string | null;
 }): Promise<HomeFeedPage> {
    const { variant, cursor } = validate(CursorSchema, params);
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
+   const { supabase, user } = await getOptionalUser();
 
    if (variant === 'home') {
       let query = supabase

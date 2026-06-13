@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { throwIfError } from '@/src/lib/unwrap';
+import { extractStoryMedia } from '@/src/queries/stories';
 import { getAuthUser } from '../getAuthUser';
 
 export type ArchivedStory = {
@@ -29,17 +30,14 @@ export async function getArchivedStories() {
 
    const stories: ArchivedStory[] = [];
    for (const row of data ?? []) {
-      const images = row.story_images as Array<{ url: string; blur_data_url: string | null }>;
-      const videos = row.story_videos as Array<{ mux_playback_id: string | null }>;
-      const isImage = images.length > 0;
-      const url = isImage ? images[0].url : (videos[0]?.mux_playback_id ?? '');
-      if (!url) continue;
+      const media = extractStoryMedia(row);
+      if (!media) continue;
       stories.push({
          id: row.id,
          createdAt: row.created_at ?? '',
-         type: isImage ? 'image' : 'video',
-         url,
-         blurDataUrl: isImage ? (images[0].blur_data_url ?? null) : null,
+         type: media.type,
+         url: media.url,
+         blurDataUrl: media.blurDataUrl,
       });
    }
    return stories;

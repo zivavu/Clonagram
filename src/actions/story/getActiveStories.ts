@@ -1,15 +1,12 @@
 'use server';
 import 'server-only';
 
-import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
-import { activeStoriesQuery } from '@/src/queries/stories';
+import { activeStoriesQuery, extractStoryMedia } from '@/src/queries/stories';
+import { getOptionalUser } from '../getAuthUser';
 
 export async function getActiveStories() {
-   const supabase = await createServerClient();
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
+   const { supabase, user } = await getOptionalUser();
    const currentUserId = user?.id ?? null;
 
    const { data, error } = await activeStoriesQuery(supabase);
@@ -40,14 +37,11 @@ export async function getActiveStories() {
       const profile = row.profiles;
       if (!profile) continue;
 
-      const images = row.story_images;
-      const videos = row.story_videos;
       const views = row.story_views;
       const reactions = row.story_reactions;
 
-      const isImage = images.length > 0;
-      const mediaUrl = isImage ? images[0].url : (videos[0]?.mux_playback_id ?? '');
-      const blurDataUrl = isImage ? (images[0].blur_data_url ?? null) : null;
+      const media = extractStoryMedia(row);
+      if (!media) continue;
 
       const isViewed = currentUserId !== null && views.some(v => v.viewer_id === currentUserId);
       if (isViewed) viewedStoryIds.push(row.id);
@@ -73,9 +67,9 @@ export async function getActiveStories() {
       }
       entry.stories.push({
          userId: row.id,
-         type: isImage ? 'image' : 'video',
-         url: mediaUrl,
-         blurDataUrl,
+         type: media.type,
+         url: media.url,
+         blurDataUrl: media.blurDataUrl,
       });
    }
 
