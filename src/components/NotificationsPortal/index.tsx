@@ -13,6 +13,7 @@ import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
 import type { NotificationRow } from '@/src/queries/notifications';
 import { useNotificationsPortalStore } from '@/src/store/createModalStore';
+import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 
@@ -39,21 +40,6 @@ const typeMatchesCategory = (type: string, category: FilterCategory): boolean =>
          return true;
    }
 };
-
-function formatTimeAgo(dateString: string): string {
-   const date = new Date(dateString);
-   const now = new Date();
-   const diffMs = now.getTime() - date.getTime();
-   const diffMins = Math.floor(diffMs / (1000 * 60));
-   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-   if (diffMins < 1) return 'now';
-   if (diffMins < 60) return `${diffMins}m`;
-   if (diffHours < 24) return `${diffHours}h`;
-   if (diffDays < 7) return `${diffDays}d`;
-   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
 
 function getGroupLabel(date: Date): string | null {
    const now = new Date();
@@ -167,7 +153,7 @@ function NotificationRowComponent({
             <div {...stylex.props(styles.notificationText)}>
                {text}
                <span {...stylex.props(styles.timeAgo)}>
-                  {formatTimeAgo(notification.createdAt)}
+                  {formatRelativeTimeShortUnit(notification.createdAt)}
                </span>
             </div>
          </div>

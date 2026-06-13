@@ -2,10 +2,9 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import { BiNotificationOff } from 'react-icons/bi';
-import { useInView } from 'react-intersection-observer';
 import { getHomeFeedPosts } from '@/src/actions/post/getHomeFeedPosts';
+import { useInfiniteScrollSentinel } from '@/src/hooks/useInfiniteScrollSentinel';
 import { queryKeys } from '@/src/lib/queryKeys';
 import HomepagePost from './HomepagePost';
 import { styles } from './index.stylex';
@@ -18,13 +17,11 @@ export default function HomepageFeed({ variant }: { variant: 'home' | 'following
       getNextPageParam: lastPage => lastPage.nextCursor,
    });
 
-   const { ref, inView } = useInView({ threshold: 0 });
-
-   useEffect(() => {
-      if (inView && hasNextPage && !isFetchingNextPage) {
-         fetchNextPage();
-      }
-   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+   const sentinelRef = useInfiniteScrollSentinel({
+      hasNextPage,
+      isFetchingNextPage,
+      fetchNextPage,
+   });
 
    const posts = data?.pages.flatMap(page => page.posts) ?? [];
 
@@ -53,7 +50,7 @@ export default function HomepageFeed({ variant }: { variant: 'home' | 'following
                <HomepagePost key={post.id} post={post} index={index} />
             ))}
          </div>
-         <div ref={ref} />
+         <div ref={sentinelRef} />
          {isFetchingNextPage && <div {...stylex.props(styles.postsContainer)} />}
       </>
    );

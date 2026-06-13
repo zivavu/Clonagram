@@ -3,13 +3,12 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import { useInView } from 'react-intersection-observer';
 import { getFollowers, getFollowing } from '@/src/actions/follow/getFollows';
 import FollowButton from '@/src/components/FollowButton';
 import { UserListItem, UserListSkeleton } from '@/src/components/UserListItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { useInfiniteScrollSentinel } from '@/src/hooks/useInfiniteScrollSentinel';
 import { useFollowListModal } from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
@@ -17,7 +16,6 @@ import { styles } from './index.stylex';
 export default function FollowListModal() {
    const { isOpen, type, userId, close } = useFollowListModal();
    const { data: authUser } = useAuthUser();
-   const { ref: sentinelRef, inView } = useInView();
 
    const queryKey = ['follow-list', type, userId];
 
@@ -38,11 +36,11 @@ export default function FollowListModal() {
       enabled: isOpen && !!userId,
    });
 
-   useEffect(() => {
-      if (inView && hasNextPage && !isFetchingNextPage) {
-         fetchNextPage();
-      }
-   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+   const sentinelRef = useInfiniteScrollSentinel({
+      hasNextPage,
+      isFetchingNextPage,
+      fetchNextPage,
+   });
 
    const users = data?.pages.flatMap(page => page.users) ?? [];
 

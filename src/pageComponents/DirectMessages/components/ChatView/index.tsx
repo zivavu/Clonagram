@@ -28,7 +28,7 @@ import {
    getConversationDisplayName,
    isGroupConversation,
 } from '@/src/utils/conversations';
-import { formatGroupSeparator } from '@/src/utils/time';
+import { DAY_MS, formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
 import { useChatScrollAndRead } from './hooks/useChatScrollAndRead';
 import { useRealtimeChat } from './hooks/useRealtimeChat';
@@ -39,8 +39,6 @@ import MessageText from './MessageText';
 import RequestActions from './RequestActions';
 import StickerMessage from './StickerMessage';
 import StoryLikeMessage from './StoryLikeMessage';
-
-const MS_PER_DAY = 86_400_000;
 
 interface ChatViewProps {
    conversationId: string;
@@ -234,7 +232,7 @@ export default function ChatView({
                   ? new Date(msg.created_at ?? '').getTime() -
                     new Date(prevMsg.created_at ?? '').getTime()
                   : Infinity;
-               const showSeparator = gapToPrev > MS_PER_DAY;
+               const showSeparator = gapToPrev > DAY_MS;
 
                const hasReadReceipt = isSent && msg.read_at && isLastInGroup;
 

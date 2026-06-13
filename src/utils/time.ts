@@ -1,28 +1,21 @@
-const DAY_MS = 86_400_000;
-const MINUTE_MS = 60_000;
-const HOUR_MS = 60 * MINUTE_MS;
-const WEEK_MS = 7 * DAY_MS;
+export const MINUTE_MS = 60_000;
+export const HOUR_MS = 60 * MINUTE_MS;
+export const DAY_MS = 86_400_000;
+export const WEEK_MS = 7 * DAY_MS;
 
-function getDateDiff(isoString: string) {
+function getDiff(isoString: string) {
    const date = new Date(isoString);
-   const now = new Date();
-   const diff = now.getTime() - date.getTime();
-   return { date, now, diff, days: Math.floor(diff / DAY_MS) };
-}
-
-function getRelativeDiff(timestamp: string) {
-   const date = new Date(timestamp);
    const diff = Number.isNaN(date.getTime()) ? NaN : Date.now() - date.getTime();
-   return { date, diff };
+   return { date, diff, days: Number.isNaN(diff) ? NaN : Math.floor(diff / DAY_MS) };
 }
 
 export function isOlderThan24h(isoString: string): boolean {
-   const { diff } = getDateDiff(isoString);
+   const { diff } = getDiff(isoString);
    return diff >= DAY_MS;
 }
 
 export function formatMessageTimestamp(isoString: string): string {
-   const { date, days } = getDateDiff(isoString);
+   const { date, days } = getDiff(isoString);
 
    if (days === 1) return 'Yesterday';
    if (days < 7) return date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -30,7 +23,7 @@ export function formatMessageTimestamp(isoString: string): string {
 }
 
 export function formatDateSeparator(isoString: string): string {
-   const { date, days } = getDateDiff(isoString);
+   const { date, days } = getDiff(isoString);
 
    if (days === 0) return 'Today';
    if (days === 1) return 'Yesterday';
@@ -39,7 +32,7 @@ export function formatDateSeparator(isoString: string): string {
 }
 
 export function formatGroupSeparator(isoString: string): string {
-   const { date, days } = getDateDiff(isoString);
+   const { date, days } = getDiff(isoString);
    const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
    if (days === 0) return timeStr;
@@ -50,7 +43,7 @@ export function formatGroupSeparator(isoString: string): string {
 }
 
 export function formatTimestamp(isoString: string): string {
-   const { date, diff, days } = getDateDiff(isoString);
+   const { date, diff, days } = getDiff(isoString);
 
    if (days === 0) {
       const diffMinutes = Math.floor(diff / MINUTE_MS);
@@ -65,7 +58,7 @@ export function formatTimestamp(isoString: string): string {
 }
 
 function formatRelativeTime(timestamp: string, longUnit: boolean): string {
-   const { date, diff } = getRelativeDiff(timestamp);
+   const { date, diff } = getDiff(timestamp);
    if (Number.isNaN(diff)) return '';
 
    if (longUnit) {
