@@ -17,11 +17,21 @@ interface ExploreGridProps {
    emptyState?: ReactNode;
 }
 
-function isPostTall(index: number) {
+function isPortraitPost(post: PostsWithMedia[number]) {
+   const primaryMedia = [
+      ...post.images.map(img => ({ position: img.position, width: img.width, height: img.height })),
+      ...post.videos.map(v => ({ position: v.position, width: v.width, height: v.height })),
+   ].sort((a, b) => a.position - b.position)[0];
+   if (!primaryMedia?.width || !primaryMedia?.height) return false;
+   return primaryMedia.height > primaryMedia.width;
+}
+
+function isPostTall(index: number, post: PostsWithMedia[number]) {
    const positionInGroup = index % 5;
    const groupIndex = Math.floor(index / 5);
    const isTallOnRight = groupIndex % 2 === 0;
-   return isTallOnRight ? positionInGroup === 2 : positionInGroup === 0;
+   const isInTallSlot = isTallOnRight ? positionInGroup === 2 : positionInGroup === 0;
+   return isInTallSlot && isPortraitPost(post);
 }
 
 export default function ExploreGrid({ posts, emptyState }: ExploreGridProps) {
@@ -43,7 +53,7 @@ export default function ExploreGrid({ posts, emptyState }: ExploreGridProps) {
             const thumbnail = getPostThumbnail(post);
             if (!thumbnail) return null;
 
-            const isTall = isPostTall(index);
+            const isTall = isPostTall(index, post);
             const hasMultipleImages = post.images.length > 1;
             const isVideoOnly = post.videos.length > 0 && post.images.length === 0;
             const isHovered = hoveredId === post.id;
