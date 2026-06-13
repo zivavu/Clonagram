@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import { colors } from '../../../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    grid: {
@@ -45,7 +46,7 @@ export const styles = stylex.create({
    name: {
       fontSize: '12px',
       lineHeight: '16px',
-      color: 'rgb(168, 168, 168)',
+      color: colors.textSecondary,
    },
    nameActive: {
       color: 'rgb(0, 149, 246)',

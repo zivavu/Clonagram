@@ -1,12 +1,17 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import EmojiPicker, { EmojiStyle, Theme } from 'emoji-picker-react';
+import { EmojiStyle, Theme } from 'emoji-picker-react';
+import dynamic from 'next/dynamic';
 import { forwardRef, useImperativeHandle } from 'react';
 import { FaRegFaceSmile } from 'react-icons/fa6';
 import { PICKER_CLASS, pickerOverrideCSS, useEmojiEditor } from '@/src/hooks/useEmojiEditor';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { styles } from './index.stylex';
+
+const EmojiPicker = dynamic(() => import('emoji-picker-react').then(m => m.default), {
+   ssr: false,
+});
 
 export interface EmojiInputRef {
    getText: () => string;

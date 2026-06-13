@@ -50,7 +50,7 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
    const actions: Action[] = [
       {
          label: 'Delete',
-         buttonStyle: { color: '#ed4956', fontWeight: 700 },
+         buttonStyle: { color: 'rgb(237, 73, 86)', fontWeight: 700 },
          action: () => {
             setDeletingPostId(postId);
             close();

@@ -1,7 +1,7 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import EmojiPicker, { EmojiStyle, Theme } from 'emoji-picker-react';
+import { EmojiStyle, Theme } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
@@ -14,6 +14,9 @@ import { radius } from '../../../../styles/tokens.stylex';
 import { styles } from '../../index.stylex';
 import ImagePreviewStrip, { type PendingImage } from './ImagePreviewStrip';
 
+const EmojiPicker = dynamic(() => import('emoji-picker-react').then(m => m.default), {
+   ssr: false,
+});
 const StickerPicker = dynamic(() => import('./StickerPicker'), { ssr: false });
 
 interface MessageInputProps {

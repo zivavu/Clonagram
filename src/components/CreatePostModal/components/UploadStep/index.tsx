@@ -55,7 +55,7 @@ export default function UploadStep({
             {...getRootProps()}
             {...stylex.props(styles.dropZone, isDragActive && styles.dropZoneActive)}
          >
-            <IoImagesOutline size={96} style={{ color: 'rgb(168, 168, 168)' }} />
+            <IoImagesOutline size={96} {...stylex.props(styles.iconColor)} />
             <p {...stylex.props(styles.dropText)}>{textContent[elementType].dropzoneText}</p>
             <button type="button" {...stylex.props(styles.selectButton)} onClick={open}>
                {textContent[elementType].button}

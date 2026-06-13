@@ -25,6 +25,9 @@ export const styles = stylex.create({
       color: colors.textPrimary,
       margin: 0,
    },
+   iconColor: {
+      color: colors.textSecondary,
+   },
    selectButton: {
       padding: '8px 16px',
       borderRadius: radius.md,
