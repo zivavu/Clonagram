@@ -14,17 +14,12 @@ export interface FollowUser {
    is_verified: boolean;
 }
 
-interface FollowListResult {
-   users: FollowUser[];
-   total: number;
-}
-
 async function getFollowList(
    direction: 'followers' | 'following',
    rawUserId: string,
    page: number,
    pageSize: number,
-): Promise<FollowListResult> {
+) {
    const { userId } = validate(GetFollowsSchema, { userId: rawUserId });
    const supabase = await createServerClient();
 

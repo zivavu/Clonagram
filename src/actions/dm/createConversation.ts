@@ -6,7 +6,7 @@ import { throwIfError } from '@/src/lib/unwrap';
 import { CreateConversationSchema, validate } from '@/src/lib/validation';
 import { findOrCreateDirectConversation } from './findOrCreateDirectConversation';
 
-export async function createConversation(participantIds: string[]): Promise<string> {
+export async function createConversation(participantIds: string[]) {
    const { participantIds: validatedParticipantIds } = validate(CreateConversationSchema, {
       participantIds,
    });

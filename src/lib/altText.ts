@@ -4,7 +4,7 @@ export function formatAltText(
    aiDescription: string | undefined | null,
    post: PostWithMedia,
    imageIndex: number,
-): string {
+) {
    const parts: string[] = [];
 
    const image = post.images?.[imageIndex];

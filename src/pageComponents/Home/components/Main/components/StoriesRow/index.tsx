@@ -16,7 +16,7 @@ const STORY_ITEM_WIDTH = 86 + 18;
 const SCROLL_DURATION = 300;
 const SCROLL_PAGES = 4;
 
-function easeInOut(t: number): number {
+function easeInOut(t: number) {
    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 

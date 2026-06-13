@@ -4,10 +4,7 @@ import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 import { ConversationWithUserSchema, validate } from '@/src/lib/validation';
 
-export async function removeParticipant(params: {
-   conversationId: string;
-   userId: string;
-}): Promise<void> {
+export async function removeParticipant(params: { conversationId: string; userId: string }) {
    const { conversationId, userId } = validate(ConversationWithUserSchema, params);
    const { supabase, user } = await getAuthUser();
 

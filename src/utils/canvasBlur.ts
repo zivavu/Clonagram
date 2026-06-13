@@ -1,8 +1,6 @@
 const BLUR_SIZE = 20;
 
-export async function canvasToBlurDataUrl(
-   canvas: HTMLCanvasElement | OffscreenCanvas,
-): Promise<string> {
+export async function canvasToBlurDataUrl(canvas: HTMLCanvasElement | OffscreenCanvas) {
    const blurW = BLUR_SIZE;
    const blurH = Math.round(BLUR_SIZE * (canvas.height / canvas.width));
    const source = await createImageBitmap(canvas);
@@ -16,14 +14,11 @@ export async function canvasToBlurDataUrl(
    return blurCanvas.toDataURL('image/webp', 0.5);
 }
 
-export function canvasToWebpBlob(
-   canvas: HTMLCanvasElement | OffscreenCanvas,
-   quality = 0.85,
-): Promise<Blob> {
+export function canvasToWebpBlob(canvas: HTMLCanvasElement | OffscreenCanvas, quality = 0.85) {
    if (canvas instanceof OffscreenCanvas) {
       return canvas.convertToBlob({ type: 'image/webp', quality });
    }
-   return new Promise((resolve, reject) => {
+   return new Promise<Blob | null>((resolve, reject) => {
       canvas.toBlob(
          blob => (blob ? resolve(blob) : reject(new Error('Blob creation failed'))),
          'image/webp',

@@ -17,7 +17,7 @@ const PAGE_SIZE = 45;
 export async function getExplorePosts(params: {
    variant: 'for_you' | 'nonpersonalized';
    cursor?: string | null;
-}): Promise<ExploreFeedPage> {
+}) {
    const { variant, cursor } = validate(CursorSchema, params);
    const { supabase, user } = await getOptionalUser();
 

@@ -20,12 +20,12 @@ interface PhotonFeature {
    };
 }
 
-function formatLocationName(props: PhotonFeature['properties']): string {
+function formatLocationName(props: PhotonFeature['properties']) {
    const parts = [props.name, props.city, props.country].filter(Boolean) as string[];
    return [...new Set(parts)].join(', ');
 }
 
-async function searchLocations(query: string): Promise<PostLocation[]> {
+async function searchLocations(query: string) {
    const url = new URL('https://photon.komoot.io/api/');
    url.searchParams.set('q', query);
    url.searchParams.set('limit', '8');

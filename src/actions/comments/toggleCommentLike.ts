@@ -4,10 +4,7 @@ import { throwIfError } from '@/src/lib/unwrap';
 import { LikeCommentSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function toggleCommentLike(params: {
-   commentId: string;
-   isLiked: boolean;
-}): Promise<void> {
+export async function toggleCommentLike(params: { commentId: string; isLiked: boolean }) {
    const { commentId, isLiked } = validate(LikeCommentSchema, params);
    const { supabase, user } = await getAuthUser();
 

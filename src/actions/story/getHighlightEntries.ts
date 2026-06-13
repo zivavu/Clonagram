@@ -29,10 +29,7 @@ function highlightEntriesQuery(supabase: SupabaseClient<Database>, userId: strin
 
 type HighlightEntriesData = QueryData<ReturnType<typeof highlightEntriesQuery>>;
 
-export async function getHighlightEntries(params: { username: string }): Promise<{
-   entries: StoryEntry[];
-   profileUserId: string;
-}> {
+export async function getHighlightEntries(params: { username: string }) {
    const { username } = validate(UsernameParamSchema, params);
    const supabase = await createServerClient();
 

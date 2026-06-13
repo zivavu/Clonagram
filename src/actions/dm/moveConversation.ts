@@ -7,7 +7,7 @@ import { ConversationWithFolderSchema, validate } from '@/src/lib/validation';
 export async function moveConversation(params: {
    conversationId: string;
    folder: 'primary' | 'general';
-}): Promise<void> {
+}) {
    const { conversationId, folder } = validate(ConversationWithFolderSchema, params);
    const { supabase, user } = await getAuthUser();
 

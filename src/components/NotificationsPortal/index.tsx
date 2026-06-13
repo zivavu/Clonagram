@@ -27,7 +27,7 @@ const FILTER_CATEGORIES: { key: FilterCategory; label: string }[] = [
    { key: 'follows', label: 'Follows' },
 ];
 
-const typeMatchesCategory = (type: string, category: FilterCategory): boolean => {
+const typeMatchesCategory = (type: string, category: FilterCategory) => {
    switch (category) {
       case 'all':
          return true;
@@ -42,7 +42,7 @@ const typeMatchesCategory = (type: string, category: FilterCategory): boolean =>
    }
 };
 
-function getGroupLabel(date: Date): string | null {
+function getGroupLabel(date: Date) {
    const now = new Date();
    const diffMs = now.getTime() - date.getTime();
    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -54,7 +54,7 @@ function getGroupLabel(date: Date): string | null {
    return 'Earlier';
 }
 
-function getTargetGroupKey(row: NotificationRow): string {
+function getTargetGroupKey(row: NotificationRow) {
    if (row.type === 'follow') return `${row.type}-${row.id}`;
    return `${row.type}-${row.post_id ?? ''}-${row.story_id ?? ''}-${row.comment_id ?? ''}`;
 }

@@ -1,10 +1,9 @@
 'use server';
 import 'server-only';
 import { throwIfError } from '@/src/lib/unwrap';
-import type { Notifications } from '@/src/queries/notifications';
 import { getOptionalUser } from '../getAuthUser';
 
-export async function getNotifications(): Promise<Notifications> {
+export async function getNotifications() {
    const { supabase, user } = await getOptionalUser();
    if (!user) return [];
 

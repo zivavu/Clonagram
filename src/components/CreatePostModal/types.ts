@@ -134,7 +134,7 @@ export function createPostMedia(file: File): PostMedia {
    };
 }
 
-export function revokeMediaUrls(media: PostMedia): void {
+export function revokeMediaUrls(media: PostMedia) {
    URL.revokeObjectURL(media.preview);
    if (media.poster) URL.revokeObjectURL(media.poster);
    for (const url of media.frames ?? []) URL.revokeObjectURL(url);

@@ -4,7 +4,7 @@ import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 import { ConversationIdSchema, validate } from '@/src/lib/validation';
 
-export async function markChatRead(params: { conversationId: string }): Promise<void> {
+export async function markChatRead(params: { conversationId: string }) {
    const { conversationId } = validate(ConversationIdSchema, params);
    const { supabase, user } = await getAuthUser();
 

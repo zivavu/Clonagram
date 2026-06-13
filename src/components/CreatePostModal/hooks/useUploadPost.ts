@@ -7,7 +7,7 @@ import { supabase } from '@/src/lib/supabase/client';
 import { bakeImage } from '@/src/utils/bakeImage';
 import { pollMuxAsset } from '@/src/utils/pollMuxAsset';
 import { processVideo } from '@/src/utils/processVideo';
-import type { MediaResult, PostData, PostMedia } from '../types';
+import type { PostData, PostMedia } from '../types';
 
 export type UploadStatus = 'idle' | 'uploading' | 'done' | 'error';
 
@@ -21,8 +21,8 @@ interface UseUploadPostParams {
    onDone: () => void;
 }
 
-function getVideoNaturalDimensions(src: string): Promise<{ width: number; height: number }> {
-   return new Promise((resolve, reject) => {
+function getVideoNaturalDimensions(src: string) {
+   return new Promise<{ width: number; height: number }>((resolve, reject) => {
       const video = document.createElement('video');
       video.onloadedmetadata = () =>
          resolve({ width: video.videoWidth, height: video.videoHeight });
@@ -31,7 +31,7 @@ function getVideoNaturalDimensions(src: string): Promise<{ width: number; height
    });
 }
 
-async function processMedia(media: PostMedia, postData: PostData): Promise<MediaResult> {
+async function processMedia(media: PostMedia, postData: PostData) {
    if (media.type === 'image') {
       const { blob, blurDataURL, width, height } = await bakeImage(media, postData.aspectRatio);
       const fileName = `${crypto.randomUUID()}.jpg`;
@@ -42,7 +42,7 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
       }
       const { data: urlData } = supabase.storage.from('posts').getPublicUrl(fileName);
       return {
-         type: 'image',
+         type: 'image' as const,
          path: urlData.publicUrl,
          width,
          height,
@@ -78,7 +78,7 @@ async function processMedia(media: PostMedia, postData: PostData): Promise<Media
    if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
 
    const { assetId, playbackId, duration } = await pollMuxAsset(uploadId);
-   return { type: 'video', assetId, playbackId, duration, width, height };
+   return { type: 'video' as const, assetId, playbackId, duration, width, height };
 }
 
 export function useUploadPost({ postData, onDone }: UseUploadPostParams): UseUploadPostResult {

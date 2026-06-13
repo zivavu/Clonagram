@@ -19,7 +19,7 @@ export async function getMutualFollowerSubtitles(
    supabase: SupabaseClient<Database>,
    authUserId: string,
    suggestedUserIds: string[],
-): Promise<Record<string, string>> {
+) {
    if (suggestedUserIds.length === 0) return {};
 
    const { data: authFollowing } = await supabase

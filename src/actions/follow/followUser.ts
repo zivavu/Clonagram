@@ -5,7 +5,7 @@ import { throwIfError } from '@/src/lib/unwrap';
 import { FollowUserSchema, validate } from '@/src/lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
-export async function followUser(targetUserId: string): Promise<void> {
+export async function followUser(targetUserId: string) {
    const { targetUserId: validatedTargetUserId } = validate(FollowUserSchema, { targetUserId });
    const { supabase, user } = await getAuthUser();
 

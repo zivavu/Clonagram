@@ -4,7 +4,7 @@ import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 import { SendImageSchema, validate } from '@/src/lib/validation';
 
-export async function sendImage(conversationId: string, mediaUrl: string): Promise<void> {
+export async function sendImage(conversationId: string, mediaUrl: string) {
    const { conversationId: cid, mediaUrl: url } = validate(SendImageSchema, {
       conversationId,
       mediaUrl,

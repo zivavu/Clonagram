@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/src/lib/supabase/server';
 
-function getUserFriendlyError(message: string): string {
+function getUserFriendlyError(message: string) {
    if (message.includes('expired') || message.includes('OTP')) {
       return 'This reset link has expired. Please request a new one.';
    }

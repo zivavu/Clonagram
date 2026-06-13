@@ -11,7 +11,7 @@ export type UserHighlight = {
    coverUrl: string | null;
 };
 
-export async function getUserHighlights(params: { userId: string }): Promise<UserHighlight[]> {
+export async function getUserHighlights(params: { userId: string }) {
    const { userId } = validate(UserIdSchema, params);
    const supabase = await createServerClient();
 

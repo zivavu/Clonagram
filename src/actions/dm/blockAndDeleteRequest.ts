@@ -7,7 +7,7 @@ import { ConversationWithBlockSchema, validate } from '@/src/lib/validation';
 export async function blockAndDeleteRequest(params: {
    conversationId: string;
    senderUserId: string;
-}): Promise<void> {
+}) {
    const { conversationId, senderUserId } = validate(ConversationWithBlockSchema, params);
    const { supabase, user } = await getAuthUser();
 

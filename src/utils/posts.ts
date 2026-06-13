@@ -5,7 +5,7 @@ interface PostMediaSource {
    videos: { position: number; mux_playback_id: string | null }[];
 }
 
-export function getPostThumbnail(post: PostMediaSource): string | null {
+export function getPostThumbnail(post: PostMediaSource) {
    const items = [
       ...post.images.map(img => ({ position: img.position, url: img.url })),
       ...post.videos
@@ -43,7 +43,7 @@ export function hideLikesForNonOwners<T extends PostWithOwner>(
 export function nextCursorFrom<T extends { created_at: string | null }>(
    rows: T[],
    pageSize: number,
-): string | null {
+) {
    return rows.length === pageSize ? (rows[rows.length - 1].created_at ?? null) : null;
 }
 

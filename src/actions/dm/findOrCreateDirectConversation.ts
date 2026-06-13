@@ -8,7 +8,7 @@ export async function findOrCreateDirectConversation(
    supabase: SupabaseClient<Database>,
    authUserId: string,
    otherUserId: string,
-): Promise<string> {
+) {
    const { data: existingId } = await supabase.rpc('find_direct_conversation', {
       p_user_a: authUserId,
       p_user_b: otherUserId,

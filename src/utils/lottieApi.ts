@@ -7,7 +7,7 @@ export interface LottieAnimation {
    bgColor: string;
 }
 
-async function gql(query: string, variables: Record<string, unknown>): Promise<unknown> {
+async function gql(query: string, variables: Record<string, unknown>) {
    const res = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -35,14 +35,14 @@ const SEARCH_QUERY = `
 
 type AnimationEdge = { node: LottieAnimation };
 
-export async function fetchFeaturedAnimations(count = 24): Promise<LottieAnimation[]> {
+export async function fetchFeaturedAnimations(count = 24) {
    const data = (await gql(FEATURED_QUERY, { first: count })) as {
       featuredPublicAnimations: { edges: AnimationEdge[] };
    };
    return data.featuredPublicAnimations.edges.map(e => e.node);
 }
 
-export async function searchAnimations(query: string, count = 24): Promise<LottieAnimation[]> {
+export async function searchAnimations(query: string, count = 24) {
    const data = (await gql(SEARCH_QUERY, { query, first: count })) as {
       searchPublicAnimations: { edges: AnimationEdge[] };
    };

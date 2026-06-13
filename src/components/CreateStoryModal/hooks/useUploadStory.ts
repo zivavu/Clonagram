@@ -4,7 +4,7 @@ import { uploadVideo } from '@/src/actions/uploadVideo';
 import { supabase } from '@/src/lib/supabase/client';
 import { bakeStoryImage } from '@/src/utils/bakeStoryImage';
 import { pollMuxAsset } from '@/src/utils/pollMuxAsset';
-import type { StoryMedia, StoryMediaResult } from '../types';
+import type { StoryMedia } from '../types';
 
 export type UploadStatus = 'idle' | 'uploading' | 'done' | 'error';
 
@@ -13,7 +13,7 @@ interface UseUploadStoryParams {
    onDone: () => void;
 }
 
-async function processStoryMedia(media: StoryMedia): Promise<StoryMediaResult> {
+async function processStoryMedia(media: StoryMedia) {
    if (media.type === 'image') {
       const { blob, blurDataUrl } = await bakeStoryImage(media.file);
       const fileName = `${crypto.randomUUID()}.webp`;
@@ -21,7 +21,7 @@ async function processStoryMedia(media: StoryMedia): Promise<StoryMediaResult> {
       const { error: uploadError } = await supabase.storage.from('stories').upload(fileName, file);
       if (uploadError) throw new Error(`Image upload failed: ${uploadError.message}`);
       const { data: urlData } = supabase.storage.from('stories').getPublicUrl(fileName);
-      return { type: 'image', url: urlData.publicUrl, blurDataUrl };
+      return { type: 'image' as const, url: urlData.publicUrl, blurDataUrl };
    }
 
    const { uploadUrl, uploadId } = await uploadVideo();
@@ -32,7 +32,7 @@ async function processStoryMedia(media: StoryMedia): Promise<StoryMediaResult> {
    });
    if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
    const { assetId, playbackId, duration } = await pollMuxAsset(uploadId);
-   return { type: 'video', assetId, playbackId, duration };
+   return { type: 'video' as const, assetId, playbackId, duration };
 }
 
 export function useUploadStory({ media, onDone }: UseUploadStoryParams) {

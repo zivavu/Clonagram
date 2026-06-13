@@ -7,7 +7,7 @@ import { throwIfError } from '@/src/lib/unwrap';
 const OPENROUTER_MODEL = 'qwen/qwen3.5-flash-02-23';
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
-async function callOpenRouter(imageUrl: string): Promise<string> {
+async function callOpenRouter(imageUrl: string) {
    const apiKey = process.env.OPEN_ROUTER_API_KEY;
    if (!apiKey) throw new Error('Missing OPEN_ROUTER_API_KEY');
 

@@ -4,7 +4,7 @@ type FFmpegType = InstanceType<typeof import('@ffmpeg/ffmpeg').FFmpeg>;
 
 let ffmpegInstance: FFmpegType | null = null;
 
-async function getFFmpeg(): Promise<FFmpegType> {
+async function getFFmpeg() {
    if (ffmpegInstance) return ffmpegInstance;
    const { FFmpeg } = await import('@ffmpeg/ffmpeg');
    ffmpegInstance = new FFmpeg();
@@ -12,13 +12,13 @@ async function getFFmpeg(): Promise<FFmpegType> {
    return ffmpegInstance;
 }
 
-function getFileExtension(name: string): string {
+function getFileExtension(name: string) {
    const dotIndex = name.lastIndexOf('.');
    return dotIndex > 0 ? name.slice(dotIndex) : '.mp4';
 }
 
-function getVideoDimensions(file: File): Promise<{ width: number; height: number }> {
-   return new Promise((resolve, reject) => {
+function getVideoDimensions(file: File) {
+   return new Promise<{ width: number; height: number }>((resolve, reject) => {
       const url = URL.createObjectURL(file);
       const video = document.createElement('video');
       video.onloadedmetadata = () => {
@@ -39,7 +39,7 @@ async function isCropNeeded(
    zoom: number,
    panX: number,
    panY: number,
-): Promise<boolean> {
+) {
    if (zoom !== 1 || panX !== 0 || panY !== 0) return true;
    if (aspectRatio === 'original') return false;
 
@@ -64,7 +64,7 @@ function buildCropFilter(
    panY: number,
    imageDisplayW: number,
    imageDisplayH: number,
-): string {
+) {
    let baseCropWExpr: string;
    let baseCropHExpr: string;
    let outScale: string;
@@ -105,7 +105,7 @@ export async function processVideo(
    panY: number,
    imageDisplayW: number,
    imageDisplayH: number,
-): Promise<File> {
+) {
    const needsCrop = await isCropNeeded(file, aspectRatio, zoom, panX, panY);
    const needsProcessing =
       trimStart > 0 || (trimEnd > 0 && trimEnd < duration) || muted || needsCrop;

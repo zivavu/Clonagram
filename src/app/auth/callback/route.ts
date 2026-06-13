@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/src/lib/supabase/server';
 
-function getUserFriendlyError(message: string): string {
+function getUserFriendlyError(message: string) {
    if (message.includes('PKCE') || message.includes('code verifier')) {
       return 'Authentication failed because the login was started in a different browser. Please try again in the same browser.';
    }

@@ -4,10 +4,7 @@ import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 import { AddParticipantsSchema, validate } from '@/src/lib/validation';
 
-export async function addParticipants(params: {
-   conversationId: string;
-   userIds: string[];
-}): Promise<void> {
+export async function addParticipants(params: { conversationId: string; userIds: string[] }) {
    const { conversationId, userIds } = validate(AddParticipantsSchema, params);
    const { supabase, user } = await getAuthUser();
 

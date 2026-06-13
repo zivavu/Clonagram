@@ -2,14 +2,13 @@
 import 'server-only';
 import { throwIfError } from '@/src/lib/unwrap';
 import { SearchProfilesSchema, validate } from '@/src/lib/validation';
-import type { UserProfiles } from '@/src/queries/userProfiles';
 import { getOptionalUser } from '../getAuthUser';
 
 export async function searchProfiles(options: {
    search?: string;
    limit?: number;
    excludeId?: string;
-}): Promise<UserProfiles> {
+}) {
    const validated = validate(SearchProfilesSchema, options);
    const { supabase, user } = await getOptionalUser();
 

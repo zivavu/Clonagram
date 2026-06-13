@@ -1,6 +1,6 @@
 const MAX_DIM = 2048;
 
-export async function compressMessageImage(file: File): Promise<Blob> {
+export async function compressMessageImage(file: File) {
    const bitmap = await createImageBitmap(file);
    const { width, height } = bitmap;
 

@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 
-function verifyMuxSignature(rawBody: string, signatureHeader: string, secret: string): boolean {
+function verifyMuxSignature(rawBody: string, signatureHeader: string, secret: string) {
    const parts = signatureHeader.split(',');
    const timestamp = parts.find(p => p.startsWith('t='))?.slice(2);
    const signature = parts.find(p => p.startsWith('h='))?.slice(2);

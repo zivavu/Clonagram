@@ -7,7 +7,7 @@ export async function getFollowStatus(
    supabase: SupabaseClient<Database>,
    authUserId: string,
    targetUserId: string,
-): Promise<FollowState> {
+) {
    const [{ data: followData }, { data: requestData }] = await Promise.all([
       supabase
          .from('follows')
@@ -23,16 +23,16 @@ export async function getFollowStatus(
          .maybeSingle(),
    ]);
 
-   if (followData) return 'following';
-   if (requestData) return 'requested';
-   return 'none';
+   if (followData) return 'following' as const;
+   if (requestData) return 'requested' as const;
+   return 'none' as const;
 }
 
 export async function getBatchFollowStatuses(
    supabase: SupabaseClient<Database>,
    authUserId: string,
    targetIds: string[],
-): Promise<Record<string, FollowState>> {
+) {
    if (targetIds.length === 0) return {};
 
    const [{ data: followData }, { data: requestData }] = await Promise.all([

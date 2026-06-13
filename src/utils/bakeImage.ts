@@ -87,8 +87,8 @@ function buildVertexBuffer(
    ]);
 }
 
-async function loadImage(src: string): Promise<HTMLImageElement> {
-   return new Promise((resolve, reject) => {
+async function loadImage(src: string) {
+   return new Promise<HTMLImageElement>((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => resolve(img);
@@ -97,10 +97,7 @@ async function loadImage(src: string): Promise<HTMLImageElement> {
    });
 }
 
-export async function bakeImage(
-   media: PostMedia,
-   aspectRatio: AspectRatio,
-): Promise<{ blob: Blob; width: number; height: number; blurDataURL?: string }> {
+export async function bakeImage(media: PostMedia, aspectRatio: AspectRatio) {
    const img = await loadImage(media.preview);
    const { w: outW, h: outH } = outputSize(aspectRatio, img.naturalWidth, img.naturalHeight);
 
@@ -153,5 +150,6 @@ export async function bakeImage(
       canvasToBlurDataUrl(canvas),
    ]);
 
+   if (!blob) throw new Error('Failed to create image blob');
    return { blob, blurDataURL, width: outW, height: outH };
 }

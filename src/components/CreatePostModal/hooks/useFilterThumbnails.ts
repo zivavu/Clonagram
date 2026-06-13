@@ -81,7 +81,7 @@ function renderPreset(
    imageTexture: WebGLTexture,
    curvesTexture: WebGLTexture,
    presetName: string,
-): void {
+) {
    gl.viewport(0, 0, THUMB_SIZE, THUMB_SIZE);
    gl.clear(gl.COLOR_BUFFER_BIT);
 
@@ -99,8 +99,8 @@ function renderPreset(
    gl.drawArrays(gl.TRIANGLES, 0, 6);
 }
 
-function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
-   return new Promise(resolve => {
+function canvasToBlob(canvas: HTMLCanvasElement) {
+   return new Promise<Blob | null>(resolve => {
       canvas.toBlob(resolve, 'image/jpeg', 0.85);
    });
 }

@@ -17,7 +17,7 @@ export interface HomeFeedPage {
 export async function getHomeFeedPosts(params: {
    variant: 'home' | 'following';
    cursor?: string | null;
-}): Promise<HomeFeedPage> {
+}) {
    const { variant, cursor } = validate(CursorSchema, params);
    const { supabase, user } = await getOptionalUser();
 

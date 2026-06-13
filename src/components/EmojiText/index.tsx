@@ -37,7 +37,7 @@ function segmentText(text: string): Segment[] {
    return segments;
 }
 
-function isSingleEmoji(text: string): boolean {
+function isSingleEmoji(text: string) {
    const trimmed = text.trim();
    const segments = segmentText(trimmed);
    return segments.length === 1 && segments[0].type === 'emoji';

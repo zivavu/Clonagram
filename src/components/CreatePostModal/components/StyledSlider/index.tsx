@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { styles } from './index.stylex';
 
-export function sliderGradient(min: number, max: number, value: number): string {
+export function sliderGradient(min: number, max: number, value: number) {
    const percent = ((value - min) / (max - min)) * 100;
    if (min < 0) {
       return `linear-gradient(to right, rgb(0,0,0) 0%, rgb(0,0,0) ${percent}%, rgb(255,255,255) ${percent}%, rgb(255,255,255) ${percent}%, rgb(0,0,0) ${percent}%, rgb(0,0,0) 100%)`;

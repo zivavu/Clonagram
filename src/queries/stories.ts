@@ -26,19 +26,17 @@ interface StoryMediaRow {
    story_videos: { mux_playback_id: string | null }[];
 }
 
-export function extractStoryMedia(
-   row: StoryMediaRow,
-): { type: 'image' | 'video'; url: string; blurDataUrl: string | null } | null {
+export function extractStoryMedia(row: StoryMediaRow) {
    if (row.story_images.length > 0) {
       return {
-         type: 'image',
+         type: 'image' as const,
          url: row.story_images[0].url,
          blurDataUrl: row.story_images[0].blur_data_url ?? null,
       };
    }
    if (row.story_videos.length > 0 && row.story_videos[0].mux_playback_id) {
       return {
-         type: 'video',
+         type: 'video' as const,
          url: row.story_videos[0].mux_playback_id,
          blurDataUrl: null,
       };
@@ -50,7 +48,7 @@ export async function getStoryRingState(
    supabase: SupabaseClient<Database>,
    userId: string,
    authUserId: string | null,
-): Promise<{ hasStories: boolean; allStoriesViewed: boolean }> {
+) {
    const { data: stories } = await supabase
       .from('stories')
       .select('id, story_views(viewer_id)')

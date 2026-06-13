@@ -15,7 +15,7 @@ export const pickerOverrideCSS = `
    }
 `;
 
-export function extractText(div: HTMLElement): string {
+export function extractText(div: HTMLElement) {
    let text = '';
    for (const node of div.childNodes) {
       if (node.nodeType === Node.TEXT_NODE) {

@@ -1,5 +1,5 @@
-export function captureVideoFrame(src: string, time: number): Promise<string> {
-   return new Promise((resolve, reject) => {
+export function captureVideoFrame(src: string, time: number) {
+   return new Promise<string>((resolve, reject) => {
       const video = document.createElement('video');
       video.src = src;
       video.muted = true;

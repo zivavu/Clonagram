@@ -1,7 +1,7 @@
 import { canvasToBlurDataUrl, canvasToWebpBlob } from './canvasBlur';
 
-export async function bakeStoryImage(file: File): Promise<{ blob: Blob; blurDataUrl: string }> {
-   return new Promise((resolve, reject) => {
+export async function bakeStoryImage(file: File) {
+   return new Promise<{ blob: Blob; blurDataUrl: string }>((resolve, reject) => {
       const img = new Image();
       const objectUrl = URL.createObjectURL(file);
 
@@ -19,7 +19,13 @@ export async function bakeStoryImage(file: File): Promise<{ blob: Blob; blurData
          URL.revokeObjectURL(objectUrl);
 
          Promise.all([canvasToBlurDataUrl(canvas), canvasToWebpBlob(canvas)]).then(
-            ([blurDataUrl, blob]) => resolve({ blob, blurDataUrl }),
+            ([blurDataUrl, blob]) => {
+               if (!blob) {
+                  reject(new Error('Failed to create blob'));
+                  return;
+               }
+               resolve({ blob, blurDataUrl });
+            },
             reject,
          );
       };

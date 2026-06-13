@@ -27,7 +27,7 @@ interface HomepagePostProps {
    index: number;
 }
 
-function getAspectRatio(post: PostWithMedia): string {
+function getAspectRatio(post: PostWithMedia) {
    switch (post.aspect_ratio) {
       case '16:9':
          return '16 / 9';

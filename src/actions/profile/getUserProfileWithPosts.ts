@@ -34,7 +34,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
    throwIfError({ error }, 'Failed to fetch profile with posts');
    if (!data) throw new Error('Failed to fetch profile with posts: no data returned');
 
-   const followStatus =
+   const followStatus: 'following' | 'requested' | 'none' =
       user.id !== data.id ? await getFollowStatus(supabase, user.id, data.id) : 'none';
 
    const userProfile = { ...data };

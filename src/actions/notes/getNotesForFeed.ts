@@ -11,11 +11,7 @@ export type NoteEntry = {
    content: string;
 };
 
-export async function getNotesForFeed(): Promise<{
-   notes: NoteEntry[];
-   ownNote: string | null;
-   ownNoteId: string | null;
-}> {
+export async function getNotesForFeed() {
    const { supabase, user } = await getOptionalUser();
 
    if (!user) return { notes: [], ownNote: null, ownNoteId: null };

@@ -7,10 +7,7 @@ import { findOrCreateDirectConversation } from '../dm/findOrCreateDirectConversa
 import { getAuthUser } from '../getAuthUser';
 import { sendStoryMessage } from './sendStoryMessage';
 
-export async function toggleStoryReaction(
-   storyId: string,
-   emoji: string,
-): Promise<{ liked: boolean }> {
+export async function toggleStoryReaction(storyId: string, emoji: string) {
    const { storyId: validatedStoryId, emoji: validatedEmoji } = validate(ReactToStorySchema, {
       storyId,
       emoji,

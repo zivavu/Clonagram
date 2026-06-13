@@ -1,3 +1,3 @@
-export function getMuxThumbnailUrl(playbackId: string): string {
+export function getMuxThumbnailUrl(playbackId: string) {
    return `https://image.mux.com/${playbackId}/thumbnail.jpg`;
 }

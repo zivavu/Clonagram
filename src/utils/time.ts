@@ -9,12 +9,12 @@ function getDiff(isoString: string) {
    return { date, diff, days: Number.isNaN(diff) ? NaN : Math.floor(diff / DAY_MS) };
 }
 
-export function isOlderThan24h(isoString: string): boolean {
+export function isOlderThan24h(isoString: string) {
    const { diff } = getDiff(isoString);
    return diff >= DAY_MS;
 }
 
-export function formatMessageTimestamp(isoString: string): string {
+export function formatMessageTimestamp(isoString: string) {
    const { date, days } = getDiff(isoString);
 
    if (days === 1) return 'Yesterday';
@@ -22,7 +22,7 @@ export function formatMessageTimestamp(isoString: string): string {
    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-export function formatDateSeparator(isoString: string): string {
+export function formatDateSeparator(isoString: string) {
    const { date, days } = getDiff(isoString);
 
    if (days === 0) return 'Today';
@@ -31,7 +31,7 @@ export function formatDateSeparator(isoString: string): string {
    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-export function formatGroupSeparator(isoString: string): string {
+export function formatGroupSeparator(isoString: string) {
    const { date, days } = getDiff(isoString);
    const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
@@ -42,7 +42,7 @@ export function formatGroupSeparator(isoString: string): string {
    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} ${timeStr}`;
 }
 
-export function formatTimestamp(isoString: string): string {
+export function formatTimestamp(isoString: string) {
    const { date, diff, days } = getDiff(isoString);
 
    if (days === 0) {
@@ -57,7 +57,7 @@ export function formatTimestamp(isoString: string): string {
    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function formatRelativeTime(timestamp: string, longUnit: boolean): string {
+function formatRelativeTime(timestamp: string, longUnit: boolean) {
    const { date, diff } = getDiff(timestamp);
    if (Number.isNaN(diff)) return '';
 
@@ -90,10 +90,10 @@ function formatRelativeTime(timestamp: string, longUnit: boolean): string {
    return 'just now';
 }
 
-export function formatRelativeTimeLongUnit(timestamp: string): string {
+export function formatRelativeTimeLongUnit(timestamp: string) {
    return formatRelativeTime(timestamp, true);
 }
 
-export function formatRelativeTimeShortUnit(timestamp: string): string {
+export function formatRelativeTimeShortUnit(timestamp: string) {
    return formatRelativeTime(timestamp, false);
 }

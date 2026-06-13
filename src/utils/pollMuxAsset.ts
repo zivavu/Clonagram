@@ -3,9 +3,7 @@ import { getMuxUploadInfo } from '@/src/actions/getMuxUploadInfo';
 const MUX_POLL_MAX_ATTEMPTS = 30;
 const MUX_POLL_INTERVAL_MS = 5000;
 
-export async function pollMuxAsset(
-   uploadId: string,
-): Promise<{ assetId: string; playbackId: string; duration: number }> {
+export async function pollMuxAsset(uploadId: string) {
    for (let attempt = 0; attempt < MUX_POLL_MAX_ATTEMPTS; attempt++) {
       const info = await getMuxUploadInfo({ uploadId });
 

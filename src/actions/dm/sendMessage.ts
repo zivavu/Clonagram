@@ -4,7 +4,7 @@ import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 import { SendMessageSchema, validate } from '@/src/lib/validation';
 
-export async function sendMessage(conversationId: string, content: string): Promise<void> {
+export async function sendMessage(conversationId: string, content: string) {
    const { conversationId: cid, content: text } = validate(SendMessageSchema, {
       conversationId,
       content,

@@ -17,7 +17,7 @@ interface ExploreGridProps {
    emptyState?: ReactNode;
 }
 
-function isPostTall(index: number): boolean {
+function isPostTall(index: number) {
    const positionInGroup = index % 5;
    const groupIndex = Math.floor(index / 5);
    const isTallOnRight = groupIndex % 2 === 0;

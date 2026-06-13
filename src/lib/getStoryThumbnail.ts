@@ -2,10 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/src/types/database';
 import { getMuxThumbnailUrl } from '@/src/utils/mux';
 
-export async function getStoryThumbnail(
-   supabase: SupabaseClient<Database>,
-   storyId: string,
-): Promise<string | null> {
+export async function getStoryThumbnail(supabase: SupabaseClient<Database>, storyId: string) {
    const { data: storyImage } = await supabase
       .from('story_images')
       .select('url')

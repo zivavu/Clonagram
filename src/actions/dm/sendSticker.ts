@@ -4,7 +4,7 @@ import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 import { SendStickerSchema, validate } from '@/src/lib/validation';
 
-export async function sendSticker(conversationId: string, stickerUrl: string): Promise<void> {
+export async function sendSticker(conversationId: string, stickerUrl: string) {
    const { conversationId: cid, stickerUrl: url } = validate(SendStickerSchema, {
       conversationId,
       stickerUrl,

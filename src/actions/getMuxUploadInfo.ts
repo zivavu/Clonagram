@@ -12,7 +12,7 @@ export interface MuxUploadInfo {
    error: string | null;
 }
 
-export async function getMuxUploadInfo(params: { uploadId: string }): Promise<MuxUploadInfo> {
+export async function getMuxUploadInfo(params: { uploadId: string }) {
    const { uploadId } = validate(MuxUploadSchema, params);
    const muxClient = getMuxClient();
    const upload = await muxClient.video.uploads.retrieve(uploadId);

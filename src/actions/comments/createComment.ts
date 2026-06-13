@@ -1,7 +1,6 @@
 'use server';
 import 'server-only';
 import { throwIfError } from '@/src/lib/unwrap';
-import type { PostComment } from '@/src/queries/comments';
 import { CreateCommentSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
 
@@ -9,7 +8,7 @@ export async function createComment(params: {
    postId: string;
    content: string;
    parentId?: string;
-}): Promise<PostComment> {
+}) {
    const { postId, content, parentId } = validate(CreateCommentSchema, params);
    const { supabase, user } = await getAuthUser();
 

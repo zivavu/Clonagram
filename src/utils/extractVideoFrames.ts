@@ -2,10 +2,8 @@ export const STRIP_FRAMES = 5;
 const THUMB_W = 80;
 const THUMB_H = 100;
 
-export async function extractVideoFrames(
-   src: string,
-): Promise<{ urls: string[]; duration: number }> {
-   return new Promise((resolve, reject) => {
+export async function extractVideoFrames(src: string) {
+   return new Promise<{ urls: string[]; duration: number }>((resolve, reject) => {
       const video = document.createElement('video');
       video.src = src;
       video.muted = true;

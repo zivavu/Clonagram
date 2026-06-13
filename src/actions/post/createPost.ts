@@ -8,7 +8,7 @@ import type { CreatePostParams, TaggedPerson } from '../../components/CreatePost
 import { generateImageAltText } from '../ai/generateImageAltText';
 import { getAuthUser } from '../getAuthUser';
 
-function extractHashtags(caption: string | null): string[] {
+function extractHashtags(caption: string | null) {
    if (!caption) return [];
    const matches = caption.match(/#[\w\u00C0-\u024F\u1E00-\u1EFF]+/g);
    if (!matches) return [];
@@ -19,7 +19,7 @@ async function saveMedia(
    supabase: SupabaseClient<Database>,
    postId: string,
    mediaResults: CreatePostParams['mediaResults'],
-): Promise<{ id: string; url: string }[]> {
+) {
    const imageInserts: Array<{
       post_id: string;
       position: number;
