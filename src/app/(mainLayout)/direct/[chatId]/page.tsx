@@ -1,4 +1,4 @@
-import { renderDirectPage } from '../renderDirectPage';
+import DirectMessagesPage from '@/src/pageComponents/DirectMessages';
 
 interface DirectChatPageProps {
    params: Promise<{ chatId: string }>;
@@ -6,5 +6,5 @@ interface DirectChatPageProps {
 
 export default async function DirectChat({ params }: DirectChatPageProps) {
    const { chatId } = await params;
-   return renderDirectPage({ currentFolderHref: '/direct', chatId });
+   return <DirectMessagesPage currentFolderHref="/direct" chatId={chatId} />;
 }

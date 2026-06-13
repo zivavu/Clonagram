@@ -1,5 +1,5 @@
-import { renderDirectPage } from './renderDirectPage';
+import DirectMessagesPage from '@/src/pageComponents/DirectMessages';
 
 export default function Direct() {
-   return renderDirectPage({ currentFolderHref: '/direct' });
+   return <DirectMessagesPage currentFolderHref="/direct" />;
 }
