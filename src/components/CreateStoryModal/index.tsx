@@ -8,6 +8,7 @@ import DiscardDialog from '@/src/components/CreatePostModal/components/DiscardDi
 import PostSharedStep from '@/src/components/CreatePostModal/components/PostSharedStep';
 import UploadStep from '@/src/components/CreatePostModal/components/UploadStep';
 import DialogOverlay from '@/src/components/DialogOverlay';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import { useCreateStoryModalStore } from '@/src/store/createModalStore';
 import PreviewStep from './components/PreviewStep';
 import SharingStoryStep from './components/SharingStoryStep';
@@ -82,9 +83,9 @@ export default function CreateStoryModal() {
 
                {step === 'upload' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
+                     <HiddenDialogDescription>
                         Upload a photo or video for your story
-                     </Dialog.Description>
+                     </HiddenDialogDescription>
                      <UploadStep
                         getRootProps={getRootProps}
                         open={open}
@@ -104,18 +105,14 @@ export default function CreateStoryModal() {
 
                {step === 'sharing' && media && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Sharing your story
-                     </Dialog.Description>
+                     <HiddenDialogDescription>Sharing your story</HiddenDialogDescription>
                      <SharingStoryStep media={media} onDone={() => setStep('story-shared')} />
                   </>
                )}
 
                {step === 'story-shared' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Story shared
-                     </Dialog.Description>
+                     <HiddenDialogDescription>Story shared</HiddenDialogDescription>
                      <PostSharedStep
                         onDone={performClose}
                         title="Story shared"

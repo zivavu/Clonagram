@@ -8,6 +8,7 @@ import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
 import { getArchivedStories } from '@/src/actions/story/getArchivedStories';
 import { getHighlightStoryIds } from '@/src/actions/story/getHighlightStoryIds';
 import { updateHighlightStories } from '@/src/actions/story/updateHighlightStories';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import { useEditHighlightStoriesModalStore } from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import SelectStoriesStep from '../NewHighlightModal/components/SelectStoriesStep';
@@ -72,9 +73,9 @@ export default function EditHighlightStoriesModal() {
          <Dialog.Portal>
             <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)}>
-               <Dialog.Description style={{ display: 'none' }}>
+               <HiddenDialogDescription>
                   Edit which stories are included in this highlight
-               </Dialog.Description>
+               </HiddenDialogDescription>
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Edit stories</Dialog.Title>
                   <Dialog.Close asChild>

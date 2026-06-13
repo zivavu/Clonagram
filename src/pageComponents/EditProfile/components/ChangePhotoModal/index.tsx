@@ -3,6 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useRef } from 'react';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import { styles } from './index.stylex';
 
 interface ChangePhotoModalProps {
@@ -31,9 +32,9 @@ export default function ChangePhotoModal({
             <Dialog.Overlay {...stylex.props(styles.overlay)} />
             <Dialog.Content {...stylex.props(styles.content)}>
                <Dialog.Title {...stylex.props(styles.title)}>Change Profile Photo</Dialog.Title>
-               <Dialog.Description style={{ display: 'none' }}>
+               <HiddenDialogDescription>
                   Upload or remove your profile photo.
-               </Dialog.Description>
+               </HiddenDialogDescription>
                <input
                   ref={inputRef}
                   type="file"

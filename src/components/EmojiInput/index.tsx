@@ -1,37 +1,12 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import EmojiPicker, { type EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import EmojiPicker, { EmojiStyle, Theme } from 'emoji-picker-react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { FaRegFaceSmile } from 'react-icons/fa6';
-import { useClickOutside } from '@/src/hooks/useClickOutside';
+import { PICKER_CLASS, pickerOverrideCSS, useEmojiEditor } from '@/src/hooks/useEmojiEditor';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { styles } from './index.stylex';
-
-const PICKER_CLASS = 'clonagram-emoji-picker';
-
-const pickerOverrideCSS = `
-   .epr-dark-theme.${PICKER_CLASS} {
-      --epr-search-input-bg-color: rgb(33, 35, 40);
-      --epr-search-input-bg-color-active: rgb(33, 35, 40);
-      --epr-search-border-color: rgb(33, 35, 40);
-      --epr-search-border-color-active: rgb(33, 35, 40);
-   }
-`;
-
-function extractText(div: HTMLElement): string {
-   let text = '';
-   for (const node of div.childNodes) {
-      if (node.nodeType === Node.TEXT_NODE) {
-         text += node.textContent ?? '';
-      } else if (node instanceof HTMLImageElement) {
-         text += node.dataset.emoji ?? '';
-      } else if (node instanceof HTMLElement) {
-         text += extractText(node);
-      }
-   }
-   return text;
-}
 
 export interface EmojiInputRef {
    getText: () => string;
@@ -51,83 +26,22 @@ const EmojiInput = forwardRef<EmojiInputRef, EmojiInputProps>(function EmojiInpu
    ref,
 ) {
    const isDark = useThemeStore(s => s.isDark);
-   const [pickerOpen, setPickerOpen] = useState(false);
-   const [isEmpty, setIsEmpty] = useState(true);
-   const editorRef = useRef<HTMLDivElement>(null);
-   const pickerContainerRef = useClickOutside<HTMLDivElement>(
-      () => setPickerOpen(false),
+   const {
+      editorRef,
+      isEmpty,
+      getText,
+      setText,
+      clear,
+      focus,
+      insertEmoji,
       pickerOpen,
-   );
+      setPickerOpen,
+      pickerContainerRef,
+      handleInput,
+      handleBeforeInput,
+   } = useEmojiEditor(maxLength);
 
-   useImperativeHandle(ref, () => ({
-      getText: () => {
-         const div = editorRef.current;
-         return div ? extractText(div) : '';
-      },
-      setText: (text: string) => {
-         const div = editorRef.current;
-         if (!div) return;
-         div.textContent = text;
-         setIsEmpty(!text.trim());
-      },
-      clear: () => {
-         const div = editorRef.current;
-         if (!div) return;
-         div.innerHTML = '';
-         setIsEmpty(true);
-      },
-      focus: () => {
-         editorRef.current?.focus();
-      },
-   }));
-
-   function handleEmojiClick(emojiData: EmojiClickData) {
-      const div = editorRef.current;
-      if (!div) return;
-
-      const img = document.createElement('img');
-      img.src = emojiData.imageUrl;
-      img.dataset.emoji = emojiData.emoji;
-      img.alt = emojiData.emoji;
-      img.style.cssText = 'width:18px;height:18px;vertical-align:middle;display:inline-block;';
-
-      div.focus();
-      const sel = window.getSelection();
-      if (sel?.rangeCount) {
-         const range = sel.getRangeAt(0);
-         range.deleteContents();
-         range.insertNode(img);
-         range.setStartAfter(img);
-         range.collapse(true);
-         sel.removeAllRanges();
-         sel.addRange(range);
-      } else {
-         div.appendChild(img);
-      }
-
-      setIsEmpty(false);
-   }
-
-   function handleInput() {
-      const div = editorRef.current;
-      if (!div) return;
-      const text = extractText(div);
-      if (maxLength && text.length > maxLength) {
-         const trimmed = text.slice(0, maxLength);
-         div.innerHTML = '';
-         div.textContent = trimmed;
-      }
-      setIsEmpty(!text.trim());
-   }
-
-   function handleBeforeInput(e: React.FormEvent<HTMLDivElement>) {
-      const div = editorRef.current;
-      if (!div || !maxLength) return;
-      const text = extractText(div);
-      if (text.length >= maxLength) {
-         e.preventDefault();
-      }
-   }
+   useImperativeHandle(ref, () => ({ getText, setText, clear, focus }));
 
    function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -152,7 +66,7 @@ const EmojiInput = forwardRef<EmojiInputRef, EmojiInputProps>(function EmojiInpu
                      {pickerOverrideCSS}
                   </style>
                   <EmojiPicker
-                     onEmojiClick={handleEmojiClick}
+                     onEmojiClick={insertEmoji}
                      theme={isDark ? Theme.DARK : Theme.LIGHT}
                      emojiStyle={EmojiStyle.FACEBOOK}
                      className={PICKER_CLASS}

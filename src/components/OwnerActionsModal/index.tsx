@@ -5,6 +5,7 @@ import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
+import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { deletePost } from '../../actions/post/deletePost';
 import { useOwnerActionsModal } from '../../store/createModalStore';
 import { toast } from '../AppToast';
@@ -84,10 +85,10 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
             <Dialog.Portal>
                <DialogOverlay zIndex={50} />
                <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
-                  <Dialog.Title style={{ display: 'none' }}>Post Actions</Dialog.Title>
-                  <Dialog.Description style={{ display: 'none' }}>
+                  <HiddenDialogTitle>Post Actions</HiddenDialogTitle>
+                  <HiddenDialogDescription>
                      Select an action to perform on this post.
-                  </Dialog.Description>
+                  </HiddenDialogDescription>
                   {actions.map((action, index) => (
                      <Fragment key={action.label}>
                         {index === 0 ? null : (

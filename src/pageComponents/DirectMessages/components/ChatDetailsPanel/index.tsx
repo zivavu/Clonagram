@@ -15,6 +15,7 @@ import { toggleMute } from '@/src/actions/dm/toggleMute';
 import { updateGroupName } from '@/src/actions/dm/updateGroupName';
 import { toast } from '@/src/components/AppToast';
 import DeleteConfirmModal from '@/src/components/DeleteConfirmModal';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import Toggle from '@/src/components/Toggle';
 import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -184,9 +185,7 @@ export default function ChatDetailsPanel({
                   <Dialog.Portal>
                      <Dialog.Overlay {...stylex.props(styles.modalOverlay)} />
                      <Dialog.Content {...stylex.props(styles.renameModalContent)}>
-                        <Dialog.Description style={{ display: 'none' }}>
-                           Change the group name
-                        </Dialog.Description>
+                        <HiddenDialogDescription>Change the group name</HiddenDialogDescription>
                         <div {...stylex.props(styles.renameModalHeader)}>
                            <Dialog.Close asChild>
                               <button

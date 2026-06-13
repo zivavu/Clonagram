@@ -15,6 +15,7 @@ import StepHeader, {
 import type { PostLocation, PostSettings } from '@/src/components/CreatePostModal/types';
 import { DEFAULT_POST_SETTINGS } from '@/src/components/CreatePostModal/types';
 import DialogOverlay from '@/src/components/DialogOverlay';
+import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { styles } from './index.stylex';
 
@@ -88,10 +89,8 @@ export default function EditPostModal({ isOpen, postId, onClose }: EditPostModal
          <Dialog.Portal>
             <DialogOverlay zIndex={50} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={handleClose}>
-               <Dialog.Title style={{ display: 'none' }}>Edit post</Dialog.Title>
-               <Dialog.Description style={{ display: 'none' }}>
-                  Edit post caption and settings.
-               </Dialog.Description>
+               <HiddenDialogTitle>Edit post</HiddenDialogTitle>
+               <HiddenDialogDescription>Edit post caption and settings.</HiddenDialogDescription>
                <StepHeader
                   title="Edit info"
                   rightSlot={

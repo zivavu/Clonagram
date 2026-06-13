@@ -1,12 +1,12 @@
 'use client';
 
-import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import StepHeader, {
    StepHeaderAction,
 } from '@/src/components/CreatePostModal/components/StepHeader';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import VolumeControl from '@/src/components/VolumeControl';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import type { StoryMedia } from '../../types';
@@ -62,7 +62,7 @@ export default function PreviewStep({ media, onBack, onShare }: PreviewStepProps
                </div>
             )}
          </div>
-         <Dialog.Description style={{ display: 'none' }}>Preview your story</Dialog.Description>
+         <HiddenDialogDescription>Preview your story</HiddenDialogDescription>
       </div>
    );
 }

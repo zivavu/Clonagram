@@ -5,6 +5,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { IoCloseOutline } from 'react-icons/io5';
+import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { getPost } from '../../actions/post/getPost';
 import { queryKeys } from '../../lib/queryKeys';
 import { usePostViewModal } from '../../store/usePostViewModalStore';
@@ -68,12 +69,10 @@ export default function PostFullViewModal() {
             <Dialog.Content
                {...stylex.props(styles.content, suppressAnimation && styles.noAnimation)}
             >
-               <Dialog.Title style={{ display: 'none' }}>
-                  Full view of {post.user.username} post
-               </Dialog.Title>
-               <Dialog.Description style={{ display: 'none' }}>
+               <HiddenDialogTitle>Full view of {post.user.username} post</HiddenDialogTitle>
+               <HiddenDialogDescription>
                   {post.caption ?? 'Post has no caption'}
-               </Dialog.Description>
+               </HiddenDialogDescription>
                <div {...stylex.props(styles.carouselWrapper)} style={{ aspectRatio }}>
                   <PostMediaCarousel
                      post={post}

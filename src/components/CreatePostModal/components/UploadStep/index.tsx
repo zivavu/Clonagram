@@ -1,6 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { IoCloseOutline, IoImagesOutline } from 'react-icons/io5';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import StepHeader from '../StepHeader';
 import { stepHeaderStyles, styles } from './index.stylex';
 
@@ -39,9 +40,7 @@ export default function UploadStep({
    } as const;
    return (
       <>
-         <Dialog.Description style={{ display: 'none' }}>
-            {textContent[elementType].description}
-         </Dialog.Description>
+         <HiddenDialogDescription>{textContent[elementType].description}</HiddenDialogDescription>
          <StepHeader
             title={<Dialog.Title>{textContent[elementType].title}</Dialog.Title>}
             rightSlot={

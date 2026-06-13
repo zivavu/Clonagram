@@ -13,6 +13,7 @@ import { IoChevronDownSharp, IoClose } from 'react-icons/io5';
 import { createNote } from '@/src/actions/notes/createNote';
 import { deleteNote } from '@/src/actions/notes/deleteNote';
 import DialogOverlay from '@/src/components/DialogOverlay';
+import { HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { useNewNoteModalStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { sharedStyles } from '@/src/styles/shared.stylex';
@@ -104,7 +105,7 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
                }}
                aria-describedby={undefined}
             >
-               <Dialog.Title style={{ display: 'none' }}>New note</Dialog.Title>
+               <HiddenDialogTitle>New note</HiddenDialogTitle>
 
                <div {...stylex.props(styles.header)}>
                   <button

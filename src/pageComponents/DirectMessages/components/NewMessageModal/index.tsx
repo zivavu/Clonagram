@@ -9,6 +9,7 @@ import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
 import { createConversation } from '@/src/actions/dm/createConversation';
 import { toast } from '@/src/components/AppToast';
 import DialogOverlay from '@/src/components/DialogOverlay';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import { UserListItem } from '@/src/components/UserListItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -97,9 +98,7 @@ export default function NewMessageModal() {
          <Dialog.Portal>
             <DialogOverlay zIndex={50} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
-               <Dialog.Description style={{ display: 'none' }}>
-                  Start a new direct message
-               </Dialog.Description>
+               <HiddenDialogDescription>Start a new direct message</HiddenDialogDescription>
                <div {...stylex.props(styles.header)}>
                   <IoCloseOutline size={30} style={{ visibility: 'hidden' }} />
                   <Dialog.Title {...stylex.props(styles.title)}>New message</Dialog.Title>

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { getNotifications } from '@/src/actions/notifications/getNotifications';
 import { markNotificationsRead } from '@/src/actions/notifications/markNotificationsRead';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -223,9 +224,7 @@ export default function NotificationsPortal() {
          <Dialog.Portal>
             <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
-               <Dialog.Description style={{ display: 'none' }}>
-                  Your recent notifications
-               </Dialog.Description>
+               <HiddenDialogDescription>Your recent notifications</HiddenDialogDescription>
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Notifications</Dialog.Title>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

@@ -3,6 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { IoCloseOutline } from 'react-icons/io5';
+import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { styles } from './index.stylex';
 
 interface ImageViewModalProps {
@@ -22,10 +23,8 @@ export default function ImageViewModal({ src, open, onClose }: ImageViewModalPro
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)}>
                <Dialog.Content {...stylex.props(styles.content)} onPointerDownOutside={onClose}>
-                  <Dialog.Title style={{ display: 'none' }}>Image view</Dialog.Title>
-                  <Dialog.Description style={{ display: 'none' }}>
-                     View full image
-                  </Dialog.Description>
+                  <HiddenDialogTitle>Image view</HiddenDialogTitle>
+                  <HiddenDialogDescription>View full image</HiddenDialogDescription>
                   {src && (
                      /* biome-ignore lint/performance/noImgElement: dynamic fullscreen viewer with CSS max-dimensions — Image with fill requires explicit container size */
                      <img src={src} alt="" {...stylex.props(styles.image)} />

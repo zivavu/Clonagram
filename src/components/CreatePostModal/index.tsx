@@ -4,6 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import { useCreatePostModalStore } from '@/src/store/createModalStore';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import type { PartialUser } from '@/src/types/global';
@@ -182,9 +183,7 @@ export default function CreatePostModal() {
                <input {...getInputProps()} style={{ display: 'none' }} />
                {step === 'upload' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Upload a photo or video
-                     </Dialog.Description>
+                     <HiddenDialogDescription>Upload a photo or video</HiddenDialogDescription>
                      <UploadStep
                         getRootProps={getRootProps}
                         open={open}
@@ -195,9 +194,7 @@ export default function CreatePostModal() {
                )}
                {step === 'crop' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Crop your photo
-                     </Dialog.Description>
+                     <HiddenDialogDescription>Crop your photo</HiddenDialogDescription>
                      <CropStep
                         files={files}
                         currentIndex={currentIndex}
@@ -216,9 +213,7 @@ export default function CreatePostModal() {
                )}
                {step === 'edit' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Edit your post
-                     </Dialog.Description>
+                     <HiddenDialogDescription>Edit your post</HiddenDialogDescription>
                      <EditStep
                         files={files}
                         currentIndex={currentIndex}
@@ -233,9 +228,7 @@ export default function CreatePostModal() {
                )}
                {step === 'caption' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Add caption and details
-                     </Dialog.Description>
+                     <HiddenDialogDescription>Add caption and details</HiddenDialogDescription>
                      <CaptionStep
                         files={files}
                         currentIndex={currentIndex}
@@ -258,17 +251,13 @@ export default function CreatePostModal() {
                )}
                {step === 'sharing' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Sharing your post
-                     </Dialog.Description>
+                     <HiddenDialogDescription>Sharing your post</HiddenDialogDescription>
                      <SharingStep postData={postData} onDone={() => setStep('post-shared')} />
                   </>
                )}
                {step === 'post-shared' && (
                   <>
-                     <Dialog.Description style={{ display: 'none' }}>
-                        Post shared
-                     </Dialog.Description>
+                     <HiddenDialogDescription>Post shared</HiddenDialogDescription>
                      <PostSharedStep onDone={performClose} />
                   </>
                )}

@@ -22,12 +22,11 @@ import OwnerActionsModal from '@/src/components/OwnerActionsModal';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
+import { usePostComments } from '@/src/hooks/usePostComments';
 import { useSubmitComment } from '@/src/hooks/useSubmitComment';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import { queryKeys } from '@/src/lib/queryKeys';
-import { supabase } from '@/src/lib/supabase/client';
-import { postCommentsQuery } from '@/src/queries/comments';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { useOwnerActionsModal } from '@/src/store/createModalStore';
 import { usePostViewModal } from '@/src/store/usePostViewModalStore';
@@ -52,7 +51,6 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    const router = useRouter();
    const { data: authUser } = useAuthUser();
    const postKey = queryKeys.post(initialPost.id);
-   const commentsKey = queryKeys.comments(initialPost.id);
 
    const scrollAreaRef = useRef<HTMLDivElement>(null);
    const commentInputRef = useRef<EmojiInputRef>(null);
@@ -65,14 +63,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
       queryFn: () => getPost({ postId: initialPost.id }),
    });
 
-   const { data: comments = [], isLoading: commentsLoading } = useQuery({
-      queryKey: commentsKey,
-      queryFn: async () => {
-         const { data, error } = await postCommentsQuery(supabase, post.id);
-         if (error) throw error;
-         return data;
-      },
-   });
+   const { comments, commentsKey, isLoading: commentsLoading } = usePostComments(post.id);
 
    useEffect(() => {
       if (scrollAreaRef.current && comments.length > 0) {

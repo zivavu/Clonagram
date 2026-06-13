@@ -8,6 +8,7 @@ import { FaCircleXmark } from 'react-icons/fa6';
 import { IoCloseOutline, IoSearchOutline } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
 import { searchProfiles } from '@/src/actions/profile/searchProfiles';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { useSearchPortalStore } from '@/src/store/createModalStore';
 import { sharedStyles } from '@/src/styles/shared.stylex';
@@ -33,9 +34,7 @@ export default function SearchPortal() {
          <Dialog.Portal>
             <Dialog.Overlay {...stylex.props(styles.overlay)} onClick={close} />
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
-               <Dialog.Description style={{ display: 'none' }}>
-                  Search for people
-               </Dialog.Description>
+               <HiddenDialogDescription>Search for people</HiddenDialogDescription>
                <div {...stylex.props(styles.header)}>
                   <Dialog.Title {...stylex.props(styles.title)}>Search</Dialog.Title>
                   <Dialog.Close asChild>

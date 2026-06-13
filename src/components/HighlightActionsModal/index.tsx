@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { IoArrowBack, IoCloseOutline } from 'react-icons/io5';
 import { deleteHighlight } from '@/src/actions/story/deleteHighlight';
 import { editHighlight } from '@/src/actions/story/editHighlight';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import {
    useEditHighlightStoriesModalStore,
    useHighlightActionsModalStore,
@@ -72,9 +73,7 @@ export default function HighlightActionsModal() {
          <Dialog.Portal>
             <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)}>
-               <Dialog.Description style={{ display: 'none' }}>
-                  Manage this highlight
-               </Dialog.Description>
+               <HiddenDialogDescription>Manage this highlight</HiddenDialogDescription>
                {step === 'list' && (
                   <>
                      <div {...stylex.props(styles.header)}>

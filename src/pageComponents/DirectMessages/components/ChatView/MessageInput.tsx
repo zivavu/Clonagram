@@ -1,14 +1,14 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import EmojiPicker, { type EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
+import EmojiPicker, { EmojiStyle, Theme } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { IoMicOutline } from 'react-icons/io5';
 import { TbPhoto } from 'react-icons/tb';
 import { toast } from '@/src/components/AppToast';
-import { useClickOutside } from '@/src/hooks/useClickOutside';
+import { PICKER_CLASS, pickerOverrideCSS, useEmojiEditor } from '@/src/hooks/useEmojiEditor';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { radius } from '../../../../styles/tokens.stylex';
 import { styles } from '../../index.stylex';
@@ -28,30 +28,6 @@ export interface MessageInputHandle {
 
 const MAX_LENGTH = 1000;
 const MAX_IMAGES = 10;
-const PICKER_CLASS = 'clonagram-emoji-picker';
-
-const pickerOverrideCSS = `
-   .epr-dark-theme.${PICKER_CLASS} {
-      --epr-search-input-bg-color: rgb(33, 35, 40);
-      --epr-search-input-bg-color-active: rgb(33, 35, 40);
-      --epr-search-border-color: rgb(33, 35, 40);
-      --epr-search-border-color-active: rgb(33, 35, 40);
-   }
-`;
-
-function extractText(div: HTMLElement): string {
-   let text = '';
-   for (const node of div.childNodes) {
-      if (node.nodeType === Node.TEXT_NODE) {
-         text += node.textContent ?? '';
-      } else if (node instanceof HTMLImageElement) {
-         text += node.dataset.emoji ?? '';
-      } else if (node instanceof HTMLElement) {
-         text += extractText(node);
-      }
-   }
-   return text;
-}
 
 const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function MessageInput(
    { onSend, onSendSticker, onSendImages }: MessageInputProps,
@@ -59,15 +35,19 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
 ) {
    const isDark = useThemeStore(s => s.isDark);
    const [sending, setSending] = useState(false);
-   const [pickerOpen, setPickerOpen] = useState(false);
-   const [isEmpty, setIsEmpty] = useState(true);
    const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
-   const editorRef = useRef<HTMLDivElement>(null);
-   const pickerContainerRef = useClickOutside<HTMLDivElement>(
-      () => setPickerOpen(false),
-      pickerOpen,
-   );
    const fileInputRef = useRef<HTMLInputElement>(null);
+
+   const {
+      editorRef,
+      isEmpty,
+      getText,
+      insertEmoji,
+      pickerOpen,
+      setPickerOpen,
+      pickerContainerRef,
+      setIsEmpty,
+   } = useEmojiEditor(MAX_LENGTH);
 
    useImperativeHandle(ref, () => ({ addFiles: addImageFiles }));
 
@@ -104,7 +84,7 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
       if (!div || sending) return;
       if (pendingImages.length === 0 && isEmpty) return;
 
-      const text = extractText(div);
+      const text = getText();
       if (text.length > MAX_LENGTH) {
          toast('Message is too long');
          return;
@@ -127,37 +107,10 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
       }
    }
 
-   function handleEmojiClick(emojiData: EmojiClickData) {
-      const div = editorRef.current;
-      if (!div) return;
-
-      const img = document.createElement('img');
-      img.src = emojiData.imageUrl;
-      img.dataset.emoji = emojiData.emoji;
-      img.alt = emojiData.emoji;
-      img.style.cssText = 'width:18px;height:18px;vertical-align:middle;display:inline-block;';
-
-      div.focus();
-      const sel = window.getSelection();
-      if (sel?.rangeCount) {
-         const range = sel.getRangeAt(0);
-         range.deleteContents();
-         range.insertNode(img);
-         range.setStartAfter(img);
-         range.collapse(true);
-         sel.removeAllRanges();
-         sel.addRange(range);
-      } else {
-         div.appendChild(img);
-      }
-
-      setIsEmpty(false);
-   }
-
    function handleInput() {
       const div = editorRef.current;
       if (!div) return;
-      const text = extractText(div);
+      const text = getText();
       if (text.length > MAX_LENGTH) {
          toast('Message is too long');
          const trimmed = text.slice(0, MAX_LENGTH);
@@ -167,10 +120,10 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
       setIsEmpty(!(div.textContent?.trim() || div.querySelector('img')));
    }
 
-   function handleBeforeInput(e: React.FormEvent<HTMLDivElement>) {
+   function handleBeforeInputWithToast(e: React.FormEvent<HTMLDivElement>) {
       const div = editorRef.current;
       if (!div) return;
-      const text = extractText(div);
+      const text = getText();
       if (text.length >= MAX_LENGTH) {
          e.preventDefault();
          toast('Message is too long');
@@ -234,7 +187,7 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
                            {pickerOverrideCSS}
                         </style>
                         <EmojiPicker
-                           onEmojiClick={handleEmojiClick}
+                           onEmojiClick={insertEmoji}
                            theme={isDark ? Theme.DARK : Theme.LIGHT}
                            emojiStyle={EmojiStyle.FACEBOOK}
                            className={PICKER_CLASS}
@@ -254,7 +207,7 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
                      suppressContentEditableWarning
                      {...stylex.props(styles.inputField)}
                      onInput={handleInput}
-                     onBeforeInput={handleBeforeInput}
+                     onBeforeInput={handleBeforeInputWithToast}
                      onPaste={handlePaste}
                      onKeyDown={e => {
                         if (e.key === 'Enter' && !e.shiftKey) {
