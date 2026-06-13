@@ -15,6 +15,7 @@ interface ProfilePageProps extends ProfileWithPosts {
    initialPost?: PostWithMedia | string;
    note?: string | null;
    savedPosts?: PostWithMedia[];
+   repostedPosts?: PostWithMedia[];
    ringState: { hasStories: boolean; allStoriesViewed: boolean };
    highlights: UserHighlight[];
 }
@@ -27,6 +28,7 @@ export default function ProfilePage({
    initialPost,
    note,
    savedPosts,
+   repostedPosts,
    ringState,
    highlights,
 }: ProfilePageProps) {
@@ -55,6 +57,7 @@ export default function ProfilePage({
             username={userProfile.username}
             isOwnProfile={isOwnProfile}
             savedPosts={savedPosts}
+            repostedPosts={repostedPosts}
          />
       </div>
    );

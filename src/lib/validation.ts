@@ -56,6 +56,7 @@ export const DeleteCommentSchema = z.object({ commentId: uuid });
 export const LikeCommentSchema = z.object({ commentId: uuid, isLiked: z.boolean() });
 export const TogglePostLikeSchema = z.object({ postId: uuid, isLiked: z.boolean() });
 export const TogglePostSaveSchema = z.object({ postId: uuid, isSaved: z.boolean() });
+export const TogglePostRepostSchema = z.object({ postId: uuid, isReposted: z.boolean() });
 
 export const usernameSchema = z
    .string()

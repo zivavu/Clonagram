@@ -6,7 +6,8 @@ import { useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
-import { TbDots, TbRepeat } from 'react-icons/tb';
+import { TbDots } from 'react-icons/tb';
+import RepostIcon from '@/src/components/RepostIcon';
 import { getPost } from '@/src/actions/post/getPost';
 import PostMediaCarousel from '@/src/components/PostMediaCarousel';
 import UserAvatar from '@/src/components/UserAvatar';
@@ -14,6 +15,7 @@ import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useOpenPostModal } from '@/src/hooks/useOpenPostModal';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
+import { useTogglePostRepost } from '@/src/hooks/useTogglePostRepost';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import { queryKeys } from '@/src/lib/queryKeys';
 import type { PostWithMedia } from '@/src/queries/posts';
@@ -65,8 +67,10 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    });
 
    const { mutate: togglePostLike } = useTogglePostLike(post);
+   const { mutate: togglePostRepost } = useTogglePostRepost(post);
    const { mutate: togglePostSave } = useTogglePostSave(post);
    const isLiked = post.likes.some(l => l.user_id === currentUser?.id);
+   const isReposted = post.reposts?.some(r => r.user_id === currentUser?.id) ?? false;
    const isSaved = post.saves?.some(s => s.user_id === currentUser?.id);
 
    const isOwner = post.user.id === currentUser?.id;
@@ -142,8 +146,14 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                </button>
             </div>
             <div {...stylex.props(styles.iconBarItem)}>
-               <button type="button" aria-label="Repost">
-                  <TbRepeat size={26} color={colors.textPrimary} />
+               <button
+                  type="button"
+                  aria-label="Repost"
+                  onClick={() => togglePostRepost()}
+                  {...stylex.props(styles.iconBarItemButton)}
+               >
+                  <RepostIcon size={26} isReposted={isReposted} color={colors.textPrimary} />
+                  {(post.repost_count ?? 0) > 0 && <span>{post.repost_count}</span>}
                </button>
             </div>
             <button type="button" aria-label="Share">

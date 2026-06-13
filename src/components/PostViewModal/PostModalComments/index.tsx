@@ -13,7 +13,8 @@ import {
    MdFavoriteBorder,
    MdLocationOn,
 } from 'react-icons/md';
-import { TbDots, TbRepeat } from 'react-icons/tb';
+import { TbDots } from 'react-icons/tb';
+import RepostIcon from '@/src/components/RepostIcon';
 import { getPost } from '@/src/actions/post/getPost';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
 import EmojiInput, { type EmojiInputRef } from '@/src/components/EmojiInput';
@@ -25,6 +26,7 @@ import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { usePostComments } from '@/src/hooks/usePostComments';
 import { useSubmitComment } from '@/src/hooks/useSubmitComment';
 import { useTogglePostLike } from '@/src/hooks/useTogglePostLike';
+import { useTogglePostRepost } from '@/src/hooks/useTogglePostRepost';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import { queryKeys } from '@/src/lib/queryKeys';
 import type { PostWithMedia } from '@/src/queries/posts';
@@ -72,6 +74,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
    }, [comments]);
 
    const { mutate: togglePostLike } = useTogglePostLike(post);
+   const { mutate: togglePostRepost } = useTogglePostRepost(post);
    const { mutate: togglePostSave } = useTogglePostSave(post);
 
    const { mutate: submitComment } = useSubmitComment(post.id, commentsKey);
@@ -94,8 +97,9 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
       },
       {
          label: 'Repost',
-         icon: <TbRepeat size={24} />,
-         onClick: () => {},
+         icon: <RepostIcon size={24} isReposted={post.reposts?.some(r => r.user_id === authUser?.id) ?? false} />,
+         isActive: post.reposts?.some(r => r.user_id === authUser?.id) ?? false,
+         onClick: togglePostRepost,
       },
       {
          label: 'Share',
@@ -241,7 +245,7 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                            onClick={() => onClick()}
                            {...stylex.props(styles.actionButton)}
                         >
-                           {isActive ? activeIcon : icon}
+                           {isActive && activeIcon ? activeIcon : icon}
                         </button>
                      ))}
                   </div>
@@ -263,6 +267,13 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                      {post.like_count === 1
                         ? `${post.like_count} like`
                         : `${post.like_count} likes`}
+                  </div>
+               )}
+               {(post.repost_count ?? 0) > 0 && (
+                  <div {...stylex.props(styles.likedByText)}>
+                     {post.repost_count === 1
+                        ? `${post.repost_count} repost`
+                        : `${post.repost_count} reposts`}
                   </div>
                )}
                <div {...stylex.props(styles.postTime)}>

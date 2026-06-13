@@ -16,6 +16,7 @@ export async function getPost(params: { postId: string }) {
       .eq('id', postId)
       .eq('likes.user_id', user?.id ?? '00000000-0000-0000-0000-000000000000')
       .eq('saves.user_id', user?.id ?? '00000000-0000-0000-0000-000000000000')
+      .eq('reposts.user_id', user?.id ?? '00000000-0000-0000-0000-000000000000')
       .single();
 
    throwIfError({ error }, 'Failed to get post');

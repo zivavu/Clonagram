@@ -1,4 +1,5 @@
 import { getUserNote } from '@/src/actions/notes/getUserNote';
+import { getRepostedPosts } from '@/src/actions/post/getRepostedPosts';
 import { getSavedPosts } from '@/src/actions/post/saves/getSavedPosts';
 import { getUserProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
 import { getRingState } from '@/src/actions/story/getRingState';
@@ -16,13 +17,15 @@ export async function loadProfilePage(username: string, options?: { includeSaved
    const notePromise = getUserNote({ userId: userProfile.id });
    const ringStatePromise = getRingState({ targetUserId: userProfile.id });
    const highlightsPromise = getUserHighlights({ userId: userProfile.id });
+   const repostedPostsPromise = getRepostedPosts({ userId: userProfile.id });
 
    if (options?.includeSaved) {
-      const [note, ringState, highlights, savedPosts] = await Promise.all([
+      const [note, ringState, highlights, savedPosts, repostedPosts] = await Promise.all([
          notePromise,
          ringStatePromise,
          highlightsPromise,
          getSavedPosts(),
+         repostedPostsPromise,
       ]);
       return {
          userProfile,
@@ -33,13 +36,15 @@ export async function loadProfilePage(username: string, options?: { includeSaved
          ringState,
          highlights,
          savedPosts,
+         repostedPosts,
       };
    }
 
-   const [note, ringState, highlights] = await Promise.all([
+   const [note, ringState, highlights, repostedPosts] = await Promise.all([
       notePromise,
       ringStatePromise,
       highlightsPromise,
+      repostedPostsPromise,
    ]);
-   return { userProfile, posts, followStatus, isOwnProfile, note, ringState, highlights };
+   return { userProfile, posts, followStatus, isOwnProfile, note, ringState, highlights, repostedPosts };
 }

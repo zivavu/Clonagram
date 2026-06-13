@@ -6,8 +6,10 @@ import { useEffect, useState } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
-import { TbDots, TbRepeat } from 'react-icons/tb';
+import { TbDots } from 'react-icons/tb';
 import { togglePostLike } from '@/src/actions/post/togglePostLike';
+import { togglePostRepost } from '@/src/actions/post/togglePostRepost';
+import RepostIcon from '@/src/components/RepostIcon';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import type { Reel } from '@/src/queries/posts';
@@ -34,12 +36,14 @@ export default function ReelActionRail({
    const [isLiked, setIsLiked] = useState(false);
    const [likeCount, setLikeCount] = useState(reel.like_count);
    const [isSaved, setIsSaved] = useState(false);
+   const [isReposted, setIsReposted] = useState(false);
    const { mutate: toggleSave, isPending: isSavePending } = useTogglePostSave(reel);
 
    useEffect(() => {
       if (authUser) {
          setIsLiked(reel.likes.some(l => l.user_id === authUser.id));
          setIsSaved(reel.saves?.some(s => s.user_id === authUser.id) ?? false);
+         setIsReposted(reel.reposts?.some(r => r.user_id === authUser.id) ?? false);
       }
    }, [authUser, reel]);
 
@@ -52,6 +56,16 @@ export default function ReelActionRail({
       } catch {
          setIsLiked(!next);
          setLikeCount(prev => prev + (next ? -1 : 1));
+      }
+   }
+
+   async function handleRepost() {
+      const next = !isReposted;
+      setIsReposted(next);
+      try {
+         await togglePostRepost({ postId: reel.id, isReposted });
+      } catch {
+         setIsReposted(!next);
       }
    }
 
@@ -96,8 +110,13 @@ export default function ReelActionRail({
             <span {...stylex.props(styles.count)}>{formatCount(commentCount)}</span>
          </div>
 
-         <button type="button" aria-label="Repost" {...stylex.props(styles.button)}>
-            <TbRepeat size={24} />
+         <button
+            type="button"
+            aria-label="Repost"
+            onClick={handleRepost}
+            {...stylex.props(styles.button)}
+         >
+            <RepostIcon size={24} isReposted={isReposted} />
          </button>
 
          <button type="button" aria-label="Share" {...stylex.props(styles.button)}>

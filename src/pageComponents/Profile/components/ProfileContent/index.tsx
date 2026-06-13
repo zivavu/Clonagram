@@ -11,6 +11,7 @@ interface ProfileContentProps {
    username: string;
    isOwnProfile: boolean;
    savedPosts?: PostWithMedia[];
+   repostedPosts?: PostWithMedia[];
 }
 
 export default function ProfileContent({
@@ -18,6 +19,7 @@ export default function ProfileContent({
    username,
    isOwnProfile,
    savedPosts,
+   repostedPosts,
 }: ProfileContentProps) {
    const [activeTab, setActiveTab] = useState('posts');
 
@@ -43,6 +45,13 @@ export default function ProfileContent({
          )}
          {activeTab === 'saved' && (
             <PostGrid posts={savedPosts ?? []} username={username} emptyText="No saved posts yet" />
+         )}
+         {activeTab === 'reposts' && (
+            <PostGrid
+               posts={repostedPosts ?? []}
+               username={username}
+               emptyText="No reposted posts yet"
+            />
          )}
       </>
    );

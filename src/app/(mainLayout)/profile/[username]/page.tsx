@@ -20,6 +20,7 @@ export default async function Profile({ params }: ProfilePageProps) {
          note={profileData.note}
          ringState={profileData.ringState}
          highlights={profileData.highlights}
+         repostedPosts={profileData.repostedPosts}
       />
    );
 }

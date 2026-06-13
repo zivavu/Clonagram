@@ -4,9 +4,10 @@ import type { Database } from '@/src/types/database';
 
 export const POST_WITH_MEDIA_SELECT = `
    id, caption, created_at, aspect_ratio, hide_likes, comments_off, location_name,
-   like_count, comment_count,
+   like_count, comment_count, repost_count,
    likes(user_id),
    saves(user_id),
+   reposts(user_id),
    user:profiles!user_id(${PROFILE_LIST_SELECT_BADGES}),
    collaborators:post_collaborators(user:profiles!user_id(${PROFILE_LIST_SELECT})),
    images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(${PROFILE_LIST_SELECT}))),
@@ -50,9 +51,10 @@ export function reelsQuery(
       .select(
          `
            id, caption, created_at, aspect_ratio, hide_likes, comments_off,
-           like_count, comment_count, location_name,
+           like_count, comment_count, repost_count, location_name,
            likes(user_id),
            saves(user_id),
+           reposts(user_id),
            user:profiles!user_id(${PROFILE_LIST_SELECT_BADGES}),
            videos:post_videos(id, mux_playback_id, duration, position, width, height)
         `,
@@ -62,7 +64,10 @@ export function reelsQuery(
       .limit(REELS_PAGE_SIZE);
 
    if (userId) {
-      query = query.eq('likes.user_id', userId).eq('saves.user_id', userId);
+      query = query
+         .eq('likes.user_id', userId)
+         .eq('saves.user_id', userId)
+         .eq('reposts.user_id', userId);
    }
    if (cursor) {
       query = query.lt('created_at', cursor);
@@ -81,6 +86,7 @@ export function savedPostsQuery(supabase: SupabaseClient<Database>, userId: stri
       .eq('user_id', userId)
       .eq('post.likes.user_id', userId)
       .eq('post.saves.user_id', userId)
+      .eq('post.reposts.user_id', userId)
       .order('created_at', { ascending: false });
 }
 

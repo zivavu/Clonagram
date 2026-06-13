@@ -750,6 +750,39 @@ export type Database = {
           },
         ]
       }
+      reposts: {
+        Row: {
+          created_at: string | null
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reposts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reposts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_shares: {
         Row: {
           created_at: string | null
@@ -857,6 +890,7 @@ export type Database = {
           location_lat: number | null
           location_lon: number | null
           location_name: string | null
+          repost_count: number
           share_to_clonedbook: boolean
           type: string
           updated_at: string | null
@@ -872,6 +906,7 @@ export type Database = {
           id?: string
           is_archived?: boolean
           like_count?: number
+          repost_count?: number
           location_lat?: number | null
           location_lon?: number | null
           location_name?: string | null
@@ -893,6 +928,7 @@ export type Database = {
           location_lat?: number | null
           location_lon?: number | null
           location_name?: string | null
+          repost_count?: number
           share_to_clonedbook?: boolean
           type?: string
           updated_at?: string | null
