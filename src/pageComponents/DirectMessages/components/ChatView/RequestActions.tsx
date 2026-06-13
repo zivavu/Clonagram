@@ -68,7 +68,7 @@ export default function RequestActions({
       setLoading(true);
       try {
          await action();
-         await queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
+         await queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
          router.push(redirectToRequests ? '/direct/requests' : '/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Something went wrong.');

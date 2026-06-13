@@ -17,7 +17,7 @@ export function useRealtimeChat(conversationId: string, queryClient: QueryClient
             },
             () => {
                queryClient.invalidateQueries({ queryKey: queryKeys.messages(conversationId) });
-               queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
+               queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
             },
          )
          .on(

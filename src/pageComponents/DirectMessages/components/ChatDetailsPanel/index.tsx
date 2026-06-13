@@ -127,7 +127,7 @@ export default function ChatDetailsPanel({
       setIsNavigating(true);
       try {
          await leaveConversation({ conversationId });
-         queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
+         queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
          router.push('/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Could not leave chat.');
@@ -139,7 +139,7 @@ export default function ChatDetailsPanel({
       setIsNavigating(true);
       try {
          await deleteConversation({ conversationId });
-         queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
+         queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
          router.push('/direct');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Could not delete chat.');

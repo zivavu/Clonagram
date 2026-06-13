@@ -148,7 +148,7 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
                      try {
                         await deleteAllRequests();
                         await queryClient.invalidateQueries({
-                           queryKey: queryKeys.conversations(),
+                           queryKey: queryKeys.allConversations(),
                         });
                      } catch (e) {
                         toast(e instanceof Error ? e.message : 'Something went wrong.');

@@ -330,7 +330,7 @@ export default function ChatView({
                      toast('Failed to send sticker');
                   } finally {
                      queryClient.invalidateQueries({ queryKey: messagesKey });
-                     queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
+                     queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
                   }
                }}
                onSend={async text => {
@@ -347,7 +347,7 @@ export default function ChatView({
                      toast('Failed to send message');
                   } finally {
                      queryClient.invalidateQueries({ queryKey: messagesKey });
-                     queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
+                     queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
                   }
                }}
                onSendImages={async (files: File[]) => {
@@ -376,7 +376,7 @@ export default function ChatView({
                      } finally {
                         URL.revokeObjectURL(previewUrl);
                         queryClient.invalidateQueries({ queryKey: messagesKey });
-                        queryClient.invalidateQueries({ queryKey: queryKeys.conversations() });
+                        queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
                      }
                   }
                }}

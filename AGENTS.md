@@ -129,7 +129,7 @@ Use Biome for formatting and linting. Key settings:
 
 # File Size
 
-If a file gets larger than 300 lines, extract components into separate folders.
+If a file gets larger than 400 lines, extract components into separate folders.
 Keep files focused and readable.
 
 <!-- END:file-size-rules -->
@@ -181,7 +181,13 @@ After finishing any coding task, always run the linter:
 bun biome check --write .
 ```
 
-If the linter passes, run the build command:
+If the linter passes, run the typecheck command:
+
+```
+bun run typecheck
+```
+
+At the end of the whole task, when you are finished, run the build command:
 
 ```
 bun run build
