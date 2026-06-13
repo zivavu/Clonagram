@@ -6,7 +6,7 @@ import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
 import UserAvatar from '@/src/components/UserAvatar';
 import CurrentUserName from '@/src/components/Username/CurrentUserName';
-import { getUserNote } from '@/src/actions/notes/getUserNote';
+import { getNotesForFeed } from '@/src/actions/notes/getNotesForFeed';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import type { ConversationSummaries } from '@/src/queries/conversations';
 import { sharedStyles } from '@/src/styles/shared.stylex';
@@ -15,6 +15,7 @@ import ConversationList from '../ConversationList';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
 import { styles } from './index.stylex';
 import { RequestsContent } from './RequestsContent';
+import FriendNoteItem from './FriendNoteItem';
 import YourNoteTrigger from './YourNoteTrigger';
 
 export const messageFolders = [
@@ -39,7 +40,7 @@ export default async function RecipientsSidebar({
    initialConversations,
 }: RecipientsSidebarProps) {
    const profile = await getAuthProfile();
-   const ownNote = profile ? await getUserNote({ userId: profile.id }) : null;
+   const { ownNote, notes: friendNotes } = await getNotesForFeed();
 
    return (
       <div {...stylex.props(styles.root)}>
@@ -95,17 +96,22 @@ export default async function RecipientsSidebar({
                      />
                   </div>
 
-                  <div {...stylex.props(styles.yourNoteSection)}>
-                     <UserAvatar
-                        src={profile?.avatar_url ?? null}
-                        alt={profile?.username ?? ''}
-                        size={74}
-                        username={profile?.username ?? ''}
-                        userId={profile?.id}
-                        useHoverCard={false}
-                     />
-                     <YourNoteTrigger note={ownNote} />
-                     <span {...stylex.props(styles.yourNoteSpan)}>Your note</span>
+                  <div {...stylex.props(styles.notesRow)}>
+                     <div {...stylex.props(styles.noteItem)}>
+                        <YourNoteTrigger note={ownNote} />
+                        <UserAvatar
+                           src={profile?.avatar_url ?? null}
+                           alt={profile?.username ?? ''}
+                           size={74}
+                           username={profile?.username ?? ''}
+                           userId={profile?.id}
+                           useHoverCard={false}
+                        />
+                        <span {...stylex.props(styles.noteItemLabel)}>Your note</span>
+                     </div>
+                     {friendNotes.map(entry => (
+                        <FriendNoteItem key={entry.userId} entry={entry} />
+                     ))}
                   </div>
 
                   <div {...stylex.props(styles.messagesList)}>

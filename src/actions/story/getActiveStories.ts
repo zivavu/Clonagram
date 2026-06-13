@@ -26,6 +26,7 @@ export async function getActiveStories() {
             type: 'image' | 'video';
             url: string;
             blurDataUrl: string | null;
+            timestamp: string;
          }>;
       }
    >();
@@ -70,6 +71,7 @@ export async function getActiveStories() {
          type: media.type,
          url: media.url,
          blurDataUrl: media.blurDataUrl,
+         timestamp: row.created_at ?? '',
       });
    }
 

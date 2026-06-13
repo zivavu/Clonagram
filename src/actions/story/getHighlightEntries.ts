@@ -17,7 +17,7 @@ function highlightEntriesQuery(supabase: SupabaseClient<Database>, userId: strin
           story_highlight_items(
             position,
             stories!story_highlight_items_story_id_fkey(
-              id,
+              id, created_at,
               story_images(url, blur_data_url),
               story_videos(mux_playback_id)
             )
@@ -65,6 +65,7 @@ export async function getHighlightEntries(params: { username: string }) {
                type: media.type,
                url: media.url,
                blurDataUrl: media.blurDataUrl,
+               timestamp: s.created_at ?? '',
             });
          }
 
