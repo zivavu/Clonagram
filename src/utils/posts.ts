@@ -39,3 +39,18 @@ export function hideLikesForNonOwners<T extends PostWithOwner>(
       return post;
    });
 }
+
+export function nextCursorFrom<T extends { created_at: string | null }>(
+   rows: T[],
+   pageSize: number,
+): string | null {
+   return rows.length === pageSize ? (rows[rows.length - 1].created_at ?? null) : null;
+}
+
+interface EqChainable<T> {
+   eq(column: string, value: unknown): T;
+}
+
+export function scopeLikesAndSavesToUser<T extends EqChainable<T>>(query: T, userId: string): T {
+   return query.eq('likes.user_id', userId).eq('saves.user_id', userId);
+}

@@ -5,7 +5,7 @@ import { createServerClient } from '../../lib/supabase/server';
 import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
-import { hideLikesForNonOwners } from '../../utils/posts';
+import { hideLikesForNonOwners, nextCursorFrom, scopeLikesAndSavesToUser } from '../../utils/posts';
 
 export interface ExploreFeedPage {
    posts: PostsWithMedia;
@@ -35,12 +35,13 @@ export async function getExplorePosts(params: {
       const { data, error } = await query.limit(PAGE_SIZE);
       throwIfError({ error }, 'Failed to fetch explore feed');
       const posts = data ?? [];
-      const nextCursor =
-         posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
-      return { posts: hideLikesForNonOwners(posts, undefined), nextCursor };
+      return {
+         posts: hideLikesForNonOwners(posts, undefined),
+         nextCursor: nextCursorFrom(posts, PAGE_SIZE),
+      };
    }
 
-   query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
+   query = scopeLikesAndSavesToUser(query, user.id);
 
    const { data: followedData, error: followError } = await supabase
       .from('follows')
@@ -62,7 +63,8 @@ export async function getExplorePosts(params: {
    const { data, error } = await query.limit(PAGE_SIZE);
    throwIfError({ error }, 'Failed to fetch explore feed');
    const posts = data ?? [];
-   const nextCursor =
-      posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
-   return { posts: hideLikesForNonOwners(posts, user.id), nextCursor };
+   return {
+      posts: hideLikesForNonOwners(posts, user.id),
+      nextCursor: nextCursorFrom(posts, PAGE_SIZE),
+   };
 }

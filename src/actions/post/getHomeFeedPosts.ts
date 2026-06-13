@@ -5,7 +5,7 @@ import { createServerClient } from '../../lib/supabase/server';
 import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
-import { hideLikesForNonOwners } from '../../utils/posts';
+import { hideLikesForNonOwners, nextCursorFrom, scopeLikesAndSavesToUser } from '../../utils/posts';
 
 const PAGE_SIZE = 10;
 
@@ -32,14 +32,15 @@ export async function getHomeFeedPosts(params: {
          .limit(PAGE_SIZE);
       if (cursor) query = query.lt('created_at', cursor);
       if (user) {
-         query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
+         query = scopeLikesAndSavesToUser(query, user.id);
       }
       const { data, error } = await query;
       throwIfError({ error }, 'Failed to fetch home feed');
       const posts = data ?? [];
-      const nextCursor =
-         posts.length === PAGE_SIZE ? (posts[posts.length - 1].created_at ?? null) : null;
-      return { posts: hideLikesForNonOwners(posts, user?.id), nextCursor };
+      return {
+         posts: hideLikesForNonOwners(posts, user?.id),
+         nextCursor: nextCursorFrom(posts, PAGE_SIZE),
+      };
    }
 
    if (!user) {
@@ -65,20 +66,19 @@ export async function getHomeFeedPosts(params: {
       return { posts: [], nextCursor: null };
    }
 
-   const { data: posts, error: postsError } = await supabase
+   let postsQuery = supabase
       .from('posts')
       .select(POST_WITH_MEDIA_SELECT)
       .in(
          'id',
          ids.map(p => p.id),
       )
-      .order('created_at', { ascending: false })
-      .eq('likes.user_id', user.id)
-      .eq('saves.user_id', user.id);
+      .order('created_at', { ascending: false });
+   postsQuery = scopeLikesAndSavesToUser(postsQuery, user.id);
+   const { data: posts, error: postsError } = await postsQuery;
 
    throwIfError({ error: postsError }, 'Failed to fetch following feed');
    const safePosts = posts ?? [];
-   const nextCursor =
-      safePosts.length === PAGE_SIZE ? (ids[ids.length - 1].created_at ?? null) : null;
+   const nextCursor = nextCursorFrom(ids, PAGE_SIZE);
    return { posts: hideLikesForNonOwners(safePosts, user?.id), nextCursor };
 }

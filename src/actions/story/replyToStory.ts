@@ -1,11 +1,11 @@
 'use server';
 import 'server-only';
 
-import { randomUUID } from 'node:crypto';
 import { getStoryThumbnail } from '@/src/lib/getStoryThumbnail';
-import { throwIfError } from '@/src/lib/unwrap';
 import { ReplyToStorySchema, validate } from '@/src/lib/validation';
+import { findOrCreateDirectConversation } from '../dm/findOrCreateDirectConversation';
 import { getAuthUser } from '../getAuthUser';
+import { sendStoryMessage } from './sendStoryMessage';
 
 export async function replyToStory(params: { storyId: string; content: string }) {
    const { storyId, content } = validate(ReplyToStorySchema, params);
@@ -21,58 +21,17 @@ export async function replyToStory(params: { storyId: string; content: string })
    if (!story) throw new Error('Story not found');
 
    const storyOwnerId = story.user_id;
-
    const storyThumbnailUrl = await getStoryThumbnail(supabase, storyId);
 
-   const { data: existingId } = await supabase.rpc('find_direct_conversation', {
-      p_user_a: user.id,
-      p_user_b: storyOwnerId,
-   });
-   let conversationId = existingId as string | null;
+   const conversationId = await findOrCreateDirectConversation(supabase, user.id, storyOwnerId);
 
-   if (!conversationId) {
-      conversationId = randomUUID();
-      const { error: convError } = await supabase
-         .from('conversations')
-         .insert({ id: conversationId, title: null });
-      throwIfError({ error: convError }, 'Failed to create conversation');
-
-      const { data: followerData } = await supabase
-         .from('follows')
-         .select('follower_id')
-         .eq('follower_id', storyOwnerId)
-         .eq('following_id', user.id)
-         .eq('status', 'accepted')
-         .single();
-
-      const folder = followerData ? 'primary' : 'requests';
-
-      const { error: partError } = await supabase.from('conversation_participants').insert([
-         { conversation_id: conversationId, user_id: user.id, role: 'admin', folder: 'primary' },
-         {
-            conversation_id: conversationId,
-            user_id: storyOwnerId,
-            role: 'member',
-            folder,
-         },
-      ]);
-      throwIfError({ error: partError }, 'Failed to add conversation participants');
-   }
-
-   const { error: msgError } = await supabase.from('messages').insert({
-      conversation_id: conversationId,
-      sender_id: user.id,
+   await sendStoryMessage(supabase, {
+      conversationId,
+      senderId: user.id,
       content: trimmed,
-      story_id: storyId,
-      media_url: storyThumbnailUrl,
+      storyId,
+      mediaUrl: storyThumbnailUrl,
+      ownerId: storyOwnerId,
+      notificationType: 'story_reply',
    });
-   throwIfError({ error: msgError }, 'Failed to insert message');
-
-   const { error: notifError } = await supabase.from('notifications').insert({
-      user_id: storyOwnerId,
-      actor_id: user.id,
-      type: 'story_reply',
-      story_id: storyId,
-   });
-   throwIfError({ error: notifError }, 'Failed to insert notification');
 }

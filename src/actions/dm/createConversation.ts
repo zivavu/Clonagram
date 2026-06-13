@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
 import { CreateConversationSchema, validate } from '@/src/lib/validation';
+import { findOrCreateDirectConversation } from './findOrCreateDirectConversation';
 
 export async function createConversation(participantIds: string[]): Promise<string> {
    const { participantIds: validatedParticipantIds } = validate(CreateConversationSchema, {
@@ -14,11 +15,7 @@ export async function createConversation(participantIds: string[]): Promise<stri
    const uniqueParticipantIds = [...new Set(validatedParticipantIds.filter(id => id !== user.id))];
 
    if (uniqueParticipantIds.length === 1) {
-      const { data: existingId } = await supabase.rpc('find_direct_conversation', {
-         p_user_a: user.id,
-         p_user_b: uniqueParticipantIds[0],
-      });
-      if (existingId) return existingId as string;
+      return findOrCreateDirectConversation(supabase, user.id, uniqueParticipantIds[0]);
    }
 
    const convId = randomUUID();
@@ -31,7 +28,8 @@ export async function createConversation(participantIds: string[]): Promise<stri
       .from('follows')
       .select('follower_id')
       .in('follower_id', uniqueParticipantIds)
-      .eq('following_id', user.id);
+      .eq('following_id', user.id)
+      .eq('status', 'accepted');
    const followerSet = new Set((followers ?? []).map(r => r.follower_id));
 
    const participants = [

@@ -4,7 +4,7 @@ import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 import { CursorNullableSchema, validate } from '@/src/lib/validation';
 import type { Reels } from '@/src/queries/posts';
-import { REELS_PAGE_SIZE } from '@/src/queries/posts';
+import { reelsQuery } from '@/src/queries/posts';
 import { hideLikesForNonOwners } from '@/src/utils/posts';
 
 export async function getReels(params: { cursor?: string | null }): Promise<Reels> {
@@ -14,28 +14,7 @@ export async function getReels(params: { cursor?: string | null }): Promise<Reel
       data: { user },
    } = await supabase.auth.getUser();
 
-   let query = supabase
-      .from('posts')
-      .select(
-         `
-            id, caption, created_at, aspect_ratio, hide_likes, comments_off,
-            like_count, comment_count, location_name,
-            likes(user_id),
-            saves(user_id),
-            user:profiles!user_id(id, username, avatar_url, is_verified),
-            videos:post_videos(id, mux_playback_id, duration, position, width, height)
-         `,
-      )
-      .eq('type', 'reel')
-      .order('created_at', { ascending: false })
-      .limit(REELS_PAGE_SIZE);
-
-   if (user) {
-      query = query.eq('likes.user_id', user.id).eq('saves.user_id', user.id);
-   }
-   if (cursor) query = query.lt('created_at', cursor);
-
-   const { data, error } = await query;
+   const { data, error } = await reelsQuery(supabase, user?.id, cursor);
    throwIfError({ error }, 'Failed to fetch reels');
    return hideLikesForNonOwners(data ?? [], user?.id);
 }

@@ -39,7 +39,11 @@ export type UserRecentPost = UserRecentPosts[number];
 
 export const REELS_PAGE_SIZE = 10;
 
-export function reelsQuery(supabase: SupabaseClient<Database>, userId?: string) {
+export function reelsQuery(
+   supabase: SupabaseClient<Database>,
+   userId?: string,
+   cursor?: string | null,
+) {
    let query = supabase
       .from('posts')
       .select(
@@ -58,6 +62,9 @@ export function reelsQuery(supabase: SupabaseClient<Database>, userId?: string) 
 
    if (userId) {
       query = query.eq('likes.user_id', userId).eq('saves.user_id', userId);
+   }
+   if (cursor) {
+      query = query.lt('created_at', cursor);
    }
 
    return query;
