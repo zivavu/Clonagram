@@ -1,7 +1,7 @@
 'use client';
 
 import type { EmojiClickData } from 'emoji-picker-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useClickOutside } from '@/src/hooks/useClickOutside';
 
 export const PICKER_CLASS = 'clonagram-emoji-picker';
@@ -23,6 +23,19 @@ export function useEmojiEditor(maxLength?: number) {
    const [pickerOpen, setPickerOpen] = useState(false);
    const [isEmpty, setIsEmpty] = useState(true);
    const editorRef = useRef<HTMLDivElement>(null);
+   const savedRangeRef = useRef<Range | null>(null);
+
+   useEffect(() => {
+      function handleSelectionChange() {
+         const sel = window.getSelection();
+         if (sel?.rangeCount && editorRef.current?.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+            savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+         }
+      }
+      document.addEventListener('selectionchange', handleSelectionChange);
+      return () => document.removeEventListener('selectionchange', handleSelectionChange);
+   }, []);
+
    const pickerContainerRef = useClickOutside<HTMLDivElement>(
       () => setPickerOpen(false),
       pickerOpen,
@@ -59,6 +72,12 @@ export function useEmojiEditor(maxLength?: number) {
 
       div.focus();
       const sel = window.getSelection();
+
+      if (savedRangeRef.current) {
+         sel?.removeAllRanges();
+         sel?.addRange(savedRangeRef.current);
+      }
+
       if (sel?.rangeCount) {
          const range = sel.getRangeAt(0);
          range.deleteContents();
