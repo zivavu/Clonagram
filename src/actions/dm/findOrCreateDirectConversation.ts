@@ -13,7 +13,7 @@ export async function findOrCreateDirectConversation(
       p_user_a: authUserId,
       p_user_b: otherUserId,
    });
-   if (existingId) return existingId as string;
+   if (existingId) return existingId;
 
    const conversationId = randomUUID();
    const { error: convError } = await supabase

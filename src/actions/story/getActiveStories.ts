@@ -22,7 +22,7 @@ export async function getActiveStories() {
          avatarUrl: string;
          timestamp: string;
          stories: Array<{
-            userId: string;
+            storyId: string;
             type: 'image' | 'video';
             url: string;
             blurDataUrl: string | null;
@@ -66,7 +66,7 @@ export async function getActiveStories() {
          entry.timestamp = row.created_at;
       }
       entry.stories.push({
-         userId: row.id,
+         storyId: row.id,
          type: media.type,
          url: media.url,
          blurDataUrl: media.blurDataUrl,

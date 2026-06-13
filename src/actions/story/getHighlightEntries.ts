@@ -64,7 +64,7 @@ export async function getHighlightEntries(params: { username: string }): Promise
             const media = extractStoryMedia(s);
             if (!media) continue;
             stories.push({
-               userId: s.id,
+               storyId: s.id,
                type: media.type,
                url: media.url,
                blurDataUrl: media.blurDataUrl,

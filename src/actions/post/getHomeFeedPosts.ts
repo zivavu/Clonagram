@@ -44,22 +44,14 @@ export async function getHomeFeedPosts(params: {
       return { posts: [], nextCursor: null };
    }
 
-   const rpc = supabase.rpc as unknown as <T>(
-      name: string,
-      args: Record<string, unknown>,
-   ) => Promise<{ data: T | null; error: { message: string } | null }>;
-   const { data: postIds, error: rpcError } = await rpc<{ id: string; created_at: string }[]>(
-      'get_following_posts',
-      {
-         follower_id: user.id,
-         before_cursor: cursor,
-         page_size: PAGE_SIZE,
-      },
-   );
+   const { data: postIds, error: rpcError } = await supabase.rpc('get_following_posts', {
+      follower_id: user.id,
+      before_cursor: cursor ?? undefined,
+      page_size: PAGE_SIZE,
+   });
 
    throwIfError({ error: rpcError }, 'Failed to fetch following feed');
-   const ids = postIds as { id: string; created_at: string }[] | null;
-   if (!ids || ids.length === 0) {
+   if (!postIds || postIds.length === 0) {
       return { posts: [], nextCursor: null };
    }
 
@@ -68,7 +60,7 @@ export async function getHomeFeedPosts(params: {
       .select(POST_WITH_MEDIA_SELECT)
       .in(
          'id',
-         ids.map(p => p.id),
+         postIds.map(p => p.id),
       )
       .order('created_at', { ascending: false });
    postsQuery = scopeLikesAndSavesToUser(postsQuery, user.id);
@@ -76,6 +68,6 @@ export async function getHomeFeedPosts(params: {
 
    throwIfError({ error: postsError }, 'Failed to fetch following feed');
    const safePosts = posts ?? [];
-   const nextCursor = nextCursorFrom(ids, PAGE_SIZE);
+   const nextCursor = nextCursorFrom(postIds, PAGE_SIZE);
    return { posts: hideLikesForNonOwners(safePosts, user?.id), nextCursor };
 }

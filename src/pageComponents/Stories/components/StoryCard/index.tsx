@@ -110,7 +110,7 @@ export default function StoryCard({
          )}
          {isCurrent && (
             <ActiveStoryOverlay
-               key={story.stories[currentStoryMediaIndex]?.userId ?? ''}
+               key={story.stories[currentStoryMediaIndex]?.storyId ?? ''}
                story={story}
                videoDuration={videoDuration}
                playTime={playTime}
@@ -140,7 +140,7 @@ export default function StoryCard({
             {isVideo ? (
                isCurrent ? (
                   <MuxPlayer
-                     key={currentMedia.userId}
+                     key={currentMedia.storyId}
                      ref={muxPlayerRef}
                      disableCookies
                      volume={volume}

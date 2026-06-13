@@ -18,7 +18,7 @@ export default async function ArchiveStoryViewerRoute({
       timestamp: story.createdAt,
       stories: [
          {
-            userId: story.id,
+            storyId: story.id,
             type: story.type,
             url: story.url,
             blurDataUrl: story.blurDataUrl,

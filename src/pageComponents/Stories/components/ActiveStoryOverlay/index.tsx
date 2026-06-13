@@ -50,13 +50,13 @@ export default function ActiveStoryOverlay({
    showHighlightActions = false,
    reactedStoryIds,
 }: ActiveStoryOverlayProps) {
-   const currentStoryId = story.stories[currentStoryMediaIndex]?.userId ?? '';
+   const currentStoryId = story.stories[currentStoryMediaIndex]?.storyId ?? '';
    const [liked, setLiked] = useState(reactedStoryIds.includes(currentStoryId));
    const openHighlightActions = useHighlightActionsModalStore(s => s.open);
    const [replyText, setReplyText] = useState('');
 
    const onSendReply = async () => {
-      const storyId = story.stories[currentStoryMediaIndex]?.userId;
+      const storyId = story.stories[currentStoryMediaIndex]?.storyId;
       if (!storyId || !replyText.trim()) return;
       const text = replyText;
       setReplyText('');
@@ -74,7 +74,7 @@ export default function ActiveStoryOverlay({
    };
 
    const onLike = async () => {
-      const storyId = story.stories[currentStoryMediaIndex]?.userId;
+      const storyId = story.stories[currentStoryMediaIndex]?.storyId;
       if (!storyId) return;
       const prev = liked;
       setLiked(!prev);
@@ -97,7 +97,7 @@ export default function ActiveStoryOverlay({
                      if (!isVideo) {
                         return (
                            <div
-                              key={storyMedia.userId}
+                              key={storyMedia.storyId}
                               {...stylex.props(styles.storyMediaActiveStoryBarContainer)}
                            >
                               <div {...stylex.props(styles.storyPictureBarTrack)}>
@@ -115,7 +115,7 @@ export default function ActiveStoryOverlay({
                      }
                      return (
                         <div
-                           key={storyMedia.userId}
+                           key={storyMedia.storyId}
                            {...stylex.props(styles.storyMediaActiveStoryBarContainer)}
                         >
                            <div
@@ -134,7 +134,7 @@ export default function ActiveStoryOverlay({
                   }
                   return (
                      <div
-                        key={storyMedia.userId}
+                        key={storyMedia.storyId}
                         {...stylex.props(
                            styles.storyMediaBarItem,
                            i < currentStoryMediaIndex && styles.storyMediaBarItemActive,

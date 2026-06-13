@@ -6,8 +6,6 @@ import { getFollowStatus } from '../../queries/followStatus';
 import { hideLikesForNonOwners } from '../../utils/posts';
 import { getAuthUser } from '../getAuthUser';
 
-type CountAggregate = [{ count: number }];
-
 export async function getUserProfileWithPosts(params: { username: string }) {
    const { username } = validate(UsernameParamSchema, params);
    const { supabase, user } = await getAuthUser();
@@ -39,11 +37,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
    const followStatus =
       user.id !== data.id ? await getFollowStatus(supabase, user.id, data.id) : 'none';
 
-   const userProfile = {
-      ...data,
-      followers: data.followers as unknown as CountAggregate,
-      following: data.following as unknown as CountAggregate,
-   };
+   const userProfile = { ...data };
 
    return {
       userProfile,

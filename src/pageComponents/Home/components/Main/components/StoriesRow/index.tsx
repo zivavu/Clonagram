@@ -43,7 +43,7 @@ export default function StoriesRow({
 
    const currentUserStory = entries.find(entry => entry.username === currentUser?.username);
    const allOwnStoriesViewed =
-      !currentUserStory || currentUserStory.stories.every(s => viewedSet.has(s.userId));
+      !currentUserStory || currentUserStory.stories.every(s => viewedSet.has(s.storyId));
 
    const otherEntries = entries.filter(entry => entry.username !== currentUser?.username);
 
@@ -151,7 +151,7 @@ export default function StoriesRow({
             )}
 
             {otherEntries.map(entry => {
-               const allViewed = entry.stories.every(s => viewedSet.has(s.userId));
+               const allViewed = entry.stories.every(s => viewedSet.has(s.storyId));
                return (
                   <Link
                      href={`/stories/${entry.username}`}
