@@ -51,6 +51,8 @@ type HighlightActionsData = {
 };
 export const useHighlightActionsModalStore = createModalStoreWithData<HighlightActionsData>();
 
+export const useSharePostModal = createModalStoreWithData<string>();
+
 type EditHighlightStoriesData = { highlightId: string };
 export const useEditHighlightStoriesModalStore =
    createModalStoreWithData<EditHighlightStoriesData>();
