@@ -8,12 +8,12 @@ import { FaArrowLeft } from 'react-icons/fa6';
 import { IoChevronForward, IoEyeOffOutline } from 'react-icons/io5';
 import { deleteAllRequests } from '@/src/actions/dm/deleteAllRequests';
 import { toast } from '@/src/components/AppToast';
+import EmojiText from '@/src/components/EmojiText';
 import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
 import { getConversationAvatars, getConversationDisplayName } from '@/src/utils/conversations';
-import EmojiText from '@/src/components/EmojiText';
 import { formatTimestamp } from '@/src/utils/time';
 import { styles } from './index.stylex';
 

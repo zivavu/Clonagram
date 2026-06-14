@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
+import type { NoteEntry } from '@/src/actions/notes/getNotesForFeed';
 import NoteBubble from '@/src/components/NoteBubble';
 import UserAvatar from '@/src/components/UserAvatar';
-import type { NoteEntry } from '@/src/actions/notes/getNotesForFeed';
 import { styles } from './index.stylex';
 
 export default function FriendNoteItem({ entry }: { entry: NoteEntry }) {

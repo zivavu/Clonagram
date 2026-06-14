@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useSyncExternalStore } from 'react';
 import { MdFavorite } from 'react-icons/md';
 import loginCardPeople, { type LoginCardPerson } from '../../loginCardPeople';
@@ -108,14 +109,21 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
             style={{ objectFit: 'cover' }}
             preload
          />
-         <div {...stylex.props(imageCardStyles.imagePlayBarContainer)}>
-            <div {...stylex.props(imageCardStyles.highlightedPart)}></div>
-            <div {...stylex.props(imageCardStyles.dimmedPart)}></div>
-         </div>
-         <div {...stylex.props(imageCardStyles.reactionBoxContainer)}>
-            <div {...stylex.props(imageCardStyles.commentBorder)}></div>
-            <MdFavorite size={38} />
-         </div>
+         <Link
+            {...stylex.props(imageCardStyles.overlayLink)}
+            href={image.photoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+         >
+            <div {...stylex.props(imageCardStyles.imagePlayBarContainer)}>
+               <div {...stylex.props(imageCardStyles.highlightedPart)}></div>
+               <div {...stylex.props(imageCardStyles.dimmedPart)}></div>
+            </div>
+            <div {...stylex.props(imageCardStyles.reactionBoxContainer)}>
+               <div {...stylex.props(imageCardStyles.commentBorder)}></div>
+               <MdFavorite size={38} />
+            </div>
+         </Link>
       </div>
    );
 }

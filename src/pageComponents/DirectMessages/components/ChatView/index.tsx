@@ -36,8 +36,8 @@ import ImageMessage from './ImageMessage';
 import ImageViewModal from './ImageViewModal';
 import MessageInput, { type MessageInputHandle } from './MessageInput';
 import MessageText from './MessageText';
-import RequestActions from './RequestActions';
 import PostShareMessage from './PostShareMessage';
+import RequestActions from './RequestActions';
 import StickerMessage from './StickerMessage';
 import StoryLikeMessage from './StoryLikeMessage';
 

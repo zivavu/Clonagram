@@ -4,18 +4,18 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { BsChevronDown, BsSearch } from 'react-icons/bs';
 import { TbEdit } from 'react-icons/tb';
+import { getNotesForFeed } from '@/src/actions/notes/getNotesForFeed';
 import UserAvatar from '@/src/components/UserAvatar';
 import CurrentUserName from '@/src/components/Username/CurrentUserName';
-import { getNotesForFeed } from '@/src/actions/notes/getNotesForFeed';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import type { ConversationSummaries } from '@/src/queries/conversations';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { colors } from '../../../../styles/tokens.stylex';
 import ConversationList from '../ConversationList';
 import NewMessageTrigger from '../NewMessageModal/NewMessageTrigger';
+import FriendNoteItem from './FriendNoteItem';
 import { styles } from './index.stylex';
 import { RequestsContent } from './RequestsContent';
-import FriendNoteItem from './FriendNoteItem';
 import YourNoteTrigger from './YourNoteTrigger';
 
 export const messageFolders = [

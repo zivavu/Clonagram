@@ -7,9 +7,9 @@ import ModalResetOnNav from '@/src/components/ModalResetOnNav';
 import NewNoteModalWrapper from '@/src/components/NewNoteModal/NewNoteModalWrapper';
 import NotificationsPortal from '@/src/components/NotificationsPortal';
 import OwnerActionsModal from '@/src/components/OwnerActionsModal';
-import SharePostModal from '@/src/components/SharePostModal';
 import PostFullViewModal from '@/src/components/PostViewModal';
 import SearchPortal from '@/src/components/SearchPortal';
+import SharePostModal from '@/src/components/SharePostModal';
 import { styles } from './layout.stylex';
 
 export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {

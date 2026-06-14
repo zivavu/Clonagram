@@ -102,6 +102,14 @@ export const imageCardStyles = stylex.create({
       justifyContent: 'center',
       gap: '18px',
    },
+   overlayLink: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      color: 'inherit',
+   },
    commentBorder: {
       width: '100%',
       height: '32px',

@@ -13,13 +13,13 @@ import {
    IoTrashOutline,
 } from 'react-icons/io5';
 import { TbArrowRight } from 'react-icons/tb';
-import EmojiText from '@/src/components/EmojiText';
 import { deleteConversation } from '@/src/actions/dm/deleteConversation';
 import { markConversationUnread } from '@/src/actions/dm/markConversationUnread';
 import { moveConversation } from '@/src/actions/dm/moveConversation';
 import { toggleMute } from '@/src/actions/dm/toggleMute';
 import { toast } from '@/src/components/AppToast';
 import DeleteConfirmModal from '@/src/components/DeleteConfirmModal';
+import EmojiText from '@/src/components/EmojiText';
 import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
 import type { ConversationSummary } from '@/src/queries/conversations';

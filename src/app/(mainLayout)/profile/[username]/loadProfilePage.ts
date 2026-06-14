@@ -46,5 +46,14 @@ export async function loadProfilePage(username: string, options?: { includeSaved
       highlightsPromise,
       repostedPostsPromise,
    ]);
-   return { userProfile, posts, followStatus, isOwnProfile, note, ringState, highlights, repostedPosts };
+   return {
+      userProfile,
+      posts,
+      followStatus,
+      isOwnProfile,
+      note,
+      ringState,
+      highlights,
+      repostedPosts,
+   };
 }
