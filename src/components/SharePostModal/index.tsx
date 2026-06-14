@@ -42,7 +42,11 @@ export default function SharePostModal() {
       queryKey: queryKeys.userSearch(query),
       queryFn: async () => {
          if (!query.trim()) return [];
-         const { data } = await userProfilesQuery(supabase, { search: query, limit: 20 });
+         const { data } = await userProfilesQuery(supabase, {
+            search: query,
+            limit: 20,
+            excludeId: authUser?.id,
+         });
          return data ?? [];
       },
       staleTime: 30_000,
@@ -166,7 +170,7 @@ export default function SharePostModal() {
                                  avatarAlt={user.full_name || user.username}
                                  username={user.username}
                                  name={user.full_name || user.username}
-                                 fullName={user.username}
+                                 fullName={user.full_name || user.username}
                                  rightElement={
                                     <div
                                        {...stylex.props(
