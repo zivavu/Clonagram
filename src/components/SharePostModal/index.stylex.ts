@@ -147,7 +147,7 @@ export const styles = stylex.create({
       fontSize: '14px',
    },
    messageRow: {
-      padding: '8px 16px',
+      padding: '16px 0',
       flexShrink: 0,
    },
    messageInput: {
@@ -162,27 +162,28 @@ export const styles = stylex.create({
       lineHeight: '20px',
    },
    footer: {
-      padding: '0 16px 16px',
+      padding: '0 32px 16px',
       flexShrink: 0,
    },
    sendButton: {
       width: '100%',
       padding: '12px 20px',
       borderRadius: radius.md,
-      backgroundColor: 'rgb(24, 32, 139)',
+      backgroundColor: colors.accent,
       color: 'white',
       fontSize: '14px',
       fontWeight: 600,
       textAlign: 'center',
       border: 'none',
       ':hover': {
-         backgroundColor: 'rgb(18, 25, 110)',
+         backgroundColor: colors.accentHover,
       },
    },
    sendButtonDisabled: {
       opacity: 0.5,
+      cursor: 'default',
       ':hover': {
-         backgroundColor: 'rgb(24, 32, 139)',
+         backgroundColor: colors.accent,
       },
    },
 });

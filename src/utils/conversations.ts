@@ -27,6 +27,20 @@ export function isGroupConversation(participants: Participant[]) {
    return participants.length > 2;
 }
 
+export function getMessagePreview(
+   preview: string | null,
+   senderId: string | null,
+   authUserId: string,
+   participants: Participant[],
+) {
+   if (!preview) return '';
+   if (!preview.startsWith('sent a ')) return preview;
+   if (senderId === authUserId) return `You ${preview}`;
+   const sender = participants.find(p => p.user_id === senderId);
+   if (sender?.user?.username) return `${sender.user.username} ${preview}`;
+   return `Someone ${preview}`;
+}
+
 export function isUnread(summary: ConversationSummary, authUserId: string) {
    if (!summary.conversation.last_message_at) return false;
    if (summary.conversation.last_message_sender_id === authUserId) return false;

@@ -13,7 +13,11 @@ import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
-import { getConversationAvatars, getConversationDisplayName } from '@/src/utils/conversations';
+import {
+   getConversationAvatars,
+   getConversationDisplayName,
+   getMessagePreview,
+} from '@/src/utils/conversations';
 import { formatTimestamp } from '@/src/utils/time';
 import { styles } from './index.stylex';
 
@@ -124,8 +128,21 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
                         <span {...stylex.props(styles.threadName)}>{displayName}</span>
                         <div {...stylex.props(styles.threadPreviewRow)}>
                            <span {...stylex.props(styles.threadPreview)}>
-                              {conv.last_message_preview ? (
-                                 <EmojiText content={conv.last_message_preview} size={12} />
+                              {getMessagePreview(
+                                 conv.last_message_preview,
+                                 conv.last_message_sender_id,
+                                 authUserId,
+                                 conv.participants,
+                              ) ? (
+                                 <EmojiText
+                                    content={getMessagePreview(
+                                       conv.last_message_preview,
+                                       conv.last_message_sender_id,
+                                       authUserId,
+                                       conv.participants,
+                                    )}
+                                    size={12}
+                                 />
                               ) : (
                                  ''
                               )}

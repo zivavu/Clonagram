@@ -153,8 +153,6 @@ export default function SharePostModal() {
                   </div>
                </div>
 
-               <hr {...stylex.props(styles.divider)} />
-
                <div {...stylex.props(styles.listContainer)}>
                   {query.trim() && filteredUsers.length === 0 ? (
                      <p {...stylex.props(styles.noResults)}>No results found.</p>
@@ -191,19 +189,16 @@ export default function SharePostModal() {
                   )}
                </div>
 
-               <hr {...stylex.props(styles.divider)} />
-
-               <div {...stylex.props(styles.messageRow)}>
-                  <textarea
-                     {...stylex.props(styles.messageInput, sharedStyles.placeholder)}
-                     placeholder="Message..."
-                     rows={1}
-                     value={message}
-                     onChange={e => setMessage(e.target.value)}
-                  />
-               </div>
-
                <div {...stylex.props(styles.footer)}>
+                  <div {...stylex.props(styles.messageRow)}>
+                     <textarea
+                        {...stylex.props(styles.messageInput, sharedStyles.placeholder)}
+                        placeholder="Write a message..."
+                        rows={1}
+                        value={message}
+                        onChange={e => setMessage(e.target.value)}
+                     />
+                  </div>
                   <button
                      type="button"
                      {...stylex.props(

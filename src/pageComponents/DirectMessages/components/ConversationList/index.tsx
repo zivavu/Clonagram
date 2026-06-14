@@ -25,7 +25,7 @@ export default function ConversationList({
    const queryClient = useQueryClient();
    const queryKey = queryKeys.conversations(folder, authUserId);
 
-   const { data: conversations = initialData } = useQuery({
+   const { data: rawConversations = initialData } = useQuery({
       queryKey,
       queryFn: async () => {
          const { data, error } = await getConversationsQuery(supabase, authUserId, folder);
@@ -35,6 +35,12 @@ export default function ConversationList({
       initialData,
       staleTime: 30_000,
    });
+
+   const conversations = [...rawConversations].sort(
+      (a, b) =>
+         new Date(b.conversation.last_message_at ?? 0).getTime() -
+         new Date(a.conversation.last_message_at ?? 0).getTime(),
+   );
 
    useEffect(() => {
       const channel = supabase

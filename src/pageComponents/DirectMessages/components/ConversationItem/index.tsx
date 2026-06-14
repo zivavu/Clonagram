@@ -26,6 +26,7 @@ import type { ConversationSummary } from '@/src/queries/conversations';
 import {
    getConversationAvatars,
    getConversationDisplayName,
+   getMessagePreview,
    isUnread,
 } from '@/src/utils/conversations';
 import { formatTimestamp } from '@/src/utils/time';
@@ -129,8 +130,21 @@ export default function ConversationItem({
                         unread && sidebarStyles.threadPreviewUnread,
                      )}
                   >
-                     {conv.last_message_preview ? (
-                        <EmojiText content={conv.last_message_preview} size={12} />
+                     {getMessagePreview(
+                        conv.last_message_preview,
+                        conv.last_message_sender_id,
+                        authUserId,
+                        conv.participants,
+                     ) ? (
+                        <EmojiText
+                           content={getMessagePreview(
+                              conv.last_message_preview,
+                              conv.last_message_sender_id,
+                              authUserId,
+                              conv.participants,
+                           )}
+                           size={12}
+                        />
                      ) : (
                         'No messages yet'
                      )}
