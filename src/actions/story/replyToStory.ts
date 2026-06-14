@@ -25,6 +25,13 @@ export async function replyToStory(params: { storyId: string; content: string })
 
    const conversationId = await findOrCreateDirectConversation(supabase, user.id, storyOwnerId);
 
+   await supabase
+      .from('conversation_participants')
+      .update({ folder: 'primary' })
+      .eq('conversation_id', conversationId)
+      .eq('user_id', user.id)
+      .eq('folder', 'requests');
+
    await sendStoryMessage(supabase, {
       conversationId,
       senderId: user.id,

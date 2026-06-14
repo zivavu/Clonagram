@@ -51,7 +51,6 @@ export default function RequestActions({
                if (payload.new.following_id === senderUserId) {
                   try {
                      await acceptRequest({ conversationId });
-                     router.push('/direct');
                   } catch (e) {
                      toast(e instanceof Error ? e.message : 'Something went wrong.');
                   }
@@ -62,14 +61,14 @@ export default function RequestActions({
       return () => {
          supabase.removeChannel(channel);
       };
-   }, [authUserId, senderUserId, conversationId, router]);
+   }, [authUserId, senderUserId, conversationId]);
 
-   async function run(action: () => Promise<void>, redirectToRequests = false) {
+   async function run(action: () => Promise<void>) {
       setLoading(true);
       try {
          await action();
          await queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
-         router.push(redirectToRequests ? '/direct/requests' : '/direct');
+         router.push('/direct/requests');
       } catch (e) {
          toast(e instanceof Error ? e.message : 'Something went wrong.');
       } finally {

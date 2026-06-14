@@ -165,6 +165,12 @@ export const SharePostSchema = z.object({
    message: z.string().min(1).max(2000).optional(),
 });
 
+export const ShareStorySchema = z.object({
+   storyId: uuid,
+   recipientIds: z.array(uuid).min(1).max(50),
+   message: z.string().min(1).max(2000).optional(),
+});
+
 export function validate<T>(schema: z.ZodSchema<T>, input: unknown): T {
    const result = schema.safeParse(input);
    if (!result.success) {

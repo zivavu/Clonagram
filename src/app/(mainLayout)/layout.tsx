@@ -10,6 +10,7 @@ import OwnerActionsModal from '@/src/components/OwnerActionsModal';
 import PostFullViewModal from '@/src/components/PostViewModal';
 import SearchPortal from '@/src/components/SearchPortal';
 import SharePostModal from '@/src/components/SharePostModal';
+import ShareStoryModal from '@/src/components/ShareStoryModal';
 import { styles } from './layout.stylex';
 
 export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -21,6 +22,7 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
          <PostFullViewModal />
          <OwnerActionsModal />
          <SharePostModal />
+         <ShareStoryModal />
          <CreatePostModal />
          <CreateStoryModal />
          <Suspense>

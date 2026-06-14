@@ -20,4 +20,11 @@ export async function sendMessage(conversationId: string, content: string) {
       content: trimmed,
    });
    throwIfError({ error }, 'Failed to send message');
+
+   await supabase
+      .from('conversation_participants')
+      .update({ folder: 'primary' })
+      .eq('conversation_id', cid)
+      .eq('user_id', user.id)
+      .eq('folder', 'requests');
 }

@@ -270,23 +270,11 @@ export default function ChatView({
                         {msg.sticker_url ? (
                            <StickerMessage src={msg.sticker_url} />
                         ) : msg.story_id ? (
-                           <>
-                              <div
-                                 {...stylex.props(
-                                    styles.messageBubble,
-                                    isSent
-                                       ? styles.messageBubbleSent
-                                       : styles.messageBubbleReceived,
-                                 )}
-                              >
-                                 <MessageText content={msg.content ?? ''} />
-                              </div>
-                              <StoryLikeMessage
-                                 storyId={msg.story_id}
-                                 storyUsername={msg.story?.profiles?.username ?? ''}
-                                 thumbnailUrl={msg.media_url}
-                              />
-                           </>
+                           <StoryLikeMessage
+                              storyId={msg.story_id}
+                              storyUsername={msg.story?.profiles?.username ?? ''}
+                              thumbnailUrl={msg.media_url}
+                           />
                         ) : msg.post_id && msg.post ? (
                            <PostShareMessage post={msg.post} />
                         ) : msg.media_url ? (
@@ -302,6 +290,24 @@ export default function ChatView({
                            </div>
                         )}
                      </div>
+                     {msg.story_id && msg.content && (
+                        <div
+                           {...stylex.props(
+                              styles.messageRow,
+                              isSent ? styles.messageRowSent : styles.messageRowReceived,
+                           )}
+                        >
+                           {!isSent && <div {...stylex.props(styles.messageAvatarSlot)} />}
+                           <div
+                              {...stylex.props(
+                                 styles.messageBubble,
+                                 isSent ? styles.messageBubbleSent : styles.messageBubbleReceived,
+                              )}
+                           >
+                              <MessageText content={msg.content} />
+                           </div>
+                        </div>
+                     )}
                      {hasReadReceipt && (
                         <div {...stylex.props(styles.messageRow, styles.messageRowSent)}>
                            <div {...stylex.props(styles.readReceipt)}>Seen</div>

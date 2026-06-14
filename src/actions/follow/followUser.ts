@@ -26,5 +26,36 @@ export async function followUser(targetUserId: string) {
          .from('follows')
          .insert({ follower_id: user.id, following_id: validatedTargetUserId });
       throwIfError({ error }, 'Failed to follow user');
+
+      const { data: conversationId } = await supabase.rpc('find_direct_conversation', {
+         p_user_a: user.id,
+         p_user_b: validatedTargetUserId,
+      });
+      if (conversationId) {
+         await supabase
+            .from('conversation_participants')
+            .update({ folder: 'primary' })
+            .eq('conversation_id', conversationId)
+            .eq('user_id', user.id)
+            .eq('folder', 'requests');
+      }
+
+      const { data: adminConvos } = await supabase
+         .from('conversation_participants')
+         .select('conversation_id')
+         .eq('user_id', validatedTargetUserId)
+         .eq('role', 'admin');
+
+      if (adminConvos && adminConvos.length > 0) {
+         await supabase
+            .from('conversation_participants')
+            .update({ folder: 'primary' })
+            .eq('user_id', user.id)
+            .eq('folder', 'requests')
+            .in(
+               'conversation_id',
+               adminConvos.map(c => c.conversation_id),
+            );
+      }
    }
 }

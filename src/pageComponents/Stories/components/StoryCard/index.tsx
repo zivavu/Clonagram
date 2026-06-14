@@ -6,6 +6,7 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
+import { useShareStoryModal } from '@/src/store/createModalStore';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import { getMuxThumbnailUrl } from '@/src/utils/mux';
 import { styles } from '../../index.stylex';
@@ -67,6 +68,13 @@ export default function StoryCard({
 
    const anotherVideoActive = activePlayerId !== null && activePlayerId !== storyPlayerId;
    const isPlaying = isPlayingLocal && !anotherVideoActive;
+
+   const shareModalOpen = useShareStoryModal(s => s.isOpen);
+   useEffect(() => {
+      if (!isCurrent || !shareModalOpen) return;
+      setIsPlayingLocal(false);
+      if (isVideo) muxPlayerRef.current?.media?.pause();
+   }, [shareModalOpen, isCurrent, isVideo]);
 
    useEffect(() => {
       if (!isCurrent) return;

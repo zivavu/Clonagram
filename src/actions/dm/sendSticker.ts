@@ -17,4 +17,11 @@ export async function sendSticker(conversationId: string, stickerUrl: string) {
       sticker_url: url,
    });
    throwIfError({ error }, 'Failed to send sticker');
+
+   await supabase
+      .from('conversation_participants')
+      .update({ folder: 'primary' })
+      .eq('conversation_id', cid)
+      .eq('user_id', user.id)
+      .eq('folder', 'requests');
 }

@@ -17,4 +17,11 @@ export async function sendImage(conversationId: string, mediaUrl: string) {
       media_url: url,
    });
    throwIfError({ error }, 'Failed to send image');
+
+   await supabase
+      .from('conversation_participants')
+      .update({ folder: 'primary' })
+      .eq('conversation_id', cid)
+      .eq('user_id', user.id)
+      .eq('folder', 'requests');
 }

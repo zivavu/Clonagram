@@ -112,6 +112,7 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
                                     <Image
                                        src={thumb}
                                        alt={`${profile.username} post`}
+                                       style={{ objectFit: 'cover' }}
                                        width={120}
                                        height={120}
                                     />

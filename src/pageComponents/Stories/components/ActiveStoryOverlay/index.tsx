@@ -14,7 +14,8 @@ import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import VolumeControl from '@/src/components/VolumeControl';
-import { useHighlightActionsModalStore } from '@/src/store/createModalStore';
+import { useHighlightActionsModalStore, useShareStoryModal } from '@/src/store/createModalStore';
+
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
@@ -53,6 +54,7 @@ export default function ActiveStoryOverlay({
    const currentStoryId = story.stories[currentStoryMediaIndex]?.storyId ?? '';
    const [liked, setLiked] = useState(reactedStoryIds.includes(currentStoryId));
    const openHighlightActions = useHighlightActionsModalStore(s => s.open);
+   const openShareStoryModal = useShareStoryModal(s => s.open);
    const [replyText, setReplyText] = useState('');
 
    const onSendReply = async () => {
@@ -217,7 +219,13 @@ export default function ActiveStoryOverlay({
                <button type="button" onClick={onLike}>
                   {liked ? <MdFavorite size={26} color="red" /> : <MdFavoriteBorder size={26} />}
                </button>
-               <button type="button" onClick={onSendReply}>
+               <button
+                  type="button"
+                  onClick={() => {
+                     const storyId = story.stories[currentStoryMediaIndex]?.storyId;
+                     if (storyId) openShareStoryModal(storyId);
+                  }}
+               >
                   <LuSend size={24} />
                </button>
             </div>

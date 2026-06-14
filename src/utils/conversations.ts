@@ -34,7 +34,7 @@ export function getMessagePreview(
    participants: Participant[],
 ) {
    if (!preview) return '';
-   if (!preview.startsWith('sent a ')) return preview;
+   if (!/^sent an? /.test(preview)) return preview;
    if (senderId === authUserId) return `You ${preview}`;
    const sender = participants.find(p => p.user_id === senderId);
    if (sender?.user?.username) return `${sender.user.username} ${preview}`;

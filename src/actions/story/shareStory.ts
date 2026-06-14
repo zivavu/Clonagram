@@ -1,20 +1,25 @@
 'use server';
 import 'server-only';
+
 import { findOrCreateDirectConversation } from '@/src/actions/dm/findOrCreateDirectConversation';
 import { getAuthUser } from '@/src/actions/getAuthUser';
+import { getStoryThumbnail } from '@/src/lib/getStoryThumbnail';
 import { throwIfError } from '@/src/lib/unwrap';
-import { SharePostSchema, validate } from '@/src/lib/validation';
+import { ShareStorySchema, validate } from '@/src/lib/validation';
 
-export async function sharePost(params: {
-   postId: string;
+export async function shareStory(params: {
+   storyId: string;
    recipientIds: string[];
    message?: string;
 }) {
-   const { postId, recipientIds, message } = validate(SharePostSchema, params);
+   const { storyId, recipientIds, message } = validate(ShareStorySchema, params);
    const { supabase, user } = await getAuthUser();
-   if (recipientIds.includes(user.id)) throw new Error('Cannot share with yourself');
-   const uniqueRecipientIds = [...new Set(recipientIds)];
    const trimmedMessage = message?.trim();
+
+   if (recipientIds.includes(user.id)) throw new Error('Cannot share with yourself');
+
+   const uniqueRecipientIds = [...new Set(recipientIds)];
+   const thumbnailUrl = await getStoryThumbnail(supabase, storyId);
 
    for (const recipientId of uniqueRecipientIds) {
       const conversationId = await findOrCreateDirectConversation(supabase, user.id, recipientId);
@@ -29,11 +34,11 @@ export async function sharePost(params: {
       const { error: msgError } = await supabase.from('messages').insert({
          conversation_id: conversationId,
          sender_id: user.id,
-         post_id: postId,
+         story_id: storyId,
+         media_url: thumbnailUrl,
          content: null,
       });
-      throwIfError({ error: msgError }, 'Failed to send post');
-
+      throwIfError({ error: msgError }, 'Failed to send story');
       if (trimmedMessage) {
          const { error: textError } = await supabase.from('messages').insert({
             conversation_id: conversationId,
@@ -42,12 +47,5 @@ export async function sharePost(params: {
          });
          throwIfError({ error: textError }, 'Failed to send message');
       }
-
-      const { error: shareError } = await supabase.from('post_shares').insert({
-         post_id: postId,
-         sender_id: user.id,
-         recipient_id: recipientId,
-      });
-      throwIfError({ error: shareError }, 'Failed to record share');
    }
 }
