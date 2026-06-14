@@ -99,9 +99,7 @@ export default function RequestActions({
                type="button"
                {...stylex.props(styles.requestButton)}
                disabled={loading}
-               onClick={() =>
-                  run(() => blockAndDeleteRequest({ conversationId, senderUserId }), true)
-               }
+               onClick={() => run(() => blockAndDeleteRequest({ conversationId, senderUserId }))}
             >
                Block
             </button>
@@ -110,7 +108,7 @@ export default function RequestActions({
                type="button"
                {...stylex.props(styles.requestButton, styles.requestButtonDanger)}
                disabled={loading}
-               onClick={() => run(() => deleteRequest({ conversationId }), true)}
+               onClick={() => run(() => deleteRequest({ conversationId }))}
             >
                Delete
             </button>
