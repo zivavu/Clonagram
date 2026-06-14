@@ -38,7 +38,20 @@ export const styles = stylex.create({
    imagesContainer: {
       display: 'flex',
       gap: '12px',
-      margin: '64px 0px 64px',
+      margin: '64px 0px 16px',
+   },
+   attribution: {
+      fontSize: '11px',
+      color: colors.textSecondary,
+      marginBottom: '48px',
+   },
+   attributionLink: {
+      color: colors.textSecondary,
+      textDecorationLine: 'underline',
+      textUnderlineOffset: '2px',
+      ':hover': {
+         color: colors.textPrimary,
+      },
    },
 });
 

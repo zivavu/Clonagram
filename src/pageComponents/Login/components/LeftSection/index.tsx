@@ -53,6 +53,31 @@ export default function LeftSection() {
                <ImageCard key={image.src} image={image} {...cardTransforms[index]} />
             ))}
          </div>
+         <p {...stylex.props(styles.attribution)}>
+            {'Photos by '}
+            {images.map((image, index) => (
+               <span key={image.src}>
+                  {index > 0 && ', '}
+                  <a
+                     {...stylex.props(styles.attributionLink)}
+                     href={image.photographerUrl}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                  >
+                     {image.photographerName}
+                  </a>
+               </span>
+            ))}{' '}
+            on{' '}
+            <a
+               {...stylex.props(styles.attributionLink)}
+               href="https://unsplash.com"
+               target="_blank"
+               rel="noopener noreferrer"
+            >
+               Unsplash
+            </a>
+         </p>
       </div>
    );
 }
@@ -75,14 +100,6 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
             zIndex,
          }}
       >
-         <div {...stylex.props(imageCardStyles.imagePlayBarContainer)}>
-            <div {...stylex.props(imageCardStyles.highlightedPart)}></div>
-            <div {...stylex.props(imageCardStyles.dimmedPart)}></div>
-         </div>
-         <div {...stylex.props(imageCardStyles.reactionBoxContainer)}>
-            <div {...stylex.props(imageCardStyles.commentBorder)}></div>
-            <MdFavorite size={38} />
-         </div>
          <Image
             src={`/loginPageCardsPeople/${image.src}`}
             alt={image.alt}
@@ -91,6 +108,14 @@ function ImageCard({ image, rotation, scale, translateX, translateY, zIndex }: I
             style={{ objectFit: 'cover' }}
             preload
          />
+         <div {...stylex.props(imageCardStyles.imagePlayBarContainer)}>
+            <div {...stylex.props(imageCardStyles.highlightedPart)}></div>
+            <div {...stylex.props(imageCardStyles.dimmedPart)}></div>
+         </div>
+         <div {...stylex.props(imageCardStyles.reactionBoxContainer)}>
+            <div {...stylex.props(imageCardStyles.commentBorder)}></div>
+            <MdFavorite size={38} />
+         </div>
       </div>
    );
 }
