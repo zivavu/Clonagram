@@ -1,0 +1,24 @@
+import { join } from 'path';
+
+export const PROFILE_COUNT = 100;
+export const IMAGE_PROFILE_RATIO = 0.5;
+export const WEBSITE_PROBABILITY = 0.7;
+export const VERIFIED_PROBABILITY = 0.1;
+export const PRIVATE_PROBABILITY = 0.15;
+export const POSTS_PER_PROFILE = { min: 6, max: 12 };
+export const STORIES_PER_PROFILE = { min: 1, max: 14 };
+export const HIGHLIGHTS_PER_PROFILE = { min: 1, max: 3 };
+export const IMAGES_PER_POST = { min: 1, max: 5 };
+export const FOLLOWS_PER_PROFILE = { min: 15, max: 40 };
+export const LIKES_PER_PROFILE = { min: 20, max: 60 };
+export const COMMENTS_PER_PROFILE = { min: 5, max: 15 };
+export const SAME_NICHE_WEIGHT = 0.7;
+export const IMAGE_CONCURRENCY = 5;
+export const WEBP_QUALITY = 85;
+export const BLUR_WIDTH = 20;
+export const AI_BATCH_SIZE = 10;
+export const SAVE_RATIO = 0.2;
+export const REPOST_RATIO = 0.05;
+export const OUTPUT_DIR = join(import.meta.dirname, 'output');
+export const IMAGES_DIR = join(OUTPUT_DIR, 'images');
+export const PROFILES_JSON = join(OUTPUT_DIR, 'profiles.json');
