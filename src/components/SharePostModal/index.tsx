@@ -8,7 +8,7 @@ import { IoCheckmark, IoClose, IoCloseOutline } from 'react-icons/io5';
 import { sharePost } from '@/src/actions/post/sharePost';
 import { toast } from '@/src/components/AppToast';
 import DialogOverlay from '@/src/components/DialogOverlay';
-import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
+import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import { UserListItem } from '@/src/components/UserListItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -32,7 +32,7 @@ export default function SharePostModal() {
       queryFn: async () => {
          if (!authUser?.id) return [];
          const { data } = await followedUsersQuery(supabase, authUser.id);
-         return (data ?? []).map(r => r.user).filter(Boolean);
+         return (data ?? []).map(r => r.user).filter((u): u is NonNullable<typeof u> => u != null);
       },
       enabled: !!authUser?.id,
       staleTime: Infinity,
@@ -50,11 +50,11 @@ export default function SharePostModal() {
 
    const allKnownUsers = [
       ...followedUsers,
-      ...searchResults.filter(r => !followedUsers.some(f => f?.id === r.id)),
+      ...searchResults.filter(r => !followedUsers.some(f => f.id === r.id)),
    ];
 
    const filteredUsers = query.trim() ? searchResults : followedUsers;
-   const selectedUsers = allKnownUsers.filter(u => u && selectedIds.has(u.id));
+   const selectedUsers = allKnownUsers.filter(u => selectedIds.has(u.id));
    const hasSelection = selectedIds.size > 0;
 
    function toggleUser(id: string) {
@@ -124,16 +124,16 @@ export default function SharePostModal() {
                   <span {...stylex.props(styles.toLabel)}>To:</span>
                   <div {...stylex.props(styles.toInputArea)}>
                      {selectedUsers.map(user => (
-                        <span key={user?.id} {...stylex.props(styles.chip)}>
-                           {user?.username}
+                        <span key={user.id} {...stylex.props(styles.chip)}>
+                           {user.full_name || user.username}
                            <button
                               type="button"
                               {...stylex.props(styles.chipRemove)}
                               onClick={e => {
                                  e.stopPropagation();
-                                 if (user?.id) removeUser(user.id);
+                                 removeUser(user.id);
                               }}
-                              aria-label={`Remove ${user?.username}`}
+                              aria-label={`Remove ${user.full_name || user.username}`}
                            >
                               <IoClose size={14} />
                            </button>
