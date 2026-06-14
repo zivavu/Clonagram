@@ -397,6 +397,7 @@ export type Database = {
           sender_id: string
           sticker_url: string | null
           story_id: string | null
+          post_id: string | null
         }
         Insert: {
           content?: string | null
@@ -411,6 +412,7 @@ export type Database = {
           sender_id: string
           sticker_url?: string | null
           story_id?: string | null
+          post_id?: string | null
         }
         Update: {
           content?: string | null
@@ -425,6 +427,7 @@ export type Database = {
           sender_id?: string
           sticker_url?: string | null
           story_id?: string | null
+          post_id?: string | null
         }
         Relationships: [
           {
@@ -453,6 +456,13 @@ export type Database = {
             columns: ["story_id"]
             isOneToOne: false
             referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
             referencedColumns: ["id"]
           },
         ]
