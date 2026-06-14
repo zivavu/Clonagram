@@ -24,7 +24,6 @@
 .DS_Store
 *.pem
 /supabase
-/scripts
 .zed
 
 
