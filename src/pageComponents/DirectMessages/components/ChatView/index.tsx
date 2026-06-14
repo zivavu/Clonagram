@@ -35,10 +35,11 @@ import { useRealtimeChat } from './hooks/useRealtimeChat';
 import ImageMessage from './ImageMessage';
 import ImageViewModal from './ImageViewModal';
 import MessageInput, { type MessageInputHandle } from './MessageInput';
+import MessageText from './MessageText';
 import RequestActions from './RequestActions';
+import PostShareMessage from './PostShareMessage';
 import StickerMessage from './StickerMessage';
 import StoryLikeMessage from './StoryLikeMessage';
-import MessageText from './MessageText';
 
 interface ChatViewProps {
    conversationId: string;
@@ -284,6 +285,8 @@ export default function ChatView({
                                  thumbnailUrl={msg.media_url}
                               />
                            </>
+                        ) : msg.post_id && msg.post ? (
+                           <PostShareMessage post={msg.post} />
                         ) : msg.media_url ? (
                            <ImageMessage src={msg.media_url} onOpen={setViewingImage} />
                         ) : (

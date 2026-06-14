@@ -7,9 +7,9 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { TbDots } from 'react-icons/tb';
-import RepostIcon from '@/src/components/RepostIcon';
 import { getPost } from '@/src/actions/post/getPost';
 import PostMediaCarousel from '@/src/components/PostMediaCarousel';
+import RepostIcon from '@/src/components/RepostIcon';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
@@ -19,7 +19,7 @@ import { useTogglePostRepost } from '@/src/hooks/useTogglePostRepost';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import { queryKeys } from '@/src/lib/queryKeys';
 import type { PostWithMedia } from '@/src/queries/posts';
-import { useOwnerActionsModal } from '@/src/store/createModalStore';
+import { useOwnerActionsModal, useSharePostModal } from '@/src/store/createModalStore';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { colors } from '../../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
@@ -51,6 +51,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
+   const { open: openShareModal } = useSharePostModal();
    const { openPostModal } = useOpenPostModal();
    const currentImageIndex = useRef(0);
 
@@ -156,7 +157,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
                   {(post.repost_count ?? 0) > 0 && <span>{post.repost_count}</span>}
                </button>
             </div>
-            <button type="button" aria-label="Share">
+            <button type="button" aria-label="Share" onClick={() => openShareModal(post.id)}>
                <LuSend size={24} color={colors.textPrimary} />
             </button>
             <button

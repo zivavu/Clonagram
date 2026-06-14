@@ -13,6 +13,7 @@ import RepostIcon from '@/src/components/RepostIcon';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import type { Reel } from '@/src/queries/posts';
+import { useSharePostModal } from '@/src/store/createModalStore';
 import { styles } from './index.stylex';
 
 interface ReelActionRailProps {
@@ -38,6 +39,7 @@ export default function ReelActionRail({
    const [isSaved, setIsSaved] = useState(false);
    const [isReposted, setIsReposted] = useState(false);
    const { mutate: toggleSave, isPending: isSavePending } = useTogglePostSave(reel);
+   const { open: openShareModal } = useSharePostModal();
 
    useEffect(() => {
       if (authUser) {
@@ -119,7 +121,12 @@ export default function ReelActionRail({
             <RepostIcon size={24} isReposted={isReposted} />
          </button>
 
-         <button type="button" aria-label="Share" {...stylex.props(styles.button)}>
+         <button
+            type="button"
+            aria-label="Share"
+            onClick={() => openShareModal(reel.id)}
+            {...stylex.props(styles.button)}
+         >
             <LuSend size={22} />
          </button>
 

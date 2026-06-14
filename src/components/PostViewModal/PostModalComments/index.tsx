@@ -14,12 +14,12 @@ import {
    MdLocationOn,
 } from 'react-icons/md';
 import { TbDots } from 'react-icons/tb';
-import RepostIcon from '@/src/components/RepostIcon';
 import { getPost } from '@/src/actions/post/getPost';
 import CommentItem, { CommentSkeleton, type OnReplyParams } from '@/src/components/CommentItem';
 import EmojiInput, { type EmojiInputRef } from '@/src/components/EmojiInput';
 import FollowButton from '@/src/components/FollowButton';
 import OwnerActionsModal from '@/src/components/OwnerActionsModal';
+import RepostIcon from '@/src/components/RepostIcon';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
@@ -30,7 +30,7 @@ import { useTogglePostRepost } from '@/src/hooks/useTogglePostRepost';
 import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import { queryKeys } from '@/src/lib/queryKeys';
 import type { PostWithMedia } from '@/src/queries/posts';
-import { useOwnerActionsModal } from '@/src/store/createModalStore';
+import { useOwnerActionsModal, useSharePostModal } from '@/src/store/createModalStore';
 import { usePostViewModal } from '@/src/store/usePostViewModalStore';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from './index.stylex';
@@ -49,6 +49,7 @@ interface ActionButton {
 
 export default function PostModalComments({ initialPost }: PostModalCommentsProps) {
    const { open: openOwnerActions } = useOwnerActionsModal();
+   const { open: openShareModal } = useSharePostModal();
    const { close: closePostViewModalStore, returnPath } = usePostViewModal();
    const router = useRouter();
    const { data: authUser } = useAuthUser();
@@ -97,14 +98,19 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
       },
       {
          label: 'Repost',
-         icon: <RepostIcon size={24} isReposted={post.reposts?.some(r => r.user_id === authUser?.id) ?? false} />,
+         icon: (
+            <RepostIcon
+               size={24}
+               isReposted={post.reposts?.some(r => r.user_id === authUser?.id) ?? false}
+            />
+         ),
          isActive: post.reposts?.some(r => r.user_id === authUser?.id) ?? false,
          onClick: togglePostRepost,
       },
       {
          label: 'Share',
          icon: <LuSend size={22} />,
-         onClick: () => {},
+         onClick: () => openShareModal(post.id),
       },
    ] as const;
 
