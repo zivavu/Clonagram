@@ -11,10 +11,12 @@ export const ACTIVE_STORIES_SELECT = `
 `;
 
 export function activeStoriesQuery(supabase: SupabaseClient<Database>) {
+   const now = new Date().toISOString();
    return supabase
       .from('stories')
       .select(ACTIVE_STORIES_SELECT)
-      .gt('expires_at', new Date().toISOString())
+      .gt('expires_at', now)
+      .lte('created_at', now)
       .order('created_at', { ascending: true });
 }
 
@@ -49,11 +51,13 @@ export async function getStoryRingState(
    userId: string,
    authUserId: string | null,
 ) {
+   const now = new Date().toISOString();
    const { data: stories } = await supabase
       .from('stories')
       .select('id, story_views(viewer_id)')
       .eq('user_id', userId)
-      .gt('expires_at', new Date().toISOString());
+      .gt('expires_at', now)
+      .lte('created_at', now);
 
    if (!stories || stories.length === 0) {
       return { hasStories: false, allStoriesViewed: false };

@@ -1,13 +1,35 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { processImage } from './lib/imageProcessor';
-import { downloadImage, getCollectionPhoto, getPortraitPhotoUrl } from './lib/unsplash';
 import { NICHE_COLLECTIONS } from './collections';
 import { IMAGE_CONCURRENCY, IMAGES_DIR, PROFILES_JSON } from './config';
+import { processImage } from './lib/imageProcessor';
+import { downloadImage, getCollectionPhoto, getPortraitPhotoUrl } from './lib/unsplash';
 import type { SeedData } from './types';
+
+async function photoFromNiche(collectionIds: string[]): Promise<string> {
+   const shuffled = [...collectionIds];
+   for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+   }
+   for (const id of shuffled) {
+      try {
+         return await getCollectionPhoto(id);
+      } catch {
+         // try next collection
+      }
+   }
+   throw new Error(`No photos available in any collection for niche: ${collectionIds.join(', ')}`);
+}
 
 async function runBatch(tasks: (() => Promise<void>)[], concurrency: number) {
    for (let i = 0; i < tasks.length; i += concurrency) {
-      await Promise.all(tasks.slice(i, i + concurrency).map(t => t()));
+      const results = await Promise.allSettled(tasks.slice(i, i + concurrency).map(t => t()));
+      for (const r of results) {
+         if (r.status === 'rejected') {
+            const reason = r.reason;
+            throw reason instanceof Error ? reason : new Error(`Task failed: ${JSON.stringify(reason)}`);
+         }
+      }
    }
 }
 
@@ -45,9 +67,7 @@ async function main() {
             tasks.push(async () => {
                if (existsSync(imagePath)) return;
                console.log(`Post image: ${profile.username} p${capturedPi} i${capturedIi}`);
-               const collectionIds = NICHE_COLLECTIONS[profile.niche];
-               const collectionId = collectionIds[Math.floor(Math.random() * collectionIds.length)];
-               const url = await getCollectionPhoto(collectionId);
+               const url = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
                const buf = await downloadImage(url);
                const processed = await processImage(buf, post.aspectRatio);
                writeFileSync(imagePath, processed.buffer);
@@ -68,9 +88,7 @@ async function main() {
          tasks.push(async () => {
             if (existsSync(storyPath)) return;
             console.log(`Story image: ${profile.username} s${capturedSi}`);
-            const collectionIds = NICHE_COLLECTIONS[profile.niche];
-            const collectionId = collectionIds[Math.floor(Math.random() * collectionIds.length)];
-            const url = await getCollectionPhoto(collectionId);
+            const url = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
             const buf = await downloadImage(url);
             const processed = await processImage(buf, '9:16');
             writeFileSync(storyPath, processed.buffer);
@@ -91,6 +109,6 @@ async function main() {
 }
 
 main().catch(err => {
-   console.error(err);
+   console.error('FATAL:', err instanceof Error ? `${err.message}\n${err.stack}` : JSON.stringify(err));
    process.exit(1);
 });

@@ -18,6 +18,7 @@ export function postsWithMediaQuery(supabase: SupabaseClient<Database>) {
    return supabase
       .from('posts')
       .select(POST_WITH_MEDIA_SELECT)
+      .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false })
       .limit(10);
 }
@@ -32,6 +33,7 @@ export function userRecentPostsQuery(supabase: SupabaseClient<Database>, userId:
          'id, images:post_images(url, position), videos:post_videos(mux_playback_id, position)',
       )
       .eq('user_id', userId)
+      .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false })
       .limit(3);
 }
@@ -60,6 +62,7 @@ export function reelsQuery(
         `,
       )
       .eq('type', 'reel')
+      .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false })
       .limit(REELS_PAGE_SIZE);
 
@@ -87,6 +90,7 @@ export function savedPostsQuery(supabase: SupabaseClient<Database>, userId: stri
       .eq('post.likes.user_id', userId)
       .eq('post.saves.user_id', userId)
       .eq('post.reposts.user_id', userId)
+      .lte('post.created_at', new Date().toISOString())
       .order('created_at', { ascending: false });
 }
 

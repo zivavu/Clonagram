@@ -1,28 +1,36 @@
 import { randomUUID } from 'crypto';
 import { mkdirSync, writeFileSync } from 'fs';
-import { generateProfileBatch } from './lib/openrouter';
-import { buildSocialGraph } from './lib/socialGraph';
 import { NICHE_COLLECTIONS } from './collections';
 import {
    AI_BATCH_SIZE,
-   IMAGES_PER_POST,
+   HIGHLIGHTS_PER_PROFILE,
    IMAGE_PROFILE_RATIO,
+   IMAGES_PER_POST,
    OUTPUT_DIR,
    POSTS_PER_PROFILE,
    PRIVATE_PROBABILITY,
    PROFILE_COUNT,
    PROFILES_JSON,
+   SAME_NICHE_WEIGHT,
    STORIES_PER_PROFILE,
-   HIGHLIGHTS_PER_PROFILE,
    VERIFIED_PROBABILITY,
    WEBSITE_PROBABILITY,
-   SAME_NICHE_WEIGHT,
 } from './config';
+import { generateProfileBatch } from './lib/openrouter';
+import { buildSocialGraph } from './lib/socialGraph';
 import type { SeedData, SeedNiche, SeedPost, SeedProfile } from './types';
 
 const NICHES: SeedNiche[] = [
-   'travel', 'fitness', 'food', 'fashion', 'art',
-   'photography', 'lifestyle', 'music', 'tech', 'wellness',
+   'travel',
+   'fitness',
+   'food',
+   'fashion',
+   'art',
+   'photography',
+   'lifestyle',
+   'music',
+   'tech',
+   'wellness',
 ];
 
 function randInt(min: number, max: number) {
@@ -56,9 +64,7 @@ async function main() {
    mkdirSync(OUTPUT_DIR, { recursive: true });
 
    const nicheAssignments: SeedNiche[] = shuffle(
-      NICHES.flatMap(niche =>
-         Array.from({ length: PROFILE_COUNT / NICHES.length }, () => niche),
-      ),
+      NICHES.flatMap(niche => Array.from({ length: PROFILE_COUNT / NICHES.length }, () => niche)),
    );
 
    const imageProfileIndices = new Set(
@@ -74,7 +80,17 @@ async function main() {
       const batchNiches = nicheAssignments.slice(batchStart, batchStart + AI_BATCH_SIZE);
       console.log(`Generating profiles ${batchStart + 1}–${batchStart + batchNiches.length}...`);
 
-      const raw = await generateProfileBatch(batchNiches, batchNiches.length);
+      let raw = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+         try {
+            raw = await generateProfileBatch(batchNiches, batchNiches.length);
+            break;
+         } catch (err) {
+            console.warn(`Batch attempt ${attempt}/3 failed: ${err instanceof Error ? err.message : err}`);
+            if (attempt === 3) throw err;
+         }
+      }
+      if (!raw) throw new Error('Batch failed after 3 attempts');
 
       for (let i = 0; i < batchNiches.length; i++) {
          const profileIndex = batchStart + i;
@@ -169,7 +185,9 @@ async function main() {
 
    writeFileSync(PROFILES_JSON, JSON.stringify(data, null, 2));
    console.log(`✓ Wrote ${profiles.length} profiles → ${PROFILES_JSON}`);
-   console.log(`  Follows: ${graph.follows.length}, Likes: ${graph.likes.length}, Comments: ${graph.comments.length}`);
+   console.log(
+      `  Follows: ${graph.follows.length}, Likes: ${graph.likes.length}, Comments: ${graph.comments.length}`,
+   );
 }
 
 main().catch(err => {

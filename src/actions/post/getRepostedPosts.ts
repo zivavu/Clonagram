@@ -13,6 +13,7 @@ export async function getRepostedPosts(params: { userId: string }) {
       .from('reposts')
       .select(`post:posts!post_id(${POST_WITH_MEDIA_SELECT})`)
       .eq('user_id', userId)
+      .lte('post.created_at', new Date().toISOString())
       .order('created_at', { ascending: false });
 
    if (user) {

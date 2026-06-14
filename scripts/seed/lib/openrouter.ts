@@ -21,6 +21,7 @@ async function callOpenRouter(messages: Message[], maxTokens = 4000) {
          Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({ model: MODEL, messages, max_tokens: maxTokens }),
+      signal: AbortSignal.timeout(120000),
    });
 
    if (!response.ok) {
@@ -68,12 +69,16 @@ Return a JSON array of exactly ${count} objects. Each object must have:
 
 Return ONLY valid JSON array. No markdown fences, no explanation.`;
 
-   const raw = await callOpenRouter([{ role: 'user', content: prompt }], 6000);
+   const raw = await callOpenRouter([{ role: 'user', content: prompt }], 16000);
 
    const match = raw.match(/\[[\s\S]*\]/);
    if (!match) throw new Error(`Could not extract JSON from OpenRouter response: ${raw.slice(0, 200)}`);
 
-   return JSON.parse(match[0]) as RawProfileData[];
+   const parsed = JSON.parse(match[0]) as RawProfileData[];
+   if (!Array.isArray(parsed) || parsed.length < count) {
+      throw new Error(`Expected ${count} profiles, got ${parsed.length ?? 0}`);
+   }
+   return parsed;
 }
 
 export async function generateAltText(imageUrl: string) {

@@ -24,6 +24,7 @@ export async function getArchivedStories() {
          story_videos(mux_playback_id)`,
       )
       .eq('user_id', user.id)
+      .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false });
 
    throwIfError({ error }, 'Failed to fetch archived stories');

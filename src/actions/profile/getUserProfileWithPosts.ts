@@ -25,6 +25,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
           )`,
       )
       .eq('username', username)
+      .lte('posts.created_at', new Date().toISOString())
       .order('created_at', { referencedTable: 'posts', ascending: false });
 
    query = query.eq('posts.likes.user_id', user.id);

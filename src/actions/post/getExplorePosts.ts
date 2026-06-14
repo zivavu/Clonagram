@@ -24,6 +24,7 @@ export async function getExplorePosts(params: {
    let query = supabase
       .from('posts')
       .select(POST_WITH_MEDIA_SELECT)
+      .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false });
 
    if (cursor) query = query.lt('created_at', cursor);

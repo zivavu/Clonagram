@@ -25,6 +25,7 @@ export async function getHomeFeedPosts(params: {
       let query = supabase
          .from('posts')
          .select(POST_WITH_MEDIA_SELECT)
+         .lte('created_at', new Date().toISOString())
          .order('created_at', { ascending: false })
          .limit(PAGE_SIZE);
       if (cursor) query = query.lt('created_at', cursor);
@@ -62,6 +63,7 @@ export async function getHomeFeedPosts(params: {
          'id',
          postIds.map(p => p.id),
       )
+      .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false });
    postsQuery = scopeLikesAndSavesToUser(postsQuery, user.id);
    const { data: posts, error: postsError } = await postsQuery;

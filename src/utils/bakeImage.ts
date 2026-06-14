@@ -146,7 +146,7 @@ export async function bakeImage(media: PostMedia, aspectRatio: AspectRatio) {
    gl.deleteProgram(program);
 
    const [blob, blurDataURL] = await Promise.all([
-      canvasToWebpBlob(canvas, 0.75),
+      canvasToWebpBlob(canvas, 0.85),
       canvasToBlurDataUrl(canvas),
    ]);
 
