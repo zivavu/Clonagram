@@ -120,7 +120,7 @@ export default function StoriesRow({
                         src={currentUser?.avatar_url ?? null}
                         alt="Your story"
                         username={currentUser?.username ?? ''}
-                        size={74}
+                        size={!currentUserStory ? 80 : 74}
                         ringState={{
                            hasStories: !!currentUserStory,
                            allStoriesViewed: allOwnStoriesViewed,

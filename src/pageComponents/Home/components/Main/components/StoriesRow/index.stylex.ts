@@ -10,7 +10,7 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      gap: '18px',
+      gap: '26px',
       overflowX: 'auto',
       paddingBottom: spacing.xs,
       borderBottom: `1px solid ${colors.separator}`,
@@ -27,7 +27,7 @@ export const styles = stylex.create({
       position: 'absolute',
       top: '50%',
       transform: 'translateY(-50%)',
-      zIndex: 1,
+      zIndex: 4,
       transition: 'visibility 0s',
       ':hover': {
          backgroundColor: 'rgba(255, 255, 255, 0.3)',
@@ -85,8 +85,6 @@ export const styles = stylex.create({
    },
    addStoryRingWrapper: {
       position: 'relative',
-      width: '86px',
-      height: '86px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
