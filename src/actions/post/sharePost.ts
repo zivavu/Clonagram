@@ -12,14 +12,12 @@ export async function sharePost(params: {
 }) {
    const { postId, recipientIds, message } = validate(SharePostSchema, params);
    const { supabase, user } = await getAuthUser();
+   if (recipientIds.includes(user.id)) throw new Error('Cannot share with yourself');
+   const uniqueRecipientIds = [...new Set(recipientIds)];
    const trimmedMessage = message?.trim();
 
-   for (const recipientId of recipientIds) {
-      const conversationId = await findOrCreateDirectConversation(
-         supabase,
-         user.id,
-         recipientId,
-      );
+   for (const recipientId of uniqueRecipientIds) {
+      const conversationId = await findOrCreateDirectConversation(supabase, user.id, recipientId);
 
       const { error: msgError } = await supabase.from('messages').insert({
          conversation_id: conversationId,

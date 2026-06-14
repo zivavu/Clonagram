@@ -162,7 +162,7 @@ export const MarkNotificationsReadSchema = z.object({
 export const SharePostSchema = z.object({
    postId: uuid,
    recipientIds: z.array(uuid).min(1).max(50),
-   message: z.string().max(2000).optional(),
+   message: z.string().min(1).max(2000).optional(),
 });
 
 export function validate<T>(schema: z.ZodSchema<T>, input: unknown): T {
