@@ -121,6 +121,8 @@ export default function ChatView({
          sticker_url: null,
          media_url: null,
          story_id: null,
+         post_id: null,
+         post: null,
          created_at: new Date().toISOString(),
          sender_id: authUserId,
          is_deleted: false,

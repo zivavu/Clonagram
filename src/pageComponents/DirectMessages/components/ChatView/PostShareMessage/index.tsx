@@ -33,6 +33,7 @@ export default function PostShareMessage({ post }: PostShareMessageProps) {
                   userId={post.user.id}
                   disableLink
                   useHoverCard={false}
+                  showStoryRing={false}
                />
                <span {...stylex.props(styles.username)}>{post.user.username}</span>
             </div>
@@ -40,7 +41,7 @@ export default function PostShareMessage({ post }: PostShareMessageProps) {
          {firstImageUrl && (
             <Image
                src={firstImageUrl}
-               alt=""
+               alt={post.caption ?? 'Shared post'}
                width={220}
                height={220}
                {...stylex.props(styles.image)}
