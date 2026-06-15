@@ -10,11 +10,7 @@ import { extractStoryMedia } from '@/src/queries/stories';
 import type { Database } from '@/src/types/database';
 import type { StoryEntry } from './getActiveStories';
 
-function highlightEntriesQuery(
-   supabase: SupabaseClient<Database>,
-   userId: string,
-   hideAi = false,
-) {
+function highlightEntriesQuery(supabase: SupabaseClient<Database>, userId: string, hideAi = false) {
    let query = supabase
       .from('story_highlights')
       .select(

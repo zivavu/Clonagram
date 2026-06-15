@@ -1,10 +1,10 @@
 'use server';
 import 'server-only';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { CursorSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
-import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { hideLikesForNonOwners, nextCursorFrom, scopeLikesAndSavesToUser } from '../../utils/posts';
 import { getOptionalUser } from '../getAuthUser';
 

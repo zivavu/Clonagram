@@ -1,10 +1,10 @@
 'use server';
 import 'server-only';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { throwIfError } from '@/src/lib/unwrap';
 import { CursorNullableSchema, validate } from '@/src/lib/validation';
 import { reelsQuery } from '@/src/queries/posts';
 import { hideLikesForNonOwners } from '@/src/utils/posts';
-import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { getOptionalUser } from '../getAuthUser';
 
 export async function getReels(params: { cursor?: string | null }) {

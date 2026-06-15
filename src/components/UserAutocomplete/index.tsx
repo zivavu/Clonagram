@@ -40,12 +40,12 @@ export default function UserAutocomplete({
    const { data: filtered = [] } = useQuery({
       queryKey: queryKeys.profileSearch(query, authUser?.id),
       queryFn: async () => {
-          const { data, error } = await userProfilesQuery(supabase, {
-             search: query,
-             limit: 8,
-             excludeId: authUser?.id,
-             hideAi: authUser?.hide_ai_content ?? false,
-          });
+         const { data, error } = await userProfilesQuery(supabase, {
+            search: query,
+            limit: 8,
+            excludeId: authUser?.id,
+            hideAi: authUser?.hide_ai_content ?? false,
+         });
          if (error) throw error;
          return data;
       },

@@ -1,7 +1,7 @@
 'use server';
 import 'server-only';
-import { PostIdSchema, validate } from '@/src/lib/validation';
 import { getHideAiContent } from '@/src/lib/getHideAiContent';
+import { PostIdSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 import { hideLikesForNonOwners } from '../../utils/posts';

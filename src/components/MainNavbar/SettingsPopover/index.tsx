@@ -97,47 +97,47 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
                   </button>
                </div>
 
-                {!isAnonymous && (
-                   <>
-                      <div {...stylex.props(styles.separator)} />
-                      <div {...stylex.props(styles.appearanceRow)}>
-                         <span {...stylex.props(styles.appearanceLabel)}>
-                            <RiRobot2Line size={18} />
-                            Hide AI content
-                         </span>
-                         <button
-                            type="button"
-                            aria-label="Toggle AI content visibility"
-                            disabled={isTogglingHideAi}
-                            onClick={() => {
-                               handleToggleHideAi();
-                            }}
-                            {...stylex.props(
-                               styles.toggle,
-                               hideAiContent ? styles.toggleOn : styles.toggleOff,
-                            )}
-                         >
-                            <span
-                               {...stylex.props(
-                                  styles.toggleKnob,
-                                  hideAiContent ? styles.toggleKnobOn : styles.toggleKnobOff,
-                               )}
-                            />
-                         </button>
-                      </div>
-                   </>
-                )}
+               {!isAnonymous && (
+                  <>
+                     <div {...stylex.props(styles.separator)} />
+                     <div {...stylex.props(styles.appearanceRow)}>
+                        <span {...stylex.props(styles.appearanceLabel)}>
+                           <RiRobot2Line size={18} />
+                           Hide AI content
+                        </span>
+                        <button
+                           type="button"
+                           aria-label="Toggle AI content visibility"
+                           disabled={isTogglingHideAi}
+                           onClick={() => {
+                              handleToggleHideAi();
+                           }}
+                           {...stylex.props(
+                              styles.toggle,
+                              hideAiContent ? styles.toggleOn : styles.toggleOff,
+                           )}
+                        >
+                           <span
+                              {...stylex.props(
+                                 styles.toggleKnob,
+                                 hideAiContent ? styles.toggleKnobOn : styles.toggleKnobOff,
+                              )}
+                           />
+                        </button>
+                     </div>
+                  </>
+               )}
 
-                <div {...stylex.props(styles.separator)} />
+               <div {...stylex.props(styles.separator)} />
 
-                <button
-                   type="button"
-                   onClick={() => {
-                      handleLogout();
-                      close();
-                   }}
-                   {...stylex.props(styles.item)}
-                >
+               <button
+                  type="button"
+                  onClick={() => {
+                     handleLogout();
+                     close();
+                  }}
+                  {...stylex.props(styles.item)}
+               >
                   <TbLogout size={18} />
                   Log out
                </button>

@@ -34,19 +34,19 @@ export default function ReelItem({
    const video = reel.videos[0];
    const isOwnReel = authUser?.id === reel.user.id;
 
-    const { data: comments } = useQuery({
-       queryKey: queryKeys.comments(reel.id, authUser?.hide_ai_content ?? false),
-       queryFn: async () => {
-          const { data, error } = await postCommentsQuery(
-             supabase,
-             reel.id,
-             authUser?.hide_ai_content ?? false,
-          );
-          if (error) throw error;
-          return data;
-       },
-       staleTime: Infinity,
-    });
+   const { data: comments } = useQuery({
+      queryKey: queryKeys.comments(reel.id, authUser?.hide_ai_content ?? false),
+      queryFn: async () => {
+         const { data, error } = await postCommentsQuery(
+            supabase,
+            reel.id,
+            authUser?.hide_ai_content ?? false,
+         );
+         if (error) throw error;
+         return data;
+      },
+      staleTime: Infinity,
+   });
 
    const commentCount = comments?.length ?? reel.comment_count ?? 0;
    const containerRef = useClickOutside<HTMLDivElement>(onCloseComments, isCommentsOpen);

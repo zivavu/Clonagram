@@ -47,7 +47,10 @@ export async function getUserHighlights(params: { userId: string }) {
          );
          for (const item of sorted) {
             const url = item.stories?.story_images?.[0]?.url;
-            if (url) { coverUrl = url; break; }
+            if (url) {
+               coverUrl = url;
+               break;
+            }
          }
       }
 

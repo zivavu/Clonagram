@@ -1,8 +1,8 @@
 'use server';
 import 'server-only';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { UsernameParamSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
-import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { getFollowStatus } from '../../queries/followStatus';
 import { hideLikesForNonOwners } from '../../utils/posts';
 import { getAuthUser } from '../getAuthUser';

@@ -1,8 +1,8 @@
 'use server';
 import 'server-only';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { throwIfError } from '@/src/lib/unwrap';
 import { UserIdSchema, validate } from '@/src/lib/validation';
-import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { POST_WITH_MEDIA_SELECT } from '@/src/queries/posts';
 import { getOptionalUser } from '../getAuthUser';
 

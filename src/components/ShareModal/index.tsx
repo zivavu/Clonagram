@@ -47,12 +47,12 @@ export default function ShareModal({ isOpen, id, onClose, onSend, description }:
       queryKey: queryKeys.userSearch(query),
       queryFn: async () => {
          if (!query.trim()) return [];
-          const { data } = await userProfilesQuery(supabase, {
-             search: query,
-             limit: 20,
-             excludeId: authUser?.id,
-             hideAi: authUser?.hide_ai_content ?? false,
-          });
+         const { data } = await userProfilesQuery(supabase, {
+            search: query,
+            limit: 20,
+            excludeId: authUser?.id,
+            hideAi: authUser?.hide_ai_content ?? false,
+         });
          return data ?? [];
       },
       staleTime: 30_000,
