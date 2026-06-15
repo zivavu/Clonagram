@@ -1,5 +1,5 @@
 export const PROFILE_BASE_SELECT =
-   'id, username, full_name, avatar_url, bio, website, gender' as const;
+   'id, username, full_name, avatar_url, bio, website, gender, hide_ai_content' as const;
 
 export const PROFILE_LIST_SELECT = 'id, username, full_name, avatar_url' as const;
 

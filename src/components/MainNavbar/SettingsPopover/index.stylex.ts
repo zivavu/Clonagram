@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors, radius, spacing } from '../../styles/tokens.stylex';
+import { colors, radius, spacing } from '../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
@@ -9,6 +9,7 @@ export const styles = stylex.create({
       padding: `${spacing.xs} 0`,
       minWidth: '230px',
       boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+      overflow: 'hidden',
       outline: 'none',
    },
    item: {

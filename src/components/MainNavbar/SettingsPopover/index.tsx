@@ -6,18 +6,24 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
-import { RiMenuFill } from 'react-icons/ri';
+import { RiMenuFill, RiRobot2Line } from 'react-icons/ri';
 import { TbLogout, TbTrash } from 'react-icons/tb';
 import { deleteAccount } from '@/src/actions/auth/deleteAccount';
+import { toggleHideAiContent } from '@/src/actions/profile/toggleHideAiContent';
 import { supabase } from '@/src/lib/supabase/client';
 import { useSettingsPopoverStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
-import { toast } from '../AppToast';
-import DeleteConfirmModal from '../DeleteConfirmModal';
-import { styles as buttonStyles } from '../MainNavbar/index.stylex';
+import { toast } from '../../AppToast';
+import DeleteConfirmModal from '../../DeleteConfirmModal';
+import { styles as buttonStyles } from '../index.stylex';
 import { styles } from './index.stylex';
 
-export function SettingsPopoverButton() {
+interface SettingsPopoverButtonProps {
+   hideAiContent: boolean;
+   isAnonymous: boolean;
+}
+
+export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPopoverButtonProps) {
    const { isOpen, toggle, close } = useSettingsPopoverStore();
    const { isDark, toggle: toggleTheme } = useThemeStore();
    const router = useRouter();
@@ -25,6 +31,20 @@ export function SettingsPopoverButton() {
 
    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+   const [isTogglingHideAi, setIsTogglingHideAi] = useState(false);
+
+   async function handleToggleHideAi() {
+      if (isTogglingHideAi) return;
+      setIsTogglingHideAi(true);
+      try {
+         await toggleHideAiContent(!hideAiContent);
+         queryClient.invalidateQueries();
+      } catch (error) {
+         toast(error instanceof Error ? error.message : 'Could not update setting. Try again.');
+      } finally {
+         setIsTogglingHideAi(false);
+      }
+   }
 
    async function handleLogout() {
       await supabase.auth.signOut();
@@ -77,16 +97,47 @@ export function SettingsPopoverButton() {
                   </button>
                </div>
 
-               <div {...stylex.props(styles.separator)} />
+                {!isAnonymous && (
+                   <>
+                      <div {...stylex.props(styles.separator)} />
+                      <div {...stylex.props(styles.appearanceRow)}>
+                         <span {...stylex.props(styles.appearanceLabel)}>
+                            <RiRobot2Line size={18} />
+                            Hide AI content
+                         </span>
+                         <button
+                            type="button"
+                            aria-label="Toggle AI content visibility"
+                            disabled={isTogglingHideAi}
+                            onClick={() => {
+                               handleToggleHideAi();
+                            }}
+                            {...stylex.props(
+                               styles.toggle,
+                               hideAiContent ? styles.toggleOn : styles.toggleOff,
+                            )}
+                         >
+                            <span
+                               {...stylex.props(
+                                  styles.toggleKnob,
+                                  hideAiContent ? styles.toggleKnobOn : styles.toggleKnobOff,
+                               )}
+                            />
+                         </button>
+                      </div>
+                   </>
+                )}
 
-               <button
-                  type="button"
-                  onClick={() => {
-                     handleLogout();
-                     close();
-                  }}
-                  {...stylex.props(styles.item)}
-               >
+                <div {...stylex.props(styles.separator)} />
+
+                <button
+                   type="button"
+                   onClick={() => {
+                      handleLogout();
+                      close();
+                   }}
+                   {...stylex.props(styles.item)}
+                >
                   <TbLogout size={18} />
                   Log out
                </button>

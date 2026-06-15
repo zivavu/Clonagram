@@ -119,6 +119,7 @@ export type Database = {
           created_at: string | null
           edited_at: string | null
           id: string
+          is_ai: boolean
           is_deleted: boolean
           like_count: number
           parent_id: string | null
@@ -132,6 +133,7 @@ export type Database = {
           created_at?: string | null
           edited_at?: string | null
           id?: string
+          is_ai?: boolean
           is_deleted?: boolean
           like_count?: number
           parent_id?: string | null
@@ -145,6 +147,7 @@ export type Database = {
           created_at?: string | null
           edited_at?: string | null
           id?: string
+          is_ai?: boolean
           is_deleted?: boolean
           like_count?: number
           parent_id?: string | null
@@ -392,12 +395,12 @@ export type Database = {
           id: string
           is_deleted: boolean
           media_url: string | null
+          post_id: string | null
           read_at: string | null
           reply_to_id: string | null
           sender_id: string
           sticker_url: string | null
           story_id: string | null
-          post_id: string | null
         }
         Insert: {
           content?: string | null
@@ -407,12 +410,12 @@ export type Database = {
           id?: string
           is_deleted?: boolean
           media_url?: string | null
+          post_id?: string | null
           read_at?: string | null
           reply_to_id?: string | null
           sender_id: string
           sticker_url?: string | null
           story_id?: string | null
-          post_id?: string | null
         }
         Update: {
           content?: string | null
@@ -422,12 +425,12 @@ export type Database = {
           id?: string
           is_deleted?: boolean
           media_url?: string | null
+          post_id?: string | null
           read_at?: string | null
           reply_to_id?: string | null
           sender_id?: string
           sticker_url?: string | null
           story_id?: string | null
-          post_id?: string | null
         }
         Relationships: [
           {
@@ -435,6 +438,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
             referencedColumns: ["id"]
           },
           {
@@ -456,13 +466,6 @@ export type Database = {
             columns: ["story_id"]
             isOneToOne: false
             referencedRelation: "stories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
             referencedColumns: ["id"]
           },
         ]
@@ -760,39 +763,6 @@ export type Database = {
           },
         ]
       }
-      reposts: {
-        Row: {
-          created_at: string | null
-          post_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          post_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          post_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "reposts_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reposts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       post_shares: {
         Row: {
           created_at: string | null
@@ -895,6 +865,7 @@ export type Database = {
           created_at: string | null
           hide_likes: boolean
           id: string
+          is_ai: boolean
           is_archived: boolean
           like_count: number
           location_lat: number | null
@@ -914,12 +885,13 @@ export type Database = {
           created_at?: string | null
           hide_likes?: boolean
           id?: string
+          is_ai?: boolean
           is_archived?: boolean
           like_count?: number
-          repost_count?: number
           location_lat?: number | null
           location_lon?: number | null
           location_name?: string | null
+          repost_count?: number
           share_to_clonedbook?: boolean
           type: string
           updated_at?: string | null
@@ -933,6 +905,7 @@ export type Database = {
           created_at?: string | null
           hide_likes?: boolean
           id?: string
+          is_ai?: boolean
           is_archived?: boolean
           like_count?: number
           location_lat?: number | null
@@ -961,7 +934,9 @@ export type Database = {
           created_at: string | null
           full_name: string | null
           gender: string | null
+          hide_ai_content: boolean
           id: string
+          is_ai: boolean
           is_private: boolean
           is_verified: boolean
           updated_at: string | null
@@ -974,7 +949,9 @@ export type Database = {
           created_at?: string | null
           full_name?: string | null
           gender?: string | null
+          hide_ai_content?: boolean
           id: string
+          is_ai?: boolean
           is_private?: boolean
           is_verified?: boolean
           updated_at?: string | null
@@ -987,7 +964,9 @@ export type Database = {
           created_at?: string | null
           full_name?: string | null
           gender?: string | null
+          hide_ai_content?: boolean
           id?: string
+          is_ai?: boolean
           is_private?: boolean
           is_verified?: boolean
           updated_at?: string | null
@@ -1031,6 +1010,39 @@ export type Database = {
           {
             foreignKeyName: "reports_reporter_id_fkey"
             columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reposts: {
+        Row: {
+          created_at: string | null
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reposts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reposts_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1175,18 +1187,21 @@ export type Database = {
           created_at: string | null
           expires_at: string
           id: string
+          is_ai: boolean
           user_id: string
         }
         Insert: {
           created_at?: string | null
           expires_at?: string
           id?: string
+          is_ai?: boolean
           user_id: string
         }
         Update: {
           created_at?: string | null
           expires_at?: string
           id?: string
+          is_ai?: boolean
           user_id?: string
         }
         Relationships: [
@@ -1240,6 +1255,7 @@ export type Database = {
           cover_url: string | null
           created_at: string | null
           id: string
+          is_ai: boolean
           title: string
           updated_at: string | null
           user_id: string
@@ -1248,6 +1264,7 @@ export type Database = {
           cover_url?: string | null
           created_at?: string | null
           id?: string
+          is_ai?: boolean
           title: string
           updated_at?: string | null
           user_id: string
@@ -1256,6 +1273,7 @@ export type Database = {
           cover_url?: string | null
           created_at?: string | null
           id?: string
+          is_ai?: boolean
           title?: string
           updated_at?: string | null
           user_id?: string
