@@ -41,12 +41,12 @@ export default function ProfileHoverCard({ userId, children }: ProfileHoverCardP
       staleTime: Infinity,
    });
 
-   const { data: posts = [] } = useQuery({
-      queryKey: queryKeys.profileRecentPosts(userId),
-      queryFn: async () => getUserRecentPosts(userId),
-      enabled: open,
-      staleTime: Infinity,
-   });
+    const { data: posts = [] } = useQuery({
+       queryKey: queryKeys.profileRecentPosts(userId, authedUser?.hide_ai_content ?? false),
+       queryFn: async () => getUserRecentPosts(userId, authedUser?.hide_ai_content ?? false),
+       enabled: open,
+       staleTime: Infinity,
+    });
 
    const isOwner = authedUser?.id === userId;
 

@@ -4,6 +4,7 @@ import { CursorSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { hideLikesForNonOwners, nextCursorFrom, scopeLikesAndSavesToUser } from '../../utils/posts';
 import { getOptionalUser } from '../getAuthUser';
 
@@ -20,6 +21,7 @@ export async function getExplorePosts(params: {
 }) {
    const { variant, cursor } = validate(CursorSchema, params);
    const { supabase, user } = await getOptionalUser();
+   const hideAi = user ? await getHideAiContent(supabase) : false;
 
    let query = supabase
       .from('posts')
@@ -28,6 +30,7 @@ export async function getExplorePosts(params: {
       .order('created_at', { ascending: false });
 
    if (cursor) query = query.lt('created_at', cursor);
+   if (hideAi) query = query.eq('is_ai', false);
 
    if (!user) {
       const { data, error } = await query.limit(PAGE_SIZE);

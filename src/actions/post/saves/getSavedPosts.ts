@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { throwIfError } from '@/src/lib/unwrap';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { savedPostsQuery } from '@/src/queries/posts';
 import { getOptionalUser } from '../../getAuthUser';
 
@@ -9,7 +10,8 @@ export async function getSavedPosts() {
 
    if (!user) return [];
 
-   const { data, error } = await savedPostsQuery(supabase, user.id);
+   const hideAi = await getHideAiContent(supabase);
+   const { data, error } = await savedPostsQuery(supabase, user.id, hideAi);
    throwIfError({ error }, 'Failed to get saved posts');
 
    return (data ?? []).map(item => item.post);

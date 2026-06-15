@@ -2,6 +2,7 @@
 import 'server-only';
 import { UsernameParamSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { getFollowStatus } from '../../queries/followStatus';
 import { hideLikesForNonOwners } from '../../utils/posts';
 import { getAuthUser } from '../getAuthUser';
@@ -9,25 +10,27 @@ import { getAuthUser } from '../getAuthUser';
 export async function getUserProfileWithPosts(params: { username: string }) {
    const { username } = validate(UsernameParamSchema, params);
    const { supabase, user } = await getAuthUser();
+   const hideAi = await getHideAiContent(supabase);
 
    let query = supabase
       .from('profiles')
       .select(
          `id, username, full_name, bio, avatar_url, website, is_verified, is_private,
-          followers:follows!following_id(count),
-          following:follows!follower_id(count),
-          posts!user_id(
-             id, caption, created_at, aspect_ratio, hide_likes, type,
-             like_count, comment_count,
-             likes(user_id),
-             images:post_images(id, url, position, width, height),
-             videos:post_videos(id, mux_playback_id, duration, position, width, height)
-          )`,
+           followers:follows!following_id(count),
+           following:follows!follower_id(count),
+           posts!user_id(
+              id, caption, created_at, aspect_ratio, hide_likes, type,
+              like_count, comment_count,
+              likes(user_id),
+              images:post_images(id, url, position, width, height),
+              videos:post_videos(id, mux_playback_id, duration, position, width, height)
+           )`,
       )
       .eq('username', username)
       .lte('posts.created_at', new Date().toISOString())
       .order('created_at', { referencedTable: 'posts', ascending: false });
 
+   if (hideAi) query = query.eq('posts.is_ai', false);
    query = query.eq('posts.likes.user_id', user.id);
 
    const { data, error } = await query.single();

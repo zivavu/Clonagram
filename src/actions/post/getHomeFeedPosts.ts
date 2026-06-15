@@ -4,6 +4,7 @@ import { CursorSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { hideLikesForNonOwners, nextCursorFrom, scopeLikesAndSavesToUser } from '../../utils/posts';
 import { getOptionalUser } from '../getAuthUser';
 
@@ -20,6 +21,7 @@ export async function getHomeFeedPosts(params: {
 }) {
    const { variant, cursor } = validate(CursorSchema, params);
    const { supabase, user } = await getOptionalUser();
+   const hideAi = user ? await getHideAiContent(supabase) : false;
 
    if (variant === 'home') {
       let query = supabase
@@ -29,6 +31,7 @@ export async function getHomeFeedPosts(params: {
          .order('created_at', { ascending: false })
          .limit(PAGE_SIZE);
       if (cursor) query = query.lt('created_at', cursor);
+      if (hideAi) query = query.eq('is_ai', false);
       if (user) {
          query = scopeLikesAndSavesToUser(query, user.id);
       }
@@ -65,6 +68,7 @@ export async function getHomeFeedPosts(params: {
       )
       .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false });
+   if (hideAi) postsQuery = postsQuery.eq('is_ai', false);
    postsQuery = scopeLikesAndSavesToUser(postsQuery, user.id);
    const { data: posts, error: postsError } = await postsQuery;
 

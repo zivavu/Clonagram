@@ -47,24 +47,29 @@ export function reelsQuery(
    supabase: SupabaseClient<Database>,
    userId?: string,
    cursor?: string | null,
+   hideAi?: boolean,
 ) {
    let query = supabase
       .from('posts')
       .select(
          `
-           id, caption, created_at, aspect_ratio, hide_likes, comments_off,
-           like_count, comment_count, repost_count, location_name,
-           likes(user_id),
-           saves(user_id),
-           reposts(user_id),
-           user:profiles!user_id(${PROFILE_LIST_SELECT_BADGES}),
-           videos:post_videos(id, mux_playback_id, duration, position, width, height)
-        `,
+            id, caption, created_at, aspect_ratio, hide_likes, comments_off,
+            like_count, comment_count, repost_count, location_name,
+            likes(user_id),
+            saves(user_id),
+            reposts(user_id),
+            user:profiles!user_id(${PROFILE_LIST_SELECT_BADGES}),
+            videos:post_videos(id, mux_playback_id, duration, position, width, height)
+         `,
       )
       .eq('type', 'reel')
       .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false })
       .limit(REELS_PAGE_SIZE);
+
+   if (hideAi) {
+      query = query.eq('is_ai', false);
+   }
 
    if (userId) {
       query = query
@@ -82,8 +87,12 @@ export function reelsQuery(
 export type Reels = QueryData<ReturnType<typeof reelsQuery>>;
 export type Reel = Reels[number];
 
-export function savedPostsQuery(supabase: SupabaseClient<Database>, userId: string) {
-   return supabase
+export function savedPostsQuery(
+   supabase: SupabaseClient<Database>,
+   userId: string,
+   hideAi?: boolean,
+) {
+   let query = supabase
       .from('saves')
       .select(`post_id, post:posts!post_id(${POST_WITH_MEDIA_SELECT})`)
       .eq('user_id', userId)
@@ -92,6 +101,12 @@ export function savedPostsQuery(supabase: SupabaseClient<Database>, userId: stri
       .eq('post.reposts.user_id', userId)
       .lte('post.created_at', new Date().toISOString())
       .order('created_at', { ascending: false });
+
+   if (hideAi) {
+      query = query.eq('post.is_ai', false);
+   }
+
+   return query;
 }
 
 export type SavedPosts = QueryData<ReturnType<typeof savedPostsQuery>>;

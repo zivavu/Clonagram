@@ -23,9 +23,9 @@ export async function getProfileCard(params: { userId: string }) {
    return data as UserProfileCard | null;
 }
 
-export async function getUserRecentPosts(userId: string) {
+export async function getUserRecentPosts(userId: string, hideAi = false) {
    const supabase = await createServerClient();
-   const { data, error } = await supabase
+   let query = supabase
       .from('posts')
       .select(
          'id, images:post_images(url, position), videos:post_videos(mux_playback_id, position)',
@@ -33,6 +33,10 @@ export async function getUserRecentPosts(userId: string) {
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .limit(3);
+
+   if (hideAi) query = query.eq('is_ai', false);
+
+   const { data, error } = await query;
 
    throwIfError({ error }, 'Failed to fetch recent posts');
    return data ?? [];

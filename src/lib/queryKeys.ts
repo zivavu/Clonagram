@@ -14,7 +14,8 @@ export const queryKeys = {
    profileSearch: (query: string, userId?: string) =>
       ['profiles', 'search', query, userId ?? null] as const,
    profileCard: (userId: string) => ['profile-card', userId] as const,
-   profileRecentPosts: (userId: string) => ['profile-recent-posts', userId] as const,
+   profileRecentPosts: (userId: string, hideAi?: boolean) =>
+      ['profile-recent-posts', userId, hideAi ?? false] as const,
    storyStatus: (userId: string) => ['storyStatus', userId] as const,
    notifications: (userId: string) => ['notifications', userId] as const,
    allConversations: () => ['conversations'] as const,
