@@ -54,7 +54,10 @@ async function refillPortraitPool() {
 
 export async function getPortraitPhotoUrl(): Promise<string> {
    if (!portraitPool.length) {
-      if (!portraitRefill) portraitRefill = refillPortraitPool().finally(() => { portraitRefill = null; });
+      if (!portraitRefill)
+         portraitRefill = refillPortraitPool().finally(() => {
+            portraitRefill = null;
+         });
       await portraitRefill;
    }
    return portraitPool.splice(Math.floor(Math.random() * portraitPool.length), 1)[0];

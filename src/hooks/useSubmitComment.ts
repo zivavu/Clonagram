@@ -14,17 +14,17 @@ export function useSubmitComment(postId: string, commentsKey: QueryKey) {
       onMutate: async ({ content, parentId }) => {
          if (!authUser) return {};
 
-          const optimistic: PostComment = {
-             id: `optimistic-${Date.now()}`,
-             content,
-             created_at: new Date().toISOString(),
-             like_count: 0,
-             reply_count: 0,
-             parent_id: parentId ?? null,
-             is_ai: false,
-             comment_likes: [],
-             user: { id: authUser.id, username: authUser.username, avatar_url: authUser.avatar_url },
-          };
+         const optimistic: PostComment = {
+            id: `optimistic-${Date.now()}`,
+            content,
+            created_at: new Date().toISOString(),
+            like_count: 0,
+            reply_count: 0,
+            parent_id: parentId ?? null,
+            is_ai: false,
+            comment_likes: [],
+            user: { id: authUser.id, username: authUser.username, avatar_url: authUser.avatar_url },
+         };
 
          if (parentId) {
             const repliesKey = queryKeys.replies(parentId);

@@ -46,11 +46,12 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
       setIsTogglingHideAi(true);
       try {
          await toggleHideAiContent(next);
-         window.location.reload();
       } catch (error) {
          setOptimisticHideAi(hideAiContent);
          setIsTogglingHideAi(false);
          toast(error instanceof Error ? error.message : 'Could not update setting. Try again.');
+      } finally {
+         setIsTogglingHideAi(false);
       }
    }
 

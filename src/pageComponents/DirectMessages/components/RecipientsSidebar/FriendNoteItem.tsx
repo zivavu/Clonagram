@@ -14,7 +14,7 @@ export default function FriendNoteItem({ entry }: { entry: NoteEntry }) {
             size={74}
             username={entry.username}
             userId={entry.userId}
-            href={`/${entry.username}`}
+            href={`/profile/${entry.username}`}
             useHoverCard={false}
          />
          <span {...stylex.props(styles.noteItemLabel)}>{entry.username}</span>

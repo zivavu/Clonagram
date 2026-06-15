@@ -51,9 +51,7 @@ async function main() {
             highlight_id: highlight.id,
             position: pos,
          }));
-         const { error: itemError } = await supabase
-            .from('story_highlight_items')
-            .insert(items);
+         const { error: itemError } = await supabase.from('story_highlight_items').insert(items);
          if (itemError) throw new Error(`story_highlight_items insert: ${itemError.message}`);
       }
 

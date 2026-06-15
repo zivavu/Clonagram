@@ -30,10 +30,8 @@ export async function processImage(
    const imgRatio = srcW / srcH;
    const cropRatio = outW / outH;
 
-   const cropW =
-      imgRatio >= cropRatio ? Math.round(srcH * cropRatio) : srcW;
-   const cropH =
-      imgRatio >= cropRatio ? srcH : Math.round(srcW / cropRatio);
+   const cropW = imgRatio >= cropRatio ? Math.round(srcH * cropRatio) : srcW;
+   const cropH = imgRatio >= cropRatio ? srcH : Math.round(srcW / cropRatio);
 
    const left = Math.round((srcW - cropW) / 2);
    const top = Math.round((srcH - cropH) / 2);

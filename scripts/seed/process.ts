@@ -27,7 +27,9 @@ async function runBatch(tasks: (() => Promise<void>)[], concurrency: number) {
       for (const r of results) {
          if (r.status === 'rejected') {
             const reason = r.reason;
-            throw reason instanceof Error ? reason : new Error(`Task failed: ${JSON.stringify(reason)}`);
+            throw reason instanceof Error
+               ? reason
+               : new Error(`Task failed: ${JSON.stringify(reason)}`);
          }
       }
    }
@@ -109,6 +111,9 @@ async function main() {
 }
 
 main().catch(err => {
-   console.error('FATAL:', err instanceof Error ? `${err.message}\n${err.stack}` : JSON.stringify(err));
+   console.error(
+      'FATAL:',
+      err instanceof Error ? `${err.message}\n${err.stack}` : JSON.stringify(err),
+   );
    process.exit(1);
 });

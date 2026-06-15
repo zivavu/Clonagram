@@ -133,13 +133,16 @@ async function main() {
          }));
 
          const storyIndices = Array.from({ length: stories.length }, (_, i) => i);
-         const highlights = r.highlights.filter(h => h?.title).slice(0, highlightCount).map(h => ({
-            id: randomUUID(),
-            title: h.title.slice(0, 15),
-            storyIds: pickRandom(storyIndices, randInt(2, Math.min(6, stories.length))).map(
-               idx => stories[idx].id,
-            ),
-         }));
+         const highlights = r.highlights
+            .filter(h => h?.title)
+            .slice(0, highlightCount)
+            .map(h => ({
+               id: randomUUID(),
+               title: h.title.slice(0, 15),
+               storyIds: pickRandom(storyIndices, randInt(2, Math.min(6, stories.length))).map(
+                  idx => stories[idx].id,
+               ),
+            }));
 
          const domainBase = r.username.replace(/[._]/g, '');
          const website =

@@ -1,13 +1,13 @@
 import { randomUUID } from 'crypto';
-import type { SeedProfile, SeedGraph, SeedNiche } from '../types';
 import {
+   COMMENTS_PER_PROFILE,
    FOLLOWS_PER_PROFILE,
    LIKES_PER_PROFILE,
-   COMMENTS_PER_PROFILE,
+   REPOST_RATIO,
    SAME_NICHE_WEIGHT,
    SAVE_RATIO,
-   REPOST_RATIO,
 } from '../config';
+import type { SeedGraph, SeedNiche, SeedProfile } from '../types';
 
 function randInt(min: number, max: number) {
    return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -57,10 +57,7 @@ export function buildSocialGraph(profiles: SeedProfile[]): SeedGraph {
       const sameCount = Math.round(followCount * SAME_NICHE_WEIGHT);
       const otherCount = followCount - sameCount;
 
-      const followed = [
-         ...pickRandom(sameNiche, sameCount),
-         ...pickRandom(otherNiche, otherCount),
-      ];
+      const followed = [...pickRandom(sameNiche, sameCount), ...pickRandom(otherNiche, otherCount)];
 
       for (const target of followed) {
          follows.push({ followerId: profile.id, followingId: target.id });
