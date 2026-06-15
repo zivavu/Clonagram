@@ -6,13 +6,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
-import { RiMenuFill, RiRobot2Line } from 'react-icons/ri';
+import { RiLoader4Line, RiMenuFill, RiRobot2Line } from 'react-icons/ri';
 import { TbLogout, TbTrash } from 'react-icons/tb';
 import { deleteAccount } from '@/src/actions/auth/deleteAccount';
 import { toggleHideAiContent } from '@/src/actions/profile/toggleHideAiContent';
 import { supabase } from '@/src/lib/supabase/client';
 import { useSettingsPopoverStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
+import { colors } from '../../../styles/tokens.stylex';
 import { toast } from '../../AppToast';
 import DeleteConfirmModal from '../../DeleteConfirmModal';
 import { styles as buttonStyles } from '../index.stylex';
@@ -117,12 +118,18 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
                               hideAiContent ? styles.toggleOn : styles.toggleOff,
                            )}
                         >
-                           <span
-                              {...stylex.props(
-                                 styles.toggleKnob,
-                                 hideAiContent ? styles.toggleKnobOn : styles.toggleKnobOff,
-                              )}
-                           />
+                           {isTogglingHideAi ? (
+                              <span {...stylex.props(styles.spinner)}>
+                                 <RiLoader4Line size={14} color={colors.white} />
+                              </span>
+                           ) : (
+                              <span
+                                 {...stylex.props(
+                                    styles.toggleKnob,
+                                    hideAiContent ? styles.toggleKnobOn : styles.toggleKnobOff,
+                                 )}
+                              />
+                           )}
                         </button>
                      </div>
                   </>

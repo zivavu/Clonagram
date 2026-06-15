@@ -1,6 +1,11 @@
 import * as stylex from '@stylexjs/stylex';
 import { colors, radius, spacing } from '../../../styles/tokens.stylex';
 
+const spin = stylex.keyframes({
+   from: { transform: 'rotate(0deg)' },
+   to: { transform: 'rotate(360deg)' },
+});
+
 export const styles = stylex.create({
    root: {
       backgroundColor: colors.bgBubble,
@@ -79,5 +84,21 @@ export const styles = stylex.create({
    },
    toggleKnobOff: {
       left: '2px',
+   },
+   spinner: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      width: '16px',
+      height: '16px',
+      marginTop: '-8px',
+      marginLeft: '-8px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      animationName: spin,
+      animationDuration: '0.8s',
+      animationTimingFunction: 'linear',
+      animationIterationCount: 'infinite',
    },
 });
