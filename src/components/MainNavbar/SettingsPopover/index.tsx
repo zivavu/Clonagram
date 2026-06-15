@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover
 import * as stylex from '@stylexjs/stylex';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { RiLoader4Line, RiMenuFill, RiRobot2Line } from 'react-icons/ri';
 import { TbLogout, TbTrash } from 'react-icons/tb';
@@ -33,14 +33,22 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
    const [isTogglingHideAi, setIsTogglingHideAi] = useState(false);
+   const [optimisticHideAi, setOptimisticHideAi] = useState(hideAiContent);
+
+   useEffect(() => {
+      setOptimisticHideAi(hideAiContent);
+   }, [hideAiContent]);
 
    async function handleToggleHideAi() {
       if (isTogglingHideAi) return;
+      const next = !hideAiContent;
+      setOptimisticHideAi(next);
       setIsTogglingHideAi(true);
       try {
-         await toggleHideAiContent(!hideAiContent);
+         await toggleHideAiContent(next);
          queryClient.invalidateQueries();
       } catch (error) {
+         setOptimisticHideAi(hideAiContent);
          toast(error instanceof Error ? error.message : 'Could not update setting. Try again.');
       } finally {
          setIsTogglingHideAi(false);
@@ -115,7 +123,7 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
                            }}
                            {...stylex.props(
                               styles.toggle,
-                              hideAiContent ? styles.toggleOn : styles.toggleOff,
+                              optimisticHideAi ? styles.toggleOn : styles.toggleOff,
                            )}
                         >
                            {isTogglingHideAi ? (
@@ -126,7 +134,7 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
                               <span
                                  {...stylex.props(
                                     styles.toggleKnob,
-                                    hideAiContent ? styles.toggleKnobOn : styles.toggleKnobOff,
+                                    optimisticHideAi ? styles.toggleKnobOn : styles.toggleKnobOff,
                                  )}
                               />
                            )}
