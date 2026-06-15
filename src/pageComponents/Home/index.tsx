@@ -2,7 +2,6 @@ import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import AiFilterReloadWrapper from '@/src/components/AiFilterReloadWrapper';
 import Main from './components/Main';
 import MainSkeleton from './components/Main/MainSkeleton';
 import RightSidebar from './components/RightSidebar';
@@ -47,17 +46,13 @@ export default async function HomePage({ variant }: { variant: 'following' | 'ho
          </div>
          <Separator {...stylex.props(styles.separator)} />
          <div {...stylex.props(styles.mainContainer)}>
-            <AiFilterReloadWrapper skeleton={<MainSkeleton />}>
-               <Suspense fallback={<MainSkeleton />}>
-                  <Main variant={variant} />
-               </Suspense>
-            </AiFilterReloadWrapper>
+            <Suspense fallback={<MainSkeleton />}>
+               <Main variant={variant} />
+            </Suspense>
             <div {...stylex.props(styles.sidebarSlot)}>
-               <AiFilterReloadWrapper skeleton={<RightSidebarSkeleton />}>
-                  <Suspense fallback={<RightSidebarSkeleton />}>
-                     <RightSidebar />
-                  </Suspense>
-               </AiFilterReloadWrapper>
+               <Suspense fallback={<RightSidebarSkeleton />}>
+                  <RightSidebar />
+               </Suspense>
                <SidebarFooter />
             </div>
          </div>

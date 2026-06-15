@@ -12,7 +12,6 @@ import { deleteAccount } from '@/src/actions/auth/deleteAccount';
 import { toggleHideAiContent } from '@/src/actions/profile/toggleHideAiContent';
 import { supabase } from '@/src/lib/supabase/client';
 import { useSettingsPopoverStore } from '@/src/store/createModalStore';
-import { useAiFilterStore } from '@/src/store/useAiFilterStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { colors } from '../../../styles/tokens.stylex';
 import { toast } from '../../AppToast';
@@ -35,7 +34,6 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
    const [isTogglingHideAi, setIsTogglingHideAi] = useState(false);
    const [optimisticHideAi, setOptimisticHideAi] = useState(hideAiContent);
-   const setAiFilterReloading = useAiFilterStore(state => state.setReloading);
 
    useEffect(() => {
       setOptimisticHideAi(hideAiContent);
@@ -46,16 +44,13 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
       const next = !hideAiContent;
       setOptimisticHideAi(next);
       setIsTogglingHideAi(true);
-      setAiFilterReloading(true);
       try {
          await toggleHideAiContent(next);
-         queryClient.invalidateQueries();
+         window.location.reload();
       } catch (error) {
          setOptimisticHideAi(hideAiContent);
-         setAiFilterReloading(false);
-         toast(error instanceof Error ? error.message : 'Could not update setting. Try again.');
-      } finally {
          setIsTogglingHideAi(false);
+         toast(error instanceof Error ? error.message : 'Could not update setting. Try again.');
       }
    }
 
