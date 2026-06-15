@@ -7,17 +7,22 @@ interface UserProfilesQueryOptions {
    order?: 'asc' | 'desc';
    search?: string;
    excludeId?: string;
+   hideAi?: boolean;
 }
 
 export function userProfilesQuery(
    supabase: SupabaseClient<Database>,
-   { limit, order, search, excludeId }: UserProfilesQueryOptions,
+   { limit, order, search, excludeId, hideAi }: UserProfilesQueryOptions,
 ) {
    let q = supabase
       .from('profiles')
       .select(`${PROFILE_LIST_SELECT}, is_private`)
       .order('created_at', { ascending: order === 'asc' })
       .limit(limit ?? 10);
+
+   if (hideAi) {
+      q = q.eq('is_ai', false);
+   }
 
    if (search) {
       q = q.or(`username.ilike.%${search}%,full_name.ilike.%${search}%`);

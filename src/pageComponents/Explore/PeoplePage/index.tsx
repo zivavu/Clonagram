@@ -17,11 +17,12 @@ export default async function PeoplePage({ tab }: { tab: string | null }) {
    const supabase = await createServerClient();
    const profile = await getAuthProfile(supabase);
 
-   const { data: users, error } = await userProfilesQuery(supabase, {
-      limit: 30,
-      excludeId: profile?.id,
-      order: isMore ? 'asc' : 'desc',
-   });
+    const { data: users, error } = await userProfilesQuery(supabase, {
+       limit: 30,
+       excludeId: profile?.id,
+       order: isMore ? 'asc' : 'desc',
+       hideAi: profile?.hide_ai_content ?? false,
+    });
 
    if (error) return 'Failed to load suggested users';
 

@@ -43,7 +43,11 @@ export default function NewMessageModal() {
       queryKey: queryKeys.userSearch(query),
       queryFn: async () => {
          if (!query.trim()) return [];
-         const { data } = await userProfilesQuery(supabase, { search: query, limit: 20 });
+          const { data } = await userProfilesQuery(supabase, {
+             search: query,
+             limit: 20,
+             hideAi: false,
+          });
          return data ?? [];
       },
       staleTime: 30_000,
