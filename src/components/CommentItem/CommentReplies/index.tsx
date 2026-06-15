@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
+import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { commentRepliesQuery } from '@/src/queries/comments';
@@ -15,12 +16,14 @@ interface CommentRepliesProps {
 }
 
 export default function CommentReplies({ parentId, onReply, postOwnerId }: CommentRepliesProps) {
-   const repliesKey = queryKeys.replies(parentId);
+   const { data: authUser } = useAuthUser();
+   const hideAi = authUser?.hide_ai_content ?? false;
+   const repliesKey = queryKeys.replies(parentId, hideAi);
 
    const { data: replies = [], isLoading } = useQuery({
       queryKey: repliesKey,
       queryFn: async () => {
-         const { data, error } = await commentRepliesQuery(supabase, parentId);
+         const { data, error } = await commentRepliesQuery(supabase, parentId, hideAi);
          if (error) throw error;
          return data;
       },

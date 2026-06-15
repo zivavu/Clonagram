@@ -8,8 +8,9 @@ export const queryKeys = {
    authUser: () => ['authUser'] as const,
    post: (id: string) => ['post', id] as const,
    postForEdit: (id: string) => ['post-for-edit', id] as const,
-   comments: (postId: string) => ['comments', postId] as const,
-   replies: (parentId: string) => ['replies', parentId] as const,
+   comments: (postId: string, hideAi?: boolean) => ['comments', postId, hideAi ?? false] as const,
+   replies: (parentId: string, hideAi?: boolean) =>
+      ['replies', parentId, hideAi ?? false] as const,
    reels: () => ['reels'] as const,
    profileSearch: (query: string, userId?: string) =>
       ['profiles', 'search', query, userId ?? null] as const,
