@@ -250,9 +250,25 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
          .map(s => s.id),
    );
 
+   const seenTitles = new Set<string>();
+   const uniqueHighlights = profile.highlights.filter(h => {
+      const key = h.title.toLowerCase();
+      if (seenTitles.has(key)) return false;
+      seenTitles.add(key);
+      return true;
+   });
+
+   // Distribute stories non-overlappingly across highlights
+   const storyPool = [...storiesWithMedia].sort(() => Math.random() - 0.5);
+   const chunkSize = Math.max(2, Math.floor(storyPool.length / Math.max(1, uniqueHighlights.length)));
+   const highlightsWithStories = uniqueHighlights.map((h, i) => ({
+      ...h,
+      storyIds: storyPool.slice(i * chunkSize, (i + 1) * chunkSize),
+   })).filter(h => h.storyIds.length >= 2);
+
    await Promise.all(
-      profile.highlights.map(async highlight => {
-         const validStoryIds = highlight.storyIds.filter(id => storiesWithMedia.has(id));
+      highlightsWithStories.map(async highlight => {
+         const validStoryIds = highlight.storyIds;
          if (validStoryIds.length === 0) return;
 
          const { error: hlError } = await supabase.from('story_highlights').insert({

@@ -3,8 +3,12 @@ import { supabase } from './lib/supabaseAdmin';
 async function deleteStorageFolder(bucket: string, prefix: string) {
    const { data: objects } = await supabase.storage.from(bucket).list(prefix);
    if (!objects?.length) return;
-   const paths = objects.map(o => `${prefix}/${o.name}`);
-   await supabase.storage.from(bucket).remove(paths);
+
+   const files = objects.filter(o => o.id !== null).map(o => `${prefix}/${o.name}`);
+   const folders = objects.filter(o => o.id === null).map(o => o.name);
+
+   if (files.length) await supabase.storage.from(bucket).remove(files);
+   for (const folder of folders) await deleteStorageFolder(bucket, `${prefix}/${folder}`);
 }
 
 async function main() {

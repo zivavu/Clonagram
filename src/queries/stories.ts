@@ -10,13 +10,21 @@ export const ACTIVE_STORIES_SELECT = `
    story_reactions(user_id)
 `;
 
+function getOneMonthAgoISO() {
+   const date = new Date();
+   date.setMonth(date.getMonth() - 1);
+   return date.toISOString();
+}
+
 export function activeStoriesQuery(supabase: SupabaseClient<Database>) {
    const now = new Date().toISOString();
+   const oneMonthAgo = getOneMonthAgoISO();
    return supabase
       .from('stories')
       .select(ACTIVE_STORIES_SELECT)
       .gt('expires_at', now)
       .lte('created_at', now)
+      .gte('created_at', oneMonthAgo)
       .order('created_at', { ascending: true });
 }
 
@@ -52,12 +60,14 @@ export async function getStoryRingState(
    authUserId: string | null,
 ) {
    const now = new Date().toISOString();
+   const oneMonthAgo = getOneMonthAgoISO();
    const { data: stories } = await supabase
       .from('stories')
       .select('id, story_views(viewer_id)')
       .eq('user_id', userId)
       .gt('expires_at', now)
-      .lte('created_at', now);
+      .lte('created_at', now)
+      .gte('created_at', oneMonthAgo);
 
    if (!stories || stories.length === 0) {
       return { hasStories: false, allStoriesViewed: false };
