@@ -69,6 +69,7 @@ export default function VoiceMessage({ src }: VoiceMessageProps) {
       const bars = computeWaveform(decoded);
       waveformRef.current = bars;
       setWaveform(bars);
+      setDuration(decoded.duration);
    }
 
    async function handleToggle() {
