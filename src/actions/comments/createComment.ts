@@ -31,7 +31,7 @@ export async function createComment(params: {
          parent_id: parentId ?? null,
       })
       .select(
-         'id, content, created_at, like_count, reply_count, parent_id, user:profiles!user_id(id, username, avatar_url), comment_likes(user_id)',
+         'id, content, created_at, like_count, reply_count, parent_id, is_ai, user:profiles!user_id(id, username, avatar_url), comment_likes(user_id)',
       )
       .single();
 
