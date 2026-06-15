@@ -23,6 +23,7 @@ interface MessageInputProps {
    onSend: (text: string) => Promise<void>;
    onSendSticker: (url: string) => Promise<void>;
    onSendImages: (files: File[]) => Promise<void>;
+   onStartRecording: () => void;
 }
 
 export interface MessageInputHandle {
@@ -33,7 +34,7 @@ const MAX_LENGTH = 1000;
 const MAX_IMAGES = 10;
 
 const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function MessageInput(
-   { onSend, onSendSticker, onSendImages }: MessageInputProps,
+   { onSend, onSendSticker, onSendImages, onStartRecording }: MessageInputProps,
    ref,
 ) {
    const isDark = useThemeStore(s => s.isDark);
@@ -233,7 +234,10 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
                      </button>
                   ) : (
                      <>
-                        <IoMicOutline {...stylex.props(styles.inputIcon)} />
+                        <IoMicOutline
+                           {...stylex.props(styles.inputIcon)}
+                           onClick={onStartRecording}
+                        />
                         <TbPhoto
                            {...stylex.props(styles.inputIcon)}
                            onClick={() => fileInputRef.current?.click()}

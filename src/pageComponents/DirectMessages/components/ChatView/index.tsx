@@ -11,6 +11,7 @@ import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { sendImage } from '@/src/actions/dm/sendImage';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { sendSticker } from '@/src/actions/dm/sendSticker';
+import { sendVoiceMessage } from '@/src/actions/dm/sendVoiceMessage';
 import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
@@ -40,6 +41,8 @@ import PostShareMessage from './PostShareMessage';
 import RequestActions from './RequestActions';
 import StickerMessage from './StickerMessage';
 import StoryLikeMessage from './StoryLikeMessage';
+import VoiceMessage from './VoiceMessage';
+import VoiceRecorder from './VoiceRecorder';
 
 interface ChatViewProps {
    conversationId: string;
@@ -66,6 +69,7 @@ export default function ChatView({
    const inputRef = useRef<MessageInputHandle>(null);
    const messagesKey = queryKeys.messages(conversationId);
    const [viewingImage, setViewingImage] = useState<string | null>(null);
+   const [isRecording, setIsRecording] = useState(false);
 
    const { getRootProps, isDragActive } = useDropzone({
       noClick: true,
@@ -120,6 +124,7 @@ export default function ChatView({
          content: null,
          sticker_url: null,
          media_url: null,
+         audio_url: null,
          story_id: null,
          post_id: null,
          post: null,
@@ -277,6 +282,8 @@ export default function ChatView({
                            />
                         ) : msg.post_id && msg.post ? (
                            <PostShareMessage post={msg.post} />
+                        ) : msg.audio_url ? (
+                           <VoiceMessage src={msg.audio_url} />
                         ) : msg.media_url ? (
                            <ImageMessage src={msg.media_url} onOpen={setViewingImage} />
                         ) : (
@@ -326,9 +333,40 @@ export default function ChatView({
                senderUserId={participants.find(p => p.user_id !== authUserId)?.user_id ?? ''}
                senderProfile={otherParticipant ?? null}
             />
+         ) : isRecording ? (
+            <VoiceRecorder
+               onCancel={() => setIsRecording(false)}
+               onSend={async (blob: Blob) => {
+                  const previewUrl = URL.createObjectURL(blob);
+                  const optimisticMsg = createOptimisticMessage({ audio_url: previewUrl });
+                  queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
+                     ...(prev ?? []),
+                     optimisticMsg,
+                  ]);
+                  try {
+                     const fileName = `${crypto.randomUUID()}.webm`;
+                     const { error: uploadError } = await supabase.storage
+                        .from('messages')
+                        .upload(fileName, blob, { contentType: blob.type || 'audio/webm' });
+                     if (uploadError) throw uploadError;
+                     const { data: urlData } = supabase.storage
+                        .from('messages')
+                        .getPublicUrl(fileName);
+                     await sendVoiceMessage(conversationId, urlData.publicUrl);
+                  } catch {
+                     toast('Failed to send voice message');
+                  } finally {
+                     URL.revokeObjectURL(previewUrl);
+                     setIsRecording(false);
+                     queryClient.invalidateQueries({ queryKey: messagesKey });
+                     queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
+                  }
+               }}
+            />
          ) : (
             <MessageInput
                ref={inputRef}
+               onStartRecording={() => setIsRecording(true)}
                onSendSticker={async (url: string) => {
                   const optimisticMsg = createOptimisticMessage({ sticker_url: url });
                   queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
