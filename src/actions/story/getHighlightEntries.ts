@@ -2,6 +2,7 @@
 import 'server-only';
 
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 import { UsernameParamSchema, validate } from '@/src/lib/validation';
@@ -9,15 +10,19 @@ import { extractStoryMedia } from '@/src/queries/stories';
 import type { Database } from '@/src/types/database';
 import type { StoryEntry } from './getActiveStories';
 
-function highlightEntriesQuery(supabase: SupabaseClient<Database>, userId: string) {
-   return supabase
+function highlightEntriesQuery(
+   supabase: SupabaseClient<Database>,
+   userId: string,
+   hideAi = false,
+) {
+   let query = supabase
       .from('story_highlights')
       .select(
          `id, title, updated_at,
           story_highlight_items(
             position,
             stories!story_highlight_items_story_id_fkey(
-              id, created_at,
+              id, created_at, is_ai,
               story_images(url, blur_data_url),
               story_videos(mux_playback_id)
             )
@@ -25,6 +30,12 @@ function highlightEntriesQuery(supabase: SupabaseClient<Database>, userId: strin
       )
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
+
+   if (hideAi) {
+      query = query.eq('is_ai', false);
+   }
+
+   return query;
 }
 
 type HighlightEntriesData = QueryData<ReturnType<typeof highlightEntriesQuery>>;
@@ -32,6 +43,8 @@ type HighlightEntriesData = QueryData<ReturnType<typeof highlightEntriesQuery>>;
 export async function getHighlightEntries(params: { username: string }) {
    const { username } = validate(UsernameParamSchema, params);
    const supabase = await createServerClient();
+   const { data: authData } = await supabase.auth.getUser();
+   const hideAi = authData.user ? await getHideAiContent(supabase) : false;
 
    const { data: profile, error: profileError } = await supabase
       .from('profiles')
@@ -42,7 +55,11 @@ export async function getHighlightEntries(params: { username: string }) {
 
    if (!profile) return { entries: [], profileUserId: '' };
 
-   const { data: raw, error: entriesError } = await highlightEntriesQuery(supabase, profile.id);
+   const { data: raw, error: entriesError } = await highlightEntriesQuery(
+      supabase,
+      profile.id,
+      hideAi,
+   );
    throwIfError({ error: entriesError }, 'Failed to fetch highlight entries');
 
    const highlights: HighlightEntriesData = raw ?? [];
@@ -58,6 +75,7 @@ export async function getHighlightEntries(params: { username: string }) {
          for (const item of sorted) {
             const s = item.stories;
             if (!s) continue;
+            if (hideAi && s.is_ai) continue;
             const media = extractStoryMedia(s);
             if (!media) continue;
             stories.push({

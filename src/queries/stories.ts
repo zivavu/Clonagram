@@ -16,16 +16,22 @@ function getOneMonthAgoISO() {
    return date.toISOString();
 }
 
-export function activeStoriesQuery(supabase: SupabaseClient<Database>) {
+export function activeStoriesQuery(supabase: SupabaseClient<Database>, hideAi = false) {
    const now = new Date().toISOString();
    const oneMonthAgo = getOneMonthAgoISO();
-   return supabase
+   let query = supabase
       .from('stories')
       .select(ACTIVE_STORIES_SELECT)
       .gt('expires_at', now)
       .lte('created_at', now)
       .gte('created_at', oneMonthAgo)
       .order('created_at', { ascending: true });
+
+   if (hideAi) {
+      query = query.eq('is_ai', false);
+   }
+
+   return query;
 }
 
 export type ActiveStories = QueryData<ReturnType<typeof activeStoriesQuery>>;
@@ -58,16 +64,23 @@ export async function getStoryRingState(
    supabase: SupabaseClient<Database>,
    userId: string,
    authUserId: string | null,
+   hideAi = false,
 ) {
    const now = new Date().toISOString();
    const oneMonthAgo = getOneMonthAgoISO();
-   const { data: stories } = await supabase
+   let query = supabase
       .from('stories')
       .select('id, story_views(viewer_id)')
       .eq('user_id', userId)
       .gt('expires_at', now)
       .lte('created_at', now)
       .gte('created_at', oneMonthAgo);
+
+   if (hideAi) {
+      query = query.eq('is_ai', false);
+   }
+
+   const { data: stories } = await query;
 
    if (!stories || stories.length === 0) {
       return { hasStories: false, allStoriesViewed: false };

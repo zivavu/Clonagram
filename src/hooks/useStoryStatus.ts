@@ -7,11 +7,13 @@ import { getStoryRingState } from '@/src/queries/stories';
 export function useStoryStatus(userId: string | undefined) {
    const { data: authUser } = useAuthUser();
 
+   const hideAi = authUser?.hide_ai_content ?? false;
+
    return useQuery({
-      queryKey: userId ? queryKeys.storyStatus(userId) : ['storyStatus'],
+      queryKey: userId ? queryKeys.storyStatus(userId, hideAi) : ['storyStatus'],
       queryFn: async () => {
          if (!userId) return { hasStories: false, allStoriesViewed: false };
-         return getStoryRingState(supabase, userId, authUser?.id ?? null);
+         return getStoryRingState(supabase, userId, authUser?.id ?? null, hideAi);
       },
       enabled: !!userId && !!authUser,
       staleTime: 30_000,

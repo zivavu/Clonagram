@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { throwIfError } from '@/src/lib/unwrap';
 import { activeStoriesQuery, extractStoryMedia } from '@/src/queries/stories';
 import { getOptionalUser } from '../getAuthUser';
@@ -8,8 +9,9 @@ import { getOptionalUser } from '../getAuthUser';
 export async function getActiveStories() {
    const { supabase, user } = await getOptionalUser();
    const currentUserId = user?.id ?? null;
+   const hideAi = user ? await getHideAiContent(supabase) : false;
 
-   const { data, error } = await activeStoriesQuery(supabase);
+   const { data, error } = await activeStoriesQuery(supabase, hideAi);
 
    throwIfError({ error }, 'Failed to fetch stories');
 

@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 
+import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 import { UserIdSchema, validate } from '@/src/lib/validation';
@@ -14,8 +15,10 @@ export type UserHighlight = {
 export async function getUserHighlights(params: { userId: string }) {
    const { userId } = validate(UserIdSchema, params);
    const supabase = await createServerClient();
+   const { data: authData } = await supabase.auth.getUser();
+   const hideAi = authData.user ? await getHideAiContent(supabase) : false;
 
-   const { data, error } = await supabase
+   let query = supabase
       .from('story_highlights')
       .select(
          `id, title, cover_url,
@@ -28,6 +31,10 @@ export async function getUserHighlights(params: { userId: string }) {
       )
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
+
+   if (hideAi) query = query.eq('is_ai', false);
+
+   const { data, error } = await query;
 
    throwIfError({ error }, 'Failed to fetch highlights');
 
