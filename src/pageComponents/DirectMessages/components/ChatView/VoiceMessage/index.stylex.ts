@@ -29,6 +29,8 @@ export const styles = stylex.create({
       alignItems: 'center',
       gap: '1.5px',
       overflow: 'hidden',
+      position: 'relative',
+      cursor: 'pointer',
    },
    bar: {
       width: '3px',
@@ -40,6 +42,18 @@ export const styles = stylex.create({
    },
    barUnplayed: {
       backgroundColor: 'rgba(255, 255, 255, 0.4)',
+   },
+   playhead: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      width: '2px',
+      backgroundColor: '#ffffff',
+      borderRadius: '1px',
+      left: '0%',
+      transform: 'translateX(-50%)',
+      pointerEvents: 'none',
+      boxShadow: '0 0 3px rgba(255, 255, 255, 0.5)',
    },
    timer: {
       fontSize: '0.75rem',

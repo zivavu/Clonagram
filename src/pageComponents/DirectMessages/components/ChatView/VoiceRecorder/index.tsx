@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useRef, useState } from 'react';
-import { IoClose, IoSend, IoStop } from 'react-icons/io5';
+import { IoClose, IoPause, IoPlay, IoSend } from 'react-icons/io5';
 import { styles } from './index.stylex';
 
 const MAX_SECONDS = 60;
@@ -21,6 +21,7 @@ interface VoiceRecorderProps {
 export default function VoiceRecorder({ onSend, onCancel }: VoiceRecorderProps) {
    const [elapsed, setElapsed] = useState(0);
    const [sending, setSending] = useState(false);
+   const [isPaused, setIsPaused] = useState(false);
 
    const onSendRef = useRef(onSend);
    onSendRef.current = onSend;
@@ -29,23 +30,75 @@ export default function VoiceRecorder({ onSend, onCancel }: VoiceRecorderProps) 
 
    const stopAndSendRef = useRef<(() => Promise<void>) | undefined>(undefined);
    const handleCancelRef = useRef<(() => void) | undefined>(undefined);
+   const togglePauseRef = useRef<(() => void) | undefined>(undefined);
+   const progressFillRef = useRef<HTMLDivElement | null>(null);
 
    useEffect(() => {
       let active = true;
       let stream: MediaStream | null = null;
       let recorder: MediaRecorder | null = null;
       const chunks: Blob[] = [];
-      let timer: ReturnType<typeof setInterval> | null = null;
+      let rafHandle: number | null = null;
       let sent = false;
+      let paused = false;
+      let startTime = 0;
+      let pauseStart = 0;
 
       function stopStream() {
-         stream?.getTracks().forEach(t => t.stop());
+         for (const track of stream?.getTracks() ?? []) track.stop();
+      }
+
+      function stopRAF() {
+         if (rafHandle !== null) {
+            cancelAnimationFrame(rafHandle);
+            rafHandle = null;
+         }
+      }
+
+      function tickProgress() {
+         if (!active || paused) return;
+         const secs = (Date.now() - startTime) / 1000;
+
+         if (progressFillRef.current) {
+            progressFillRef.current.style.width = `${Math.min((secs / MAX_SECONDS) * 100, 100)}%`;
+         }
+         if (active) setElapsed(Math.floor(secs));
+
+         if (secs >= MAX_SECONDS) {
+            stopRAF();
+            pauseRecording();
+         } else {
+            rafHandle = requestAnimationFrame(tickProgress);
+         }
+      }
+
+      function pauseRecording() {
+         if (paused || !recorder || recorder.state !== 'recording') return;
+         paused = true;
+         pauseStart = Date.now();
+         recorder.pause();
+         stopRAF();
+         if (active) setIsPaused(true);
+      }
+
+      function resumeRecording() {
+         if (!paused || !recorder || recorder.state !== 'paused') return;
+         paused = false;
+         startTime += Date.now() - pauseStart;
+         recorder.resume();
+         rafHandle = requestAnimationFrame(tickProgress);
+         if (active) setIsPaused(false);
+      }
+
+      function togglePause() {
+         if (paused) resumeRecording();
+         else pauseRecording();
       }
 
       async function stopAndSend() {
          if (sent) return;
          sent = true;
-         if (timer) clearInterval(timer);
+         stopRAF();
          stopStream();
 
          if (recorder && recorder.state !== 'inactive') {
@@ -72,7 +125,8 @@ export default function VoiceRecorder({ onSend, onCancel }: VoiceRecorderProps) 
 
       function handleCancel() {
          sent = true;
-         if (timer) clearInterval(timer);
+         paused = true;
+         stopRAF();
          if (recorder && recorder.state !== 'inactive') recorder.stop();
          stopStream();
          onCancelRef.current();
@@ -80,6 +134,7 @@ export default function VoiceRecorder({ onSend, onCancel }: VoiceRecorderProps) 
 
       stopAndSendRef.current = stopAndSend;
       handleCancelRef.current = handleCancel;
+      togglePauseRef.current = togglePause;
 
       async function init() {
          try {
@@ -98,17 +153,8 @@ export default function VoiceRecorder({ onSend, onCancel }: VoiceRecorderProps) 
             };
             recorder.start(100);
 
-            timer = setInterval(() => {
-               if (!active) return;
-               setElapsed(prev => {
-                  const next = prev + 1;
-                  if (next >= MAX_SECONDS) {
-                     clearInterval(timer!);
-                     setTimeout(() => stopAndSend(), 0);
-                  }
-                  return next;
-               });
-            }, 1000);
+            startTime = Date.now();
+            rafHandle = requestAnimationFrame(tickProgress);
          } catch {
             if (active) onCancelRef.current();
          }
@@ -118,12 +164,10 @@ export default function VoiceRecorder({ onSend, onCancel }: VoiceRecorderProps) 
 
       return () => {
          active = false;
-         if (timer) clearInterval(timer);
+         stopRAF();
          stopStream();
       };
    }, []);
-
-   const progress = (elapsed / MAX_SECONDS) * 100;
 
    return (
       <div {...stylex.props(styles.container)}>
@@ -136,15 +180,15 @@ export default function VoiceRecorder({ onSend, onCancel }: VoiceRecorderProps) 
             <IoClose />
          </button>
          <div {...stylex.props(styles.pill)}>
-            <div {...stylex.props(styles.progressFill)} style={{ width: `${progress}%` }} />
+            <div ref={progressFillRef} {...stylex.props(styles.progressFill)} />
             <div {...stylex.props(styles.pillContent)}>
                <button
                   type="button"
                   {...stylex.props(styles.stopButton)}
-                  onClick={() => handleCancelRef.current?.()}
+                  onClick={() => togglePauseRef.current?.()}
                   disabled={sending}
                >
-                  <IoStop size={20} />
+                  {isPaused ? <IoPlay size={20} /> : <IoPause size={20} />}
                </button>
                <div {...stylex.props(styles.spacer)} />
                <span {...stylex.props(styles.timer)}>{formatTime(elapsed)}</span>

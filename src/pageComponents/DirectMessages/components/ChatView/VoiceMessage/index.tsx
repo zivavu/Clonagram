@@ -39,22 +39,47 @@ interface VoiceMessageProps {
 export default function VoiceMessage({ src }: VoiceMessageProps) {
    const audioRef = useRef<HTMLAudioElement | null>(null);
    const waveformRef = useRef<number[] | null>(null);
+   const playheadRef = useRef<HTMLDivElement | null>(null);
+   const rafRef = useRef<number | null>(null);
+   const durationRef = useRef(0);
+
    const [waveform, setWaveform] = useState<number[]>([]);
    const [isPlaying, setIsPlaying] = useState(false);
    const [currentTime, setCurrentTime] = useState(0);
    const [duration, setDuration] = useState(0);
 
+   function stopRAF() {
+      if (rafRef.current !== null) {
+         cancelAnimationFrame(rafRef.current);
+         rafRef.current = null;
+      }
+   }
+
+   function startRAF() {
+      function tick() {
+         const audio = audioRef.current;
+         const ph = playheadRef.current;
+         const dur = durationRef.current;
+         if (!audio || !ph || dur <= 0) return;
+         const fraction = Math.min(audio.currentTime / dur, 1);
+         ph.style.left = `${fraction * 100}%`;
+         if (!audio.paused && !audio.ended) {
+            rafRef.current = requestAnimationFrame(tick);
+         }
+      }
+      rafRef.current = requestAnimationFrame(tick);
+   }
+
    function ensureAudio() {
       if (audioRef.current) return audioRef.current;
       const audio = new Audio(src);
       audioRef.current = audio;
-      audio.addEventListener('loadedmetadata', () => {
-         if (Number.isFinite(audio.duration)) setDuration(audio.duration);
-      });
       audio.addEventListener('timeupdate', () => setCurrentTime(audio.currentTime));
       audio.addEventListener('ended', () => {
          setIsPlaying(false);
          setCurrentTime(0);
+         stopRAF();
+         if (playheadRef.current) playheadRef.current.style.left = '0%';
       });
       return audio;
    }
@@ -69,7 +94,19 @@ export default function VoiceMessage({ src }: VoiceMessageProps) {
       const bars = computeWaveform(decoded);
       waveformRef.current = bars;
       setWaveform(bars);
+      durationRef.current = decoded.duration;
       setDuration(decoded.duration);
+   }
+
+   function handleWaveformClick(e: React.MouseEvent<HTMLDivElement>) {
+      const audio = ensureAudio();
+      const dur = durationRef.current;
+      if (dur <= 0) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const fraction = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      audio.currentTime = fraction * dur;
+      setCurrentTime(fraction * dur);
+      if (playheadRef.current) playheadRef.current.style.left = `${fraction * 100}%`;
    }
 
    async function handleToggle() {
@@ -78,9 +115,11 @@ export default function VoiceMessage({ src }: VoiceMessageProps) {
       if (isPlaying) {
          audio.pause();
          setIsPlaying(false);
+         stopRAF();
       } else {
          await audio.play();
          setIsPlaying(true);
+         startRAF();
       }
    }
 
@@ -94,7 +133,9 @@ export default function VoiceMessage({ src }: VoiceMessageProps) {
          <button type="button" {...stylex.props(styles.playButton)} onClick={handleToggle}>
             {isPlaying ? <FaPause size={12} color="#fff" /> : <FaPlay size={12} color="#fff" />}
          </button>
-         <div {...stylex.props(styles.waveformArea)}>
+         {/* biome-ignore lint/a11y/noStaticElementInteractions: seek bar interaction */}
+         {/* biome-ignore lint/a11y/useKeyWithClickEvents: seek bar interaction */}
+         <div {...stylex.props(styles.waveformArea)} onClick={handleWaveformClick}>
             {displayBars.map((h, i) => (
                <div
                   // biome-ignore lint/suspicious/noArrayIndexKey: stable ordered waveform bars
@@ -106,6 +147,7 @@ export default function VoiceMessage({ src }: VoiceMessageProps) {
                   style={{ height: `${Math.max(Math.round(h * 36), 3)}px` }}
                />
             ))}
+            <div ref={playheadRef} {...stylex.props(styles.playhead)} />
          </div>
          <span {...stylex.props(styles.timer)}>{displayTime}</span>
       </div>

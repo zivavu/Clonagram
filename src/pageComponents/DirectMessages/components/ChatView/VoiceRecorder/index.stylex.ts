@@ -39,9 +39,9 @@ export const styles = stylex.create({
       top: 0,
       left: 0,
       height: '100%',
+      width: '0%',
       backgroundColor: 'rgba(255, 255, 255, 0.15)',
       borderRadius: radius.full,
-      transition: 'width 0.8s linear',
    },
    pillContent: {
       position: 'relative',
@@ -61,6 +61,9 @@ export const styles = stylex.create({
       padding: 0,
       color: 'rgba(255, 255, 255, 0.9)',
       flexShrink: 0,
+      ':disabled': {
+         opacity: 0.4,
+      },
    },
    spacer: {
       flex: 1,
