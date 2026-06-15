@@ -48,8 +48,6 @@ export interface SeedProfile {
    fullName: string;
    bio: string;
    website: string | null;
-   isVerified: boolean;
-   isPrivate: boolean;
    hasImages: boolean;
    commentPool: string[];
    posts: SeedPost[];

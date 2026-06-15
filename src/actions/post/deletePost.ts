@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { revalidatePath } from 'next/cache';
 import { throwIfError } from '@/src/lib/unwrap';
 import { DeletePostSchema, validate } from '@/src/lib/validation';
 import { getMuxClient } from '../../lib/mux';
@@ -52,6 +53,7 @@ export async function deletePost(params: { postId: string }) {
          );
       }
    }
+   revalidatePath('/');
 
    await Promise.allSettled(cleanupTasks);
 }

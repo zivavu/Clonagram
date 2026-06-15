@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { existsSync, readFileSync } from 'fs';
-import { IMAGES_DIR, PROFILES_JSON } from './config';
+import { IMAGES_DIR, PROFILES_JSON, SEED_CONCURRENCY } from './config';
 import { generateAltText } from './lib/openrouter';
 import { supabase } from './lib/supabaseAdmin';
 import type { SeedData, SeedProfile } from './types';
@@ -30,13 +30,85 @@ const END_DATE = new Date('2028-12-31T23:59:59Z').getTime();
 const postFirstImageId = new Map<string, string>();
 const postCreatedAt = new Map<string, string>();
 
-async function seedProfile(profile: SeedProfile) {
-   const { data: existingUser } = await supabase.auth.admin.getUserById(profile.id);
-   if (existingUser.user) {
-      console.log(`Skip ${profile.username} (already seeded)`);
-      return;
+function bar(done: number, total: number, width = 10): string {
+   const filled = total === 0 ? 0 : Math.min(width, Math.floor((done / total) * width));
+   return '━'.repeat(filled) + '─'.repeat(width - filled);
+}
+
+class ProfileProgress {
+   posts = { done: 0, total: 0 };
+   stories = { done: 0, total: 0 };
+   altTexts = { done: 0, total: 0 };
+
+   constructor(
+      public readonly username: string,
+      private display: ProgressDisplay,
+   ) {}
+
+   init(posts: number, stories: number) {
+      this.posts.total = posts;
+      this.stories.total = stories;
+      this.display.render();
    }
 
+   tick(field: 'posts' | 'stories' | 'altTexts') {
+      this[field].done++;
+      this.display.render();
+   }
+
+   setAltTextTotal(n: number) {
+      this.altTexts.total = n;
+      this.display.render();
+   }
+
+   line(): string {
+      const b = (s: { done: number; total: number }) =>
+         `[${bar(s.done, s.total, 6)}] ${String(s.done).padStart(2)}/${s.total}`;
+      return (
+         `  @${this.username.padEnd(20)} P${b(this.posts)}  S${b(this.stories)}  A${b(this.altTexts)}`
+      );
+   }
+}
+
+class ProgressDisplay {
+   private slots: (ProfileProgress | null)[];
+   private firstRender = true;
+
+   constructor(size: number) {
+      this.slots = Array(size).fill(null);
+   }
+
+   allocate(progress: ProfileProgress): number {
+      const i = this.slots.indexOf(null);
+      if (i === -1) throw new Error('No free slot in ProgressDisplay');
+      this.slots[i] = progress;
+      return i;
+   }
+
+   free(index: number) {
+      this.slots[index] = null;
+      this.render();
+   }
+
+   render() {
+      if (!this.firstRender) process.stdout.write(`\x1b[${this.slots.length}A`);
+      this.firstRender = false;
+      for (const slot of this.slots) {
+         process.stdout.write(`\x1b[2K${slot ? slot.line() : ''}\n`);
+      }
+   }
+}
+
+async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
+   const { data: existingUser } = await supabase.auth.admin.getUserById(profile.id);
+   if (existingUser.user) return;
+
+   const progress = new ProfileProgress(profile.username, display);
+   const slotIndex = display.allocate(progress);
+   try {
+   const postCount = profile.posts.filter(p => p.images.length > 0).length;
+   const storyCount = profile.stories.filter(s => s.hasImage && s.image).length;
+   progress.init(postCount, storyCount);
    const { error: authError } = await supabase.auth.admin.createUser({
       id: profile.id,
       email: `ai.${profile.id}@clonagram.seed`,
@@ -63,129 +135,147 @@ async function seedProfile(profile: SeedProfile) {
       bio: profile.bio,
       website: profile.website,
       avatar_url: avatarUrl,
-      is_verified: profile.isVerified,
       is_ai: true,
    });
    if (profileError) throw new Error(`Profile upsert: ${profileError.message}`);
 
-   for (let pi = 0; pi < profile.posts.length; pi++) {
-      const post = profile.posts[pi];
-      if (!post.images.length) continue;
-      const createdAt = randomPostDate();
-      postCreatedAt.set(post.id, createdAt);
+   const altTextQueue: { id: string; url: string }[] = [];
 
-      const { error: postError } = await supabase.from('posts').insert({
-         id: post.id,
-         user_id: profile.id,
-         caption: post.caption,
-         type: 'photo',
-         aspect_ratio: post.aspectRatio,
-         is_ai: true,
-         created_at: createdAt,
-      });
-      if (postError) throw new Error(`Post insert: ${postError.message}`);
+   await Promise.all(
+      profile.posts.map(async (post, pi) => {
+         if (!post.images.length) return;
+         const createdAt = randomPostDate();
+         postCreatedAt.set(post.id, createdAt);
 
-      await Promise.all(
-         post.images.map(async (imageMeta, ii) => {
-            if (!imageMeta) return;
-            const localPath = `${IMAGES_DIR}/${profile.id}/post_${pi}_${ii}.webp`;
-            if (!existsSync(localPath)) return;
+         const { error: postError } = await supabase.from('posts').insert({
+            id: post.id,
+            user_id: profile.id,
+            caption: post.caption,
+            type: 'photo',
+            aspect_ratio: post.aspectRatio,
+            is_ai: true,
+            created_at: createdAt,
+         });
+         if (postError) throw new Error(`Post insert: ${postError.message}`);
 
-            const imageUrl = await uploadFile(
-               'posts',
-               `${profile.id}/${post.id}/${ii}.webp`,
-               readFileSync(localPath),
-               'image/webp',
-            );
+         await Promise.all(
+            post.images.map(async (imageMeta, ii) => {
+               if (!imageMeta) return;
+               const localPath = `${IMAGES_DIR}/${profile.id}/post_${pi}_${ii}.webp`;
+               if (!existsSync(localPath)) return;
 
-            const { data: imageData, error: imageError } = await supabase
-               .from('post_images')
-               .insert({
-                  post_id: post.id,
-                  position: ii,
-                  url: imageUrl,
-                  width: imageMeta.width,
-                  height: imageMeta.height,
-                  blur_data_url: imageMeta.blurDataUrl,
-               })
-               .select('id')
-               .single();
-            if (imageError) throw new Error(`post_images insert: ${imageError.message}`);
+               const imageUrl = await uploadFile(
+                  'posts',
+                  `${profile.id}/${post.id}/${ii}.webp`,
+                  readFileSync(localPath),
+                  'image/webp',
+               );
 
-            if (ii === 0) postFirstImageId.set(post.id, imageData.id);
+               const { data: imageData, error: imageError } = await supabase
+                  .from('post_images')
+                  .insert({
+                     post_id: post.id,
+                     position: ii,
+                     url: imageUrl,
+                     width: imageMeta.width,
+                     height: imageMeta.height,
+                     blur_data_url: imageMeta.blurDataUrl,
+                  })
+                  .select('id')
+                  .single();
+               if (imageError) throw new Error(`post_images insert: ${imageError.message}`);
 
-            try {
-               const altText = await generateAltText(imageUrl);
-               await supabase.from('post_images').update({ alt_text: altText }).eq('id', imageData.id);
-            } catch {
-               // alt text is non-critical, continue without it
+               if (ii === 0) postFirstImageId.set(post.id, imageData.id);
+
+               altTextQueue.push({ id: imageData.id, url: imageUrl });
+            }),
+         );
+         progress.tick('posts');
+      }),
+   );
+
+   progress.setAltTextTotal(altTextQueue.length);
+   await Promise.all([
+      Promise.all(
+         altTextQueue.map(({ id, url }) =>
+            generateAltText(url)
+               .then(altText =>
+                  supabase.from('post_images').update({ alt_text: altText }).eq('id', id),
+               )
+               .then(() => progress.tick('altTexts'))
+               .catch(() => progress.tick('altTexts')),
+         ),
+      ),
+      Promise.all(
+         profile.stories.map(async (story, si) => {
+         const createdAt = randomPastDate(730);
+
+         const { error: storyError } = await supabase.from('stories').insert({
+            id: story.id,
+            user_id: profile.id,
+            is_ai: true,
+            created_at: createdAt,
+         });
+         if (storyError) throw new Error(`Story insert: ${storyError.message}`);
+
+         if (story.hasImage && story.image) {
+            const localPath = `${IMAGES_DIR}/${profile.id}/story_${si}.webp`;
+            if (existsSync(localPath)) {
+               const storyUrl = await uploadFile(
+                  'stories',
+                  `${profile.id}/${story.id}/0.webp`,
+                  readFileSync(localPath),
+                  'image/webp',
+               );
+               const { error: storyImgError } = await supabase.from('story_images').insert({
+                  story_id: story.id,
+                  position: 0,
+                  url: storyUrl,
+                  blur_data_url: story.image.blurDataUrl,
+               });
+               if (storyImgError) throw new Error(`story_images insert: ${storyImgError.message}`);
             }
-         }),
-      );
-   }
-
-   for (let si = 0; si < profile.stories.length; si++) {
-      const story = profile.stories[si];
-      const oneMonthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
-      const createdAt = new Date(oneMonthAgo + Math.random() * (END_DATE - oneMonthAgo)).toISOString();
-
-      const { error: storyError } = await supabase.from('stories').insert({
-         id: story.id,
-         user_id: profile.id,
-         is_ai: true,
-         created_at: createdAt,
-      });
-      if (storyError) throw new Error(`Story insert: ${storyError.message}`);
-
-      if (story.hasImage && story.image) {
-         const localPath = `${IMAGES_DIR}/${profile.id}/story_${si}.webp`;
-         if (existsSync(localPath)) {
-            const storyUrl = await uploadFile(
-               'stories',
-               `${profile.id}/${story.id}/0.webp`,
-               readFileSync(localPath),
-               'image/webp',
-            );
-            const { error: storyImgError } = await supabase.from('story_images').insert({
-               story_id: story.id,
-               position: 0,
-               url: storyUrl,
-               blur_data_url: story.image.blurDataUrl,
-            });
-            if (storyImgError) throw new Error(`story_images insert: ${storyImgError.message}`);
          }
-      }
-   }
+         if (story.hasImage && story.image) progress.tick('stories');
+      }),
+   ),
+   ]);
 
    const storiesWithMedia = new Set(
       profile.stories
-         .filter((s, si) => s.hasImage && s.image && existsSync(`${IMAGES_DIR}/${profile.id}/story_${si}.webp`))
+         .filter(
+            (s, si) =>
+               s.hasImage && s.image && existsSync(`${IMAGES_DIR}/${profile.id}/story_${si}.webp`),
+         )
          .map(s => s.id),
    );
 
-   for (const highlight of profile.highlights) {
-      const validStoryIds = highlight.storyIds.filter(id => storiesWithMedia.has(id));
-      if (validStoryIds.length === 0) continue;
+   await Promise.all(
+      profile.highlights.map(async highlight => {
+         const validStoryIds = highlight.storyIds.filter(id => storiesWithMedia.has(id));
+         if (validStoryIds.length === 0) return;
 
-      const { error: hlError } = await supabase.from('story_highlights').insert({
-         id: highlight.id,
-         user_id: profile.id,
-         title: highlight.title,
-         is_ai: true,
-      });
-      if (hlError) throw new Error(`Highlight insert: ${hlError.message}`);
+         const { error: hlError } = await supabase.from('story_highlights').insert({
+            id: highlight.id,
+            user_id: profile.id,
+            title: highlight.title,
+            is_ai: true,
+         });
+         if (hlError) throw new Error(`Highlight insert: ${hlError.message}`);
 
-      for (let pos = 0; pos < validStoryIds.length; pos++) {
-         const { error: itemError } = await supabase.from('story_highlight_items').insert({
-            story_id: validStoryIds[pos],
+         const items = validStoryIds.map((storyId, pos) => ({
+            story_id: storyId,
             highlight_id: highlight.id,
             position: pos,
-         });
+         }));
+         const { error: itemError } = await supabase.from('story_highlight_items').insert(items);
          if (itemError) throw new Error(`story_highlight_items insert: ${itemError.message}`);
-      }
-   }
+      }),
+   );
 
-   console.log(`✓ ${profile.username}`);
+   } finally {
+      display.free(slotIndex);
+   }
 }
 
 async function insertBatch<T extends object>(table: string, rows: T[], batchSize = 500) {
@@ -198,11 +288,16 @@ async function insertBatch<T extends object>(table: string, rows: T[], batchSize
 async function main() {
    const data: SeedData = JSON.parse(readFileSync(PROFILES_JSON, 'utf-8'));
 
-   for (const profile of data.profiles) {
-      await seedProfile(profile);
+   const display = new ProgressDisplay(SEED_CONCURRENCY);
+   const queue = [...data.profiles];
+   async function worker() {
+      while (queue.length > 0) {
+         await seedProfile(queue.shift()!, display);
+      }
    }
+   await Promise.all(Array.from({ length: SEED_CONCURRENCY }, worker));
 
-   console.log('\nSeeding social graph...');
+   console.log('Seeding social graph...');
 
    await insertBatch(
       'follows',
@@ -253,7 +348,9 @@ async function main() {
       'comments',
       data.graph.comments.map(c => {
          const postDate = new Date(postCreatedAt.get(c.postId) ?? new Date()).getTime();
-         const commentDate = new Date(postDate + Math.random() * (END_DATE - postDate)).toISOString();
+         const commentDate = new Date(
+            postDate + Math.random() * (END_DATE - postDate),
+         ).toISOString();
          return {
             id: c.id,
             post_id: c.postId,

@@ -8,17 +8,26 @@ import {
    IMAGES_PER_POST,
    OUTPUT_DIR,
    POSTS_PER_PROFILE,
-   PRIVATE_PROBABILITY,
    PROFILE_COUNT,
    PROFILES_JSON,
    SAME_NICHE_WEIGHT,
    STORIES_PER_PROFILE,
-   VERIFIED_PROBABILITY,
    WEBSITE_PROBABILITY,
 } from './config';
 import { generateProfileBatch } from './lib/openrouter';
 import { buildSocialGraph } from './lib/socialGraph';
 import type { SeedData, SeedNiche, SeedPost, SeedProfile } from './types';
+
+const ASPECT_RATIOS: SeedPost['aspectRatio'][] = [
+   '1:1',
+   '1:1',
+   '1:1',
+   '4:5',
+   '4:5',
+   '16:9',
+   '9:16',
+];
+const WEBSITE_TLDS = ['com', 'co', 'net', 'io', 'me'];
 
 const NICHES: SeedNiche[] = [
    'travel',
@@ -86,7 +95,9 @@ async function main() {
             raw = await generateProfileBatch(batchNiches, batchNiches.length);
             break;
          } catch (err) {
-            console.warn(`Batch attempt ${attempt}/3 failed: ${err instanceof Error ? err.message : err}`);
+            console.warn(
+               `Batch attempt ${attempt}/3 failed: ${err instanceof Error ? err.message : err}`,
+            );
             if (attempt === 3) throw err;
          }
       }
@@ -106,9 +117,7 @@ async function main() {
             return {
                id: randomUUID(),
                caption: p.caption,
-               aspectRatio: (['1:1', '4:5', '16:9', '9:16'].includes(p.aspect_ratio)
-                  ? p.aspect_ratio
-                  : '1:1') as SeedPost['aspectRatio'],
+               aspectRatio: ASPECT_RATIOS[Math.floor(Math.random() * ASPECT_RATIOS.length)],
                imageCount,
                images: Array.from({ length: imageCount }, () => null),
                collaboratorProfileIds: [],
@@ -123,14 +132,20 @@ async function main() {
             image: null,
          }));
 
-         const highlights = r.highlights.slice(0, highlightCount).map(h => ({
+         const storyIndices = Array.from({ length: stories.length }, (_, i) => i);
+         const highlights = r.highlights.filter(h => h?.title).slice(0, highlightCount).map(h => ({
             id: randomUUID(),
             title: h.title.slice(0, 15),
-            storyIds: h.story_indices
-               .filter(idx => idx < stories.length)
-               .slice(0, 3)
-               .map(idx => stories[idx].id),
+            storyIds: pickRandom(storyIndices, randInt(2, Math.min(6, stories.length))).map(
+               idx => stories[idx].id,
+            ),
          }));
+
+         const domainBase = r.username.replace(/[._]/g, '');
+         const website =
+            Math.random() < WEBSITE_PROBABILITY
+               ? `${domainBase}.${WEBSITE_TLDS[Math.floor(Math.random() * WEBSITE_TLDS.length)]}`
+               : null;
 
          profiles.push({
             id: randomUUID(),
@@ -138,9 +153,7 @@ async function main() {
             username: r.username,
             fullName: r.full_name,
             bio: r.bio,
-            website: Math.random() < WEBSITE_PROBABILITY ? (r.website ?? null) : null,
-            isVerified: Math.random() < VERIFIED_PROBABILITY,
-            isPrivate: Math.random() < PRIVATE_PROBABILITY,
+            website,
             hasImages,
             commentPool: r.comment_pool ?? [],
             posts,

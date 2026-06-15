@@ -208,6 +208,6 @@ export async function createPost(params: CreatePostParams) {
             const media = params.mediaResults[i];
             return media.type === 'image' && !media.alt && img.url;
          })
-         .map(img => generateImageAltText({ imageId: img.id, imageUrl: img.url })),
+         .map(img => generateImageAltText({ imageId: img.id, imageUrl: img.url }).catch(() => {})),
    );
 }

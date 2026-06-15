@@ -4,7 +4,7 @@ import 'server-only';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { throwIfError } from '@/src/lib/unwrap';
 
-const OPENROUTER_MODEL = 'qwen/qwen3.5-flash-02-23';
+const OPENROUTER_MODEL = 'openrouter/free';
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 async function callOpenRouter(imageUrl: string) {
