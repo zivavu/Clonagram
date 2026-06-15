@@ -159,8 +159,6 @@ async function main() {
    }
 
    for (const profile of profiles) {
-      if (!profile.hasImages) continue;
-
       const sameNiche = (nicheProfiles.get(profile.niche) ?? []).filter(p => p.id !== profile.id);
       const otherProfiles = profiles.filter(p => p.id !== profile.id);
 

@@ -157,7 +157,16 @@ async function seedProfile(profile: SeedProfile) {
       }
    }
 
+   const storiesWithMedia = new Set(
+      profile.stories
+         .filter((s, si) => s.hasImage && s.image && existsSync(`${IMAGES_DIR}/${profile.id}/story_${si}.webp`))
+         .map(s => s.id),
+   );
+
    for (const highlight of profile.highlights) {
+      const validStoryIds = highlight.storyIds.filter(id => storiesWithMedia.has(id));
+      if (validStoryIds.length === 0) continue;
+
       const { error: hlError } = await supabase.from('story_highlights').insert({
          id: highlight.id,
          user_id: profile.id,
@@ -166,9 +175,9 @@ async function seedProfile(profile: SeedProfile) {
       });
       if (hlError) throw new Error(`Highlight insert: ${hlError.message}`);
 
-      for (let pos = 0; pos < highlight.storyIds.length; pos++) {
+      for (let pos = 0; pos < validStoryIds.length; pos++) {
          const { error: itemError } = await supabase.from('story_highlight_items').insert({
-            story_id: highlight.storyIds[pos],
+            story_id: validStoryIds[pos],
             highlight_id: highlight.id,
             position: pos,
          });

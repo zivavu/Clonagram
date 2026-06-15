@@ -1,5 +1,12 @@
 import { supabase } from './lib/supabaseAdmin';
 
+async function deleteStorageFolder(bucket: string, prefix: string) {
+   const { data: objects } = await supabase.storage.from(bucket).list(prefix);
+   if (!objects?.length) return;
+   const paths = objects.map(o => `${prefix}/${o.name}`);
+   await supabase.storage.from(bucket).remove(paths);
+}
+
 async function main() {
    console.log('Fetching AI profile IDs...');
    const { data: aiProfiles, error } = await supabase
@@ -11,7 +18,18 @@ async function main() {
    const ids = (aiProfiles ?? []).map(p => p.id);
    console.log(`Found ${ids.length} AI profiles.`);
 
+   console.log('Deleting storage files...');
+   for (const id of ids) {
+      await Promise.all([
+         deleteStorageFolder('avatars', id),
+         deleteStorageFolder('posts', id),
+         deleteStorageFolder('stories', id),
+      ]);
+   }
+
    console.log('Deleting AI content...');
+   await supabase.from('follows').delete().in('follower_id', ids);
+   await supabase.from('follows').delete().in('following_id', ids);
    await supabase.from('comments').delete().eq('is_ai', true);
    await supabase.from('story_highlights').delete().eq('is_ai', true);
    await supabase.from('stories').delete().eq('is_ai', true);
@@ -24,9 +42,7 @@ async function main() {
       if (authError) console.error(`  Failed to delete ${id}: ${authError.message}`);
    }
 
-   console.log(`✓ Cleanup complete. Deleted ${ids.length} AI profiles.`);
-   console.log('  Note: storage files in avatars/, posts/, stories/ buckets are not auto-deleted.');
-   console.log('  Clean them up via the Supabase dashboard Storage tab if needed.');
+   console.log(`✓ Cleanup complete. Deleted ${ids.length} AI profiles and their storage files.`);
 }
 
 main().catch(err => {

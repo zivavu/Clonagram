@@ -1,7 +1,7 @@
 import { join } from 'path';
 
 export const PROFILE_COUNT = 100;
-export const IMAGE_PROFILE_RATIO = 0.5;
+export const IMAGE_PROFILE_RATIO = 1;
 export const WEBSITE_PROBABILITY = 0.7;
 export const VERIFIED_PROBABILITY = 0.1;
 export const PRIVATE_PROBABILITY = 0.15;

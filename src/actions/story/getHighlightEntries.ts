@@ -55,11 +55,9 @@ export async function getHighlightEntries(params: { username: string }) {
          );
 
          const stories: StoryEntry['stories'] = [];
-         const now = new Date().toISOString();
          for (const item of sorted) {
             const s = item.stories;
             if (!s) continue;
-            if (s.created_at && s.created_at > now) continue;
             const media = extractStoryMedia(s);
             if (!media) continue;
             stories.push({

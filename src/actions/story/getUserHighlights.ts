@@ -17,15 +17,33 @@ export async function getUserHighlights(params: { userId: string }) {
 
    const { data, error } = await supabase
       .from('story_highlights')
-      .select('id, title, cover_url')
+      .select(
+         `id, title, cover_url,
+          story_highlight_items(
+            position,
+            stories!story_highlight_items_story_id_fkey(
+              story_images(url)
+            )
+          )`,
+      )
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
    throwIfError({ error }, 'Failed to fetch highlights');
 
-   return (data ?? []).map(row => ({
-      id: row.id,
-      title: row.title,
-      coverUrl: row.cover_url,
-   }));
+   return (data ?? []).map(row => {
+      let coverUrl = row.cover_url ?? null;
+
+      if (!coverUrl) {
+         const sorted = [...row.story_highlight_items].sort(
+            (a, b) => (a.position ?? 0) - (b.position ?? 0),
+         );
+         for (const item of sorted) {
+            const url = item.stories?.story_images?.[0]?.url;
+            if (url) { coverUrl = url; break; }
+         }
+      }
+
+      return { id: row.id, title: row.title, coverUrl };
+   });
 }
