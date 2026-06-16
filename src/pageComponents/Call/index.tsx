@@ -33,6 +33,7 @@ interface CallPageProps {
    participants: CallParticipant[];
    displayName: string;
    displayAvatar: string | null;
+   autoJoin?: boolean;
 }
 
 export default function CallPage({
@@ -43,6 +44,7 @@ export default function CallPage({
    participants,
    displayName,
    displayAvatar,
+   autoJoin = false,
 }: CallPageProps) {
    const router = useRouter();
    const [phase, setPhase] = useState<'lobby' | 'call'>('lobby');
@@ -76,6 +78,30 @@ export default function CallPage({
          }
       }
    }, [session.remoteParticipants]);
+
+   async function handleJoinCall() {
+      await session.startLocalMedia();
+      await session.joinCall();
+      setCallStartTime(Date.now());
+      setPhase('call');
+   }
+
+   useEffect(() => {
+      if (!autoJoin) return;
+      let cancelled = false;
+      (async () => {
+         if (cancelled) return;
+         await session.startLocalMedia();
+         if (cancelled) return;
+         await session.joinCall();
+         if (cancelled) return;
+         setCallStartTime(Date.now());
+         setPhase('call');
+      })();
+      return () => {
+         cancelled = true;
+      };
+   }, [autoJoin, session.startLocalMedia, session.joinCall]);
 
    async function handleStartCall() {
       await session.startLocalMedia();

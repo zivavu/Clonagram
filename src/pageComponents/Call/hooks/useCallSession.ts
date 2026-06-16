@@ -139,6 +139,12 @@ export function useCallSession({
          });
       }
 
+      if (signal.type === 'decline') {
+         if (peerConnections.current.size === 0) {
+            onEnded();
+         }
+      }
+
       if (signal.type === 'leave' || signal.type === 'end') {
          const pc = peerConnections.current.get(signal.fromUserId);
          if (pc) {

@@ -55,14 +55,31 @@ export default function IncomingCallListener() {
 
    function handleAccept() {
       if (!incomingCall) return;
+      const { conversationId, callType } = incomingCall;
       setIncomingCall(null);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      router.push(`/direct/${incomingCall.conversationId}/call?type=${incomingCall.callType}`);
+      router.push(`/direct/${conversationId}/call?type=${callType}&join=true`);
    }
 
-   function handleDecline() {
+   async function handleDecline() {
+      if (!incomingCall) return;
+      const { conversationId, callType } = incomingCall;
       setIncomingCall(null);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+      const ch = supabase.channel(`call:${conversationId}`);
+      await ch.subscribe();
+      await ch.send({
+         type: 'broadcast',
+         event: 'signal',
+         payload: {
+            type: 'decline',
+            fromUserId: authUser?.id ?? '',
+            conversationId,
+            callType,
+         },
+      });
+      supabase.removeChannel(ch);
    }
 
    if (!incomingCall) return null;
