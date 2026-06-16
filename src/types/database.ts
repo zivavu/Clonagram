@@ -6,7 +6,6 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -390,6 +389,7 @@ export type Database = {
       messages: {
         Row: {
           audio_url: string | null
+          call_event: string | null
           content: string | null
           conversation_id: string
           created_at: string | null
@@ -406,6 +406,7 @@ export type Database = {
         }
         Insert: {
           audio_url?: string | null
+          call_event?: string | null
           content?: string | null
           conversation_id: string
           created_at?: string | null
@@ -422,6 +423,7 @@ export type Database = {
         }
         Update: {
           audio_url?: string | null
+          call_event?: string | null
           content?: string | null
           conversation_id?: string
           created_at?: string | null

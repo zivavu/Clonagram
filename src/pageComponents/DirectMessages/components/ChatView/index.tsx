@@ -8,6 +8,7 @@ import { useDropzone } from 'react-dropzone';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
+import type { CallEvent } from '@/src/actions/dm/sendCallEvent';
 import { sendImage } from '@/src/actions/dm/sendImage';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { sendSticker } from '@/src/actions/dm/sendSticker';
@@ -31,6 +32,7 @@ import {
 } from '@/src/utils/conversations';
 import { DAY_MS, formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
+import CallEventMessage from './CallEventMessage';
 import { useChatScrollAndRead } from './hooks/useChatScrollAndRead';
 import { useRealtimeChat } from './hooks/useRealtimeChat';
 import ImageMessage from './ImageMessage';
@@ -122,6 +124,7 @@ export default function ChatView({
       return {
          id,
          content: null,
+         call_event: null,
          sticker_url: null,
          media_url: null,
          audio_url: null,
@@ -272,7 +275,13 @@ export default function ChatView({
                               )}
                            </div>
                         )}
-                        {msg.sticker_url ? (
+                        {msg.call_event ? (
+                           <CallEventMessage
+                              event={msg.call_event as CallEvent}
+                              senderUsername={msg.sender.username}
+                              isSelf={isSent}
+                           />
+                        ) : msg.sticker_url ? (
                            <StickerMessage src={msg.sticker_url} />
                         ) : msg.story_id ? (
                            <StoryLikeMessage
