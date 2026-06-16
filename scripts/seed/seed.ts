@@ -15,7 +15,7 @@ function randomPostDate() {
    const now = Date.now();
    const twoYearsAgo = now - 2 * 365 * 24 * 60 * 60 * 1000;
    // Quadratic skew: recent dates are ~3x more likely than old ones
-   const t = 1 - Math.pow(Math.random(), 2);
+   const t = 1 - Math.random() ** 2;
    const jitter = (Math.random() - 0.5) * 2 * 60 * 60 * 1000; // ±1h
    return new Date(twoYearsAgo + t * (now - twoYearsAgo) + jitter).toISOString();
 }

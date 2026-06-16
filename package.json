@@ -11,7 +11,11 @@
       "format": "biome format --write . --reporter=summary",
       "check": "biome check --write .",
       "typecheck": "tsc --noEmit",
-      "db:types": "bunx supabase gen types typescript --project-id pggvzapkivjgsybyzjok > src/types/database.ts"
+      "db:types": "bunx supabase gen types typescript --project-id pggvzapkivjgsybyzjok > src/types/database.ts",
+      "seed:generate": "bun run scripts/seed/generate.ts",
+      "seed:process": "bun run scripts/seed/process.ts",
+      "seed:seed": "bun run scripts/seed/seed.ts",
+      "seed:cleanup": "bun run scripts/seed/helpers/cleanup.ts"
    },
    "dependencies": {
       "@ffmpeg/ffmpeg": "^0.12.15",

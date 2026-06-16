@@ -69,7 +69,7 @@ export function buildSocialGraph(profiles: SeedProfile[]): SeedGraph {
 
    // Assign each post a "popularity" weight using power-law: most posts are ordinary,
    // a few get outsized attention.
-   const postWeights = allPosts.map(() => Math.pow(Math.random(), -1.5));
+   const postWeights = allPosts.map(() => Math.random() ** -1.5);
 
    const follows: SeedGraph['follows'] = [];
    const likes: SeedGraph['likes'] = [];
@@ -91,12 +91,20 @@ export function buildSocialGraph(profiles: SeedProfile[]): SeedGraph {
       }
 
       const followedIds = new Set(followed.map(p => p.id));
-      const followedPosts = allPosts.filter(p => followedIds.has(p.ownerId) && p.ownerId !== profile.id);
-      const followedWeights = followedPosts.map((_, i) => postWeights[allPosts.indexOf(followedPosts[i])]);
+      const followedPosts = allPosts.filter(
+         p => followedIds.has(p.ownerId) && p.ownerId !== profile.id,
+      );
+      const followedWeights = followedPosts.map(
+         (_, i) => postWeights[allPosts.indexOf(followedPosts[i])],
+      );
 
       // A portion of engagement comes from non-followed posts (explore page)
-      const explorePosts = allPosts.filter(p => !followedIds.has(p.ownerId) && p.ownerId !== profile.id);
-      const exploreWeights = explorePosts.map((_, i) => postWeights[allPosts.indexOf(explorePosts[i])]);
+      const explorePosts = allPosts.filter(
+         p => !followedIds.has(p.ownerId) && p.ownerId !== profile.id,
+      );
+      const exploreWeights = explorePosts.map(
+         (_, i) => postWeights[allPosts.indexOf(explorePosts[i])],
+      );
 
       const likeCount = randInt(LIKES_PER_PROFILE.min, LIKES_PER_PROFILE.max);
       const exploreCount = Math.round(likeCount * EXPLORE_ENGAGEMENT_RATIO);

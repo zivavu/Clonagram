@@ -282,6 +282,7 @@ export default function ChatDetailsPanel({
                      username={p.user.username}
                      userId={p.user.id}
                      useHoverCard={false}
+                     disableLink={true}
                   />
                   <div {...stylex.props(styles.memberInfo)}>
                      <span {...stylex.props(styles.memberName)}>

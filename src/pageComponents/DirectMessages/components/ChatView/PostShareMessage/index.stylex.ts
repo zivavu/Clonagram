@@ -33,9 +33,5 @@ export const styles = stylex.create({
       padding: '8px 10px',
       fontSize: '13px',
       color: colors.textPrimary,
-      overflow: 'hidden',
-      display: '-webkit-box',
-      WebkitLineClamp: 2,
-      WebkitBoxOrient: 'vertical',
    },
 });

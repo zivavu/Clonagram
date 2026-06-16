@@ -19,7 +19,6 @@ export interface UnsplashPhotoResult {
    downloadLocation: string;
 }
 
-
 async function unsplashGet<T>(path: string): Promise<T> {
    const key = process.env.UNSPLASH_ACCESS_KEY;
    if (!key) throw new Error('Missing UNSPLASH_ACCESS_KEY');
