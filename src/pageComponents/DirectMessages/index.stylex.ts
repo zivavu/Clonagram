@@ -142,11 +142,6 @@ export const styles = stylex.create({
       color: colors.textPrimary,
       cursor: 'pointer',
    },
-   chatTopBarActionMobileHidden: {
-      '@media (max-width: 1024px)': {
-         display: 'none',
-      },
-   },
    backButton: {
       display: 'none',
       alignItems: 'center',

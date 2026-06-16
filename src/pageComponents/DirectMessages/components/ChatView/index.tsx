@@ -186,20 +186,14 @@ export default function ChatView({
             <div {...stylex.props(styles.chatTopBarActions)}>
                <Link
                   href={`${currentFolderHref}/${conversationId}/call?type=audio`}
-                  {...stylex.props(
-                     styles.chatTopBarActionIcon,
-                     styles.chatTopBarActionMobileHidden,
-                  )}
+                  {...stylex.props(styles.chatTopBarActionIcon)}
                   aria-label="Voice call"
                >
                   <IoCallOutline />
                </Link>
                <Link
                   href={`${currentFolderHref}/${conversationId}/call?type=video`}
-                  {...stylex.props(
-                     styles.chatTopBarActionIcon,
-                     styles.chatTopBarActionMobileHidden,
-                  )}
+                  {...stylex.props(styles.chatTopBarActionIcon)}
                   aria-label="Video call"
                >
                   <HiOutlineVideoCamera />
