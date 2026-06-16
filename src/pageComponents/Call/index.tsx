@@ -47,7 +47,7 @@ export default function CallPage({
    autoJoin = false,
 }: CallPageProps) {
    const router = useRouter();
-   const [phase, setPhase] = useState<'lobby' | 'call'>('lobby');
+   const [phase, setPhase] = useState<'lobby' | 'call'>(autoJoin ? 'call' : 'lobby');
    const [callStartTime, setCallStartTime] = useState<number | null>(null);
    const localVideoRef = useRef<HTMLVideoElement>(null);
    const remoteVideoRefs = useRef<Map<string, HTMLVideoElement>>(new Map());
@@ -79,29 +79,20 @@ export default function CallPage({
       }
    }, [session.remoteParticipants]);
 
-   async function handleJoinCall() {
-      await session.startLocalMedia();
-      await session.joinCall();
-      setCallStartTime(Date.now());
-      setPhase('call');
-   }
+   const startMediaRef = useRef(session.startLocalMedia);
+   const joinCallRef = useRef(session.joinCall);
+   startMediaRef.current = session.startLocalMedia;
+   joinCallRef.current = session.joinCall;
 
    useEffect(() => {
       if (!autoJoin) return;
-      let cancelled = false;
-      (async () => {
-         if (cancelled) return;
-         await session.startLocalMedia();
-         if (cancelled) return;
-         await session.joinCall();
-         if (cancelled) return;
-         setCallStartTime(Date.now());
-         setPhase('call');
-      })();
-      return () => {
-         cancelled = true;
-      };
-   }, [autoJoin, session.startLocalMedia, session.joinCall]);
+      startMediaRef
+         .current()
+         .then(() => joinCallRef.current())
+         .then(() => {
+            setCallStartTime(Date.now());
+         });
+   }, [autoJoin]);
 
    async function handleStartCall() {
       await session.startLocalMedia();
