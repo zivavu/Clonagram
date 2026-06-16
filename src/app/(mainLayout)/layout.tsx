@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import { Suspense } from 'react';
 import CreatePostModal from '@/src/components/CreatePostModal';
 import CreateStoryModal from '@/src/components/CreateStoryModal';
+import IncomingCallListener from '@/src/components/IncomingCallListener';
 import MainNavbar from '@/src/components/MainNavbar';
 import ModalResetOnNav from '@/src/components/ModalResetOnNav';
 import NewNoteModalWrapper from '@/src/components/NewNoteModal/NewNoteModalWrapper';
@@ -30,6 +31,7 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
          </Suspense>
          <SearchPortal />
          <NotificationsPortal />
+         <IncomingCallListener />
          {children}
       </div>
    );

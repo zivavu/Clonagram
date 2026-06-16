@@ -14,7 +14,9 @@ import {
 import { MdCallEnd } from 'react-icons/md';
 import { sendCallEvent } from '@/src/actions/dm/sendCallEvent';
 import UserAvatar from '@/src/components/UserAvatar';
+import { supabase } from '@/src/lib/supabase/client';
 import { useCallSession } from './hooks/useCallSession';
+import type { CallSignal } from './hooks/useCallSignaling';
 import { styles } from './index.stylex';
 
 interface CallParticipant {
@@ -78,6 +80,23 @@ export default function CallPage({
    async function handleStartCall() {
       await session.startLocalMedia();
       await sendCallEvent(conversationId, callType === 'video' ? 'video_started' : 'audio_started');
+
+      const inviteSignal: CallSignal = {
+         type: 'invite',
+         fromUserId: authUserId,
+         conversationId,
+         callType,
+         callerName: displayName,
+         callerAvatar: displayAvatar,
+      };
+
+      for (const p of participants) {
+         const ch = supabase.channel(`user-call:${p.id}`);
+         await ch.subscribe();
+         await ch.send({ type: 'broadcast', event: 'signal', payload: inviteSignal });
+         supabase.removeChannel(ch);
+      }
+
       await session.joinCall();
       setCallStartTime(Date.now());
       setPhase('call');
