@@ -22,6 +22,7 @@ export default async function ArchiveStoryViewerRoute({
             type: story.type,
             url: story.url,
             blurDataUrl: story.blurDataUrl,
+            unsplashAttribution: story.unsplashAttribution,
             timestamp: story.createdAt,
          },
       ],

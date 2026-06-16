@@ -5,11 +5,14 @@ import Image, { type ImageProps } from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { formatAltText } from '../../lib/altText';
 import type { PostWithMedia } from '../../queries/posts';
-import { parseUnsplashAttribution } from '../../types/unsplash';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { usePostViewModal } from '../../store/usePostViewModalStore';
-import UnsplashAttribution from '../UnsplashAttribution';
+import {
+   parseUnsplashAttribution,
+   type UnsplashAttribution as UnsplashAttributionType,
+} from '../../types/unsplash';
 import CarouselArrow from '../CarouselArrow';
+import UnsplashAttribution from '../UnsplashAttribution';
 import ImageTagPin from './components/ImageTagPin';
 import FeedVideoSlide from './FeedVideoSlide';
 import { styles } from './index.stylex';
@@ -28,7 +31,7 @@ interface UnifiedMedia {
    position: number;
    blurDataURL?: string;
    altText?: string;
-   unsplashAttribution?: UnsplashAttribution | null;
+   unsplashAttribution?: UnsplashAttributionType | null;
    tags: ImageTag[];
 }
 

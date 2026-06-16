@@ -19,7 +19,7 @@ function highlightEntriesQuery(supabase: SupabaseClient<Database>, userId: strin
             position,
             stories!story_highlight_items_story_id_fkey(
               id, created_at, is_ai,
-              story_images(url, blur_data_url),
+              story_images(url, blur_data_url, unsplash_attribution),
               story_videos(mux_playback_id)
             )
           )`,
@@ -79,6 +79,8 @@ export async function getHighlightEntries(params: { username: string }) {
                type: media.type,
                url: media.url,
                blurDataUrl: media.blurDataUrl,
+               unsplashAttribution:
+                  media.type === 'image' ? (media.unsplashAttribution ?? null) : null,
                timestamp: s.created_at ?? '',
             });
          }

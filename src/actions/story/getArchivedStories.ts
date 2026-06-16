@@ -4,6 +4,7 @@ import 'server-only';
 import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { throwIfError } from '@/src/lib/unwrap';
 import { extractStoryMedia } from '@/src/queries/stories';
+import type { UnsplashAttribution } from '@/src/types/unsplash';
 import { getAuthUser } from '../getAuthUser';
 
 export type ArchivedStory = {
@@ -12,6 +13,7 @@ export type ArchivedStory = {
    type: 'image' | 'video';
    url: string;
    blurDataUrl: string | null;
+   unsplashAttribution: UnsplashAttribution | null;
 };
 
 export async function getArchivedStories() {
@@ -22,7 +24,7 @@ export async function getArchivedStories() {
       .from('stories')
       .select(
          `id, created_at,
-          story_images(url, blur_data_url),
+          story_images(url, blur_data_url, unsplash_attribution),
           story_videos(mux_playback_id)`,
       )
       .eq('user_id', user.id)
@@ -45,6 +47,7 @@ export async function getArchivedStories() {
          type: media.type,
          url: media.url,
          blurDataUrl: media.blurDataUrl,
+         unsplashAttribution: media.type === 'image' ? (media.unsplashAttribution ?? null) : null,
       });
    }
    return stories;
