@@ -112,7 +112,7 @@ export function useCallSession({
 
       if (signal.type === 'answer' && signal.sdp) {
          const pc = peerConnections.current.get(signal.fromUserId);
-         if (pc) {
+         if (pc && pc.signalingState === 'have-local-offer') {
             await pc.setRemoteDescription(signal.sdp);
             const queued = pendingCandidates.current.get(signal.fromUserId) ?? [];
             for (const c of queued) await pc.addIceCandidate(c);
@@ -131,6 +131,13 @@ export function useCallSession({
       }
 
       if (signal.type === 'join') {
+         const existing = peerConnections.current.get(signal.fromUserId);
+         if (
+            existing &&
+            existing.connectionState !== 'closed' &&
+            existing.connectionState !== 'failed'
+         )
+            return;
          const pc = createPeerConnection(signal.fromUserId, send);
          const offer = await pc.createOffer();
          await pc.setLocalDescription(offer);

@@ -86,12 +86,16 @@ export default function CallPage({
 
    useEffect(() => {
       if (!autoJoin) return;
+      let cancelled = false;
       startMediaRef
          .current()
-         .then(() => joinCallRef.current())
+         .then(() => (cancelled ? undefined : joinCallRef.current()))
          .then(() => {
-            setCallStartTime(Date.now());
+            if (!cancelled) setCallStartTime(Date.now());
          });
+      return () => {
+         cancelled = true;
+      };
    }, [autoJoin]);
 
    async function handleStartCall() {
