@@ -12,10 +12,12 @@ function randomPastDate(maxDaysAgo: number) {
 }
 
 function randomPostDate() {
-   const from = new Date();
-   from.setFullYear(from.getFullYear() - 2);
-   const to = new Date('2028-12-31T23:59:59Z');
-   return new Date(from.getTime() + Math.random() * (to.getTime() - from.getTime())).toISOString();
+   const now = Date.now();
+   const twoYearsAgo = now - 2 * 365 * 24 * 60 * 60 * 1000;
+   // Quadratic skew: recent dates are ~3x more likely than old ones
+   const t = 1 - Math.pow(Math.random(), 2);
+   const jitter = (Math.random() - 0.5) * 2 * 60 * 60 * 1000; // ±1h
+   return new Date(twoYearsAgo + t * (now - twoYearsAgo) + jitter).toISOString();
 }
 
 async function uploadFile(bucket: string, path: string, buffer: Buffer, contentType: string) {
@@ -133,6 +135,7 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
          bio: profile.bio,
          website: profile.website,
          avatar_url: avatarUrl,
+         avatar_attribution: profile.avatar?.attribution ?? null,
          is_ai: true,
       });
       if (profileError) throw new Error(`Profile upsert: ${profileError.message}`);
@@ -178,6 +181,7 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                         width: imageMeta.width,
                         height: imageMeta.height,
                         blur_data_url: imageMeta.blurDataUrl,
+                        unsplash_attribution: imageMeta.attribution ?? null,
                      })
                      .select('id')
                      .single();
@@ -230,6 +234,7 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                         position: 0,
                         url: storyUrl,
                         blur_data_url: story.image.blurDataUrl,
+                        unsplash_attribution: story.image.attribution ?? null,
                      });
                      if (storyImgError)
                         throw new Error(`story_images insert: ${storyImgError.message}`);
@@ -365,23 +370,66 @@ async function main() {
       }),
    );
 
+   const commentDates = new Map<string, number>();
+
+   const topLevelComments = data.graph.comments.filter(c => !c.parentId);
+   const replyComments = data.graph.comments.filter(c => c.parentId);
+
    await insertBatch(
       'comments',
-      data.graph.comments.map(c => {
+      topLevelComments.map(c => {
          const postDate = new Date(postCreatedAt.get(c.postId) ?? new Date()).getTime();
-         const commentDate = new Date(
-            postDate + Math.random() * (END_DATE - postDate),
-         ).toISOString();
+         const date = postDate + Math.random() * 5 * 24 * 60 * 60 * 1000;
+         commentDates.set(c.id, date);
          return {
             id: c.id,
             post_id: c.postId,
             user_id: c.authorProfileId,
             content: c.text,
             is_ai: true,
-            created_at: commentDate,
+            created_at: new Date(date).toISOString(),
+            parent_id: null,
          };
       }),
    );
+
+   await insertBatch(
+      'comments',
+      replyComments.map(c => {
+         const parentDate =
+            commentDates.get(c.parentId!) ??
+            new Date(postCreatedAt.get(c.postId) ?? new Date()).getTime();
+         const date = parentDate + Math.random() * 24 * 60 * 60 * 1000;
+         commentDates.set(c.id, date);
+         return {
+            id: c.id,
+            post_id: c.postId,
+            user_id: c.authorProfileId,
+            content: c.text,
+            is_ai: true,
+            created_at: new Date(date).toISOString(),
+            parent_id: c.parentId,
+         };
+      }),
+   );
+
+   const replyCountsByComment = new Map<string, number>();
+   for (const c of replyComments) {
+      if (c.parentId) {
+         replyCountsByComment.set(c.parentId, (replyCountsByComment.get(c.parentId) ?? 0) + 1);
+      }
+   }
+   const parentCommentIds = [...replyCountsByComment.keys()];
+   for (let i = 0; i < parentCommentIds.length; i += 20) {
+      await Promise.all(
+         parentCommentIds.slice(i, i + 20).map(commentId =>
+            supabase
+               .from('comments')
+               .update({ reply_count: replyCountsByComment.get(commentId) ?? 0 })
+               .eq('id', commentId),
+         ),
+      );
+   }
 
    const collabRows = data.profiles.flatMap(p =>
       p.posts.flatMap(post =>

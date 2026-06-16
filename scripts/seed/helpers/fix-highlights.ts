@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
-import { PROFILES_JSON } from './helpers/config';
-import { supabase } from './lib/supabaseAdmin';
-import type { SeedData } from './types';
+import { supabase } from '../lib/supabaseAdmin';
+import type { SeedData } from '../types';
+import { PROFILES_JSON } from './config';
 
 async function main() {
    const data: SeedData = JSON.parse(readFileSync(PROFILES_JSON, 'utf-8'));

@@ -8,24 +8,34 @@ import { MdPersonAdd, MdVerified } from 'react-icons/md';
 import type { ProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
 import FollowButton from '@/src/components/FollowButton';
 import NoteBubble from '@/src/components/NoteBubble';
+import UnsplashAttribution from '@/src/components/UnsplashAttribution';
 import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import type { FollowState } from '@/src/queries/followStatus';
 import { getProfileStats } from '@/src/queries/profileStats';
 import { useFollowListModal, useNewNoteModalStore } from '@/src/store/createModalStore';
+import { parseUnsplashAttribution } from '@/src/types/unsplash';
 import { colors } from '../../../../styles/tokens.stylex';
 import MessageButton from './components/MessageButton';
 import { styles } from './index.stylex';
+
+function ensureProtocol(url: string) {
+   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
 
 function parseWebsiteLinks(website: string | null) {
    if (!website) return [];
    try {
       const parsed = JSON.parse(website);
-      console.log(parsed);
-      if (Array.isArray(parsed)) return parsed as Array<{ title: string; url: string }>;
+      if (Array.isArray(parsed))
+         return (parsed as Array<{ title: string; url: string }>).map(l => ({
+            ...l,
+            url: ensureProtocol(l.url),
+         }));
    } catch {
-      return [{ title: website, url: website }];
+      const url = ensureProtocol(website);
+      return [{ title: website, url }];
    }
    return [];
 }
@@ -86,6 +96,10 @@ export default function ProfileHeader({
                   ringWidth={4}
                   ringState={ringState}
                />
+               {(() => {
+                  const attr = parseUnsplashAttribution(userProfile.avatar_attribution);
+                  return attr && <UnsplashAttribution attribution={attr} variant="inline" />;
+               })()}
             </div>
             <div {...stylex.props(styles.infoSection)}>
                <div {...stylex.props(styles.usernameRow)}>

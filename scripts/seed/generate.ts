@@ -27,7 +27,19 @@ const ASPECT_RATIOS: SeedPost['aspectRatio'][] = [
    '16:9',
    '9:16',
 ];
-const WEBSITE_TLDS = ['com', 'co', 'net', 'io', 'me'];
+
+async function verifyWebsite(url: string): Promise<boolean> {
+   try {
+      const res = await fetch(url, {
+         method: 'HEAD',
+         signal: AbortSignal.timeout(5000),
+         redirect: 'follow',
+      });
+      return res.ok || res.status < 500;
+   } catch {
+      return false;
+   }
+}
 
 const NICHES: SeedNiche[] = [
    'travel',
@@ -144,11 +156,12 @@ async function main() {
                ),
             }));
 
-         const domainBase = r.username.replace(/[._]/g, '');
-         const website =
-            Math.random() < WEBSITE_PROBABILITY
-               ? `${domainBase}.${WEBSITE_TLDS[Math.floor(Math.random() * WEBSITE_TLDS.length)]}`
-               : null;
+         let website: string | null = null;
+         if (Math.random() < WEBSITE_PROBABILITY && r.website) {
+            const url = r.website.startsWith('http') ? r.website : `https://${r.website}`;
+            const alive = await verifyWebsite(url);
+            website = alive ? url : null;
+         }
 
          profiles.push({
             id: randomUUID(),

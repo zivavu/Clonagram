@@ -2,10 +2,16 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { NICHE_COLLECTIONS } from './helpers/collections';
 import { IMAGE_CONCURRENCY, IMAGES_DIR, PROFILES_JSON } from './helpers/config';
 import { processImage } from './lib/imageProcessor';
-import { downloadImage, getCollectionPhoto, getPortraitPhotoUrl } from './lib/unsplash';
+import {
+   downloadImage,
+   getCollectionPhoto,
+   getPortraitPhoto,
+   triggerDownload,
+   type UnsplashPhotoResult,
+} from './lib/unsplash';
 import type { SeedData } from './types';
 
-async function photoFromNiche(collectionIds: string[]): Promise<string> {
+async function photoFromNiche(collectionIds: string[]): Promise<UnsplashPhotoResult> {
    const shuffled = [...collectionIds];
    for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -47,8 +53,9 @@ async function main() {
       tasks.push(async () => {
          if (existsSync(avatarPath)) return;
          console.log(`Avatar: ${profile.username}`);
-         const url = await getPortraitPhotoUrl();
-         const buf = await downloadImage(url);
+         const photo = await getPortraitPhoto();
+         await triggerDownload(photo.downloadLocation);
+         const buf = await downloadImage(photo.url);
          const processed = await processImage(buf, 'avatar');
          writeFileSync(avatarPath, processed.buffer);
          profile.avatar = {
@@ -69,14 +76,16 @@ async function main() {
             tasks.push(async () => {
                if (existsSync(imagePath)) return;
                console.log(`Post image: ${profile.username} p${capturedPi} i${capturedIi}`);
-               const url = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
-               const buf = await downloadImage(url);
+               const photo = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
+               await triggerDownload(photo.downloadLocation);
+               const buf = await downloadImage(photo.url);
                const processed = await processImage(buf, post.aspectRatio);
                writeFileSync(imagePath, processed.buffer);
                post.images[capturedIi] = {
                   blurDataUrl: processed.blurDataUrl,
                   width: processed.width,
                   height: processed.height,
+                  attribution: photo.attribution,
                };
             });
          }
@@ -90,14 +99,16 @@ async function main() {
          tasks.push(async () => {
             if (existsSync(storyPath)) return;
             console.log(`Story image: ${profile.username} s${capturedSi}`);
-            const url = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
-            const buf = await downloadImage(url);
+            const photo = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
+            await triggerDownload(photo.downloadLocation);
+            const buf = await downloadImage(photo.url);
             const processed = await processImage(buf, '9:16');
             writeFileSync(storyPath, processed.buffer);
             story.image = {
                blurDataUrl: processed.blurDataUrl,
                width: processed.width,
                height: processed.height,
+               attribution: photo.attribution,
             };
          });
       }

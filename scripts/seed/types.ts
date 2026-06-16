@@ -1,3 +1,5 @@
+import type { UnsplashAttribution } from './types';
+
 export type SeedNiche =
    | 'travel'
    | 'fitness'
@@ -12,10 +14,13 @@ export type SeedNiche =
 
 export type SeedAspectRatio = '1:1' | '4:5' | '16:9' | '9:16';
 
+export type { UnsplashAttribution } from './lib/unsplash';
+
 export interface SeedImageMeta {
    blurDataUrl: string;
    width: number;
    height: number;
+   attribution?: UnsplashAttribution;
 }
 
 export interface SeedPost {
@@ -82,6 +87,7 @@ export interface SeedRepost {
 export interface SeedComment {
    id: string;
    postId: string;
+   parentId?: string;
    authorProfileId: string;
    text: string;
    createdAt: string;

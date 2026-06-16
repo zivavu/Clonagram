@@ -18,6 +18,7 @@ export function postCommentsQuery(
       .eq('post_id', postId)
       .eq('is_deleted', false)
       .is('parent_id', null)
+      .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: true });
 
    if (hideAi) {
@@ -43,6 +44,7 @@ export function commentRepliesQuery(
       )
       .eq('parent_id', parentId)
       .eq('is_deleted', false)
+      .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: true });
 
    if (hideAi) {

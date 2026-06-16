@@ -1,12 +1,13 @@
 import { processImage } from '../lib/imageProcessor';
 import { supabase } from '../lib/supabaseAdmin';
-import { downloadImage, getPortraitPhotoUrl } from '../lib/unsplash';
+import { downloadImage, getPortraitPhoto, triggerDownload } from '../lib/unsplash';
 
 const CONCURRENCY = 5;
 
 async function updateAvatar(profileId: string, username: string): Promise<void> {
-   const url = await getPortraitPhotoUrl();
-   const buf = await downloadImage(url);
+   const photo = await getPortraitPhoto();
+   await triggerDownload(photo.downloadLocation);
+   const buf = await downloadImage(photo.url);
    const processed = await processImage(buf, 'avatar');
 
    const storagePath = `${profileId}/avatar.webp`;
@@ -19,7 +20,7 @@ async function updateAvatar(profileId: string, username: string): Promise<void> 
 
    const { error: updateError } = await supabase
       .from('profiles')
-      .update({ avatar_url: avatarUrl })
+      .update({ avatar_url: avatarUrl, avatar_attribution: photo.attribution })
       .eq('id', profileId);
    if (updateError)
       throw new Error(`Profile update failed for ${username}: ${updateError.message}`);

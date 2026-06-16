@@ -5,8 +5,10 @@ import Image, { type ImageProps } from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { formatAltText } from '../../lib/altText';
 import type { PostWithMedia } from '../../queries/posts';
+import { parseUnsplashAttribution } from '../../types/unsplash';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { usePostViewModal } from '../../store/usePostViewModalStore';
+import UnsplashAttribution from '../UnsplashAttribution';
 import CarouselArrow from '../CarouselArrow';
 import ImageTagPin from './components/ImageTagPin';
 import FeedVideoSlide from './FeedVideoSlide';
@@ -26,6 +28,7 @@ interface UnifiedMedia {
    position: number;
    blurDataURL?: string;
    altText?: string;
+   unsplashAttribution?: UnsplashAttribution | null;
    tags: ImageTag[];
 }
 
@@ -38,6 +41,7 @@ function mergeMedia(post: PostWithMedia): UnifiedMedia[] {
          position: img.position,
          blurDataURL: img.blur_data_url ?? undefined,
          altText: formatAltText(img.alt_text, post, i),
+         unsplashAttribution: parseUnsplashAttribution(img.unsplash_attribution),
          tags: img.tags?.map(t => ({ id: t.id, x: t.x, y: t.y, username: t.user.username })) ?? [],
       })) ?? [];
 
@@ -234,6 +238,9 @@ export default function PostMediaCarousel({
                            blurDataURL={item.blurDataURL}
                            {...imageProps}
                         />
+                        {item.unsplashAttribution && (
+                           <UnsplashAttribution attribution={item.unsplashAttribution} />
+                        )}
                         {tagsVisible &&
                            item.tags.map(tag => (
                               <ImageTagPin

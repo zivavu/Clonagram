@@ -6,6 +6,7 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { StoryEntry } from '@/src/actions/story/getActiveStories';
+import UnsplashAttribution from '@/src/components/UnsplashAttribution';
 import { useShareStoryModal } from '@/src/store/createModalStore';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import { getMuxThumbnailUrl } from '@/src/utils/mux';
@@ -179,14 +180,19 @@ export default function StoryCard({
                )
             ) : (
                currentMedia.url && (
-                  <Image
-                     src={currentMedia.url}
-                     alt={story.username}
-                     fill
-                     unoptimized
-                     placeholder={currentMedia.blurDataUrl ? 'blur' : 'empty'}
-                     blurDataURL={currentMedia.blurDataUrl ?? undefined}
-                  />
+                  <>
+                     <Image
+                        src={currentMedia.url}
+                        alt={story.username}
+                        fill
+                        unoptimized
+                        placeholder={currentMedia.blurDataUrl ? 'blur' : 'empty'}
+                        blurDataURL={currentMedia.blurDataUrl ?? undefined}
+                     />
+                     {isCurrent && currentMedia.unsplashAttribution && (
+                        <UnsplashAttribution attribution={currentMedia.unsplashAttribution} />
+                     )}
+                  </>
                )
             )}
          </div>

@@ -10,7 +10,7 @@ export const POST_WITH_MEDIA_SELECT = `
    reposts(user_id),
    user:profiles!user_id(${PROFILE_LIST_SELECT_BADGES}),
    collaborators:post_collaborators(user:profiles!user_id(${PROFILE_LIST_SELECT})),
-   images:post_images(id, url, position, width, height, blur_data_url, alt_text, tags:post_image_tags(id, x, y, user:profiles!user_id(${PROFILE_LIST_SELECT}))),
+   images:post_images(id, url, position, width, height, blur_data_url, alt_text, unsplash_attribution, tags:post_image_tags(id, x, y, user:profiles!user_id(${PROFILE_LIST_SELECT}))),
     videos:post_videos(id, mux_playback_id, duration, position, width, height)
 ` as const;
 

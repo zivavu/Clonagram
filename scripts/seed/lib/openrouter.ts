@@ -116,6 +116,7 @@ export interface RawProfileData {
    username: string;
    full_name: string;
    bio: string;
+   website?: string;
    comment_pool: string[];
    posts: Array<{ caption: string }>;
    stories: Array<{ description: string }>;
@@ -134,7 +135,8 @@ Return a JSON object with a single key "profiles" containing an array of exactly
   "username": string (lowercase, dots/underscores only, max 20 chars, niche-flavored, globally unique),
   "full_name": string (believable Western first + last name),
   "bio": string (1-3 short lines, casual Instagram tone, may include emojis, max 150 chars total),
-  "comment_pool": string[] (15 casual Instagram comments, 5-15 words each, niche-appropriate),
+  "website": string | null (a REAL, actually existing website URL relevant to the profile's niche — e.g. a well-known brand site, a real creator's site, a popular niche magazine. Include the full URL with https://. Must be a real site that actually exists on the internet. Use null if you can't think of a good real one),
+  "comment_pool": string[] (15 casual Instagram comments this specific persona would leave on other posts — match their voice, bio quirks, and niche; 5-15 words each; vary between reactions, questions, and compliments),
   "posts": [ { "caption": string (1-3 sentences + 3-8 hashtags) } ] (at least 8 posts),
   "stories": [ { "description": string (one sentence describing the story image) } ] (at least 12 stories),
   "highlights": [ { "title": string (max 15 chars, niche-appropriate) } ] (at least 4 highlights)

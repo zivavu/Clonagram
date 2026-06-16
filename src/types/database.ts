@@ -6,6 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -731,6 +732,7 @@ export type Database = {
           id: string
           position: number
           post_id: string
+          unsplash_attribution: Json | null
           url: string
           width: number | null
         }
@@ -742,6 +744,7 @@ export type Database = {
           id?: string
           position?: number
           post_id: string
+          unsplash_attribution?: Json | null
           url: string
           width?: number | null
         }
@@ -753,6 +756,7 @@ export type Database = {
           id?: string
           position?: number
           post_id?: string
+          unsplash_attribution?: Json | null
           url?: string
           width?: number | null
         }
@@ -932,6 +936,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_attribution: Json | null
           avatar_url: string | null
           bio: string | null
           created_at: string | null
@@ -947,6 +952,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          avatar_attribution?: Json | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
@@ -962,6 +968,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          avatar_attribution?: Json | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
@@ -1298,6 +1305,7 @@ export type Database = {
           id: string
           position: number
           story_id: string
+          unsplash_attribution: Json | null
           url: string
         }
         Insert: {
@@ -1306,6 +1314,7 @@ export type Database = {
           id?: string
           position?: number
           story_id: string
+          unsplash_attribution?: Json | null
           url: string
         }
         Update: {
@@ -1314,6 +1323,7 @@ export type Database = {
           id?: string
           position?: number
           story_id?: string
+          unsplash_attribution?: Json | null
           url?: string
         }
         Relationships: [

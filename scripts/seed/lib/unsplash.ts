@@ -1,7 +1,22 @@
 const UNSPLASH_API = 'https://api.unsplash.com';
 
 interface UnsplashPhoto {
+   id: string;
+   links: { html: string; download_location: string };
    urls: { full: string; regular: string };
+   user: { name: string; links: { html: string } };
+}
+
+export interface UnsplashAttribution {
+   photographerName: string;
+   photographerUrl: string;
+   photoUrl: string;
+}
+
+export interface UnsplashPhotoResult {
+   url: string;
+   attribution: UnsplashAttribution;
+   downloadLocation: string;
 }
 
 
@@ -29,7 +44,29 @@ async function unsplashGet<T>(path: string): Promise<T> {
 
 const collectionCache = new Map<string, UnsplashPhoto[]>();
 
-export async function getCollectionPhoto(collectionId: string): Promise<string> {
+function toResult(photo: UnsplashPhoto): UnsplashPhotoResult {
+   return {
+      url: photo.urls.regular,
+      downloadLocation: photo.links.download_location,
+      attribution: {
+         photographerName: photo.user.name,
+         photographerUrl: photo.user.links.html,
+         photoUrl: photo.links.html,
+      },
+   };
+}
+
+export async function triggerDownload(downloadLocation: string): Promise<void> {
+   const key = process.env.UNSPLASH_ACCESS_KEY;
+   if (!key) return;
+   try {
+      await fetch(downloadLocation, { headers: { Authorization: `Client-ID ${key}` } });
+   } catch {
+      // non-fatal
+   }
+}
+
+export async function getCollectionPhoto(collectionId: string): Promise<UnsplashPhotoResult> {
    if (!collectionCache.has(collectionId)) {
       const photos = await unsplashGet<UnsplashPhoto[]>(
          `/collections/${collectionId}/photos?per_page=30`,
@@ -39,11 +76,10 @@ export async function getCollectionPhoto(collectionId: string): Promise<string> 
 
    const photos = collectionCache.get(collectionId);
    if (!photos?.length) throw new Error(`Collection ${collectionId} returned 0 photos`);
-   const photo = photos[Math.floor(Math.random() * photos.length)];
-   return photo.urls.regular;
+   return toResult(photos[Math.floor(Math.random() * photos.length)]);
 }
 
-const portraitPool: string[] = [];
+const portraitPool: UnsplashPhotoResult[] = [];
 let portraitRefill: Promise<void> | null = null;
 
 async function refillPortraitPool() {
@@ -51,11 +87,11 @@ async function refillPortraitPool() {
       '/photos/random?count=30&query=portrait+person+lifestyle+colorful&orientation=squarish',
    );
    for (const p of photos) {
-      if (p.urls.regular) portraitPool.push(p.urls.regular);
+      if (p.urls.regular) portraitPool.push(toResult(p));
    }
 }
 
-export async function getPortraitPhotoUrl(): Promise<string> {
+export async function getPortraitPhoto(): Promise<UnsplashPhotoResult> {
    if (!portraitPool.length) {
       if (!portraitRefill)
          portraitRefill = refillPortraitPool().finally(() => {

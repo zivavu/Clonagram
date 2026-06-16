@@ -4,6 +4,7 @@ import 'server-only';
 import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { throwIfError } from '@/src/lib/unwrap';
 import { activeStoriesQuery, extractStoryMedia } from '@/src/queries/stories';
+import type { UnsplashAttribution } from '../../types/unsplash';
 import { getOptionalUser } from '../getAuthUser';
 
 export async function getActiveStories() {
@@ -28,6 +29,7 @@ export async function getActiveStories() {
             type: 'image' | 'video';
             url: string;
             blurDataUrl: string | null;
+            unsplashAttribution: UnsplashAttribution | null;
             timestamp: string;
          }>;
       }
@@ -73,6 +75,7 @@ export async function getActiveStories() {
          type: media.type,
          url: media.url,
          blurDataUrl: media.blurDataUrl,
+         unsplashAttribution: media.type === 'image' ? (media.unsplashAttribution ?? null) : null,
          timestamp: row.created_at ?? '',
       });
    }

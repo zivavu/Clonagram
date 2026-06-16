@@ -21,12 +21,14 @@ export const styles = stylex.create({
    },
    avatarSection: {
       display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'center',
-      alignItems: 'flex-start',
+      alignItems: 'center',
       flexShrink: 0,
       width: '150px',
       position: 'relative',
       marginTop: '34px',
+      gap: '6px',
    },
    infoSection: {
       display: 'flex',

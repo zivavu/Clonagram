@@ -1,4 +1,4 @@
-import { supabase } from './lib/supabaseAdmin';
+import { supabase } from '../lib/supabaseAdmin';
 
 async function deleteStorageFolder(bucket: string, prefix: string) {
    const { data: objects } = await supabase.storage.from(bucket).list(prefix);
