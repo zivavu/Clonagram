@@ -63,6 +63,7 @@ export default function StoryCard({
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const [videoDuration, setVideoDuration] = useState<number>(PICTURE_DURATION);
    const [playTime, setPlayTime] = useState(0);
+   const wasPlayingOnReplyFocusRef = useRef(false);
 
    const { volume, activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
    const [isPlayingLocal, setIsPlayingLocal] = useState(true);
@@ -86,6 +87,25 @@ export default function StoryCard({
       }
       return () => releasePlayback(storyPlayerId);
    }, [isCurrent, isPlaying, storyPlayerId, claimPlayback, releasePlayback]);
+
+   function onReplyFocus() {
+      wasPlayingOnReplyFocusRef.current = isPlaying;
+      if (isPlaying) {
+         setIsPlayingLocal(false);
+         if (isVideo) muxPlayerRef.current?.media?.pause();
+      }
+   }
+
+   function onReplyBlur() {
+      if (wasPlayingOnReplyFocusRef.current) {
+         setIsPlayingLocal(true);
+         if (isVideo) {
+            muxPlayerRef.current?.media?.play()?.catch(err => {
+               if (err?.name !== 'AbortError') throw err;
+            });
+         }
+      }
+   }
 
    function togglePlay(e: React.MouseEvent) {
       e.stopPropagation();
@@ -128,6 +148,8 @@ export default function StoryCard({
                onPictureSegmentComplete={goToNextStoryMedia}
                isPlaying={isPlaying}
                onTogglePlay={togglePlay}
+               onReplyFocus={onReplyFocus}
+               onReplyBlur={onReplyBlur}
                currentStoryMediaIndex={currentStoryMediaIndex}
                closeHref={closeHref}
                showReply={showReply}

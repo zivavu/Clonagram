@@ -29,6 +29,8 @@ interface ActiveStoryOverlayProps {
    onPictureSegmentComplete: () => void;
    isPlaying: boolean;
    onTogglePlay: (e: React.MouseEvent) => void;
+   onReplyFocus: () => void;
+   onReplyBlur: () => void;
    currentStoryMediaIndex: number;
    closeHref: string;
    showReply?: boolean;
@@ -45,6 +47,8 @@ export default function ActiveStoryOverlay({
    onPictureSegmentComplete,
    isPlaying,
    onTogglePlay,
+   onReplyFocus,
+   onReplyBlur,
    currentStoryMediaIndex,
    closeHref,
    showReply = true,
@@ -213,6 +217,8 @@ export default function ActiveStoryOverlay({
                   onKeyDown={e => {
                      if (e.key === 'Enter') onSendReply();
                   }}
+                  onFocus={onReplyFocus}
+                  onBlur={onReplyBlur}
                   placeholder={`Reply to ${story.username}...`}
                   {...stylex.props(styles.activeStoryReplyToInput, sharedStyles.placeholderPrimary)}
                />
