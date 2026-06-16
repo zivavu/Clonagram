@@ -112,7 +112,12 @@ export function useCallSession({
 
       if (signal.type === 'answer' && signal.sdp) {
          const pc = peerConnections.current.get(signal.fromUserId);
-         if (pc) await pc.setRemoteDescription(signal.sdp);
+         if (pc) {
+            await pc.setRemoteDescription(signal.sdp);
+            const queued = pendingCandidates.current.get(signal.fromUserId) ?? [];
+            for (const c of queued) await pc.addIceCandidate(c);
+            pendingCandidates.current.delete(signal.fromUserId);
+         }
       }
 
       if (signal.type === 'ice-candidate' && signal.candidate) {
