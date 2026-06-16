@@ -1,4 +1,4 @@
-import { supabase } from './lib/supabaseAdmin';
+import { supabase } from '../lib/supabaseAdmin';
 
 const BUCKETS = ['avatars', 'posts', 'stories'] as const;
 

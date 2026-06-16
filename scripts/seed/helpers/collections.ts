@@ -1,4 +1,4 @@
-import type { SeedNiche } from './types';
+import type { SeedNiche } from '../types';
 
 export const NICHE_COLLECTIONS: Record<SeedNiche, string[]> = {
    travel: ['hloHUoJHhrs', '3832300', 'vYlz9awB9UY'],

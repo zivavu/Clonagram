@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { PROFILES_JSON } from './config';
+import { PROFILES_JSON } from './helpers/config';
 import { supabase } from './lib/supabaseAdmin';
 import type { SeedData } from './types';
 

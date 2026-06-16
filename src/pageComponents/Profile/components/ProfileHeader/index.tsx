@@ -22,6 +22,7 @@ function parseWebsiteLinks(website: string | null) {
    if (!website) return [];
    try {
       const parsed = JSON.parse(website);
+      console.log(parsed);
       if (Array.isArray(parsed)) return parsed as Array<{ title: string; url: string }>;
    } catch {
       return [{ title: website, url: website }];

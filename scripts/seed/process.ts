@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { NICHE_COLLECTIONS } from './collections';
-import { IMAGE_CONCURRENCY, IMAGES_DIR, PROFILES_JSON } from './config';
+import { NICHE_COLLECTIONS } from './helpers/collections';
+import { IMAGE_CONCURRENCY, IMAGES_DIR, PROFILES_JSON } from './helpers/config';
 import { processImage } from './lib/imageProcessor';
 import { downloadImage, getCollectionPhoto, getPortraitPhotoUrl } from './lib/unsplash';
 import type { SeedData } from './types';

@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { existsSync, readFileSync } from 'fs';
-import { IMAGES_DIR, PROFILES_JSON, SEED_CONCURRENCY } from './config';
+import { IMAGES_DIR, PROFILES_JSON, SEED_CONCURRENCY } from './helpers/config';
 import { generateAltText } from './lib/openrouter';
 import { supabase } from './lib/supabaseAdmin';
 import type { SeedData, SeedProfile } from './types';

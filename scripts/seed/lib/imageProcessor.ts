@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { BLUR_WIDTH, WEBP_QUALITY } from '../config';
+import { BLUR_WIDTH, WEBP_QUALITY } from '../helpers/config';
 import type { SeedAspectRatio } from '../types';
 
 const OUTPUT_SIZES: Record<SeedAspectRatio, { w: number; h: number }> = {

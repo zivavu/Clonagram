@@ -4,6 +4,7 @@ interface UnsplashPhoto {
    urls: { full: string; regular: string };
 }
 
+
 async function unsplashGet<T>(path: string): Promise<T> {
    const key = process.env.UNSPLASH_ACCESS_KEY;
    if (!key) throw new Error('Missing UNSPLASH_ACCESS_KEY');
@@ -47,9 +48,11 @@ let portraitRefill: Promise<void> | null = null;
 
 async function refillPortraitPool() {
    const photos = await unsplashGet<UnsplashPhoto[]>(
-      '/photos/random?count=30&query=portrait+person+face&orientation=squarish',
+      '/photos/random?count=30&query=portrait+person+lifestyle+colorful&orientation=squarish',
    );
-   for (const p of photos) portraitPool.push(p.urls.regular);
+   for (const p of photos) {
+      if (p.urls.regular) portraitPool.push(p.urls.regular);
+   }
 }
 
 export async function getPortraitPhotoUrl(): Promise<string> {
@@ -60,6 +63,7 @@ export async function getPortraitPhotoUrl(): Promise<string> {
          });
       await portraitRefill;
    }
+   if (!portraitPool.length) throw new Error('Portrait pool is empty after refill');
    return portraitPool.splice(Math.floor(Math.random() * portraitPool.length), 1)[0];
 }
 

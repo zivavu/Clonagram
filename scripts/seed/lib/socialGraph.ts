@@ -6,7 +6,7 @@ import {
    REPOST_RATIO,
    SAME_NICHE_WEIGHT,
    SAVE_RATIO,
-} from '../config';
+} from '../helpers/config';
 import type { SeedGraph, SeedNiche, SeedProfile } from '../types';
 
 function randInt(min: number, max: number) {

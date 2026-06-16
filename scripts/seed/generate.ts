@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { mkdirSync, writeFileSync } from 'fs';
-import { NICHE_COLLECTIONS } from './collections';
+import { NICHE_COLLECTIONS } from './helpers/collections';
 import {
    AI_BATCH_SIZE,
    HIGHLIGHTS_PER_PROFILE,
@@ -13,7 +13,7 @@ import {
    SAME_NICHE_WEIGHT,
    STORIES_PER_PROFILE,
    WEBSITE_PROBABILITY,
-} from './config';
+} from './helpers/config';
 import { generateProfileBatch } from './lib/openrouter';
 import { buildSocialGraph } from './lib/socialGraph';
 import type { SeedData, SeedNiche, SeedPost, SeedProfile } from './types';
