@@ -10,6 +10,7 @@ interface OpenPostModalParams {
 }
 
 export function useOpenPostModal() {
+   'use no memo';
    const pathname = usePathname();
    const { open } = usePostViewModal();
 

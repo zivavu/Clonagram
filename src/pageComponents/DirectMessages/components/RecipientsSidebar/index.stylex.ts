@@ -3,7 +3,8 @@ import { colors, radius } from '../../../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
-      minWidth: '480px',
+      width: '480px',
+      flexShrink: 0,
       height: '100dvh',
       borderRightWidth: 1,
       borderRightStyle: 'solid',
