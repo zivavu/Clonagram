@@ -23,7 +23,9 @@
 # misc
 .DS_Store
 *.pem
-/supabase
+/supabase/*
+!/supabase/migrations/
+/supabase/migrations/*.tmp
 .zed
 
 
