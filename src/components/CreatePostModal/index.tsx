@@ -35,8 +35,23 @@ const TOAST_DURATION = 3000;
 
 export default function CreatePostModal() {
    const { isOpen, close, mode } = useCreatePostModalStore();
+   return (
+      <Dialog.Root open={isOpen} onOpenChange={open => !open && close()}>
+         <Dialog.Portal>
+            <DialogOverlay />
+            {isOpen && <CreatePostModalContent isReel={mode === 'reel'} close={close} />}
+         </Dialog.Portal>
+      </Dialog.Root>
+   );
+}
+
+interface CreatePostModalContentProps {
+   isReel: boolean;
+   close: () => void;
+}
+
+function CreatePostModalContent({ isReel, close }: CreatePostModalContentProps) {
    const { pauseAll } = usePlayerStore();
-   const isReel = mode === 'reel';
    const [step, setStep] = useState<Step>('upload');
    const [files, setFiles] = useState<PostMedia[]>([]);
    const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,11 +68,11 @@ export default function CreatePostModal() {
    filesRef.current = files;
 
    useEffect(() => {
-      if (isOpen) {
-         setAspectRatio(isReel ? '9:16' : 'original');
-         pauseAll();
-      }
-   }, [isOpen, isReel, pauseAll]);
+      pauseAll();
+      return () => {
+         for (const f of filesRef.current) revokeMediaUrls(f);
+      };
+   }, [pauseAll]);
 
    function showToast(count: number) {
       setFileLimitToast(count);
@@ -127,14 +142,9 @@ export default function CreatePostModal() {
       setIsDiscardOpen(false);
    };
 
-   const performClose = () => {
-      resetState();
-      close();
-   };
-
    const requestClose = () => {
       if (isDiscardOpen) setIsDiscardOpen(false);
-      else if (step === 'upload' || step === 'post-shared') performClose();
+      else if (step === 'upload' || step === 'post-shared') close();
       else setIsDiscardOpen(true);
    };
 
@@ -170,112 +180,108 @@ export default function CreatePostModal() {
    };
 
    return (
-      <Dialog.Root open={isOpen} onOpenChange={open => !open && requestClose()}>
-         <Dialog.Portal>
-            <DialogOverlay />
-            <Dialog.Content
-               {...stylex.props(styles.content)}
-               onEscapeKeyDown={e => {
-                  e.preventDefault();
-                  requestClose();
-               }}
-            >
-               <input {...getInputProps()} style={{ display: 'none' }} />
-               {step === 'upload' && (
-                  <>
-                     <HiddenDialogDescription>Upload a photo or video</HiddenDialogDescription>
-                     <UploadStep
-                        getRootProps={getRootProps}
-                        open={open}
-                        isDragActive={isDragActive}
-                        elementType={isReel ? 'reel' : 'post'}
-                     />
-                  </>
-               )}
-               {step === 'crop' && (
-                  <>
-                     <HiddenDialogDescription>Crop your photo</HiddenDialogDescription>
-                     <CropStep
-                        files={files}
-                        currentIndex={currentIndex}
-                        onBack={resetState}
-                        onNext={() => setStep('edit')}
-                        onSelectIndex={setCurrentIndex}
-                        onRemoveFile={handleRemoveFile}
-                        onUpdateFile={handleUpdateFile}
-                        onReorderFiles={handleReorderFiles}
-                        onAddFiles={open}
-                        aspectRatio={aspectRatio}
-                        onAspectRatioChange={setAspectRatio}
-                        isReel={isReel}
-                     />
-                  </>
-               )}
-               {step === 'edit' && (
-                  <>
-                     <HiddenDialogDescription>Edit your post</HiddenDialogDescription>
-                     <EditStep
-                        files={files}
-                        currentIndex={currentIndex}
-                        onBack={() => setStep('crop')}
-                        onNext={() => setStep('caption')}
-                        onSelectIndex={setCurrentIndex}
-                        onUpdateFile={handleUpdateFile}
-                        aspectRatio={aspectRatio}
-                        isReel={isReel}
-                     />
-                  </>
-               )}
-               {step === 'caption' && (
-                  <>
-                     <HiddenDialogDescription>Add caption and details</HiddenDialogDescription>
-                     <CaptionStep
-                        files={files}
-                        currentIndex={currentIndex}
-                        onSelectIndex={setCurrentIndex}
-                        onUpdateFile={handleUpdateFile}
-                        onBack={() => setStep('edit')}
-                        onShare={() => setStep('sharing')}
-                        aspectRatio={aspectRatio}
-                        caption={caption}
-                        onCaptionChange={setCaption}
-                        location={location}
-                        onLocationChange={setLocation}
-                        collaborators={collaborators}
-                        onCollaboratorsChange={setCollaborators}
-                        postSettings={postSettings}
-                        onPostSettingsChange={setPostSettings}
-                        isReel={isReel}
-                     />
-                  </>
-               )}
-               {step === 'sharing' && (
-                  <>
-                     <HiddenDialogDescription>Sharing your post</HiddenDialogDescription>
-                     <SharingStep postData={postData} onDone={() => setStep('post-shared')} />
-                  </>
-               )}
-               {step === 'post-shared' && (
-                  <>
-                     <HiddenDialogDescription>Post shared</HiddenDialogDescription>
-                     <PostSharedStep onDone={performClose} />
-                  </>
-               )}
-               {isDiscardOpen && (
-                  <DiscardDialog
-                     onCancel={() => setIsDiscardOpen(false)}
-                     onConfirm={performClose}
-                  />
-               )}
-               {fileLimitToast !== null && (
-                  <div {...stylex.props(styles.toast)}>
-                     {isReel
-                        ? 'You can only upload 1 video for a reel.'
-                        : `${fileLimitToast} file${fileLimitToast > 1 ? 's' : ''} were not uploaded. You can only choose 10 or fewer files.`}
-                  </div>
-               )}
-            </Dialog.Content>
-         </Dialog.Portal>
-      </Dialog.Root>
+      <Dialog.Content
+         {...stylex.props(styles.content)}
+         onEscapeKeyDown={e => {
+            e.preventDefault();
+            requestClose();
+         }}
+         onInteractOutside={e => {
+            e.preventDefault();
+            requestClose();
+         }}
+      >
+         <input {...getInputProps()} style={{ display: 'none' }} />
+         {step === 'upload' && (
+            <>
+               <HiddenDialogDescription>Upload a photo or video</HiddenDialogDescription>
+               <UploadStep
+                  getRootProps={getRootProps}
+                  open={open}
+                  isDragActive={isDragActive}
+                  elementType={isReel ? 'reel' : 'post'}
+               />
+            </>
+         )}
+         {step === 'crop' && (
+            <>
+               <HiddenDialogDescription>Crop your photo</HiddenDialogDescription>
+               <CropStep
+                  files={files}
+                  currentIndex={currentIndex}
+                  onBack={resetState}
+                  onNext={() => setStep('edit')}
+                  onSelectIndex={setCurrentIndex}
+                  onRemoveFile={handleRemoveFile}
+                  onUpdateFile={handleUpdateFile}
+                  onReorderFiles={handleReorderFiles}
+                  onAddFiles={open}
+                  aspectRatio={aspectRatio}
+                  onAspectRatioChange={setAspectRatio}
+                  isReel={isReel}
+               />
+            </>
+         )}
+         {step === 'edit' && (
+            <>
+               <HiddenDialogDescription>Edit your post</HiddenDialogDescription>
+               <EditStep
+                  files={files}
+                  currentIndex={currentIndex}
+                  onBack={() => setStep('crop')}
+                  onNext={() => setStep('caption')}
+                  onSelectIndex={setCurrentIndex}
+                  onUpdateFile={handleUpdateFile}
+                  aspectRatio={aspectRatio}
+                  isReel={isReel}
+               />
+            </>
+         )}
+         {step === 'caption' && (
+            <>
+               <HiddenDialogDescription>Add caption and details</HiddenDialogDescription>
+               <CaptionStep
+                  files={files}
+                  currentIndex={currentIndex}
+                  onSelectIndex={setCurrentIndex}
+                  onUpdateFile={handleUpdateFile}
+                  onBack={() => setStep('edit')}
+                  onShare={() => setStep('sharing')}
+                  aspectRatio={aspectRatio}
+                  caption={caption}
+                  onCaptionChange={setCaption}
+                  location={location}
+                  onLocationChange={setLocation}
+                  collaborators={collaborators}
+                  onCollaboratorsChange={setCollaborators}
+                  postSettings={postSettings}
+                  onPostSettingsChange={setPostSettings}
+                  isReel={isReel}
+               />
+            </>
+         )}
+         {step === 'sharing' && (
+            <>
+               <HiddenDialogDescription>Sharing your post</HiddenDialogDescription>
+               <SharingStep postData={postData} onDone={() => setStep('post-shared')} />
+            </>
+         )}
+         {step === 'post-shared' && (
+            <>
+               <HiddenDialogDescription>Post shared</HiddenDialogDescription>
+               <PostSharedStep onDone={close} />
+            </>
+         )}
+         {isDiscardOpen && (
+            <DiscardDialog onCancel={() => setIsDiscardOpen(false)} onConfirm={close} />
+         )}
+         {fileLimitToast !== null && (
+            <div {...stylex.props(styles.toast)}>
+               {isReel
+                  ? 'You can only upload 1 video for a reel.'
+                  : `${fileLimitToast} file${fileLimitToast > 1 ? 's' : ''} were not uploaded. You can only choose 10 or fewer files.`}
+            </div>
+         )}
+      </Dialog.Content>
    );
 }

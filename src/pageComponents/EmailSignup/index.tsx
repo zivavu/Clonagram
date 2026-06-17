@@ -4,8 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { MdChevronLeft } from 'react-icons/md';
 import z from 'zod';
 import AuthPagesFooter from '@/src/components/AuthPagesFooter';
@@ -14,7 +13,7 @@ import EmailSignupInput from '@/src/components/EmailSignupInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import UsernameSignupInput from '@/src/components/UsernameSignupInput';
 import ZetaLogo from '@/src/components/ZetaLogo';
-import type { UsernameStatus } from '@/src/hooks/useUsernameAvailability';
+import { useUsernameAvailability } from '@/src/hooks/useUsernameAvailability';
 import { supabase } from '@/src/lib/supabase/client';
 import { usernameSchema } from '@/src/lib/validation';
 import { styles } from './index.stylex';
@@ -63,7 +62,8 @@ export default function EmailSignUpPage() {
       },
    });
 
-   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>('idle');
+   const username = useWatch({ control, name: 'username' });
+   const usernameStatus = useUsernameAvailability(username ?? '');
 
    const onSubmit = async (data: EmailSignupFormData) => {
       if (usernameStatus !== 'available') {
@@ -150,7 +150,7 @@ export default function EmailSignUpPage() {
                            value={field.value ?? ''}
                            onChange={field.onChange}
                            onBlur={field.onBlur}
-                           onStatusChange={setUsernameStatus}
+                           status={usernameStatus}
                         />
                      )}
                   />

@@ -2,7 +2,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IoArrowBack, IoCloseOutline } from 'react-icons/io5';
 import { createHighlight } from '@/src/actions/story/createHighlight';
 import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
@@ -32,12 +32,6 @@ export default function NewHighlightModal() {
    const [stories, setStories] = useState<ArchivedStory[] | null>(null);
    const [submitting, setSubmitting] = useState(false);
 
-   useEffect(() => {
-      if (step === 2 && stories === null) {
-         getArchivedStories().then(setStories);
-      }
-   }, [step, stories]);
-
    function handleClose() {
       close();
       setTimeout(() => {
@@ -52,6 +46,7 @@ export default function NewHighlightModal() {
    function handleNext() {
       if (step === 1) {
          setStep(2);
+         if (stories === null) getArchivedStories().then(setStories);
       } else if (step === 2) {
          setCoverId([...selectedIds][0] ?? null);
          setStep(3);

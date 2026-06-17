@@ -2,7 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
 import { MdBookmark, MdBookmarkBorder, MdFavorite, MdFavoriteBorder } from 'react-icons/md';
@@ -41,13 +41,14 @@ export default function ReelActionRail({
    const { mutate: toggleSave, isPending: isSavePending } = useTogglePostSave(reel);
    const { open: openShareModal } = useSharePostModal();
 
-   useEffect(() => {
-      if (authUser) {
-         setIsLiked(reel.likes.some(l => l.user_id === authUser.id));
-         setIsSaved(reel.saves?.some(s => s.user_id === authUser.id) ?? false);
-         setIsReposted(reel.reposts?.some(r => r.user_id === authUser.id) ?? false);
-      }
-   }, [authUser, reel]);
+   const [viewerReelKey, setViewerReelKey] = useState<string | null>(null);
+   const key = authUser ? `${authUser.id}:${reel.id}` : null;
+   if (authUser && key !== viewerReelKey) {
+      setViewerReelKey(key);
+      setIsLiked(reel.likes.some(l => l.user_id === authUser.id));
+      setIsSaved(reel.saves?.some(s => s.user_id === authUser.id) ?? false);
+      setIsReposted(reel.reposts?.some(r => r.user_id === authUser.id) ?? false);
+   }
 
    async function handleLike() {
       const next = !isLiked;

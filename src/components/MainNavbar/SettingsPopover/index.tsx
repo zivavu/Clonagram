@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover
 import * as stylex from '@stylexjs/stylex';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { RiLoader4Line, RiMenuFill, RiRobot2Line } from 'react-icons/ri';
 import { TbLogout, TbTrash } from 'react-icons/tb';
@@ -34,10 +34,11 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
    const [isTogglingHideAi, setIsTogglingHideAi] = useState(false);
    const [optimisticHideAi, setOptimisticHideAi] = useState(hideAiContent);
-
-   useEffect(() => {
+   const [prevHideAiContent, setPrevHideAiContent] = useState(hideAiContent);
+   if (hideAiContent !== prevHideAiContent) {
+      setPrevHideAiContent(hideAiContent);
       setOptimisticHideAi(hideAiContent);
-   }, [hideAiContent]);
+   }
 
    async function handleToggleHideAi() {
       if (isTogglingHideAi) return;

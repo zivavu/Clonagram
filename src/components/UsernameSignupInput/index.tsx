@@ -1,9 +1,9 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { forwardRef, useEffect } from 'react';
+import { forwardRef } from 'react';
 import { MdCheckCircle, MdError } from 'react-icons/md';
-import { type UsernameStatus, useUsernameAvailability } from '@/src/hooks/useUsernameAvailability';
+import type { UsernameStatus } from '@/src/hooks/useUsernameAvailability';
 import FloatingInput from '../FloatingInput';
 import { styles } from './index.stylex';
 
@@ -11,17 +11,11 @@ interface UsernameSignupInputProps {
    value: string;
    onChange: (value: string) => void;
    onBlur?: () => void;
-   onStatusChange?: (status: UsernameStatus) => void;
+   status: UsernameStatus;
 }
 
 const UsernameSignupInput = forwardRef<HTMLInputElement, UsernameSignupInputProps>(
-   function UsernameSignupInput({ value, onChange, onBlur, onStatusChange }, ref) {
-      const status = useUsernameAvailability(value);
-
-      useEffect(() => {
-         onStatusChange?.(status);
-      }, [status, onStatusChange]);
-
+   function UsernameSignupInput({ value, onChange, onBlur, status }, ref) {
       const endAdornment =
          status === 'available' ? (
             <MdCheckCircle size={22} style={{ color: 'var(--colors-success)' }} />
