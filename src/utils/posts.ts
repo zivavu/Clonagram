@@ -51,6 +51,9 @@ interface EqChainable<T> {
    eq(column: string, value: unknown): T;
 }
 
-export function scopeLikesAndSavesToUser<T extends EqChainable<T>>(query: T, userId: string): T {
-   return query.eq('likes.user_id', userId).eq('saves.user_id', userId);
+export function scopePostEngagementToUser<T extends EqChainable<T>>(query: T, userId: string): T {
+   return query
+      .eq('likes.user_id', userId)
+      .eq('saves.user_id', userId)
+      .eq('reposts.user_id', userId);
 }

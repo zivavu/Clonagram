@@ -4,7 +4,7 @@ import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { UsernameParamSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
 import { getFollowStatus } from '../../queries/followStatus';
-import { hideLikesForNonOwners } from '../../utils/posts';
+import { hideLikesForNonOwners, scopePostEngagementToUser } from '../../utils/posts';
 import { getAuthUser } from '../getAuthUser';
 
 export async function getUserProfileWithPosts(params: { username: string }) {
@@ -31,7 +31,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
       .order('created_at', { referencedTable: 'posts', ascending: false });
 
    if (hideAi) query = query.eq('posts.is_ai', false);
-   query = query.eq('posts.likes.user_id', user.id);
+   query = scopePostEngagementToUser(query, user.id);
 
    const { data, error } = await query.single();
 

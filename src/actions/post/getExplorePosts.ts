@@ -5,7 +5,11 @@ import { CursorSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
-import { hideLikesForNonOwners, nextCursorFrom, scopeLikesAndSavesToUser } from '../../utils/posts';
+import {
+   hideLikesForNonOwners,
+   nextCursorFrom,
+   scopePostEngagementToUser,
+} from '../../utils/posts';
 import { getOptionalUser } from '../getAuthUser';
 
 export interface ExploreFeedPage {
@@ -42,7 +46,7 @@ export async function getExplorePosts(params: {
       };
    }
 
-   query = scopeLikesAndSavesToUser(query, user.id);
+   query = scopePostEngagementToUser(query, user.id);
 
    const { data: followedData, error: followError } = await supabase
       .from('follows')
@@ -58,7 +62,9 @@ export async function getExplorePosts(params: {
       query = query.in('user_id', followedIds);
    } else {
       const excludeIds = [user.id, ...followedIds];
-      query = query.not('user_id', 'in', `(${excludeIds.join(',')})`);
+      if (excludeIds.length > 0) {
+         query = query.not('user_id', 'in', excludeIds);
+      }
    }
 
    const { data, error } = await query.limit(PAGE_SIZE);

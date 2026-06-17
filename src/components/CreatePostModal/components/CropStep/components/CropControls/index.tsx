@@ -1,7 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { MdAdd, MdOutlineAspectRatio, MdZoomIn } from 'react-icons/md';
 import { PiImagesSquareLight } from 'react-icons/pi';
@@ -51,14 +51,14 @@ export default function CropControls({
    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
    const thumbnailsRef = useRef<HTMLUListElement>(null);
 
-   const scrollThumbnails = useCallback((direction: 'left' | 'right') => {
+   const scrollThumbnails = (direction: 'left' | 'right') => {
       const el = thumbnailsRef.current;
       if (!el) return;
       el.scrollBy({
          left: direction === 'left' ? -SCROLL_DISTANCE : SCROLL_DISTANCE,
          behavior: 'smooth',
       });
-   }, []);
+   };
 
    const handleRatioChange = (ratio: AspectRatio) => {
       onAspectRatioChange(ratio);

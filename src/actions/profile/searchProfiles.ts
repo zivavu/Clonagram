@@ -25,7 +25,10 @@ export async function searchProfiles(options: {
    }
 
    if (validated.search) {
-      q = q.or(`username.ilike.%${validated.search}%,full_name.ilike.%${validated.search}%`);
+      const trimmed = validated.search.trim();
+      if (trimmed) {
+         q = q.or(`username.ilike.%${trimmed}%,full_name.ilike.%${trimmed}%`);
+      }
    }
 
    if (validated.excludeId) {

@@ -140,7 +140,7 @@ export const CursorSchema = z.object({
 });
 export const CursorNullableSchema = z.object({ cursor: z.string().nullable().optional() });
 export const SearchProfilesSchema = z.object({
-   search: z.string().optional(),
+   search: z.string().max(200).optional(),
    limit: z.number().int().min(1).max(100).optional(),
    excludeId: uuid.optional(),
 });

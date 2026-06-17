@@ -5,7 +5,11 @@ import { CursorSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
-import { hideLikesForNonOwners, nextCursorFrom, scopeLikesAndSavesToUser } from '../../utils/posts';
+import {
+   hideLikesForNonOwners,
+   nextCursorFrom,
+   scopePostEngagementToUser,
+} from '../../utils/posts';
 import { getOptionalUser } from '../getAuthUser';
 
 const PAGE_SIZE = 10;
@@ -33,7 +37,7 @@ export async function getHomeFeedPosts(params: {
       if (cursor) query = query.lt('created_at', cursor);
       if (hideAi) query = query.eq('is_ai', false);
       if (user) {
-         query = scopeLikesAndSavesToUser(query, user.id);
+         query = scopePostEngagementToUser(query, user.id);
       }
       const { data, error } = await query;
       throwIfError({ error }, 'Failed to fetch home feed');
@@ -69,7 +73,7 @@ export async function getHomeFeedPosts(params: {
       .lte('created_at', new Date().toISOString())
       .order('created_at', { ascending: false });
    if (hideAi) postsQuery = postsQuery.eq('is_ai', false);
-   postsQuery = scopeLikesAndSavesToUser(postsQuery, user.id);
+   postsQuery = scopePostEngagementToUser(postsQuery, user.id);
    const { data: posts, error: postsError } = await postsQuery;
 
    throwIfError({ error: postsError }, 'Failed to fetch following feed');

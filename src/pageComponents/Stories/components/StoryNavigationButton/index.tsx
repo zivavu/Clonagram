@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { CARRET_ICON_PATH } from '../../constants';
+import { FaChevronRight } from 'react-icons/fa6';
 import { styles } from '../../index.stylex';
 
 interface StoryNavigationButtonProps {
@@ -21,16 +21,10 @@ export default function StoryNavigationButton({
          {...stylex.props(styles.navBtn, isMoving && styles.navBtnHidden)}
          style={{ left }}
       >
-         <svg
+         <FaChevronRight
             aria-label="Story navigation button"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
             {...stylex.props(styles.navIcon, isLeft && styles.navIconLeft)}
-         >
-            <path d={CARRET_ICON_PATH} />
-         </svg>
+         />
       </button>
    );
 }

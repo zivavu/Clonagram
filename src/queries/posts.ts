@@ -1,6 +1,7 @@
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
 import { PROFILE_LIST_SELECT, PROFILE_LIST_SELECT_BADGES } from '@/src/lib/profileSelect';
 import type { Database } from '@/src/types/database';
+import { scopePostEngagementToUser } from '@/src/utils/posts';
 
 export const POST_WITH_MEDIA_SELECT = `
    id, caption, created_at, aspect_ratio, hide_likes, comments_off, location_name,
@@ -72,10 +73,7 @@ export function reelsQuery(
    }
 
    if (userId) {
-      query = query
-         .eq('likes.user_id', userId)
-         .eq('saves.user_id', userId)
-         .eq('reposts.user_id', userId);
+      query = scopePostEngagementToUser(query, userId);
    }
    if (cursor) {
       query = query.lt('created_at', cursor);

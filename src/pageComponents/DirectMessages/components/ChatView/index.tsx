@@ -16,7 +16,8 @@ import { sendVoiceMessage } from '@/src/actions/dm/sendVoiceMessage';
 import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
-import { queryKeys } from '@/src/lib/queryKeys';
+import { useSendMessage } from '@/src/hooks/useSendMessage';
+import { queryKeys, staleTime } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
 import {
@@ -72,6 +73,7 @@ export default function ChatView({
    const messagesKey = queryKeys.messages(conversationId);
    const [viewingImage, setViewingImage] = useState<string | null>(null);
    const [isRecording, setIsRecording] = useState(false);
+   const send = useSendMessage(conversationId);
 
    const { getRootProps, isDragActive } = useDropzone({
       noClick: true,
@@ -94,7 +96,7 @@ export default function ChatView({
          return data ?? [];
       },
       initialData: initialMessages,
-      staleTime: 0,
+      staleTime: staleTime.infinite,
    });
 
    const { data: conversation = initialConversation } = useQuery({
@@ -105,7 +107,7 @@ export default function ChatView({
          return data;
       },
       initialData: initialConversation,
-      staleTime: Infinity,
+      staleTime: staleTime.static,
    });
 
    useRealtimeChat(conversationId, queryClient);
@@ -349,29 +351,22 @@ export default function ChatView({
                onCancel={() => setIsRecording(false)}
                onSend={async (blob: Blob) => {
                   const previewUrl = URL.createObjectURL(blob);
-                  const optimisticMsg = createOptimisticMessage({ audio_url: previewUrl });
-                  queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
-                     ...(prev ?? []),
-                     optimisticMsg,
-                  ]);
-                  try {
-                     const fileName = `${crypto.randomUUID()}.webm`;
-                     const { error: uploadError } = await supabase.storage
-                        .from('messages')
-                        .upload(fileName, blob, { contentType: blob.type || 'audio/webm' });
-                     if (uploadError) throw uploadError;
-                     const { data: urlData } = supabase.storage
-                        .from('messages')
-                        .getPublicUrl(fileName);
-                     await sendVoiceMessage(conversationId, urlData.publicUrl);
-                  } catch {
-                     toast('Failed to send voice message');
-                  } finally {
-                     URL.revokeObjectURL(previewUrl);
-                     setIsRecording(false);
-                     queryClient.invalidateQueries({ queryKey: messagesKey });
-                     queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
-                  }
+                  await send(
+                     () => createOptimisticMessage({ audio_url: previewUrl }),
+                     async () => {
+                        const fileName = `${crypto.randomUUID()}.webm`;
+                        const { error: uploadError } = await supabase.storage
+                           .from('messages')
+                           .upload(fileName, blob, { contentType: blob.type || 'audio/webm' });
+                        if (uploadError) throw uploadError;
+                        const { data: urlData } = supabase.storage
+                           .from('messages')
+                           .getPublicUrl(fileName);
+                        await sendVoiceMessage(conversationId, urlData.publicUrl);
+                     },
+                  );
+                  URL.revokeObjectURL(previewUrl);
+                  setIsRecording(false);
                }}
             />
          ) : (
@@ -379,65 +374,37 @@ export default function ChatView({
                ref={inputRef}
                onStartRecording={() => setIsRecording(true)}
                onSendSticker={async (url: string) => {
-                  const optimisticMsg = createOptimisticMessage({ sticker_url: url });
-                  queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
-                     ...(prev ?? []),
-                     optimisticMsg,
-                  ]);
-                  try {
-                     await sendSticker(conversationId, url);
-                  } catch {
-                     toast('Failed to send sticker');
-                  } finally {
-                     queryClient.invalidateQueries({ queryKey: messagesKey });
-                     queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
-                  }
+                  await send(
+                     () => createOptimisticMessage({ sticker_url: url }),
+                     () => sendSticker(conversationId, url),
+                  );
                }}
                onSend={async text => {
-                  const optimisticMsg = createOptimisticMessage({ content: text });
-
-                  queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
-                     ...(prev ?? []),
-                     optimisticMsg,
-                  ]);
-
-                  try {
-                     await sendMessage(conversationId, text);
-                  } catch {
-                     toast('Failed to send message');
-                  } finally {
-                     queryClient.invalidateQueries({ queryKey: messagesKey });
-                     queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
-                  }
+                  await send(
+                     () => createOptimisticMessage({ content: text }),
+                     () => sendMessage(conversationId, text),
+                  );
                }}
                onSendImages={async (files: File[]) => {
                   for (const file of files) {
                      const previewUrl = URL.createObjectURL(file);
-                     const optimisticMsg = createOptimisticMessage({ media_url: previewUrl });
-                     queryClient.setQueryData(messagesKey, (prev: ConversationMessages) => [
-                        ...(prev ?? []),
-                        optimisticMsg,
-                     ]);
-
-                     try {
-                        const blob = await compressMessageImage(file);
-                        const fileName = `${crypto.randomUUID()}.webp`;
-                        const compressed = new File([blob], fileName, { type: 'image/webp' });
-                        const { error: uploadError } = await supabase.storage
-                           .from('messages')
-                           .upload(fileName, compressed);
-                        if (uploadError) throw uploadError;
-                        const { data: urlData } = supabase.storage
-                           .from('messages')
-                           .getPublicUrl(fileName);
-                        await sendImage(conversationId, urlData.publicUrl);
-                     } catch {
-                        toast('Failed to send image');
-                     } finally {
-                        URL.revokeObjectURL(previewUrl);
-                        queryClient.invalidateQueries({ queryKey: messagesKey });
-                        queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
-                     }
+                     await send(
+                        () => createOptimisticMessage({ media_url: previewUrl }),
+                        async () => {
+                           const blob = await compressMessageImage(file);
+                           const fileName = `${crypto.randomUUID()}.webp`;
+                           const compressed = new File([blob], fileName, { type: 'image/webp' });
+                           const { error: uploadError } = await supabase.storage
+                              .from('messages')
+                              .upload(fileName, compressed);
+                           if (uploadError) throw uploadError;
+                           const { data: urlData } = supabase.storage
+                              .from('messages')
+                              .getPublicUrl(fileName);
+                           await sendImage(conversationId, urlData.publicUrl);
+                        },
+                     );
+                     URL.revokeObjectURL(previewUrl);
                   }
                }}
             />
