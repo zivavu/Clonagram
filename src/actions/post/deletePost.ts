@@ -53,7 +53,8 @@ export async function deletePost(params: { postId: string }) {
          );
       }
    }
-   revalidatePath('/');
+   revalidatePath('/profile');
+   revalidatePath('/profile/[username]', 'page');
 
    await Promise.allSettled(cleanupTasks);
 }

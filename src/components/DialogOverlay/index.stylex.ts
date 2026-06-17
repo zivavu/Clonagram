@@ -6,6 +6,6 @@ export const styles = stylex.create({
       inset: 0,
       maxHeight: '100dvh',
       backgroundColor: 'rgba(12, 16, 20, 0.7)',
-      zIndex: 3,
+      zIndex: 5,
    },
 });

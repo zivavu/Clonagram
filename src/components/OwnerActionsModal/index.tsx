@@ -3,10 +3,12 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Separator } from '@radix-ui/react-separator';
 import * as stylex from '@stylexjs/stylex';
+import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
 import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { deletePost } from '../../actions/post/deletePost';
+import { queryKeys } from '../../lib/queryKeys';
 import { useOwnerActionsModal } from '../../store/createModalStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
@@ -26,6 +28,7 @@ interface OwnerActionsModalProps {
 
 export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) {
    const { isOpen, data: postId, close } = useOwnerActionsModal();
+   const queryClient = useQueryClient();
    const [isLoading, setIsLoading] = useState(false);
    const [showConfirm, setShowConfirm] = useState(false);
    const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
@@ -36,6 +39,8 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
       setIsLoading(true);
       try {
          await deletePost({ postId: deletingPostId });
+         queryClient.invalidateQueries({ queryKey: queryKeys.homeFeed('home') });
+         queryClient.invalidateQueries({ queryKey: queryKeys.homeFeed('following') });
          toast('Post deleted.');
       } catch (error) {
          toast(error instanceof Error ? error.message : 'Could not delete post. Try again.');
