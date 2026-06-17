@@ -22,6 +22,7 @@ export default function ExploreLoading() {
    return (
       <div {...stylex.props(styles.container)}>
          {Array.from({ length: 12 }).map((_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
             <div key={i} {...stylex.props(styles.placeholder)} />
          ))}
       </div>

@@ -96,7 +96,7 @@ export default function ChatView({
          return data ?? [];
       },
       initialData: initialMessages,
-      staleTime: staleTime.infinite,
+      staleTime: staleTime.always,
    });
 
    const { data: conversation = initialConversation } = useQuery({
@@ -107,7 +107,7 @@ export default function ChatView({
          return data;
       },
       initialData: initialConversation,
-      staleTime: staleTime.static,
+      staleTime: staleTime.never,
    });
 
    useRealtimeChat(conversationId, queryClient);
@@ -364,6 +364,7 @@ export default function ChatView({
                            .getPublicUrl(fileName);
                         await sendVoiceMessage(conversationId, urlData.publicUrl);
                      },
+                     'Failed to send voice message',
                   );
                   URL.revokeObjectURL(previewUrl);
                   setIsRecording(false);
@@ -377,12 +378,14 @@ export default function ChatView({
                   await send(
                      () => createOptimisticMessage({ sticker_url: url }),
                      () => sendSticker(conversationId, url),
+                     'Failed to send sticker',
                   );
                }}
                onSend={async text => {
                   await send(
                      () => createOptimisticMessage({ content: text }),
                      () => sendMessage(conversationId, text),
+                     'Failed to send message',
                   );
                }}
                onSendImages={async (files: File[]) => {
@@ -403,6 +406,7 @@ export default function ChatView({
                               .getPublicUrl(fileName);
                            await sendImage(conversationId, urlData.publicUrl);
                         },
+                        'Failed to send image',
                      );
                      URL.revokeObjectURL(previewUrl);
                   }

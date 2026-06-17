@@ -4,6 +4,7 @@ import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { throwIfError } from '@/src/lib/unwrap';
 import { UserIdSchema, validate } from '@/src/lib/validation';
 import { POST_WITH_MEDIA_SELECT } from '@/src/queries/posts';
+import { scopePostEngagementToUser } from '@/src/utils/posts';
 import { getOptionalUser } from '../getAuthUser';
 
 export async function getRepostedPosts(params: { userId: string }) {
@@ -21,10 +22,7 @@ export async function getRepostedPosts(params: { userId: string }) {
    if (hideAi) query = query.eq('post.is_ai', false);
 
    if (user) {
-      query = query
-         .eq('post.likes.user_id', user.id)
-         .eq('post.saves.user_id', user.id)
-         .eq('post.reposts.user_id', user.id);
+      query = scopePostEngagementToUser(query, user.id, 'post');
    }
 
    const { data, error } = await query;

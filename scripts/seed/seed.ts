@@ -1,5 +1,5 @@
+import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
-import { randomUUID } from 'crypto';
 import { IMAGES_DIR, PROFILES_JSON, SEED_CONCURRENCY } from './helpers/config';
 import { generateAltText } from './lib/openrouter';
 import { supabase } from './lib/supabaseAdmin';

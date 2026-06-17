@@ -1,7 +1,7 @@
 export const staleTime = {
    default: 30_000,
-   infinite: 0,
-   static: Infinity,
+   always: 0,
+   never: Infinity,
 };
 
 export const queryKeys = {

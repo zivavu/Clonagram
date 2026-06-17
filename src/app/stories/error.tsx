@@ -18,7 +18,7 @@ const styles = stylex.create({
    heading: {
       fontSize: 24,
       fontWeight: 600,
-      color: 'white',
+      color: colors.textPrimary,
    },
    message: {
       color: colors.textSecondary,

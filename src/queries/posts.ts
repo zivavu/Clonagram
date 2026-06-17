@@ -94,11 +94,11 @@ export function savedPostsQuery(
       .from('saves')
       .select(`post_id, post:posts!post_id(${POST_WITH_MEDIA_SELECT})`)
       .eq('user_id', userId)
-      .eq('post.likes.user_id', userId)
-      .eq('post.saves.user_id', userId)
-      .eq('post.reposts.user_id', userId)
-      .lte('post.created_at', new Date().toISOString())
-      .order('created_at', { ascending: false });
+      .lte('post.created_at', new Date().toISOString());
+
+   query = scopePostEngagementToUser(query, userId, 'post');
+
+   query = query.order('created_at', { ascending: false });
 
    if (hideAi) {
       query = query.eq('post.is_ai', false);

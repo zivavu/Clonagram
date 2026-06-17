@@ -51,9 +51,14 @@ interface EqChainable<T> {
    eq(column: string, value: unknown): T;
 }
 
-export function scopePostEngagementToUser<T extends EqChainable<T>>(query: T, userId: string): T {
+export function scopePostEngagementToUser<T extends EqChainable<T>>(
+   query: T,
+   userId: string,
+   relationPrefix?: string,
+): T {
+   const prefix = relationPrefix ? `${relationPrefix}.` : '';
    return query
-      .eq('likes.user_id', userId)
-      .eq('saves.user_id', userId)
-      .eq('reposts.user_id', userId);
+      .eq(`${prefix}likes.user_id`, userId)
+      .eq(`${prefix}saves.user_id`, userId)
+      .eq(`${prefix}reposts.user_id`, userId);
 }

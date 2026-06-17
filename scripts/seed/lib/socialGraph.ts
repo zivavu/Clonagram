@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import {
    COMMENTS_PER_PROFILE,
    EXPLORE_ENGAGEMENT_RATIO,

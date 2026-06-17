@@ -62,6 +62,7 @@ export default function ProfileLoading() {
          </div>
          <div {...stylex.props(styles.grid)}>
             {Array.from({ length: 9 }).map((_, i) => (
+               // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
                <div key={i} {...stylex.props(styles.post)} />
             ))}
          </div>

@@ -15,8 +15,9 @@ export async function deletePost(params: { postId: string }) {
       .select('user_id')
       .eq('id', postId)
       .maybeSingle();
-   if (!post) throw new Error('Post not found');
-   if (post.user_id !== user.id) throw new Error('Not authorized to delete this post');
+   if (!post || post.user_id !== user.id) {
+      throw new Error('Post not found or not authorized');
+   }
 
    const [{ data: videos }, { data: images }] = await Promise.all([
       supabase

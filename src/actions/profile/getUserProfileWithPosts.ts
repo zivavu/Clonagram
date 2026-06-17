@@ -31,7 +31,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
       .order('created_at', { referencedTable: 'posts', ascending: false });
 
    if (hideAi) query = query.eq('posts.is_ai', false);
-   query = scopePostEngagementToUser(query, user.id);
+   query = scopePostEngagementToUser(query, user.id, 'posts');
 
    const { data, error } = await query.single();
 
