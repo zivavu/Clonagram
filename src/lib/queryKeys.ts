@@ -31,4 +31,7 @@ export const queryKeys = {
    userSearch: (query: string) => ['user-search', query] as const,
    locationSearch: (query: string) => ['locations', 'search', query] as const,
    profileStats: (userId: string) => ['profile-stats', userId] as const,
+   stickers: (query: string) => ['stickers', query] as const,
+   archivedStories: () => ['archived-stories'] as const,
+   highlightStoryIds: (highlightId: string) => ['highlight-story-ids', highlightId] as const,
 };

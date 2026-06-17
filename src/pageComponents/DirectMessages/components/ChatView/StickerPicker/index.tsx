@@ -3,8 +3,10 @@
 import { type DotLottie, DotLottieReact } from '@lottiefiles/dotlottie-react';
 import * as Popover from '@radix-ui/react-popover';
 import * as stylex from '@stylexjs/stylex';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { LuSticker } from 'react-icons/lu';
+import { queryKeys } from '@/src/lib/queryKeys';
 import {
    fetchFeaturedAnimations,
    type LottieAnimation,
@@ -44,28 +46,26 @@ interface StickerPickerProps {
    onSelect: (url: string) => void;
 }
 
+async function fetchStickers(query: string): Promise<LottieAnimation[]> {
+   const trimmed = query.trim();
+   if (!trimmed) return fetchFeaturedAnimations();
+   return searchAnimations(trimmed);
+}
+
 export default function StickerPicker({ onSelect }: StickerPickerProps) {
    const [query, setQuery] = useState('');
-   const [animations, setAnimations] = useState<LottieAnimation[]>([]);
-   const [loading, setLoading] = useState(true);
+   const [debouncedQuery, setDebouncedQuery] = useState('');
 
    useEffect(() => {
-      setLoading(true);
-      if (!query.trim()) {
-         fetchFeaturedAnimations().then(data => {
-            setAnimations(data);
-            setLoading(false);
-         });
-         return;
-      }
-      const timer = setTimeout(() => {
-         searchAnimations(query).then(data => {
-            setAnimations(data);
-            setLoading(false);
-         });
-      }, 350);
+      const timer = setTimeout(() => setDebouncedQuery(query), 350);
       return () => clearTimeout(timer);
    }, [query]);
+
+   const { data: animations = [], isLoading } = useQuery({
+      queryKey: queryKeys.stickers(debouncedQuery),
+      queryFn: () => fetchStickers(debouncedQuery),
+      staleTime: 5 * 60 * 1000,
+   });
 
    return (
       <Popover.Root>
@@ -84,7 +84,7 @@ export default function StickerPicker({ onSelect }: StickerPickerProps) {
                      />
                   </div>
                   <div {...stylex.props(styles.grid)}>
-                     {!loading && animations.length === 0 && (
+                     {!isLoading && animations.length === 0 && (
                         <span {...stylex.props(styles.empty)}>No stickers found</span>
                      )}
                      {animations.map(anim => (

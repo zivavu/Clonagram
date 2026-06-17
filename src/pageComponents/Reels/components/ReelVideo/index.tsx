@@ -44,13 +44,6 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
       }
    }, [isVisible]);
 
-   useEffect(() => {
-      const mediaEl = playerRef.current?.media;
-      if (!mediaEl) return;
-      mediaEl.volume = volume;
-      mediaEl.muted = volume === 0;
-   }, [volume]);
-
    function togglePlayPause() {
       const player = playerRef.current;
       if (!player) return;
@@ -74,6 +67,7 @@ export default function ReelVideo({ playbackId }: ReelVideoProps) {
             disableCookies
             loop
             muted={volume === 0}
+            volume={volume}
             autoPlay={false}
             preload="none"
             style={{

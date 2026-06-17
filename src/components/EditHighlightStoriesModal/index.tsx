@@ -2,13 +2,14 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import type { ArchivedStory } from '@/src/actions/story/getArchivedStories';
 import { getArchivedStories } from '@/src/actions/story/getArchivedStories';
 import { getHighlightStoryIds } from '@/src/actions/story/getHighlightStoryIds';
 import { updateHighlightStories } from '@/src/actions/story/updateHighlightStories';
 import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { useEditHighlightStoriesModalStore } from '@/src/store/createModalStore';
 import DialogOverlay from '../DialogOverlay';
 import SelectStoriesStep from '../NewHighlightModal/components/SelectStoriesStep';
@@ -16,33 +17,44 @@ import { styles } from './index.stylex';
 
 export default function EditHighlightStoriesModal() {
    const { isOpen, data, close } = useEditHighlightStoriesModalStore();
-   const [stories, setStories] = useState<ArchivedStory[] | null>(null);
-   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+   const [localSelectedIds, setLocalSelectedIds] = useState<Set<string> | null>(null);
+   const [lastHighlightId, setLastHighlightId] = useState<string | null>(null);
    const [loading, setLoading] = useState(false);
 
-   useEffect(() => {
-      if (!isOpen || !data) return;
-      setStories(null);
-      Promise.all([
-         getArchivedStories(),
-         getHighlightStoryIds({ highlightId: data.highlightId }),
-      ]).then(([fetchedStories, ids]) => {
-         setStories(fetchedStories);
-         setSelectedIds(new Set(ids));
-      });
-   }, [isOpen, data]);
+   const { data: stories = null } = useQuery({
+      queryKey: queryKeys.archivedStories(),
+      queryFn: () => getArchivedStories(),
+      enabled: isOpen,
+      staleTime: 30_000,
+   });
+
+   const { data: highlightStoryIds = [] } = useQuery({
+      queryKey: queryKeys.highlightStoryIds(data?.highlightId ?? ''),
+      queryFn: () => getHighlightStoryIds({ highlightId: data!.highlightId }),
+      enabled: isOpen && !!data,
+      staleTime: 30_000,
+   });
+
+   const highlightId = data?.highlightId ?? null;
+   if (highlightId !== lastHighlightId) {
+      setLastHighlightId(highlightId);
+      setLocalSelectedIds(null);
+   }
+
+   const selectedIds = localSelectedIds ?? new Set(highlightStoryIds);
 
    function handleClose() {
       close();
       setTimeout(() => {
-         setStories(null);
-         setSelectedIds(new Set());
+         setLocalSelectedIds(null);
+         setLastHighlightId(null);
       }, 200);
    }
 
    function toggleStory(id: string) {
-      setSelectedIds(prev => {
-         const next = new Set(prev);
+      setLocalSelectedIds(prev => {
+         const base = prev ?? new Set(highlightStoryIds);
+         const next = new Set(base);
          if (next.has(id)) next.delete(id);
          else next.add(id);
          return next;

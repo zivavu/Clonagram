@@ -3,7 +3,7 @@
 import type MuxPlayerElement from '@mux/mux-player';
 import MuxPlayer from '@mux/mux-player-react';
 import * as stylex from '@stylexjs/stylex';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import VolumeControl from '../../VolumeControl';
 import { styles } from './index.stylex';
@@ -18,25 +18,6 @@ export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: Feed
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const { volume } = usePlayerStore();
 
-   useEffect(() => {
-      const player = muxPlayerRef.current;
-      if (!player) return;
-      if (isPlaying) {
-         player.play()?.catch(err => {
-            if (err?.name !== 'AbortError') throw err;
-         });
-      } else {
-         player.pause();
-      }
-   }, [isPlaying]);
-
-   useEffect(() => {
-      const mediaEl = muxPlayerRef.current?.media;
-      if (!mediaEl) return;
-      mediaEl.volume = volume;
-      mediaEl.muted = volume === 0;
-   }, [volume]);
-
    return (
       <div {...stylex.props(styles.root)}>
          <MuxPlayer
@@ -50,7 +31,8 @@ export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: Feed
                '--media-object-fit': 'cover',
             }}
             playbackId={playbackId}
-            muted
+            muted={volume === 0}
+            volume={volume}
             paused={!isPlaying}
          />
          <button
