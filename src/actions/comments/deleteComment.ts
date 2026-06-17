@@ -22,7 +22,10 @@ export async function deleteComment(params: { commentId: string }) {
       throw new Error('Not authorized');
    }
 
-   const { error } = await supabase.from('comments').delete().eq('id', commentId);
+   const { error } = await supabase
+      .from('comments')
+      .update({ is_deleted: true })
+      .eq('id', commentId);
 
    throwIfError({ error }, 'Failed to delete comment');
 }
