@@ -29,7 +29,7 @@ interface UserListItemProps {
 
 export function UserListItem({
    avatarUrl,
-   avatarAlt = 'User',
+   avatarAlt,
    username,
    userId,
    fullName,
@@ -44,7 +44,7 @@ export function UserListItem({
          <div {...stylex.props(styles.info)}>
             <UserAvatar
                src={avatarUrl}
-               alt={avatarAlt}
+               alt={avatarAlt ?? username}
                size={44}
                username={username}
                userId={userId}

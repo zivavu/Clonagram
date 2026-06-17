@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { supabase } from '../lib/supabaseAdmin';
 import type { SeedData } from '../types';
 import { PROFILES_JSON } from './config';

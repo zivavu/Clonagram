@@ -1,5 +1,5 @@
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'crypto';
-import { mkdirSync, writeFileSync } from 'fs';
 import { NICHE_COLLECTIONS } from './helpers/collections';
 import {
    AI_BATCH_SIZE,

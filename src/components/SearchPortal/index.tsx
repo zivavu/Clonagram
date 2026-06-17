@@ -3,7 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaCircleXmark } from 'react-icons/fa6';
 import { IoCloseOutline, IoSearchOutline } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
@@ -21,6 +21,11 @@ const VERIFIED_USERS = new Set(['crumbling.concrete']);
 export default function SearchPortal() {
    const { isOpen, close } = useSearchPortalStore();
    const [query, setQuery] = useState('');
+   const inputRef = useRef<HTMLInputElement>(null);
+
+   useEffect(() => {
+      if (isOpen) inputRef.current?.focus();
+   }, [isOpen]);
 
    const { data: filteredUsers, isLoading } = useQuery({
       queryKey: queryKeys.profileSearch(query),
@@ -46,13 +51,12 @@ export default function SearchPortal() {
 
                <div {...stylex.props(styles.searchInputWrapper)}>
                   <input
+                     ref={inputRef}
                      {...stylex.props(styles.searchInput, sharedStyles.placeholder)}
                      type="text"
                      placeholder="Search"
                      value={query}
                      onChange={e => setQuery(e.target.value)}
-                     // biome-ignore lint/a11y/noAutofocus: It's like that in the original Instagram search bar.
-                     autoFocus
                   />
                   {query && (
                      <button

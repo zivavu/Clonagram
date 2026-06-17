@@ -88,7 +88,7 @@ export const styles = stylex.create({
       borderRadius: '50%',
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: colors.whiteBlack,
+      borderColor: colors.accentFg,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

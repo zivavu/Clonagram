@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { NICHE_COLLECTIONS } from './helpers/collections';
 import { IMAGE_CONCURRENCY, IMAGES_DIR, PROFILES_JSON } from './helpers/config';
 import { processImage } from './lib/imageProcessor';

@@ -163,6 +163,17 @@ Do not guess or make assumptions when the right path is ambiguous.
 
 <!-- END:clarification-rules -->
 
+<!-- BEGIN:component-boundaries -->
+
+# Component Boundaries
+
+- `src/components/` = reusable UI components (atoms, molecules) that can be used anywhere in the app.
+- `src/pageComponents/` = route-scoped composition components that assemble reusable components into page-level layouts and data flows. These are specific to a route or feature group.
+
+Components in `pageComponents/` may import from `components/`, but not vice versa.
+
+<!-- END:component-boundaries -->
+
 <!-- BEGIN:no-comments-rules -->
 
 # No Comments

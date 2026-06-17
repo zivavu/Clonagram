@@ -44,7 +44,7 @@ export const styles = stylex.create({
       paddingBottom: '16px',
       borderBottomWidth: '1px',
       borderBottomStyle: 'solid',
-      borderBottomColor: colors.whiteBlack,
+      borderBottomColor: colors.accentFg,
       marginBottom: '-1px',
       zIndex: 1,
    },

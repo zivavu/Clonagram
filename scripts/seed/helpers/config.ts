@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 
 export const PROFILE_COUNT = 60;
 export const IMAGE_PROFILE_RATIO = 1;
