@@ -51,8 +51,10 @@ async function callOpenRouter(imageUrl: string) {
 }
 
 import { ImageAltTextSchema, validate } from '@/src/lib/validation';
+import { getAuthUser } from '../getAuthUser';
 
 export async function generateImageAltText(params: { imageId: string; imageUrl: string }) {
+   await getAuthUser();
    const { imageId, imageUrl } = validate(ImageAltTextSchema, params);
    const altText = await callOpenRouter(imageUrl);
 

@@ -8,7 +8,15 @@ import { getAuthUser } from '../getAuthUser';
 
 export async function deletePost(params: { postId: string }) {
    const { postId } = validate(DeletePostSchema, params);
-   const { supabase } = await getAuthUser();
+   const { supabase, user } = await getAuthUser();
+
+   const { data: post } = await supabase
+      .from('posts')
+      .select('user_id')
+      .eq('id', postId)
+      .maybeSingle();
+   if (!post) throw new Error('Post not found');
+   if (post.user_id !== user.id) throw new Error('Not authorized to delete this post');
 
    const [{ data: videos }, { data: images }] = await Promise.all([
       supabase
@@ -19,13 +27,9 @@ export async function deletePost(params: { postId: string }) {
       supabase.from('post_images').select('url').eq('post_id', postId),
    ]);
 
-   const { count, error } = await supabase
-      .from('posts')
-      .delete({ count: 'exact' })
-      .eq('id', postId);
+   const { error } = await supabase.from('posts').delete().eq('id', postId);
 
    throwIfError({ error }, 'Failed to delete post');
-   if (count === 0) throw new Error('Post not found or not authorized');
 
    const cleanupTasks: Promise<unknown>[] = [];
 

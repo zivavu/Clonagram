@@ -3,6 +3,7 @@ import 'server-only';
 
 import { MuxUploadSchema, validate } from '@/src/lib/validation';
 import { getMuxClient } from '../lib/mux';
+import { getAuthUser } from './getAuthUser';
 
 export interface MuxUploadInfo {
    status: 'waiting' | 'asset_created' | 'errored' | 'cancelled' | 'timed_out';
@@ -13,6 +14,7 @@ export interface MuxUploadInfo {
 }
 
 export async function getMuxUploadInfo(params: { uploadId: string }) {
+   await getAuthUser();
    const { uploadId } = validate(MuxUploadSchema, params);
    const muxClient = getMuxClient();
    const upload = await muxClient.video.uploads.retrieve(uploadId);

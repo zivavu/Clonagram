@@ -11,8 +11,9 @@ function getUserFriendlyError(message: string) {
 export async function GET(request: Request) {
    const { searchParams, origin } = new URL(request.url);
    const code = searchParams.get('code');
+   const allowedPaths = ['/', '/profile', '/direct', '/explore'];
    let next = searchParams.get('next') ?? '/';
-   if (!next.startsWith('/')) {
+   if (!allowedPaths.includes(next)) {
       next = '/';
    }
    if (code) {
