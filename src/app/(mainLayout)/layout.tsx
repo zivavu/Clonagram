@@ -29,9 +29,15 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
          <Suspense>
             <NewNoteModalWrapper />
          </Suspense>
-         <SearchPortal />
-         <NotificationsPortal />
-         <IncomingCallListener />
+         <Suspense>
+            <SearchPortal />
+         </Suspense>
+         <Suspense>
+            <NotificationsPortal />
+         </Suspense>
+         <Suspense>
+            <IncomingCallListener />
+         </Suspense>
          {children}
       </div>
    );

@@ -46,14 +46,7 @@ export default function UserAvatar({
       : (href ?? (effectiveRingState?.hasStories && username ? `/stories/${username}` : undefined));
 
    let content = src ? (
-      <Image
-         src={src}
-         width={size}
-         height={size}
-         {...stylex.props(styles.image)}
-         preload
-         {...props}
-      />
+      <Image src={src} width={size} height={size} {...stylex.props(styles.image)} {...props} />
    ) : (
       <div {...stylex.props(styles.placeholder)} style={{ width: size, height: size }}>
          <MdPerson {...stylex.props(styles.placeholderIcon)} />
