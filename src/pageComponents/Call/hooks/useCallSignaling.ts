@@ -65,11 +65,14 @@ export function useCallSignaling(channelName: string, onSignal: (signal: CallSig
             waitersRef.current.push(resolve);
          });
       }
-      await channelRef.current?.send({
+      const result = await channelRef.current?.send({
          type: 'broadcast',
          event: 'signal',
          payload: signal,
       });
+      if (result !== 'ok') {
+         console.warn('[call] send result', signal.type, '=', result);
+      }
    }
 
    return { send };

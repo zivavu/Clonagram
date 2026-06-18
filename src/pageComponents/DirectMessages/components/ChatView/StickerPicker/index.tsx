@@ -1,6 +1,6 @@
 'use client';
 
-import { type DotLottie, DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { type DotLottie, DotLottieReact, setWasmUrl } from '@lottiefiles/dotlottie-react';
 import * as Popover from '@radix-ui/react-popover';
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
@@ -14,6 +14,8 @@ import {
 } from '@/src/utils/lottieApi';
 import { styles as inputStyles } from '../../../index.stylex';
 import { styles } from './index.stylex';
+
+setWasmUrl('/dotlottie-player.wasm');
 
 function StickerCell({
    anim,
@@ -36,7 +38,6 @@ function StickerCell({
             dotLottieRefCallback={ref => {
                lottieRef.current = ref;
             }}
-            wasmUrl="/dotlottie-player.wasm"
             style={{ width: '100%', height: '100%' }}
          />
       </button>

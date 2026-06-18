@@ -15,6 +15,7 @@ import { MdCallEnd } from 'react-icons/md';
 import { sendCallEvent } from '@/src/actions/dm/sendCallEvent';
 import UserAvatar from '@/src/components/UserAvatar';
 import { supabase } from '@/src/lib/supabase/client';
+import { getMediaErrorMessage } from '@/src/lib/webrtc/mediaError';
 import { useCallSession } from './hooks/useCallSession';
 import type { CallSignal } from './hooks/useCallSignaling';
 import { styles } from './index.stylex';
@@ -53,6 +54,7 @@ export default function CallPage({
    const router = useRouter();
    const [phase, setPhase] = useState<'lobby' | 'call'>(autoJoin ? 'call' : 'lobby');
    const [callStartTime, setCallStartTime] = useState<number | null>(null);
+   const [mediaError, setMediaError] = useState<string | null>(null);
    const localVideoRef = useRef<HTMLVideoElement>(null);
    const remoteVideoRefs = useRef<Map<string, HTMLVideoElement>>(new Map());
 
@@ -106,8 +108,25 @@ export default function CallPage({
    }, [autoJoin, backHref, router]);
 
    async function handleStartCall() {
-      await session.startLocalMedia();
-      await sendCallEvent(conversationId, callType === 'video' ? 'video_started' : 'audio_started');
+      setMediaError(null);
+      try {
+         await session.startLocalMedia();
+      } catch (err) {
+         console.error('[call] startLocalMedia failed', err);
+         setMediaError(getMediaErrorMessage(err));
+         return;
+      }
+
+      try {
+         await sendCallEvent(
+            conversationId,
+            callType === 'video' ? 'video_started' : 'audio_started',
+         );
+      } catch (err) {
+         console.error('[call] sendCallEvent failed', err);
+         setMediaError('Failed to start call. Please try again.');
+         return;
+      }
 
       const inviteSignal: CallSignal = {
          type: 'invite',
@@ -118,14 +137,24 @@ export default function CallPage({
          callerAvatar: authUserAvatar,
       };
 
-      for (const p of participants) {
-         const ch = supabase.channel(`user-call:${p.id}`);
-         await ch.subscribe();
-         await ch.send({ type: 'broadcast', event: 'signal', payload: inviteSignal });
-         supabase.removeChannel(ch);
+      try {
+         for (const p of participants) {
+            const ch = supabase.channel(`user-call:${p.id}`);
+            await ch.subscribe();
+            await ch.send({ type: 'broadcast', event: 'signal', payload: inviteSignal });
+            supabase.removeChannel(ch);
+         }
+      } catch (err) {
+         console.error('[call] invite broadcast failed', err);
       }
 
-      await session.joinCall();
+      try {
+         await session.joinCall();
+      } catch (err) {
+         console.error('[call] joinCall failed', err);
+         setMediaError('Failed to join the call.');
+         return;
+      }
       setCallStartTime(Date.now());
       setPhase('call');
    }
@@ -171,6 +200,7 @@ export default function CallPage({
                      <button {...stylex.props(styles.startButton)} onClick={handleStartCall}>
                         Start call
                      </button>
+                     {mediaError && <div {...stylex.props(styles.mediaError)}>{mediaError}</div>}
                   </div>
                </div>
                <div {...stylex.props(styles.controlBar)}>

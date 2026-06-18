@@ -1,7 +1,9 @@
 'use client';
 
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { DotLottieReact, setWasmUrl } from '@lottiefiles/dotlottie-react';
+
+setWasmUrl('/dotlottie-player.wasm');
 
 export default function StickerMessage({ src }: { src: string }) {
-   return <DotLottieReact src={src} loop autoplay wasmUrl="/dotlottie-player.wasm" style={{ width: 160, height: 160 }} />;
+   return <DotLottieReact src={src} loop autoplay style={{ width: 160, height: 160 }} />;
 }

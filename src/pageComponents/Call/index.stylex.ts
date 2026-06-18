@@ -89,6 +89,13 @@ export const styles = stylex.create({
       marginTop: 8,
    },
 
+   mediaError: {
+      fontSize: '0.8rem',
+      color: colors.danger,
+      textAlign: 'center',
+      maxWidth: 240,
+   },
+
    controlBar: {
       display: 'flex',
       alignItems: 'center',

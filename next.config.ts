@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
                      "style-src 'self' 'unsafe-inline'",
                      "img-src 'self' data: blob: https://pggvzapkivjgsybyzjok.supabase.co https://image.mux.com https://lh3.googleusercontent.com https://picsum.photos https://cdn.jsdelivr.net",
                      "media-src 'self' blob: https://stream.mux.com https://*.mux.com",
-                     "connect-src 'self' https://pggvzapkivjgsybyzjok.supabase.co wss://pggvzapkivjgsybyzjok.supabase.co https://image.mux.com https://stream.mux.com https://*.mux.com https://graphql.lottiefiles.com https://photon.komoot.io",
+                     "connect-src 'self' https://pggvzapkivjgsybyzjok.supabase.co wss://pggvzapkivjgsybyzjok.supabase.co https://image.mux.com https://stream.mux.com https://*.mux.com https://graphql.lottiefiles.com https://photon.komoot.io https://cdn.jsdelivr.net https://unpkg.com https://assets-v2.lottiefiles.com",
                      "font-src 'self'",
                      "frame-src 'none'",
                      "object-src 'none'",
