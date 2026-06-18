@@ -36,6 +36,7 @@ function StickerCell({
             dotLottieRefCallback={ref => {
                lottieRef.current = ref;
             }}
+            wasmUrl="/dotlottie-player.wasm"
             style={{ width: '100%', height: '100%' }}
          />
       </button>
