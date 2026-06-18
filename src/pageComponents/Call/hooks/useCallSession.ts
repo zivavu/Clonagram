@@ -1,12 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { getIceServers } from '@/src/lib/webrtc/iceServers';
 import { type CallSignal, useCallSignaling } from './useCallSignaling';
-
-const STUN_SERVERS: RTCIceServer[] = [
-   { urls: 'stun:stun.l.google.com:19302' },
-   { urls: 'stun:stun1.l.google.com:19302' },
-];
 
 export interface RemoteParticipant {
    userId: string;
@@ -42,7 +38,7 @@ export function useCallSession({
    const channelName = `call:${conversationId}`;
 
    function createPeerConnection(remoteUserId: string, send: (s: CallSignal) => Promise<void>) {
-      const pc = new RTCPeerConnection({ iceServers: STUN_SERVERS });
+      const pc = new RTCPeerConnection({ iceServers: getIceServers() });
 
       pc.onicecandidate = ({ candidate }) => {
          if (candidate) {
