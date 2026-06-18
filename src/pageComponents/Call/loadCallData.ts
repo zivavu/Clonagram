@@ -27,6 +27,8 @@ export async function loadCallData(conversationId: string) {
 
    return {
       authUserId: profile.id,
+      authUserName: profile.full_name || profile.username,
+      authUserAvatar: profile.avatar_url ?? null,
       participants: otherParticipants,
       displayName,
       displayAvatar,

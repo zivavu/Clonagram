@@ -22,6 +22,8 @@ export async function getUserProfileWithPosts(params: { username: string }) {
               id, caption, created_at, aspect_ratio, hide_likes, type,
               like_count, comment_count,
               likes(user_id),
+              saves(user_id),
+              reposts(user_id),
               images:post_images(id, url, position, width, height),
               videos:post_videos(id, mux_playback_id, duration, position, width, height)
            )`,

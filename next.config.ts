@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
                      "default-src 'self'",
                      `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''} https://va.vercel-scripts.com`,
                      "style-src 'self' 'unsafe-inline'",
-                     "img-src 'self' data: blob: https://pggvzapkivjgsybyzjok.supabase.co https://image.mux.com https://lh3.googleusercontent.com https://picsum.photos",
+                     "img-src 'self' data: blob: https://pggvzapkivjgsybyzjok.supabase.co https://image.mux.com https://lh3.googleusercontent.com https://picsum.photos https://cdn.jsdelivr.net",
                      "media-src 'self' blob: https://stream.mux.com https://*.mux.com",
                      "connect-src 'self' https://pggvzapkivjgsybyzjok.supabase.co wss://pggvzapkivjgsybyzjok.supabase.co https://image.mux.com https://stream.mux.com https://*.mux.com https://graphql.lottiefiles.com https://photon.komoot.io",
                      "font-src 'self'",

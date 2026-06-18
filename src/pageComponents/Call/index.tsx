@@ -28,6 +28,8 @@ interface CallParticipant {
 interface CallPageProps {
    conversationId: string;
    authUserId: string;
+   authUserName: string;
+   authUserAvatar: string | null;
    callType: 'audio' | 'video';
    backHref: string;
    participants: CallParticipant[];
@@ -39,6 +41,8 @@ interface CallPageProps {
 export default function CallPage({
    conversationId,
    authUserId,
+   authUserName,
+   authUserAvatar,
    callType,
    backHref,
    participants,
@@ -107,8 +111,8 @@ export default function CallPage({
          fromUserId: authUserId,
          conversationId,
          callType,
-         callerName: displayName,
-         callerAvatar: displayAvatar,
+         callerName: authUserName,
+         callerAvatar: authUserAvatar,
       };
 
       for (const p of participants) {
