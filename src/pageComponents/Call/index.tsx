@@ -96,11 +96,14 @@ export default function CallPage({
          .then(() => (cancelled ? undefined : joinCallRef.current()))
          .then(() => {
             if (!cancelled) setCallStartTime(Date.now());
+         })
+         .catch(() => {
+            if (!cancelled) router.push(backHref);
          });
       return () => {
          cancelled = true;
       };
-   }, [autoJoin]);
+   }, [autoJoin, backHref, router]);
 
    async function handleStartCall() {
       await session.startLocalMedia();
