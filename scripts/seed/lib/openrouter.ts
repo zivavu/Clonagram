@@ -2,7 +2,7 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 const MODELS = {
    text: 'meta-llama/llama-3.1-8b-instruct',
-   vision: 'qwen/qwen3.5-flash-02-23',
+   vision: 'google/gemini-flash-1.5-8b',
 } as const;
 
 type TextPart = { type: 'text'; text: string };
@@ -40,7 +40,11 @@ async function callOpenRouter({ messages, maxTokens = 4000, model = MODELS.text 
 
    const data = await response.json();
    const content = data.choices?.[0]?.message?.content;
-   if (!content) throw new Error('No content returned from OpenRouter');
+   if (!content) {
+      throw new Error(
+         `OpenRouter returned no content (model=${model}): ${JSON.stringify(data).slice(0, 300)}`,
+      );
+   }
    return content as string;
 }
 
@@ -191,14 +195,15 @@ export async function generatePostContent(
    niche: string,
    bio: string,
 ): Promise<{ caption: string; altText: string; contextualComments: string[] }> {
-   const raw = await callOpenRouter({
-      messages: [
-         {
-            role: 'user',
-            content: [
-               {
-                  type: 'text',
-                  text: `You are analyzing an Instagram post image for a ${niche} content creator whose bio is: "${bio}".
+   try {
+      const raw = await callOpenRouter({
+         messages: [
+            {
+               role: 'user',
+               content: [
+                  {
+                     type: 'text',
+                     text: `You are analyzing an Instagram post image for a ${niche} content creator whose bio is: "${bio}".
 
 Return a JSON object with exactly these keys:
 {
@@ -208,45 +213,56 @@ Return a JSON object with exactly these keys:
 }
 
 Return ONLY valid JSON.`,
-               },
-               { type: 'image_url', image_url: { url: imageUrl } },
-            ],
-         },
-      ],
-      maxTokens: 400,
-      model: MODELS.vision,
-   });
+                  },
+                  { type: 'image_url', image_url: { url: imageUrl } },
+               ],
+            },
+         ],
+         maxTokens: 400,
+         model: MODELS.vision,
+      });
 
-   try {
-      const parsed = JSON.parse(raw.trim());
-      return {
-         caption: (parsed.caption as string | undefined)?.trim() ?? '',
-         altText: (parsed.alt_text as string | undefined)?.trim().slice(0, 80) ?? '',
-         contextualComments: Array.isArray(parsed.comments)
-            ? (parsed.comments as string[]).filter(c => typeof c === 'string')
-            : [],
-      };
-   } catch {
-      return { caption: raw.trim(), altText: '', contextualComments: [] };
+      try {
+         const parsed = JSON.parse(raw.trim());
+         return {
+            caption: (parsed.caption as string | undefined)?.trim() ?? '',
+            altText: (parsed.alt_text as string | undefined)?.trim().slice(0, 80) ?? '',
+            contextualComments: Array.isArray(parsed.comments)
+               ? (parsed.comments as string[]).filter(c => typeof c === 'string')
+               : [],
+         };
+      } catch {
+         return { caption: raw.trim(), altText: '', contextualComments: [] };
+      }
+   } catch (err) {
+      console.warn(
+         `  generatePostContent failed (${niche}): ${err instanceof Error ? err.message : err}`,
+      );
+      return { caption: '', altText: '', contextualComments: [] };
    }
 }
 
 export async function generateAltText(imageUrl: string) {
-   const content = await callOpenRouter({
-      messages: [
-         {
-            role: 'user',
-            content: [
-               {
-                  type: 'text',
-                  text: 'Describe this image for an alt text attribute. Be concise (under 80 characters) and focus on what is visually present.',
-               },
-               { type: 'image_url', image_url: { url: imageUrl } },
-            ],
-         },
-      ],
-      maxTokens: 200,
-      model: MODELS.vision,
-   });
-   return content.trim().slice(0, 80);
+   try {
+      const content = await callOpenRouter({
+         messages: [
+            {
+               role: 'user',
+               content: [
+                  {
+                     type: 'text',
+                     text: 'Describe this image for an alt text attribute. Be concise (under 80 characters) and focus on what is visually present.',
+                  },
+                  { type: 'image_url', image_url: { url: imageUrl } },
+               ],
+            },
+         ],
+         maxTokens: 200,
+         model: MODELS.vision,
+      });
+      return content.trim().slice(0, 80);
+   } catch (err) {
+      console.warn(`  generateAltText failed: ${err instanceof Error ? err.message : err}`);
+      return '';
+   }
 }
