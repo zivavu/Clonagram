@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import {
-   COMMENTS_PER_PROFILE,
+   ARCHETYPE_COMMENTS,
+   ARCHETYPE_FOLLOWS,
+   ARCHETYPE_LIKES,
    EXPLORE_ENGAGEMENT_RATIO,
-   FOLLOWS_PER_PROFILE,
-   LIKES_PER_PROFILE,
    REPOST_RATIO,
    SAME_NICHE_WEIGHT,
    SAVE_RATIO,
@@ -78,10 +78,14 @@ export function buildSocialGraph(profiles: SeedProfile[]): SeedGraph {
    const comments: SeedGraph['comments'] = [];
 
    for (const profile of profiles) {
+      const archetypeFollows = ARCHETYPE_FOLLOWS[profile.archetype];
+      const archetypeLikes = ARCHETYPE_LIKES[profile.archetype];
+      const archetypeComments = ARCHETYPE_COMMENTS[profile.archetype];
+
       const sameNiche = (nicheGroups.get(profile.niche) ?? []).filter(p => p.id !== profile.id);
       const otherNiche = profiles.filter(p => p.niche !== profile.niche);
 
-      const followCount = randInt(FOLLOWS_PER_PROFILE.min, FOLLOWS_PER_PROFILE.max);
+      const followCount = randInt(archetypeFollows.min, archetypeFollows.max);
       const sameCount = Math.round(followCount * SAME_NICHE_WEIGHT);
       const otherCount = followCount - sameCount;
 
@@ -106,7 +110,7 @@ export function buildSocialGraph(profiles: SeedProfile[]): SeedGraph {
          (_, i) => postWeights[allPosts.indexOf(explorePosts[i])],
       );
 
-      const likeCount = randInt(LIKES_PER_PROFILE.min, LIKES_PER_PROFILE.max);
+      const likeCount = randInt(archetypeLikes.min, archetypeLikes.max);
       const exploreCount = Math.round(likeCount * EXPLORE_ENGAGEMENT_RATIO);
       const followedCount = likeCount - exploreCount;
 
@@ -128,7 +132,7 @@ export function buildSocialGraph(profiles: SeedProfile[]): SeedGraph {
          reposts.push({ postId, profileId: profile.id, createdAt: randomPastDate(180) });
       }
 
-      const commentCount = randInt(COMMENTS_PER_PROFILE.min, COMMENTS_PER_PROFILE.max);
+      const commentCount = randInt(archetypeComments.min, archetypeComments.max);
       const exploreCommentCount = Math.round(commentCount * EXPLORE_ENGAGEMENT_RATIO);
       const commentTargets = [
          ...weightedSample(followedPosts, followedWeights, commentCount - exploreCommentCount),

@@ -3,20 +3,22 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { NICHE_COLLECTIONS } from './helpers/collections';
 import {
    AI_BATCH_SIZE,
-   HIGHLIGHTS_PER_PROFILE,
+   ARCHETYPE_DISTRIBUTION,
+   ARCHETYPE_HIGHLIGHTS,
+   ARCHETYPE_POSTS,
+   ARCHETYPE_REELS,
+   ARCHETYPE_STORIES,
    IMAGE_PROFILE_RATIO,
    IMAGES_PER_POST,
    OUTPUT_DIR,
-   POSTS_PER_PROFILE,
    PROFILE_COUNT,
    PROFILES_JSON,
    SAME_NICHE_WEIGHT,
-   STORIES_PER_PROFILE,
    WEBSITE_PROBABILITY,
 } from './helpers/config';
 import { generateProfileBatch } from './lib/openrouter';
 import { buildSocialGraph } from './lib/socialGraph';
-import type { SeedData, SeedNiche, SeedPost, SeedProfile } from './types';
+import type { SeedArchetype, SeedData, SeedNiche, SeedPost, SeedProfile, SeedReel } from './types';
 
 const ASPECT_RATIOS: SeedPost['aspectRatio'][] = [
    '1:1',
@@ -26,6 +28,19 @@ const ASPECT_RATIOS: SeedPost['aspectRatio'][] = [
    '4:5',
    '16:9',
    '9:16',
+];
+
+const NICHES: SeedNiche[] = [
+   'travel',
+   'fitness',
+   'food',
+   'fashion',
+   'art',
+   'photography',
+   'lifestyle',
+   'music',
+   'tech',
+   'wellness',
 ];
 
 async function verifyWebsite(url: string): Promise<boolean> {
@@ -40,19 +55,6 @@ async function verifyWebsite(url: string): Promise<boolean> {
       return false;
    }
 }
-
-const NICHES: SeedNiche[] = [
-   'travel',
-   'fitness',
-   'food',
-   'fashion',
-   'art',
-   'photography',
-   'lifestyle',
-   'music',
-   'tech',
-   'wellness',
-];
 
 function randInt(min: number, max: number) {
    return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -77,6 +79,23 @@ function pickRandom<T>(arr: T[], count: number): T[] {
    return a.slice(0, n);
 }
 
+function assignArchetypes(count: number): SeedArchetype[] {
+   const counts = {
+      influencer: Math.round(count * ARCHETYPE_DISTRIBUTION.influencer),
+      regular: Math.round(count * ARCHETYPE_DISTRIBUTION.regular),
+      lurker: Math.round(count * ARCHETYPE_DISTRIBUTION.lurker),
+      dormant: Math.round(count * ARCHETYPE_DISTRIBUTION.dormant),
+   };
+   const total = Object.values(counts).reduce((a, b) => a + b, 0);
+   counts.regular += count - total;
+
+   const pool: SeedArchetype[] = [];
+   for (const [archetype, n] of Object.entries(counts) as [SeedArchetype, number][]) {
+      for (let i = 0; i < n; i++) pool.push(archetype);
+   }
+   return shuffle(pool);
+}
+
 async function main() {
    for (const [niche, ids] of Object.entries(NICHE_COLLECTIONS)) {
       if (!ids.length) throw new Error(`No Unsplash collections configured for niche: ${niche}`);
@@ -87,6 +106,8 @@ async function main() {
    const nicheAssignments: SeedNiche[] = shuffle(
       NICHES.flatMap(niche => Array.from({ length: PROFILE_COUNT / NICHES.length }, () => niche)),
    );
+
+   const archetypeAssignments = assignArchetypes(PROFILE_COUNT);
 
    const imageProfileIndices = new Set(
       shuffle(Array.from({ length: PROFILE_COUNT }, (_, i) => i)).slice(
@@ -99,12 +120,18 @@ async function main() {
 
    for (let batchStart = 0; batchStart < PROFILE_COUNT; batchStart += AI_BATCH_SIZE) {
       const batchNiches = nicheAssignments.slice(batchStart, batchStart + AI_BATCH_SIZE);
+      const batchArchetypes = archetypeAssignments.slice(batchStart, batchStart + AI_BATCH_SIZE);
       console.log(`Generating profiles ${batchStart + 1}–${batchStart + batchNiches.length}...`);
+
+      const batchSpecs = batchNiches.map((niche, i) => ({
+         niche,
+         archetype: batchArchetypes[i],
+      }));
 
       let raw = null;
       for (let attempt = 1; attempt <= 3; attempt++) {
          try {
-            raw = await generateProfileBatch(batchNiches, batchNiches.length);
+            raw = await generateProfileBatch(batchSpecs);
             break;
          } catch (err) {
             console.warn(
@@ -119,10 +146,19 @@ async function main() {
          const profileIndex = batchStart + i;
          const r = raw[i];
          const niche = batchNiches[i];
+         const archetype = batchArchetypes[i];
          const hasImages = imageProfileIndices.has(profileIndex);
-         const postCount = randInt(POSTS_PER_PROFILE.min, POSTS_PER_PROFILE.max);
-         const storyCount = randInt(STORIES_PER_PROFILE.min, STORIES_PER_PROFILE.max);
-         const highlightCount = randInt(HIGHLIGHTS_PER_PROFILE.min, HIGHLIGHTS_PER_PROFILE.max);
+
+         const postCount = randInt(ARCHETYPE_POSTS[archetype].min, ARCHETYPE_POSTS[archetype].max);
+         const storyCount = randInt(
+            ARCHETYPE_STORIES[archetype].min,
+            ARCHETYPE_STORIES[archetype].max,
+         );
+         const highlightCount = randInt(
+            ARCHETYPE_HIGHLIGHTS[archetype].min,
+            ARCHETYPE_HIGHLIGHTS[archetype].max,
+         );
+         const reelCount = randInt(ARCHETYPE_REELS[archetype].min, ARCHETYPE_REELS[archetype].max);
 
          const posts: SeedPost[] = r.posts.slice(0, postCount).map(p => {
             const imageCount = hasImages ? randInt(IMAGES_PER_POST.min, IMAGES_PER_POST.max) : 0;
@@ -134,6 +170,7 @@ async function main() {
                images: Array.from({ length: imageCount }, () => null),
                collaboratorProfileIds: [],
                imageTags: [],
+               contextualComments: [],
             };
          });
 
@@ -144,7 +181,7 @@ async function main() {
             image: null,
          }));
 
-         const storyIndices = Array.from({ length: stories.length }, (_, i) => i);
+         const storyIndices = Array.from({ length: stories.length }, (_, idx) => idx);
          const highlights = r.highlights
             .filter(h => h?.title)
             .slice(0, highlightCount)
@@ -156,6 +193,15 @@ async function main() {
                ),
             }));
 
+         const reels: SeedReel[] = r.reels.slice(0, reelCount).map(rl => ({
+            id: randomUUID(),
+            caption: rl.caption,
+            pexelsVideoUrl: null,
+            width: null,
+            height: null,
+            duration: null,
+         }));
+
          let website: string | null = null;
          if (Math.random() < WEBSITE_PROBABILITY && r.website) {
             const url = r.website.startsWith('http') ? r.website : `https://${r.website}`;
@@ -166,6 +212,7 @@ async function main() {
          profiles.push({
             id: randomUUID(),
             niche,
+            archetype,
             username: r.username,
             fullName: r.full_name,
             bio: r.bio,
@@ -176,6 +223,7 @@ async function main() {
             stories,
             highlights,
             avatar: null,
+            reels,
          });
       }
    }

@@ -1,5 +1,3 @@
-import type { UnsplashAttribution } from './types';
-
 export type SeedNiche =
    | 'travel'
    | 'fitness'
@@ -14,13 +12,25 @@ export type SeedNiche =
 
 export type SeedAspectRatio = '1:1' | '4:5' | '16:9' | '9:16';
 
+export type SeedArchetype = 'influencer' | 'regular' | 'lurker' | 'dormant';
+
 export type { UnsplashAttribution } from './lib/unsplash';
 
 export interface SeedImageMeta {
    blurDataUrl: string;
    width: number;
    height: number;
-   attribution?: UnsplashAttribution;
+   attribution?: import('./lib/unsplash').UnsplashAttribution;
+   altText?: string;
+}
+
+export interface SeedReel {
+   id: string;
+   caption: string;
+   pexelsVideoUrl: string | null;
+   width: number | null;
+   height: number | null;
+   duration: number | null;
 }
 
 export interface SeedPost {
@@ -31,6 +41,7 @@ export interface SeedPost {
    images: Array<SeedImageMeta | null>;
    collaboratorProfileIds: string[];
    imageTags: Array<{ profileId: string; x: number; y: number }>;
+   contextualComments: string[];
 }
 
 export interface SeedStory {
@@ -49,6 +60,7 @@ export interface SeedHighlight {
 export interface SeedProfile {
    id: string;
    niche: SeedNiche;
+   archetype: SeedArchetype;
    username: string;
    fullName: string;
    bio: string;
@@ -59,6 +71,7 @@ export interface SeedProfile {
    stories: SeedStory[];
    highlights: SeedHighlight[];
    avatar: SeedImageMeta | null;
+   reels: SeedReel[];
 }
 
 export interface SeedFollow {
