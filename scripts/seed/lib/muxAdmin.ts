@@ -17,7 +17,7 @@ export async function createMuxAssetFromUrl(videoUrl: string): Promise<MuxAsset>
    const mux = getMuxClient();
 
    const asset = await mux.video.assets.create({
-      input: [{ url: videoUrl }],
+      inputs: [{ url: videoUrl }],
       playback_policy: ['public'],
       video_quality: 'plus',
    });
