@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { IMAGES_DIR, PROFILES_JSON, SEED_CONCURRENCY } from './helpers/config';
-import { generateAltText } from './lib/openrouter';
+import { createMuxAssetFromUrl } from './lib/muxAdmin';
 import { supabase } from './lib/supabaseAdmin';
 import type { SeedData, SeedProfile } from './types';
 
@@ -14,9 +14,8 @@ function randomPastDate(maxDaysAgo: number) {
 function randomPostDate() {
    const now = Date.now();
    const twoYearsAgo = now - 2 * 365 * 24 * 60 * 60 * 1000;
-   // Quadratic skew: recent dates are ~3x more likely than old ones
    const t = 1 - Math.random() ** 2;
-   const jitter = (Math.random() - 0.5) * 2 * 60 * 60 * 1000; // ±1h
+   const jitter = (Math.random() - 0.5) * 2 * 60 * 60 * 1000;
    return new Date(twoYearsAgo + t * (now - twoYearsAgo) + jitter).toISOString();
 }
 
@@ -40,33 +39,29 @@ function bar(done: number, total: number, width = 10): string {
 class ProfileProgress {
    posts = { done: 0, total: 0 };
    stories = { done: 0, total: 0 };
-   altTexts = { done: 0, total: 0 };
+   reels = { done: 0, total: 0 };
 
    constructor(
       public readonly username: string,
       private display: ProgressDisplay,
    ) {}
 
-   init(posts: number, stories: number) {
+   init(posts: number, stories: number, reels: number) {
       this.posts.total = posts;
       this.stories.total = stories;
+      this.reels.total = reels;
       this.display.render();
    }
 
-   tick(field: 'posts' | 'stories' | 'altTexts') {
+   tick(field: 'posts' | 'stories' | 'reels') {
       this[field].done++;
-      this.display.render();
-   }
-
-   setAltTextTotal(n: number) {
-      this.altTexts.total = n;
       this.display.render();
    }
 
    line(): string {
       const b = (s: { done: number; total: number }) =>
          `[${bar(s.done, s.total, 6)}] ${String(s.done).padStart(2)}/${s.total}`;
-      return `  @${this.username.padEnd(20)} P${b(this.posts)}  S${b(this.stories)}  A${b(this.altTexts)}`;
+      return `  @${this.username.padEnd(20)} P${b(this.posts)}  S${b(this.stories)}  R${b(this.reels)}`;
    }
 }
 
@@ -99,7 +94,11 @@ class ProgressDisplay {
    }
 }
 
-async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
+async function seedProfile(
+   profile: SeedProfile,
+   display: ProgressDisplay,
+   allProfiles: SeedProfile[],
+) {
    const { data: existingUser } = await supabase.auth.admin.getUserById(profile.id);
    if (existingUser.user) return;
 
@@ -108,7 +107,9 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
    try {
       const postCount = profile.posts.filter(p => p.images.length > 0).length;
       const storyCount = profile.stories.filter(s => s.hasImage && s.image).length;
-      progress.init(postCount, storyCount);
+      const reelCount = profile.reels.filter(r => r.pexelsVideoUrl).length;
+      progress.init(postCount, storyCount, reelCount);
+
       const { error: authError } = await supabase.auth.admin.createUser({
          id: profile.id,
          email: `ai.${profile.id}@clonagram.seed`,
@@ -139,8 +140,6 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
          is_ai: true,
       });
       if (profileError) throw new Error(`Profile upsert: ${profileError.message}`);
-
-      const altTextQueue: { id: string; url: string }[] = [];
 
       await Promise.all(
          profile.posts.map(async (post, pi) => {
@@ -182,32 +181,20 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                         height: imageMeta.height,
                         blur_data_url: imageMeta.blurDataUrl,
                         unsplash_attribution: imageMeta.attribution ?? null,
+                        alt_text: imageMeta.altText ?? null,
                      })
                      .select('id')
                      .single();
                   if (imageError) throw new Error(`post_images insert: ${imageError.message}`);
 
                   if (ii === 0) postFirstImageId.set(post.id, imageData.id);
-
-                  altTextQueue.push({ id: imageData.id, url: imageUrl });
                }),
             );
             progress.tick('posts');
          }),
       );
 
-      progress.setAltTextTotal(altTextQueue.length);
       await Promise.all([
-         Promise.all(
-            altTextQueue.map(({ id, url }) =>
-               generateAltText(url)
-                  .then(altText =>
-                     supabase.from('post_images').update({ alt_text: altText }).eq('id', id),
-                  )
-                  .then(() => progress.tick('altTexts'))
-                  .catch(() => progress.tick('altTexts')),
-            ),
-         ),
          Promise.all(
             profile.stories.map(async (story, si) => {
                const createdAt = randomPastDate(730);
@@ -243,6 +230,41 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                if (story.hasImage && story.image) progress.tick('stories');
             }),
          ),
+         Promise.all(
+            profile.reels.map(async reel => {
+               if (!reel.pexelsVideoUrl) return;
+
+               const createdAt = randomPostDate();
+               postCreatedAt.set(reel.id, createdAt);
+
+               const { error: reelPostError } = await supabase.from('posts').insert({
+                  id: reel.id,
+                  user_id: profile.id,
+                  caption: reel.caption,
+                  type: 'reel',
+                  aspect_ratio: '9:16',
+                  is_ai: true,
+                  created_at: createdAt,
+               });
+               if (reelPostError) throw new Error(`Reel post insert: ${reelPostError.message}`);
+
+               const muxAsset = await createMuxAssetFromUrl(reel.pexelsVideoUrl);
+
+               const { error: videoError } = await supabase.from('post_videos').insert({
+                  post_id: reel.id,
+                  position: 0,
+                  mux_asset_id: muxAsset.assetId,
+                  mux_playback_id: muxAsset.playbackId,
+                  mux_status: 'ready',
+                  duration: muxAsset.duration,
+                  width: reel.width,
+                  height: reel.height,
+               });
+               if (videoError) throw new Error(`post_videos insert: ${videoError.message}`);
+
+               progress.tick('reels');
+            }),
+         ),
       ]);
 
       const storiesWithMedia = new Set(
@@ -264,7 +286,6 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
          return true;
       });
 
-      // Distribute stories non-overlappingly across highlights
       const storyPool = [...storiesWithMedia].sort(() => Math.random() - 0.5);
       const chunkSize = Math.max(
          2,
@@ -299,6 +320,34 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
             if (itemError) throw new Error(`story_highlight_items insert: ${itemError.message}`);
          }),
       );
+
+      const postsWithContextualComments = profile.posts.filter(
+         p => p.contextualComments.length > 0 && p.images.length > 0,
+      );
+      if (postsWithContextualComments.length > 0) {
+         const otherProfiles = allProfiles.filter(p => p.id !== profile.id);
+         const contextRows = postsWithContextualComments.flatMap(post => {
+            const commenters = otherProfiles
+               .sort(() => Math.random() - 0.5)
+               .slice(0, post.contextualComments.length);
+            const postDate = new Date(postCreatedAt.get(post.id) ?? new Date()).getTime();
+            return post.contextualComments.map((text, idx) => ({
+               id: randomUUID(),
+               post_id: post.id,
+               user_id: commenters[idx % commenters.length].id,
+               content: text,
+               is_ai: true,
+               created_at: new Date(
+                  postDate + (idx + 1) * 30 * 60 * 1000 + Math.random() * 60 * 60 * 1000,
+               ).toISOString(),
+               parent_id: null,
+            }));
+         });
+         if (contextRows.length > 0) {
+            const { error } = await supabase.from('comments').insert(contextRows);
+            if (error) throw new Error(`Contextual comments insert: ${error.message}`);
+         }
+      }
    } finally {
       display.free(slotIndex);
    }
@@ -318,7 +367,7 @@ async function main() {
    const queue = [...data.profiles];
    async function worker() {
       while (queue.length > 0) {
-         await seedProfile(queue.shift()!, display);
+         await seedProfile(queue.shift()!, display, data.profiles);
       }
    }
    await Promise.all(Array.from({ length: SEED_CONCURRENCY }, worker));
@@ -465,7 +514,10 @@ async function main() {
    for (const r of data.graph.reposts)
       repostCounts.set(r.postId, (repostCounts.get(r.postId) ?? 0) + 1);
 
-   const postIds = data.profiles.flatMap(p => p.posts.map(post => post.id));
+   const postIds = data.profiles.flatMap(p => [
+      ...p.posts.map(post => post.id),
+      ...p.reels.map(reel => reel.id),
+   ]);
    for (let i = 0; i < postIds.length; i += 20) {
       await Promise.all(
          postIds.slice(i, i + 20).map(postId =>
