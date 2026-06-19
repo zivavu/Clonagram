@@ -1,4 +1,40 @@
+import Mux from '@mux/mux-node';
 import { supabase } from '../lib/supabaseAdmin';
+
+function getMuxClient() {
+   const tokenId = process.env.MUX_TOKEN_ID;
+   const tokenSecret = process.env.MUX_TOKEN_SECRET;
+   if (!tokenId || !tokenSecret) throw new Error('Missing MUX_TOKEN_ID or MUX_TOKEN_SECRET');
+   return new Mux({ tokenId, tokenSecret });
+}
+
+async function deleteMuxAssets(profileIds: string[]) {
+   if (!profileIds.length) return;
+
+   const { data: videos } = await supabase
+      .from('post_videos')
+      .select('mux_asset_id, post:posts!post_id(user_id, is_ai)')
+      .not('mux_asset_id', 'is', null);
+
+   const assetIds = (videos ?? [])
+      .filter(v => {
+         const post = Array.isArray(v.post) ? v.post[0] : v.post;
+         return post?.is_ai && post.user_id && profileIds.includes(post.user_id);
+      })
+      .map(v => v.mux_asset_id as string);
+
+   if (!assetIds.length) return;
+
+   console.log(`Deleting ${assetIds.length} Mux assets...`);
+   const mux = getMuxClient();
+   await Promise.allSettled(
+      assetIds.map(id =>
+         mux.video.assets.delete(id).catch(err => {
+            console.error(`  Failed to delete Mux asset ${id}: ${err instanceof Error ? err.message : err}`);
+         }),
+      ),
+   );
+}
 
 async function deleteStorageFolder(bucket: string, prefix: string) {
    const { data: objects } = await supabase.storage.from(bucket).list(prefix);
@@ -30,6 +66,8 @@ async function main() {
          deleteStorageFolder('stories', id),
       ]);
    }
+
+   await deleteMuxAssets(ids);
 
    console.log('Deleting AI content...');
    await supabase.from('follows').delete().in('follower_id', ids);
