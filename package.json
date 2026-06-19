@@ -12,6 +12,7 @@
       "check": "biome check --write .",
       "typecheck": "tsc --noEmit",
       "db:types": "bunx supabase gen types typescript --project-id pggvzapkivjgsybyzjok > src/types/database.ts",
+      "seed:all": "bun run scripts/seed/all.ts",
       "seed:generate": "bun run scripts/seed/generate.ts",
       "seed:process": "bun run scripts/seed/process.ts",
       "seed:seed": "bun run scripts/seed/seed.ts",
