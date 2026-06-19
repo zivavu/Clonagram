@@ -1,8 +1,8 @@
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 const MODELS = {
-   text: 'qwen/qwen3.5-flash-02-23',
-   vision: 'qwen/qwen3.6-flash',
+   text: 'meta-llama/llama-3.1-8b-instruct',
+   vision: 'google/gemma-4-26b-a4b-it',
 } as const;
 
 type TextPart = { type: 'text'; text: string };

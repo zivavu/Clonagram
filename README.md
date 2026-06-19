@@ -104,9 +104,10 @@ Data is stored in Supabase (Postgres, Storage, and Realtime) and videos are proc
 
 ### Prerequisites
 
-- **Bun**: Install from https://bun.sh/ and ensure it is on your PATH. Bun is the package manager and script runner for this project.
-- **Supabase project**: Create one at https://supabase.com/ for the database, auth, storage, and realtime.
-- **Mux account**: Required for video uploads and reels playback (https://www.mux.com/).
+- **Bun** — package manager and script runner. Install from https://bun.sh/ and make sure it is on your `PATH`.
+- **Supabase project** — provides Postgres, Auth, Storage, and Realtime. Create one at https://supabase.com/.
+- **Mux account** — required for video uploads and reels playback. Sign up at https://www.mux.com/.
+- **Google Cloud project** — needed for Google OAuth. Create OAuth credentials and note the client ID and secret.
 
 ### Quick Start for Local Development
 
@@ -118,45 +119,76 @@ Data is stored in Supabase (Postgres, Storage, and Realtime) and videos are proc
    bun install
    ```
 
-2. Configure environment variables (see below) in a `.env` file.
+2. Copy the environment variable template and fill in your values (see [Environment Variables](#environment-variables) below):
 
-3. Apply the database migrations to your Supabase project:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Log in to the Supabase CLI and link your project:
+
+   ```bash
+   bunx supabase login
+   bunx supabase link --project-ref <your-project-ref>
+   ```
+
+4. Apply the database migrations:
 
    ```bash
    bunx supabase db push
    ```
 
-4. Generate TypeScript types from your database (optional, when the schema changes):
+5. Configure Supabase Auth:
+   - In the Supabase dashboard go to **Authentication → Providers** and enable **Google**. Paste in your Google OAuth client ID and secret.
+   - Under **Authentication → URL Configuration**, set the **Site URL** to `http://localhost:3000` for local development (and your production URL when deploying).
+
+6. Create the required Storage buckets in the Supabase dashboard (**Storage → New bucket**):
+   - `avatars` — public
+   - `posts` — public
+   - `stories` — public
+
+7. Generate TypeScript types from your schema (re-run whenever the schema changes):
 
    ```bash
    bun run db:types
    ```
 
-5. Start the development server:
+8. Start the development server:
 
    ```bash
    bun run dev
    ```
 
-7. Open your browser and navigate to http://localhost:3000
+9. Open http://localhost:3000 in your browser.
 
-### Environment Variables (.env)
+### Environment Variables
+
+Create a `.env` file in the project root with the following variables:
 
 ```bash
 # Supabase
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-SUPABASE_ACCESS_TOKEN=
-SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET=
+NEXT_PUBLIC_SUPABASE_URL=            # Project URL from Supabase dashboard → Settings → API
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=# Anon/public key from the same page
+SUPABASE_SERVICE_ROLE_KEY=           # Service role key (keep secret — server only)
+SUPABASE_ACCESS_TOKEN=               # Personal access token for the Supabase CLI (supabase.com/dashboard/account/tokens)
+SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET= # Google OAuth client secret
 
 # Mux (video processing & playback)
-MUX_TOKEN_ID=
+MUX_TOKEN_ID=                        # From Mux dashboard → Settings → API Access Tokens
 MUX_TOKEN_SECRET=
-MUX_WEBHOOK_SECRET=
+MUX_WEBHOOK_SECRET=                  # From Mux dashboard → Settings → Webhooks
 
 # App
-NEXT_PUBLIC_HOSTNAME=
+NEXT_PUBLIC_HOSTNAME=                # e.g. http://localhost:3000 or your production domain
+```
+
+The following additional variables are only needed when running the seed scripts:
+
+```bash
+# Seed scripts
+UNSPLASH_ACCESS_KEY=    # From https://unsplash.com/oauth/applications
+OPEN_ROUTER_API_KEY=    # From https://openrouter.ai/keys (used for AI-generated captions)
+PEXELS_API_KEY=         # From https://www.pexels.com/api/ (used for reel video clips)
 ```
 
 ## Available Scripts
@@ -169,8 +201,42 @@ bun run check      # Format and lint with Biome
 bun run lint       # Lint with Biome
 bun run format     # Format with Biome
 bun run typecheck  # Type-check with the TypeScript compiler
-bun run db:types   # Generate database types from Supabase
+bun run db:types   # Regenerate database TypeScript types from Supabase
 ```
+
+## Seed Scripts
+
+The seed pipeline populates the database with realistic AI-generated profiles, posts, stories, and reels so you can develop against a fully populated app without manual data entry.
+
+It runs in three phases:
+
+| Phase | Script | What it does |
+|-------|--------|--------------|
+| 1 — Generate | `seed:generate` | Calls OpenRouter to generate profile data (bios, captions, comment pools, reel captions) for each archetype |
+| 2 — Process | `seed:process` | Downloads images from Unsplash, runs a vision model to write image-aware captions and alt text, and fetches reel video URLs from Pexels |
+| 3 — Seed | `seed:seed` | Uploads everything to Supabase Storage, inserts all database rows, uploads reels to Mux, and wires up the social graph (follows, likes, comments) |
+
+Run all three in sequence:
+
+```bash
+bun run seed:all
+```
+
+Or run phases individually (output of each phase is saved to `scripts/seed/output/` as JSON):
+
+```bash
+bun run seed:generate   # Phase 1: generate profile JSON
+bun run seed:process    # Phase 2: download images and fetch videos
+bun run seed:seed       # Phase 3: seed the database
+```
+
+To remove all AI-generated content (profiles, posts, stories, storage files, and Mux assets):
+
+```bash
+bun run seed:cleanup
+```
+
+> **Note:** `seed:all` requires `UNSPLASH_ACCESS_KEY`, `OPEN_ROUTER_API_KEY`, and `PEXELS_API_KEY` in addition to the standard Supabase and Mux variables. The vision model used is `qwen/qwen3.6-flash` via OpenRouter.
 
 ## Technologies used
 

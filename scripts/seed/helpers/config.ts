@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import type { SeedArchetype } from '../types';
 
-export const PROFILE_COUNT = 60;
+export const PROFILE_COUNT = 20;
 export const IMAGE_PROFILE_RATIO = 1;
 export const WEBSITE_PROBABILITY = 0.7;
 export const SAME_NICHE_WEIGHT = 0.7;
@@ -21,8 +21,8 @@ export const IMAGES_PER_POST = { min: 1, max: 5 };
 
 export const ARCHETYPE_DISTRIBUTION: Record<SeedArchetype, number> = {
    influencer: 0.15,
-   regular: 0.50,
-   lurker: 0.20,
+   regular: 0.5,
+   lurker: 0.2,
    dormant: 0.15,
 };
 
