@@ -171,8 +171,6 @@ export default function PostMediaCarousel({
       }
    };
 
-   console.log(post, media);
-
    return (
       <div
          {...stylex.props(dotsBelow && styles.columnWrapper)}

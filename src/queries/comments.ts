@@ -54,5 +54,33 @@ export function commentRepliesQuery(
    return query;
 }
 
+export async function fetchVisibleReplyCounts(
+   supabase: SupabaseClient<Database>,
+   parentIds: string[],
+   hideAi = false,
+) {
+   const counts = new Map<string, number>();
+   if (parentIds.length === 0) return counts;
+
+   let query = supabase
+      .from('comments')
+      .select('parent_id')
+      .in('parent_id', parentIds)
+      .eq('is_deleted', false)
+      .lte('created_at', new Date().toISOString());
+
+   if (hideAi) {
+      query = query.eq('is_ai', false);
+   }
+
+   const { data, error } = await query;
+   if (error) throw error;
+
+   for (const row of data ?? []) {
+      if (row.parent_id) counts.set(row.parent_id, (counts.get(row.parent_id) ?? 0) + 1);
+   }
+   return counts;
+}
+
 export type PostComments = QueryData<ReturnType<typeof postCommentsQuery>>;
 export type PostComment = PostComments[number];
