@@ -52,7 +52,8 @@ const styles = stylex.create({
    buttonsRow: {
       display: 'flex',
       gap: 8,
-      marginTop: 4,
+      marginTop: 8,
+      width: '100%',
    },
    buttonFlex: {
       flex: 1,
@@ -60,7 +61,7 @@ const styles = stylex.create({
    highlights: {
       display: 'flex',
       gap: 24,
-      paddingTop: 16,
+      paddingTop: 40,
       paddingBottom: 16,
       width: '100%',
    },
@@ -87,7 +88,7 @@ const styles = stylex.create({
    },
    grid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
+      gridTemplateColumns: 'repeat(4, 1fr)',
       gap: 3,
       width: '100%',
    },
@@ -110,14 +111,14 @@ export default function ProfileLoading() {
                   </div>
                   <Skeleton width="35%" height={14} />
                   <Skeleton width="70%" height={14} />
-                  <div {...stylex.props(styles.buttonsRow)}>
-                     <div {...stylex.props(styles.buttonFlex)}>
-                        <Skeleton width="100%" height={34} />
-                     </div>
-                     <div {...stylex.props(styles.buttonFlex)}>
-                        <Skeleton width="100%" height={34} />
-                     </div>
-                  </div>
+               </div>
+            </div>
+            <div {...stylex.props(styles.buttonsRow)}>
+               <div {...stylex.props(styles.buttonFlex)}>
+                  <Skeleton width="100%" height={42} />
+               </div>
+               <div {...stylex.props(styles.buttonFlex)}>
+                  <Skeleton width="100%" height={42} />
                </div>
             </div>
             <div {...stylex.props(styles.highlights)}>
@@ -141,7 +142,7 @@ export default function ProfileLoading() {
          <div {...stylex.props(styles.grid)}>
             {Array.from({ length: 12 }).map((_, i) => (
                // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton
-               <div key={i} style={{ aspectRatio: '1' }}>
+               <div key={i} style={{ aspectRatio: '3 / 4' }}>
                   <Skeleton width="100%" height="100%" />
                </div>
             ))}
