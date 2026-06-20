@@ -2,7 +2,7 @@ const UNSPLASH_API = 'https://api.unsplash.com';
 
 interface UnsplashPhoto {
    id: string;
-   links: { html: string; download_location: string };
+   links: { html: string };
    urls: { full: string; regular: string };
    user: { name: string; links: { html: string } };
 }
@@ -16,7 +16,6 @@ export interface UnsplashAttribution {
 export interface UnsplashPhotoResult {
    url: string;
    attribution: UnsplashAttribution;
-   downloadLocation: string;
 }
 
 async function unsplashGet<T>(path: string): Promise<T> {
@@ -46,23 +45,12 @@ const collectionCache = new Map<string, UnsplashPhoto[]>();
 function toResult(photo: UnsplashPhoto): UnsplashPhotoResult {
    return {
       url: photo.urls.regular,
-      downloadLocation: photo.links.download_location,
       attribution: {
          photographerName: photo.user.name,
          photographerUrl: photo.user.links.html,
          photoUrl: photo.links.html,
       },
    };
-}
-
-export async function triggerDownload(downloadLocation: string): Promise<void> {
-   const key = process.env.UNSPLASH_ACCESS_KEY;
-   if (!key) return;
-   try {
-      await fetch(downloadLocation, { headers: { Authorization: `Client-ID ${key}` } });
-   } catch {
-      // non-fatal
-   }
 }
 
 export async function getCollectionPhoto(collectionId: string): Promise<UnsplashPhotoResult> {

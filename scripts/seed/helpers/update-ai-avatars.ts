@@ -1,12 +1,11 @@
 import { processImage } from '../lib/imageProcessor';
 import { supabase } from '../lib/supabaseAdmin';
-import { downloadImage, getPortraitPhoto, triggerDownload } from '../lib/unsplash';
+import { downloadImage, getPortraitPhoto } from '../lib/unsplash';
 
 const CONCURRENCY = 5;
 
 async function updateAvatar(profileId: string, username: string): Promise<void> {
    const photo = await getPortraitPhoto();
-   await triggerDownload(photo.downloadLocation);
    const buf = await downloadImage(photo.url);
    const processed = await processImage(buf, 'avatar');
 

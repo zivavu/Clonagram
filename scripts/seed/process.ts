@@ -8,7 +8,6 @@ import {
    downloadImage,
    getCollectionPhoto,
    getPortraitPhoto,
-   triggerDownload,
    type UnsplashPhotoResult,
 } from './lib/unsplash';
 import type { SeedData } from './types';
@@ -56,7 +55,6 @@ async function main() {
          if (existsSync(avatarPath)) return;
          console.log(`Avatar: ${profile.username}`);
          const photo = await getPortraitPhoto();
-         await triggerDownload(photo.downloadLocation);
          const buf = await downloadImage(photo.url);
          const processed = await processImage(buf, 'avatar');
          writeFileSync(avatarPath, processed.buffer);
@@ -78,7 +76,6 @@ async function main() {
                   if (existsSync(imagePath)) return;
                   console.log(`Post image: ${profile.username} p${capturedPi} i${capturedIi}`);
                   const photo = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
-                  await triggerDownload(photo.downloadLocation);
                   const buf = await downloadImage(photo.url);
                   const processed = await processImage(buf, post.aspectRatio);
                   writeFileSync(imagePath, processed.buffer);
@@ -117,7 +114,6 @@ async function main() {
                if (existsSync(storyPath)) return;
                console.log(`Story image: ${profile.username} s${capturedSi}`);
                const photo = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
-               await triggerDownload(photo.downloadLocation);
                const buf = await downloadImage(photo.url);
                const processed = await processImage(buf, '9:16');
                writeFileSync(storyPath, processed.buffer);
