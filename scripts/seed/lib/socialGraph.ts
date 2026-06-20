@@ -145,7 +145,7 @@ export function buildSocialGraph(profiles: SeedProfile[]): SeedGraph {
             id: randomUUID(),
             postId: commentTargets[i].postId,
             authorProfileId: profile.id,
-            text: commentTexts[i % commentTexts.length],
+            text: commentTexts.length ? commentTexts[i % commentTexts.length] : 'Love this!',
             createdAt: randomPastDate(180),
          });
       }

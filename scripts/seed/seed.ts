@@ -61,7 +61,7 @@ class ProfileProgress {
    line(): string {
       const b = (s: { done: number; total: number }) =>
          `[${bar(s.done, s.total, 6)}] ${String(s.done).padStart(2)}/${s.total}`;
-      return `  @${this.username.padEnd(20)} P${b(this.posts)}  S${b(this.stories)}  R${b(this.reels)}`;
+      return `  @${this.username.padEnd(20)} Posts${b(this.posts)}  Stories${b(this.stories)}  Reels${b(this.reels)}`;
    }
 }
 
@@ -335,7 +335,7 @@ async function seedProfile(
                id: randomUUID(),
                post_id: post.id,
                user_id: commenters[idx % commenters.length].id,
-               content: text,
+               content: text || 'Love this!',
                is_ai: true,
                created_at: new Date(
                   postDate + (idx + 1) * 30 * 60 * 1000 + Math.random() * 60 * 60 * 1000,
@@ -434,7 +434,7 @@ async function main() {
             id: c.id,
             post_id: c.postId,
             user_id: c.authorProfileId,
-            content: c.text,
+            content: c.text || 'Love this!',
             is_ai: true,
             created_at: new Date(date).toISOString(),
             parent_id: null,
@@ -454,7 +454,7 @@ async function main() {
             id: c.id,
             post_id: c.postId,
             user_id: c.authorProfileId,
-            content: c.text,
+            content: c.text || 'Love this!',
             is_ai: true,
             created_at: new Date(date).toISOString(),
             parent_id: c.parentId,

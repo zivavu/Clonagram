@@ -225,6 +225,9 @@ async function main() {
             avatar: null,
             reels,
          });
+         console.log(
+            `  @${r.username} (${r.full_name}) — ${niche} · ${archetype} — ${posts.length} posts, ${reels.length} reels, ${stories.length} stories`,
+         );
       }
    }
 

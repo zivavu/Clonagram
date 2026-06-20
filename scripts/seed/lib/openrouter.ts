@@ -20,6 +20,24 @@ type CallOptions = {
    model?: string;
 };
 
+// Models often wrap JSON in markdown fences or add prose despite instructions.
+// Strip fences and isolate the outermost {...} / [...] block before parsing.
+function extractJson(raw: string): string {
+   let s = raw.trim();
+   const fence = s.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+   if (fence) s = fence[1].trim();
+   const objStart = s.indexOf('{');
+   const arrStart = s.indexOf('[');
+   const start =
+      objStart === -1 ? arrStart : arrStart === -1 ? objStart : Math.min(objStart, arrStart);
+   if (start >= 0) {
+      const close = s[start] === '{' ? '}' : ']';
+      const end = s.lastIndexOf(close);
+      if (end > start) s = s.slice(start, end + 1);
+   }
+   return s.trim();
+}
+
 async function callOpenRouter({ messages, maxTokens = 4000, model = MODELS.text }: CallOptions) {
    const apiKey = process.env.OPEN_ROUTER_API_KEY;
    if (!apiKey) throw new Error('Missing OPEN_ROUTER_API_KEY');
@@ -174,7 +192,7 @@ Return ONLY valid JSON. No markdown fences, no explanation.`;
 
    let parsed: { profiles?: RawProfileData[] };
    try {
-      parsed = JSON.parse(raw);
+      parsed = JSON.parse(extractJson(raw));
    } catch {
       throw new Error(`Could not parse JSON from OpenRouter response: ${raw.slice(0, 200)}`);
    }
@@ -186,6 +204,7 @@ Return ONLY valid JSON. No markdown fences, no explanation.`;
 
    return profiles.map(p => ({
       ...p,
+      comment_pool: Array.isArray(p.comment_pool) ? p.comment_pool : [],
       reels: Array.isArray(p.reels) ? p.reels : [],
    }));
 }
@@ -223,7 +242,7 @@ Return ONLY valid JSON.`,
       });
 
       try {
-         const parsed = JSON.parse(raw.trim());
+         const parsed = JSON.parse(extractJson(raw));
          return {
             caption: (parsed.caption as string | undefined)?.trim() ?? '',
             altText: (parsed.alt_text as string | undefined)?.trim().slice(0, 80) ?? '',
