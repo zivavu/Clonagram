@@ -51,6 +51,28 @@ interface EqChainable<T> {
    eq(column: string, value: unknown): T;
 }
 
+interface CommentFilterChainable<T> extends EqChainable<T> {
+   lte(column: string, value: unknown): T;
+}
+
+export function filterVisibleCommentCount<T extends CommentFilterChainable<T>>(query: T): T {
+   return query
+      .lte('comments.created_at', new Date().toISOString())
+      .eq('comments.is_deleted', false);
+}
+
+interface PostWithVisibleCommentCount {
+   comment_count?: number;
+   visible_comment_count?: { count: number }[] | null;
+}
+
+export function applyVisibleCommentCount<T extends PostWithVisibleCommentCount>(posts: T[]): T[] {
+   return posts.map(post => {
+      const visible = post.visible_comment_count?.[0]?.count;
+      return visible === undefined ? post : { ...post, comment_count: visible };
+   });
+}
+
 export function scopePostEngagementToUser<T extends EqChainable<T>>(
    query: T,
    userId: string,

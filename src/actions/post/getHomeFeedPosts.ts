@@ -6,6 +6,8 @@ import { throwIfError } from '../../lib/unwrap';
 import type { PostsWithMedia } from '../../queries/posts';
 import { POST_WITH_MEDIA_SELECT } from '../../queries/posts';
 import {
+   applyVisibleCommentCount,
+   filterVisibleCommentCount,
    hideLikesForNonOwners,
    nextCursorFrom,
    scopePostEngagementToUser,
@@ -39,9 +41,10 @@ export async function getHomeFeedPosts(params: {
       if (user) {
          query = scopePostEngagementToUser(query, user.id);
       }
+      query = filterVisibleCommentCount(query);
       const { data, error } = await query;
       throwIfError({ error }, 'Failed to fetch home feed');
-      const posts = data ?? [];
+      const posts = applyVisibleCommentCount(data ?? []);
       return {
          posts: hideLikesForNonOwners(posts, user?.id),
          nextCursor: nextCursorFrom(posts, PAGE_SIZE),
@@ -74,10 +77,11 @@ export async function getHomeFeedPosts(params: {
       .order('created_at', { ascending: false });
    if (hideAi) postsQuery = postsQuery.eq('is_ai', false);
    postsQuery = scopePostEngagementToUser(postsQuery, user.id);
+   postsQuery = filterVisibleCommentCount(postsQuery);
    const { data: posts, error: postsError } = await postsQuery;
 
    throwIfError({ error: postsError }, 'Failed to fetch following feed');
-   const safePosts = posts ?? [];
+   const safePosts = applyVisibleCommentCount(posts ?? []);
    const nextCursor = nextCursorFrom(postIds, PAGE_SIZE);
    return { posts: hideLikesForNonOwners(safePosts, user?.id), nextCursor };
 }
