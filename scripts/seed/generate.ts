@@ -187,7 +187,9 @@ async function main() {
             .slice(0, highlightCount)
             .map(h => ({
                id: randomUUID(),
-               title: h.title.slice(0, 15),
+               // Slice by code points, not UTF-16 units, so emoji surrogate pairs
+               // are never split (a lone surrogate produces invalid JSON on insert).
+               title: [...h.title].slice(0, 15).join(''),
                storyIds: pickRandom(storyIndices, randInt(2, Math.min(6, stories.length))).map(
                   idx => stories[idx].id,
                ),

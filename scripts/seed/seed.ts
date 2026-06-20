@@ -33,6 +33,32 @@ async function uploadFile(bucket: string, path: string, buffer: Buffer, contentT
    }
 }
 
+// Strip unpaired UTF-16 surrogates, which serialize to invalid UTF-8 and make
+// PostgREST reject the request body with 400 "Empty or invalid json".
+function stripLoneSurrogates(s: string): string {
+   return s.replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, '');
+}
+
+// Supabase requests can fail transiently under load (socket closed, empty/invalid
+// json from the gateway). Retry the operation a few times before giving up.
+async function withRetry<T extends { error: unknown }>(
+   op: () => PromiseLike<T>,
+   label: string,
+): Promise<T> {
+   let lastMsg = '';
+   for (let attempt = 1; attempt <= 5; attempt++) {
+      try {
+         const res = await op();
+         if (!res.error) return res;
+         lastMsg = (res.error as { message?: string })?.message ?? String(res.error);
+      } catch (err) {
+         lastMsg = err instanceof Error ? err.message : String(err);
+      }
+      if (attempt < 5) await new Promise(r => setTimeout(r, attempt * 1000));
+   }
+   throw new Error(`${label} failed after 5 attempts: ${lastMsg}`);
+}
+
 const END_DATE = new Date('2028-12-31T23:59:59Z').getTime();
 const postFirstImageId = new Map<string, string>();
 const postCreatedAt = new Map<string, string>();
@@ -149,16 +175,19 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
             const createdAt = randomPostDate();
             postCreatedAt.set(post.id, createdAt);
 
-            const { error: postError } = await supabase.from('posts').insert({
-               id: post.id,
-               user_id: profile.id,
-               caption: post.caption,
-               type: 'photo',
-               aspect_ratio: post.aspectRatio,
-               is_ai: true,
-               created_at: createdAt,
-            });
-            if (postError) throw new Error(`Post insert: ${postError.message}`);
+            await withRetry(
+               () =>
+                  supabase.from('posts').insert({
+                     id: post.id,
+                     user_id: profile.id,
+                     caption: post.caption,
+                     type: 'photo',
+                     aspect_ratio: post.aspectRatio,
+                     is_ai: true,
+                     created_at: createdAt,
+                  }),
+               'Post insert',
+            );
 
             await Promise.all(
                post.images.map(async (imageMeta, ii) => {
@@ -173,23 +202,26 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                      'image/webp',
                   );
 
-                  const { data: imageData, error: imageError } = await supabase
-                     .from('post_images')
-                     .insert({
-                        post_id: post.id,
-                        position: ii,
-                        url: imageUrl,
-                        width: imageMeta.width,
-                        height: imageMeta.height,
-                        blur_data_url: imageMeta.blurDataUrl,
-                        unsplash_attribution: imageMeta.attribution ?? null,
-                        alt_text: imageMeta.altText ?? null,
-                     })
-                     .select('id')
-                     .single();
-                  if (imageError) throw new Error(`post_images insert: ${imageError.message}`);
+                  const { data: imageData } = await withRetry(
+                     () =>
+                        supabase
+                           .from('post_images')
+                           .insert({
+                              post_id: post.id,
+                              position: ii,
+                              url: imageUrl,
+                              width: imageMeta.width,
+                              height: imageMeta.height,
+                              blur_data_url: imageMeta.blurDataUrl,
+                              unsplash_attribution: imageMeta.attribution ?? null,
+                              alt_text: imageMeta.altText ?? null,
+                           })
+                           .select('id')
+                           .single(),
+                     'post_images insert',
+                  );
 
-                  if (ii === 0) postFirstImageId.set(post.id, imageData.id);
+                  if (ii === 0 && imageData) postFirstImageId.set(post.id, imageData.id);
                }),
             );
             progress.tick('posts');
@@ -201,13 +233,16 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
             profile.stories.map(async (story, si) => {
                const createdAt = randomPastDate(730);
 
-               const { error: storyError } = await supabase.from('stories').insert({
-                  id: story.id,
-                  user_id: profile.id,
-                  is_ai: true,
-                  created_at: createdAt,
-               });
-               if (storyError) throw new Error(`Story insert: ${storyError.message}`);
+               await withRetry(
+                  () =>
+                     supabase.from('stories').insert({
+                        id: story.id,
+                        user_id: profile.id,
+                        is_ai: true,
+                        created_at: createdAt,
+                     }),
+                  'Story insert',
+               );
 
                if (story.hasImage && story.image) {
                   const localPath = `${IMAGES_DIR}/${profile.id}/story_${si}.webp`;
@@ -218,15 +253,17 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                         readFileSync(localPath),
                         'image/webp',
                      );
-                     const { error: storyImgError } = await supabase.from('story_images').insert({
-                        story_id: story.id,
-                        position: 0,
-                        url: storyUrl,
-                        blur_data_url: story.image.blurDataUrl,
-                        unsplash_attribution: story.image.attribution ?? null,
-                     });
-                     if (storyImgError)
-                        throw new Error(`story_images insert: ${storyImgError.message}`);
+                     await withRetry(
+                        () =>
+                           supabase.from('story_images').insert({
+                              story_id: story.id,
+                              position: 0,
+                              url: storyUrl,
+                              blur_data_url: story.image!.blurDataUrl,
+                              unsplash_attribution: story.image!.attribution ?? null,
+                           }),
+                        'story_images insert',
+                     );
                   }
                }
                if (story.hasImage && story.image) progress.tick('stories');
@@ -239,30 +276,36 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                const createdAt = randomPostDate();
                postCreatedAt.set(reel.id, createdAt);
 
-               const { error: reelPostError } = await supabase.from('posts').insert({
-                  id: reel.id,
-                  user_id: profile.id,
-                  caption: reel.caption,
-                  type: 'reel',
-                  aspect_ratio: '9:16',
-                  is_ai: true,
-                  created_at: createdAt,
-               });
-               if (reelPostError) throw new Error(`Reel post insert: ${reelPostError.message}`);
+               await withRetry(
+                  () =>
+                     supabase.from('posts').insert({
+                        id: reel.id,
+                        user_id: profile.id,
+                        caption: reel.caption,
+                        type: 'reel',
+                        aspect_ratio: '9:16',
+                        is_ai: true,
+                        created_at: createdAt,
+                     }),
+                  'Reel post insert',
+               );
 
                const muxAsset = await createMuxAssetFromUrl(reel.pexelsVideoUrl);
 
-               const { error: videoError } = await supabase.from('post_videos').insert({
-                  post_id: reel.id,
-                  position: 0,
-                  mux_asset_id: muxAsset.assetId,
-                  mux_playback_id: muxAsset.playbackId,
-                  mux_status: 'ready',
-                  duration: muxAsset.duration,
-                  width: reel.width,
-                  height: reel.height,
-               });
-               if (videoError) throw new Error(`post_videos insert: ${videoError.message}`);
+               await withRetry(
+                  () =>
+                     supabase.from('post_videos').insert({
+                        post_id: reel.id,
+                        position: 0,
+                        mux_asset_id: muxAsset.assetId,
+                        mux_playback_id: muxAsset.playbackId,
+                        mux_status: 'ready',
+                        duration: muxAsset.duration,
+                        width: reel.width,
+                        height: reel.height,
+                     }),
+                  'post_videos insert',
+               );
 
                progress.tick('reels');
             }),
@@ -305,21 +348,26 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
             const validStoryIds = highlight.storyIds;
             if (validStoryIds.length === 0) return;
 
-            const { error: hlError } = await supabase.from('story_highlights').insert({
-               id: highlight.id,
-               user_id: profile.id,
-               title: highlight.title,
-               is_ai: true,
-            });
-            if (hlError) throw new Error(`Highlight insert: ${hlError.message}`);
+            await withRetry(
+               () =>
+                  supabase.from('story_highlights').insert({
+                     id: highlight.id,
+                     user_id: profile.id,
+                     title: stripLoneSurrogates(highlight.title),
+                     is_ai: true,
+                  }),
+               'Highlight insert',
+            );
 
             const items = validStoryIds.map((storyId, pos) => ({
                story_id: storyId,
                highlight_id: highlight.id,
                position: pos,
             }));
-            const { error: itemError } = await supabase.from('story_highlight_items').insert(items);
-            if (itemError) throw new Error(`story_highlight_items insert: ${itemError.message}`);
+            await withRetry(
+               () => supabase.from('story_highlight_items').insert(items),
+               'story_highlight_items insert',
+            );
          }),
       );
    } finally {
@@ -329,8 +377,8 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
 
 async function insertBatch<T extends object>(table: string, rows: T[], batchSize = 500) {
    for (let i = 0; i < rows.length; i += batchSize) {
-      const { error } = await supabase.from(table).insert(rows.slice(i, i + batchSize));
-      if (error) throw new Error(`${table} batch insert: ${error.message}`);
+      const batch = rows.slice(i, i + batchSize);
+      await withRetry(() => supabase.from(table).insert(batch), `${table} batch insert`);
    }
 }
 
