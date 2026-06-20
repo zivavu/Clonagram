@@ -63,9 +63,10 @@ export function buildSocialGraph(profiles: SeedProfile[]): SeedGraph {
    }
 
    type PostRef = { postId: string; ownerId: string };
-   const allPosts: PostRef[] = profiles.flatMap(p =>
-      p.posts.map(post => ({ postId: post.id, ownerId: p.id })),
-   );
+   const allPosts: PostRef[] = profiles.flatMap(p => [
+      ...p.posts.map(post => ({ postId: post.id, ownerId: p.id })),
+      ...p.reels.map(reel => ({ postId: reel.id, ownerId: p.id })),
+   ]);
 
    // Assign each post a "popularity" weight using power-law: most posts are ordinary,
    // a few get outsized attention.
