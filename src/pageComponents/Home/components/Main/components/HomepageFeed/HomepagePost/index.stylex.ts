@@ -56,15 +56,12 @@ export const styles = stylex.create({
       color: colors.textPrimary,
    },
    descriptionContainer: {
-      display: 'flex',
-      gap: '4px',
-      marginLeft: '8px',
       marginTop: '8px',
+      marginLeft: '16px',
    },
    bottomUsername: {
       fontSize: '0.9rem',
       fontWeight: 600,
-      marginLeft: '8px',
       color: colors.textPrimary,
    },
    description: {

@@ -177,7 +177,7 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
             {post.caption && (
                <>
                   <OtherUserUsername style={styles.bottomUsername} userProfile={post.user} />
-                  <span {...stylex.props(styles.description)}>{post.caption}</span>
+                  <span {...stylex.props(styles.description)}> {post.caption}</span>
                </>
             )}
          </div>
