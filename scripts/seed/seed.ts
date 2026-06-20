@@ -20,11 +20,17 @@ function randomPostDate() {
 }
 
 async function uploadFile(bucket: string, path: string, buffer: Buffer, contentType: string) {
-   const { error } = await supabase.storage
-      .from(bucket)
-      .upload(path, buffer, { contentType, upsert: true });
-   if (error) throw new Error(`Upload failed (${bucket}/${path}): ${error.message}`);
-   return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+   // Uploads are idempotent (upsert), so retry transient network errors
+   // (e.g. socket closed) instead of failing the whole seed run.
+   for (let attempt = 1; ; attempt++) {
+      const { error } = await supabase.storage
+         .from(bucket)
+         .upload(path, buffer, { contentType, upsert: true });
+      if (!error) return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+      if (attempt >= 5)
+         throw new Error(`Upload failed (${bucket}/${path}) after ${attempt} attempts: ${error.message}`);
+      await new Promise(r => setTimeout(r, attempt * 1000));
+   }
 }
 
 const END_DATE = new Date('2028-12-31T23:59:59Z').getTime();
@@ -94,11 +100,7 @@ class ProgressDisplay {
    }
 }
 
-async function seedProfile(
-   profile: SeedProfile,
-   display: ProgressDisplay,
-   allProfiles: SeedProfile[],
-) {
+async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
    const { data: existingUser } = await supabase.auth.admin.getUserById(profile.id);
    if (existingUser.user) return;
 
@@ -320,34 +322,6 @@ async function seedProfile(
             if (itemError) throw new Error(`story_highlight_items insert: ${itemError.message}`);
          }),
       );
-
-      const postsWithContextualComments = profile.posts.filter(
-         p => p.contextualComments.length > 0 && p.images.length > 0,
-      );
-      if (postsWithContextualComments.length > 0) {
-         const otherProfiles = allProfiles.filter(p => p.id !== profile.id);
-         const contextRows = postsWithContextualComments.flatMap(post => {
-            const commenters = otherProfiles
-               .sort(() => Math.random() - 0.5)
-               .slice(0, post.contextualComments.length);
-            const postDate = new Date(postCreatedAt.get(post.id) ?? new Date()).getTime();
-            return post.contextualComments.map((text, idx) => ({
-               id: randomUUID(),
-               post_id: post.id,
-               user_id: commenters[idx % commenters.length].id,
-               content: text || 'Love this!',
-               is_ai: true,
-               created_at: new Date(
-                  postDate + (idx + 1) * 30 * 60 * 1000 + Math.random() * 60 * 60 * 1000,
-               ).toISOString(),
-               parent_id: null,
-            }));
-         });
-         if (contextRows.length > 0) {
-            const { error } = await supabase.from('comments').insert(contextRows);
-            if (error) throw new Error(`Contextual comments insert: ${error.message}`);
-         }
-      }
    } finally {
       display.free(slotIndex);
    }
@@ -367,10 +341,36 @@ async function main() {
    const queue = [...data.profiles];
    async function worker() {
       while (queue.length > 0) {
-         await seedProfile(queue.shift()!, display, data.profiles);
+         await seedProfile(queue.shift()!, display);
       }
    }
    await Promise.all(Array.from({ length: SEED_CONCURRENCY }, worker));
+
+   // Contextual comments are authored by other profiles, so they can only be
+   // inserted once every profile's user row exists (after the barrier above).
+   const contextualCommentRows = data.profiles.flatMap(profile => {
+      const otherProfiles = data.profiles.filter(p => p.id !== profile.id);
+      return profile.posts
+         .filter(p => p.contextualComments.length > 0 && p.images.length > 0)
+         .flatMap(post => {
+            const commenters = [...otherProfiles]
+               .sort(() => Math.random() - 0.5)
+               .slice(0, post.contextualComments.length);
+            const postDate = new Date(postCreatedAt.get(post.id) ?? new Date()).getTime();
+            return post.contextualComments.map((text, idx) => ({
+               id: randomUUID(),
+               post_id: post.id,
+               user_id: commenters[idx % commenters.length].id,
+               content: text || 'Love this!',
+               is_ai: true,
+               created_at: new Date(
+                  postDate + (idx + 1) * 30 * 60 * 1000 + Math.random() * 60 * 60 * 1000,
+               ).toISOString(),
+               parent_id: null,
+            }));
+         });
+   });
+   await insertBatch('comments', contextualCommentRows);
 
    console.log('Seeding social graph...');
 

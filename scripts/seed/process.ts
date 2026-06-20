@@ -46,13 +46,16 @@ async function main() {
    const data: SeedData = JSON.parse(readFileSync(PROFILES_JSON, 'utf-8'));
    const tasks: (() => Promise<void>)[] = [];
 
+   // Persist after every task so a rate-limit interruption never loses progress.
+   const persist = () => writeFileSync(PROFILES_JSON, JSON.stringify(data, null, 2));
+
    for (const profile of data.profiles) {
       const profileDir = `${IMAGES_DIR}/${profile.id}`;
       mkdirSync(profileDir, { recursive: true });
 
       const avatarPath = `${profileDir}/avatar.webp`;
       tasks.push(async () => {
-         if (existsSync(avatarPath)) return;
+         if (profile.avatar && existsSync(avatarPath)) return;
          console.log(`Avatar: ${profile.username}`);
          const photo = await getPortraitPhoto();
          const buf = await downloadImage(photo.url);
@@ -63,6 +66,7 @@ async function main() {
             width: processed.width,
             height: processed.height,
          };
+         persist();
       });
 
       if (profile.hasImages) {
@@ -73,7 +77,7 @@ async function main() {
                const capturedPi = pi;
                const capturedIi = ii;
                tasks.push(async () => {
-                  if (existsSync(imagePath)) return;
+                  if (post.images[capturedIi] && existsSync(imagePath)) return;
                   console.log(`Post image: ${profile.username} p${capturedPi} i${capturedIi}`);
                   const photo = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
                   const buf = await downloadImage(photo.url);
@@ -101,6 +105,7 @@ async function main() {
                      attribution: photo.attribution,
                      altText,
                   };
+                  persist();
                });
             }
          }
@@ -111,7 +116,7 @@ async function main() {
             const storyPath = `${profileDir}/story_${si}.webp`;
             const capturedSi = si;
             tasks.push(async () => {
-               if (existsSync(storyPath)) return;
+               if (story.image && existsSync(storyPath)) return;
                console.log(`Story image: ${profile.username} s${capturedSi}`);
                const photo = await photoFromNiche(NICHE_COLLECTIONS[profile.niche]);
                const buf = await downloadImage(photo.url);
@@ -123,6 +128,7 @@ async function main() {
                   height: processed.height,
                   attribution: photo.attribution,
                };
+               persist();
             });
          }
       }
@@ -137,6 +143,7 @@ async function main() {
             capturedReel.width = video.width;
             capturedReel.height = video.height;
             capturedReel.duration = video.duration;
+            persist();
          });
       }
    }
