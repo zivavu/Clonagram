@@ -61,7 +61,7 @@ setup('authenticate', async ({ page }) => {
    await page.goto('/login');
    await page.getByLabel('Email adress').fill(TEST_USER_1.email);
    await page.getByLabel('Password').fill(TEST_USER_1.password);
-   await page.getByRole('button', { name: 'Log in' }).click();
+   await page.getByRole('button', { name: 'Log in', exact: true }).click();
    await page.waitForURL('/', { timeout: 10000 });
    await page.context().storageState({ path: authFile });
 });
