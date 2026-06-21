@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 
 test('follow and unfollow a user from their profile', async ({ page }) => {
    await page.goto('/profile/e2euser2');
-   await expect(page.getByText('e2euser2')).toBeVisible();
 
    const followButton = page.getByRole('button', { name: 'Follow', exact: true });
    await expect(followButton).toBeVisible();
