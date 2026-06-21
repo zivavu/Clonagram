@@ -28,7 +28,9 @@ async function uploadFile(bucket: string, path: string, buffer: Buffer, contentT
          .upload(path, buffer, { contentType, upsert: true });
       if (!error) return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
       if (attempt >= 5)
-         throw new Error(`Upload failed (${bucket}/${path}) after ${attempt} attempts: ${error.message}`);
+         throw new Error(
+            `Upload failed (${bucket}/${path}) after ${attempt} attempts: ${error.message}`,
+         );
       await new Promise(r => setTimeout(r, attempt * 1000));
    }
 }

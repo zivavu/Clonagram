@@ -30,7 +30,9 @@ async function deleteMuxAssets(profileIds: string[]) {
    await Promise.allSettled(
       assetIds.map(id =>
          mux.video.assets.delete(id).catch(err => {
-            console.error(`  Failed to delete Mux asset ${id}: ${err instanceof Error ? err.message : err}`);
+            console.error(
+               `  Failed to delete Mux asset ${id}: ${err instanceof Error ? err.message : err}`,
+            );
          }),
       ),
    );
