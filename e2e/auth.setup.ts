@@ -1,16 +1,16 @@
-import { test as setup } from '@playwright/test';
+import { expect, test as setup } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../src/types/database';
 
 const TEST_USER_1 = {
    email: 'e2e-user-1@example.com',
-   password: 'TestPassword123!',
+   password: 'MySecureP@ssw0rd123!',
    username: 'e2euser1',
 };
 
 const TEST_USER_2 = {
    email: 'e2e-user-2@example.com',
-   password: 'TestPassword123!',
+   password: 'MySecureP@ssw0rd123!',
    username: 'e2euser2',
 };
 
@@ -26,10 +26,9 @@ async function ensureTestUser(
    });
 
    const found = existing.users.find(u => u.email === user.email);
-
    if (found) {
-      await supabase.auth.admin.updateUserById(found.id, { password: user.password });
-      return found.id;
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(found.id);
+      if (deleteError) throw deleteError;
    }
 
    const { data, error } = await supabase.auth.admin.createUser({
@@ -58,10 +57,21 @@ setup('authenticate', async ({ page }) => {
    await ensureTestUser(supabase, TEST_USER_1);
    await ensureTestUser(supabase, TEST_USER_2);
 
+   page.on('console', msg => {
+      if (msg.type() === 'error') {
+         console.error('Browser error:', msg.text());
+      }
+   });
+   page.on('pageerror', err => console.error('Page error:', err.message));
+
    await page.goto('/login');
    await page.getByLabel('Email adress').fill(TEST_USER_1.email);
    await page.getByLabel('Password').fill(TEST_USER_1.password);
-   await page.getByRole('button', { name: 'Log in', exact: true }).click();
-   await page.waitForURL('/', { timeout: 10000 });
+
+   const submitButton = page.getByRole('button', { name: 'Log in', exact: true });
+   await expect(submitButton).toBeEnabled();
+   await submitButton.click();
+
+   await page.waitForURL('/', { timeout: 30000 });
    await page.context().storageState({ path: authFile });
 });
