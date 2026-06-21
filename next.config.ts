@@ -1,10 +1,20 @@
 import withBundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 
+function getSupabaseHost() {
+   try {
+      return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').hostname;
+   } catch {
+      return 'pggvzapkivjgsybyzjok.supabase.co';
+   }
+}
+
+const supabaseHost = getSupabaseHost();
+
 const nextConfig: NextConfig = {
    images: {
       remotePatterns: [
-         { hostname: 'pggvzapkivjgsybyzjok.supabase.co' },
+         { hostname: supabaseHost },
          { hostname: 'lh3.googleusercontent.com' },
          { hostname: 'image.mux.com' },
          { hostname: 'picsum.photos' },
@@ -28,9 +38,9 @@ const nextConfig: NextConfig = {
                      "default-src 'self'",
                      `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''} https://va.vercel-scripts.com`,
                      "style-src 'self' 'unsafe-inline'",
-                     "img-src 'self' data: blob: https://pggvzapkivjgsybyzjok.supabase.co https://image.mux.com https://lh3.googleusercontent.com https://picsum.photos https://cdn.jsdelivr.net",
+                     `img-src 'self' data: blob: https://${supabaseHost} https://image.mux.com https://lh3.googleusercontent.com https://picsum.photos https://cdn.jsdelivr.net`,
                      "media-src 'self' blob: https://stream.mux.com https://*.mux.com",
-                     "connect-src 'self' https://pggvzapkivjgsybyzjok.supabase.co wss://pggvzapkivjgsybyzjok.supabase.co https://image.mux.com https://stream.mux.com https://*.mux.com https://inferred.litix.io https://graphql.lottiefiles.com https://photon.komoot.io https://cdn.jsdelivr.net https://unpkg.com https://assets-v2.lottiefiles.com",
+                     `connect-src 'self' https://${supabaseHost} wss://${supabaseHost} https://image.mux.com https://stream.mux.com https://*.mux.com https://inferred.litix.io https://graphql.lottiefiles.com https://photon.komoot.io https://cdn.jsdelivr.net https://unpkg.com https://assets-v2.lottiefiles.com`,
                      "font-src 'self'",
                      "frame-src 'none'",
                      "object-src 'none'",
