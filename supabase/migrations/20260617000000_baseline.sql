@@ -2869,9 +2869,9 @@ CREATE POLICY "Allow users to delete their own posts" ON "storage"."objects" FOR
 
 CREATE POLICY "Authenticated users can upload message images" ON "storage"."objects" FOR INSERT WITH CHECK (("bucket_id" = 'messages'::text));
 
-CREATE POLICY "Users can update their own avatar" ON "storage"."objects" FOR UPDATE USING ((("bucket_id" = 'avatars'::text) AND (("storage"."foldername"("name"))[1] = ("auth"."uid")::text)));
+CREATE POLICY "Users can update their own avatar" ON "storage"."objects" FOR UPDATE USING ((("bucket_id" = 'avatars'::text) AND (("storage"."foldername"("name"))[1] = ("auth"."uid"())::text)));
 
-CREATE POLICY "Users can upload their own avatar" ON "storage"."objects" FOR INSERT WITH CHECK ((("bucket_id" = 'avatars'::text) AND (("storage"."foldername"("name"))[1] = ("auth"."uid")::text)));
+CREATE POLICY "Users can upload their own avatar" ON "storage"."objects" FOR INSERT WITH CHECK ((("bucket_id" = 'avatars'::text) AND (("storage"."foldername"("name"))[1] = ("auth"."uid"())::text)));
 
 CREATE POLICY "stories_objects_delete" ON "storage"."objects" FOR DELETE USING ((("bucket_id" = 'stories'::text) AND ("owner" = "auth"."uid"())));
 
