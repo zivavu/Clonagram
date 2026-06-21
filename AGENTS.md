@@ -57,14 +57,6 @@ Push interactivity to the leaf nodes of the component tree.
 
 <!-- END:client-components-rules -->
 
-<!-- BEGIN:testing-rules -->
-
-# Testing
-
-Do not write tests or test files.
-
-<!-- END:testing-rules -->
-
 <!-- BEGIN:css-efficiency-rules -->
 
 # CSS Efficiency
