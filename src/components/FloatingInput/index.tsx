@@ -1,6 +1,6 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
-import { forwardRef, type InputHTMLAttributes, useState } from 'react';
+import { forwardRef, type InputHTMLAttributes, useId, useState } from 'react';
 import { styles } from './index.stylex';
 
 export interface FloatingInputProps
@@ -14,6 +14,9 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(function 
    { label, onChange, endAdornment, borderState, ...props },
    ref,
 ) {
+   const generatedId = useId();
+   const inputId = props.id ?? generatedId;
+
    const [isFocused, setIsFocused] = useState(false);
    const [hasValue, setHasValue] = useState(!!props.value || !!props.defaultValue);
 
@@ -31,7 +34,7 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(function 
             )}
             {...props}
             ref={ref}
-            id={props.id}
+            id={inputId}
             onFocus={e => {
                setIsFocused(true);
                props.onFocus?.(e);
@@ -46,7 +49,7 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(function 
             }}
          />
          <label
-            htmlFor={props.id}
+            htmlFor={inputId}
             {...stylex.props(
                styles.label,
                floated && styles.labelFloated,
