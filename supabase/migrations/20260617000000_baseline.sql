@@ -2842,7 +2842,12 @@ ON CONFLICT ("id") DO UPDATE SET "public" = EXCLUDED."public";
 
 
 -- Storage policies
-ALTER TABLE "storage"."objects" ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+   ALTER TABLE "storage"."objects" ENABLE ROW LEVEL SECURITY;
+EXCEPTION
+   WHEN insufficient_privilege THEN NULL;
+END $$;
 
 CREATE POLICY "Allow authenticated uploads to media" ON "storage"."objects" FOR INSERT WITH CHECK (("bucket_id" = 'media'::text));
 
