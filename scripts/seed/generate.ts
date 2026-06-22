@@ -253,8 +253,8 @@ async function main() {
             const pool = Math.random() < SAME_NICHE_WEIGHT ? sameNiche : otherProfiles;
             post.imageTags = pickRandom(pool, randInt(1, 3)).map(p => ({
                profileId: p.id,
-               x: Math.random() * 0.8 + 0.1,
-               y: Math.random() * 0.8 + 0.1,
+               x: Math.random() * 80 + 10,
+               y: Math.random() * 80 + 10,
             }));
          }
       }
