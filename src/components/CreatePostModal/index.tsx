@@ -32,6 +32,24 @@ import {
 
 const MAX_FILES = 10;
 const TOAST_DURATION = 3000;
+const MIN_IMAGE_WIDTH = 468;
+const MIN_IMAGE_HEIGHT = 150;
+
+function getImageDimensions(file: File): Promise<{ w: number; h: number }> {
+   return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+         URL.revokeObjectURL(url);
+         resolve({ w: img.naturalWidth, h: img.naturalHeight });
+      };
+      img.onerror = () => {
+         URL.revokeObjectURL(url);
+         reject(new Error('Failed to load image'));
+      };
+      img.src = url;
+   });
+}
 
 export default function CreatePostModal() {
    const { isOpen, close, mode } = useCreatePostModalStore();
@@ -63,6 +81,7 @@ function CreatePostModalContent({ isReel, close }: CreatePostModalContentProps) 
    const [postSettings, setPostSettings] = useState<PostSettings>(DEFAULT_POST_SETTINGS);
    const [isDiscardOpen, setIsDiscardOpen] = useState(false);
    const [fileLimitToast, setFileLimitToast] = useState<number | null>(null);
+   const [tooSmallToast, setTooSmallToast] = useState(false);
    const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
    const filesRef = useRef(files);
    filesRef.current = files;
@@ -80,7 +99,7 @@ function CreatePostModalContent({ isReel, close }: CreatePostModalContentProps) 
       toastTimerRef.current = setTimeout(() => setFileLimitToast(null), TOAST_DURATION);
    }
 
-   function onDrop(acceptedFiles: File[]) {
+   async function onDrop(acceptedFiles: File[]) {
       if (acceptedFiles.length === 0) return;
       if (isReel && filesRef.current.length >= 1) return;
       const remainingSlots = (isReel ? 1 : MAX_FILES) - filesRef.current.length;
@@ -90,11 +109,41 @@ function CreatePostModalContent({ isReel, close }: CreatePostModalContentProps) 
          return;
       }
 
-      const filesToProcess = acceptedFiles.slice(0, remainingSlots);
-      const cutCount = acceptedFiles.length - filesToProcess.length;
+      const candidates = acceptedFiles.slice(0, remainingSlots);
+      const cutCount = acceptedFiles.length - candidates.length;
       if (cutCount > 0) showToast(cutCount);
 
-      const newFiles = filesToProcess.map(createPostMedia);
+      const validFiles: File[] = [];
+      let rejectedSmall = false;
+      await Promise.all(
+         candidates.map(async file => {
+            if (file.type.startsWith('image/')) {
+               try {
+                  const { w, h } = await getImageDimensions(file);
+                  if (w < MIN_IMAGE_WIDTH || h < MIN_IMAGE_HEIGHT) {
+                     rejectedSmall = true;
+                     return;
+                  }
+               } catch {
+                  return;
+               }
+            }
+            validFiles.push(file);
+         }),
+      );
+
+      if (rejectedSmall) {
+         setTooSmallToast(true);
+         if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+         toastTimerRef.current = setTimeout(() => {
+            setFileLimitToast(null);
+            setTooSmallToast(false);
+         }, TOAST_DURATION);
+      }
+
+      if (validFiles.length === 0) return;
+
+      const newFiles = validFiles.map(createPostMedia);
       setFiles(prev => [...prev, ...newFiles]);
       setStep('crop');
 
@@ -113,6 +162,7 @@ function CreatePostModalContent({ isReel, close }: CreatePostModalContentProps) 
             .catch(() => {});
       }
    }
+
 
    const { getRootProps, getInputProps, open } = useDropzone({
       onDrop,
@@ -280,6 +330,11 @@ function CreatePostModalContent({ isReel, close }: CreatePostModalContentProps) 
                {isReel
                   ? 'You can only upload 1 video for a reel.'
                   : `${fileLimitToast} file${fileLimitToast > 1 ? 's' : ''} were not uploaded. You can only choose 10 or fewer files.`}
+            </div>
+         )}
+         {tooSmallToast && (
+            <div {...stylex.props(styles.toast)}>
+               {`Image is too small. Minimum size is ${MIN_IMAGE_WIDTH}×${MIN_IMAGE_HEIGHT}px.`}
             </div>
          )}
       </Dialog.Content>

@@ -38,7 +38,7 @@ export function useCropDimensions(
 
    const imgRatio = natural.w / natural.h;
    const cropRatio = cropBox.width / cropBox.height;
-   const imageDisplaySize =
+   const raw =
       aspectRatio === 'original'
          ? imgRatio >= cropRatio
             ? { w: cropBox.width, h: cropBox.width / imgRatio }
@@ -46,6 +46,13 @@ export function useCropDimensions(
          : imgRatio >= cropRatio
            ? { w: cropBox.height * imgRatio, h: cropBox.height }
            : { w: cropBox.width, h: cropBox.width / imgRatio };
+
+   const MAX_DISPLAY = 4096;
+   const maxDim = Math.max(raw.w, raw.h);
+   const imageDisplaySize =
+      maxDim > MAX_DISPLAY
+         ? { w: Math.round((raw.w * MAX_DISPLAY) / maxDim), h: Math.round((raw.h * MAX_DISPLAY) / maxDim) }
+         : raw;
 
    return { cropBox, imageDisplaySize };
 }
