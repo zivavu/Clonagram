@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { IMAGES_DIR, PROFILES_JSON, SEED_CONCURRENCY } from './helpers/config';
 import { createMuxAssetFromUrl } from './lib/muxAdmin';
 import { supabase } from './lib/supabaseAdmin';
-import type { SeedData, SeedProfile } from './types';
+import type { SeedComment, SeedData, SeedProfile } from './types';
 
 function randomPastDate(maxDaysAgo: number) {
    const d = new Date();
@@ -247,6 +247,7 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                );
 
                if (story.hasImage && story.image) {
+                  const storyImage = story.image;
                   const localPath = `${IMAGES_DIR}/${profile.id}/story_${si}.webp`;
                   if (existsSync(localPath)) {
                      const storyUrl = await uploadFile(
@@ -261,8 +262,8 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                               story_id: story.id,
                               position: 0,
                               url: storyUrl,
-                              blur_data_url: story.image!.blurDataUrl,
-                              unsplash_attribution: story.image!.attribution ?? null,
+                              blur_data_url: storyImage.blurDataUrl,
+                              unsplash_attribution: storyImage.attribution ?? null,
                            }),
                         'story_images insert',
                      );
@@ -391,7 +392,9 @@ async function main() {
    const queue = [...data.profiles];
    async function worker() {
       while (queue.length > 0) {
-         await seedProfile(queue.shift()!, display);
+         const profile = queue.shift();
+         if (!profile) break;
+         await seedProfile(profile, display);
       }
    }
    await Promise.all(Array.from({ length: SEED_CONCURRENCY }, worker));
@@ -472,7 +475,9 @@ async function main() {
    const commentDates = new Map<string, number>();
 
    const topLevelComments = data.graph.comments.filter(c => !c.parentId);
-   const replyComments = data.graph.comments.filter(c => c.parentId);
+   const replyComments = data.graph.comments.filter(
+      (c): c is SeedComment & { parentId: string } => !!c.parentId,
+   );
 
    await insertBatch(
       'comments',
@@ -496,7 +501,7 @@ async function main() {
       'comments',
       replyComments.map(c => {
          const parentDate =
-            commentDates.get(c.parentId!) ??
+            commentDates.get(c.parentId) ??
             new Date(postCreatedAt.get(c.postId) ?? new Date()).getTime();
          const date = parentDate + Math.random() * 24 * 60 * 60 * 1000;
          commentDates.set(c.id, date);

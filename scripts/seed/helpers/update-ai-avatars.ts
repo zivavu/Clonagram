@@ -44,7 +44,8 @@ async function main() {
    const queue = [...profiles];
    async function worker() {
       while (queue.length > 0) {
-         const profile = queue.shift()!;
+         const profile = queue.shift();
+         if (!profile) break;
          try {
             await updateAvatar(profile.id, profile.username);
          } catch (err) {

@@ -135,7 +135,7 @@ export function useCallSession({
 
       if (signal.type === 'ice-candidate' && signal.candidate) {
          const pc = peerConnections.current.get(signal.fromUserId);
-         if (pc && pc.remoteDescription) {
+         if (pc?.remoteDescription) {
             await pc.addIceCandidate(signal.candidate);
          } else {
             const queued = pendingCandidates.current.get(signal.fromUserId) ?? [];

@@ -73,7 +73,8 @@ export async function getNicheVideo(niche: SeedNiche): Promise<PexelsVideoResult
       videoCache.set(cacheKey, data.videos);
    }
 
-   const videos = videoCache.get(cacheKey)!;
+   const videos = videoCache.get(cacheKey);
+   if (!videos) throw new Error(`Video cache miss for ${cacheKey}`);
    const video = videos[Math.floor(Math.random() * videos.length)];
 
    const hdFile =

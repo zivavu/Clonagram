@@ -30,7 +30,7 @@ export default function EditHighlightStoriesModal() {
 
    const { data: highlightStoryIds = [] } = useQuery({
       queryKey: queryKeys.highlightStoryIds(data?.highlightId ?? ''),
-      queryFn: () => getHighlightStoryIds({ highlightId: data!.highlightId }),
+      queryFn: () => getHighlightStoryIds({ highlightId: data?.highlightId ?? '' }),
       enabled: isOpen && !!data,
       staleTime: 30_000,
    });

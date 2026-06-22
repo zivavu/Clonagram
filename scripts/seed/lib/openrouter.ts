@@ -93,8 +93,11 @@ async function callOpenRouterStreaming({
    if (!response.ok) {
       throw new Error(`OpenRouter error (${response.status}): ${await response.text()}`);
    }
+   if (!response.body) {
+      throw new Error('OpenRouter response has no body');
+   }
 
-   const reader = response.body!.getReader();
+   const reader = response.body.getReader();
    const decoder = new TextDecoder();
    let full = '';
    let charCount = 0;
