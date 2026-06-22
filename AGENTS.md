@@ -200,6 +200,20 @@ Fix any errors before considering the task complete.
 
 <!-- END:linting-rules -->
 
+<!-- BEGIN:testing-rules -->
+
+# Testing
+
+Use Playwright for E2E tests. Run them with:
+
+```
+bun run test:e2e
+```
+
+Tests run against the free Supabase test project `instagram-clone-test` (`xvtkeobdlodfyfdkjuvt`). Load test environment variables from `.env.test` (see `.env.test.example`). CI runs via `.github/workflows/e2e.yml` using GitHub secrets prefixed with `TEST_`.
+
+<!-- END:testing-rules -->
+
 <!-- Begin:return-types -->
 
 # Return Types
