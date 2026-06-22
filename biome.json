@@ -75,6 +75,26 @@
                }
             }
          }
+      },
+      {
+         "includes": ["scripts/**", "e2e/**"],
+         "linter": {
+            "rules": {
+               "suspicious": {
+                  "noConsole": "off"
+               }
+            }
+         }
+      },
+      {
+         "includes": ["src/lib/logger.ts"],
+         "linter": {
+            "rules": {
+               "suspicious": {
+                  "noConsole": "off"
+               }
+            }
+         }
       }
    ]
 }

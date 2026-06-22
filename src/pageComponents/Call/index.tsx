@@ -14,6 +14,7 @@ import {
 import { MdCallEnd } from 'react-icons/md';
 import { sendCallEvent } from '@/src/actions/dm/sendCallEvent';
 import UserAvatar from '@/src/components/UserAvatar';
+import { logger } from '@/src/lib/logger';
 import { supabase } from '@/src/lib/supabase/client';
 import { getMediaErrorMessage } from '@/src/lib/webrtc/mediaError';
 import { useCallSession } from './hooks/useCallSession';
@@ -112,7 +113,7 @@ export default function CallPage({
       try {
          await session.startLocalMedia();
       } catch (err) {
-         console.error('[call] startLocalMedia failed', err);
+         logger.error('[call] startLocalMedia failed', err);
          setMediaError(getMediaErrorMessage(err));
          return;
       }
@@ -123,7 +124,7 @@ export default function CallPage({
             callType === 'video' ? 'video_started' : 'audio_started',
          );
       } catch (err) {
-         console.error('[call] sendCallEvent failed', err);
+         logger.error('[call] sendCallEvent failed', err);
          setMediaError('Failed to start call. Please try again.');
          return;
       }
@@ -145,13 +146,13 @@ export default function CallPage({
             supabase.removeChannel(ch);
          }
       } catch (err) {
-         console.error('[call] invite broadcast failed', err);
+         logger.error('[call] invite broadcast failed', err);
       }
 
       try {
          await session.joinCall();
       } catch (err) {
-         console.error('[call] joinCall failed', err);
+         logger.error('[call] joinCall failed', err);
          setMediaError('Failed to join the call.');
          return;
       }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { logger } from '@/src/lib/logger';
 import { getIceServers } from '@/src/lib/webrtc/iceServers';
 import { type CallSignal, useCallSignaling } from './useCallSignaling';
 
@@ -39,22 +40,22 @@ export function useCallSession({
 
    function createPeerConnection(remoteUserId: string, send: (s: CallSignal) => Promise<void>) {
       const servers = getIceServers();
-      console.warn('[call] creating PC for', remoteUserId, 'iceServers:', JSON.stringify(servers));
+      logger.warn('[call] creating PC for', remoteUserId, 'iceServers:', JSON.stringify(servers));
       const pc = new RTCPeerConnection({ iceServers: servers });
 
       pc.oniceconnectionstatechange = () => {
-         console.warn('[call] iceConnectionState', remoteUserId, '=', pc.iceConnectionState);
+         logger.warn('[call] iceConnectionState', remoteUserId, '=', pc.iceConnectionState);
       };
       pc.onicegatheringstatechange = () => {
-         console.warn('[call] iceGatheringState', remoteUserId, '=', pc.iceGatheringState);
+         logger.warn('[call] iceGatheringState', remoteUserId, '=', pc.iceGatheringState);
       };
       pc.onicecandidateerror = e => {
-         console.warn('[call] icecandidateerror', e.errorCode, e.errorText, e.url);
+         logger.warn('[call] icecandidateerror', e.errorCode, e.errorText, e.url);
       };
 
       pc.onicecandidate = ({ candidate }) => {
          if (candidate) {
-            console.warn('[call] local candidate ->', candidate.type, candidate.protocol);
+            logger.warn('[call] local candidate ->', candidate.type, candidate.protocol);
             send({
                type: 'ice-candidate',
                fromUserId: authUserId,
@@ -64,7 +65,7 @@ export function useCallSession({
                candidate: candidate.toJSON(),
             });
          } else {
-            console.warn('[call] local candidate gathering complete');
+            logger.warn('[call] local candidate gathering complete');
          }
       };
 
@@ -98,7 +99,7 @@ export function useCallSession({
    const { send } = useCallSignaling(channelName, async (signal: CallSignal) => {
       if (signal.fromUserId === authUserId) return;
       if (signal.toUserId && signal.toUserId !== authUserId) return;
-      console.warn('[call] recv signal', signal.type, 'from', signal.fromUserId);
+      logger.warn('[call] recv signal', signal.type, 'from', signal.fromUserId);
 
       if (signal.type === 'offer' && signal.sdp) {
          let pc = peerConnections.current.get(signal.fromUserId);

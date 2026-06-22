@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { logger } from '@/src/lib/logger';
 import { supabase } from '@/src/lib/supabase/client';
 
 export type CallSignalType =
@@ -71,7 +72,7 @@ export function useCallSignaling(channelName: string, onSignal: (signal: CallSig
          payload: signal,
       });
       if (result !== 'ok') {
-         console.warn('[call] send result', signal.type, '=', result);
+         logger.warn('[call] send result', signal.type, '=', result);
       }
    }
 
