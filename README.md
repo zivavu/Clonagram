@@ -204,6 +204,16 @@ bun run typecheck  # Type-check with the TypeScript compiler
 bun run db:types   # Regenerate database TypeScript types from Supabase
 ```
 
+## Tests
+
+Playwright E2E tests run against a dedicated Supabase test project. Playwright starts the dev server automatically, so no manual setup is needed before running them.
+
+```bash
+bun run test:e2e
+```
+
+See `.env.test.example` for the required environment variables and `.github/workflows/e2e.yml` for the CI configuration.
+
 ## Seed Scripts
 
 The seed pipeline populates the database with realistic AI-generated profiles, posts, stories, and reels so you can develop against a fully populated app without manual data entry.
