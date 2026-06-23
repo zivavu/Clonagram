@@ -21,7 +21,9 @@ test.describe('unauthenticated', () => {
       await page.getByLabel('Email adress').fill('no-such-user@example.com');
       await page.getByLabel('Password').fill('WrongPassword1!');
       await page.getByRole('button', { name: 'Log in', exact: true }).click();
-      await expect(page.getByRole('alert').filter({ hasText: /invalid|credentials|password|email/i })).toBeVisible();
+      await expect(
+         page.getByRole('alert').filter({ hasText: /invalid|credentials|password|email/i }),
+      ).toBeVisible();
       await expect(page).toHaveURL(/\/login/);
    });
 

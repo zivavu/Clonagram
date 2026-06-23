@@ -35,6 +35,9 @@ jobs:
               bunx supabase link --project-ref ${{ secrets.TEST_SUPABASE_PROJECT_REF }}
               bunx supabase db push --yes
 
+         - name: Build Next.js app
+           run: bun run build
+
          - name: Run Playwright tests
            run: bunx playwright test
 

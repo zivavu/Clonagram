@@ -51,7 +51,10 @@ export function useCropDimensions(
    const maxDim = Math.max(raw.w, raw.h);
    const imageDisplaySize =
       maxDim > MAX_DISPLAY
-         ? { w: Math.round((raw.w * MAX_DISPLAY) / maxDim), h: Math.round((raw.h * MAX_DISPLAY) / maxDim) }
+         ? {
+              w: Math.round((raw.w * MAX_DISPLAY) / maxDim),
+              h: Math.round((raw.h * MAX_DISPLAY) / maxDim),
+           }
          : raw;
 
    return { cropBox, imageDisplaySize };

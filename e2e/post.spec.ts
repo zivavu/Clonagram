@@ -32,11 +32,7 @@ test.afterAll(async () => {
    const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
    if (!user) return;
 
-   await supabase
-      .from('posts')
-      .delete()
-      .eq('user_id', user.id)
-      .like('caption', 'e2e-test-post-%');
+   await supabase.from('posts').delete().eq('user_id', user.id).like('caption', 'e2e-test-post-%');
 });
 
 test('create a post and verify it appears on profile', async ({ page }) => {

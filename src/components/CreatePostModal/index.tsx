@@ -163,7 +163,6 @@ function CreatePostModalContent({ isReel, close }: CreatePostModalContentProps) 
       }
    }
 
-
    const { getRootProps, getInputProps, open } = useDropzone({
       onDrop,
       accept: isReel
