@@ -210,7 +210,7 @@ Use Playwright for E2E tests. Run them with:
 bun run test:e2e
 ```
 
-Tests run against the free Supabase test project `instagram-clone-test` (`xvtkeobdlodfyfdkjuvt`). Load test environment variables from `.env.test` (see `.env.test.example`). CI runs via `.github/workflows/e2e.yml` using GitHub secrets prefixed with `TEST_`.
+Tests run against the free Supabase test project `instagram-clone-test` (`xvtkeobdlodfyfdkjuvt`). Load test environment variables from `.env.test` (see `.env.test.example`). CI runs via `.github/workflows/e2e.yml` using GitHub secrets: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ACCESS_TOKEN`, and `TEST_SUPABASE_PROJECT_REF`.
 
 <!-- END:testing-rules -->
 

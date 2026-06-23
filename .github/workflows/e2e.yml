@@ -10,6 +10,10 @@ jobs:
    e2e:
       runs-on: ubuntu-latest
       environment: test
+      env:
+         NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+         NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+         SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       steps:
          - uses: actions/checkout@v4
 
@@ -32,10 +36,6 @@ jobs:
               bunx supabase db push --yes
 
          - name: Run Playwright tests
-           env:
-              NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
-              NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.TEST_SUPABASE_PUBLISHABLE_KEY }}
-              SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
            run: bunx playwright test
 
          - name: Upload Playwright report
