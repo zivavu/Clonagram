@@ -14,7 +14,8 @@ const TEST_USER_2 = {
    username: 'e2euser2',
 };
 
-const authFile = 'playwright/.auth/user1.json';
+const user1AuthFile = 'playwright/.auth/user1.json';
+const user2AuthFile = 'playwright/.auth/user2.json';
 
 async function ensureTestUser(
    supabase: ReturnType<typeof createClient<Database>>,
@@ -73,5 +74,17 @@ setup('authenticate', async ({ page }) => {
    await submitButton.click();
 
    await page.waitForURL('/', { timeout: 30000 });
-   await page.context().storageState({ path: authFile });
+   await page.context().storageState({ path: user1AuthFile });
+
+   await page.context().clearCookies();
+   await page.goto('/login');
+   await page.getByLabel('Email adress').fill(TEST_USER_2.email);
+   await page.getByLabel('Password').fill(TEST_USER_2.password);
+
+   const submitButton2 = page.getByRole('button', { name: 'Log in', exact: true });
+   await expect(submitButton2).toBeEnabled();
+   await submitButton2.click();
+
+   await page.waitForURL('/', { timeout: 30000 });
+   await page.context().storageState({ path: user2AuthFile });
 });
