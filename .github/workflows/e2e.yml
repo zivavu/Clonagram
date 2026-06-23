@@ -25,11 +25,11 @@ jobs:
            run: bunx playwright install --with-deps chromium
 
          - name: Link and apply migrations to test project
-            env:
-               SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-            run: |
-               bunx supabase link --project-ref ${{ secrets.TEST_SUPABASE_PROJECT_REF }}
-               bunx supabase db push --yes
+           env:
+              SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+           run: |
+              bunx supabase link --project-ref ${{ secrets.TEST_SUPABASE_PROJECT_REF }}
+              bunx supabase db push --yes
 
          - name: Run Playwright tests
            env:
