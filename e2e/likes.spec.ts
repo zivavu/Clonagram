@@ -67,7 +67,6 @@ test('like and unlike a post in the home feed', async ({ page }) => {
    await expect(modal.getByText('Your post has been shared.')).toBeVisible({ timeout: 30000 });
    await modal.getByRole('button', { name: 'Done' }).click();
 
-   await page.goto('/');
    await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
 
    const captionEl = page.getByText(TEST_CAPTION, { exact: true });

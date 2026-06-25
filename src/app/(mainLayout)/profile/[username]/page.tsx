@@ -21,6 +21,7 @@ export default async function Profile({ params }: ProfilePageProps) {
          ringState={profileData.ringState}
          highlights={profileData.highlights}
          repostedPosts={profileData.repostedPosts}
+         savedPosts={profileData.savedPosts}
       />
    );
 }

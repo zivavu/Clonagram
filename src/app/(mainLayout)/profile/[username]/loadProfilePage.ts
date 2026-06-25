@@ -13,39 +13,22 @@ export async function loadProfilePage(username: string, options?: { includeSaved
    ]);
 
    const isOwnProfile = authProfile?.username === username;
+   const fetchSaved = options?.includeSaved || isOwnProfile;
 
    const notePromise = getUserNote({ userId: userProfile.id });
    const ringStatePromise = getRingState({ targetUserId: userProfile.id });
    const highlightsPromise = getUserHighlights({ userId: userProfile.id });
    const repostedPostsPromise = getRepostedPosts({ userId: userProfile.id });
+   const savedPostsPromise = fetchSaved ? getSavedPosts() : Promise.resolve(undefined);
 
-   if (options?.includeSaved) {
-      const [note, ringState, highlights, savedPosts, repostedPosts] = await Promise.all([
-         notePromise,
-         ringStatePromise,
-         highlightsPromise,
-         getSavedPosts(),
-         repostedPostsPromise,
-      ]);
-      return {
-         userProfile,
-         posts,
-         followStatus,
-         isOwnProfile,
-         note,
-         ringState,
-         highlights,
-         savedPosts,
-         repostedPosts,
-      };
-   }
-
-   const [note, ringState, highlights, repostedPosts] = await Promise.all([
+   const [note, ringState, highlights, savedPosts, repostedPosts] = await Promise.all([
       notePromise,
       ringStatePromise,
       highlightsPromise,
+      savedPostsPromise,
       repostedPostsPromise,
    ]);
+
    return {
       userProfile,
       posts,
@@ -54,6 +37,7 @@ export async function loadProfilePage(username: string, options?: { includeSaved
       note,
       ringState,
       highlights,
+      savedPosts,
       repostedPosts,
    };
 }

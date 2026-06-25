@@ -78,6 +78,8 @@ test('save and unsave a post', async ({ page }) => {
 
    await expect(postCard.getByLabel('Bookmark')).toBeVisible({ timeout: 15000 });
    await postCard.getByLabel('Bookmark').click();
+   // Wait for the toggleSavePost server action to persist before navigating
+   await page.waitForLoadState('networkidle');
 
    // Saved posts appear in the Saved tab on the own profile page
    await page.goto('/profile/e2euser1');
