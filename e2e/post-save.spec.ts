@@ -72,12 +72,12 @@ test('save and unsave a post', async ({ page }) => {
 
    const postCard = page
       .locator('div')
-      .filter({ has: page.getByLabel('Save') })
+      .filter({ has: page.getByLabel('Bookmark') })
       .filter({ hasText: TEST_CAPTION })
       .last();
 
-   await expect(postCard.getByLabel('Save')).toBeVisible({ timeout: 15000 });
-   await postCard.getByLabel('Save').click();
+   await expect(postCard.getByLabel('Bookmark')).toBeVisible({ timeout: 15000 });
+   await postCard.getByLabel('Bookmark').click();
 
    // Saved posts appear in the Saved tab on the own profile page
    await page.goto('/profile/e2euser1');
@@ -89,10 +89,10 @@ test('save and unsave a post', async ({ page }) => {
    await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
    const postCardAgain = page
       .locator('div')
-      .filter({ has: page.getByLabel('Save') })
+      .filter({ has: page.getByLabel('Bookmark') })
       .filter({ hasText: TEST_CAPTION })
       .last();
-   await postCardAgain.getByLabel('Save').click();
+   await postCardAgain.getByLabel('Bookmark').click();
 
    await page.goto('/profile/e2euser1');
    await page.getByRole('button', { name: 'Saved' }).click();

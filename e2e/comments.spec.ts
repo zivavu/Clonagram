@@ -35,7 +35,11 @@ test.afterAll(async () => {
    const { data: users } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
    const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
    if (!user) return;
-   await supabase.from('posts').delete().eq('user_id', user.id).like('caption', 'e2e-comment-test-%');
+   await supabase
+      .from('posts')
+      .delete()
+      .eq('user_id', user.id)
+      .like('caption', 'e2e-comment-test-%');
 });
 
 test('add and delete a comment on a post', async ({ page }) => {
@@ -69,8 +73,17 @@ test('add and delete a comment on a post', async ({ page }) => {
    });
    await createModal.getByRole('button', { name: 'Done' }).click();
 
-   await page.goto('/profile/e2euser1');
-   await page.locator('button:has(img[alt="Post"])').first().click();
+   await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
+
+   // Open PostViewModal for this specific post via its Comment button
+   const postCard = page
+      .locator('div')
+      .filter({ has: page.getByLabel('Comment') })
+      .filter({ hasText: TEST_CAPTION })
+      .last();
+
+   await expect(postCard.getByLabel('Comment')).toBeVisible({ timeout: 15000 });
+   await postCard.getByLabel('Comment').click();
 
    const postDialog = page.getByRole('dialog').first();
    const commentInput = postDialog.locator('[contenteditable]');

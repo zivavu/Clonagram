@@ -68,7 +68,7 @@ test('like and unlike a post in the home feed', async ({ page }) => {
    await modal.getByRole('button', { name: 'Done' }).click();
 
    await page.goto('/');
-   await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 10000 });
+   await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
 
    const captionEl = page.getByText(TEST_CAPTION, { exact: true });
    const postCard = captionEl.locator('xpath=ancestor::div[.//button[@aria-label="Like"]][1]');

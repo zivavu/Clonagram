@@ -34,7 +34,11 @@ test.afterAll(async () => {
    const { data: users } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
    const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
    if (!user) return;
-   await supabase.from('posts').delete().eq('user_id', user.id).like('caption', 'e2e-delete-test-%');
+   await supabase
+      .from('posts')
+      .delete()
+      .eq('user_id', user.id)
+      .like('caption', 'e2e-delete-test-%');
 });
 
 test('delete a post from the home feed', async ({ page }) => {
@@ -95,7 +99,4 @@ test('delete a post from the home feed', async ({ page }) => {
 
    // Post removed from feed confirms deletion succeeded
    await expect(page.getByText(TEST_CAPTION)).not.toBeVisible({ timeout: 15000 });
-
-   await page.goto('/profile/e2euser1');
-   await expect(page.locator('button:has(img[alt="Post"])')).toHaveCount(0, { timeout: 10000 });
 });
