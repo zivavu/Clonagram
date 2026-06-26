@@ -68,3 +68,25 @@ test('view own story in the story viewer', async ({ page }) => {
    await expect(page.getByText('e2euser1')).toBeVisible({ timeout: 10000 });
    await expect(page.locator('input[placeholder="Reply to e2euser1..."]')).toBeVisible();
 });
+
+test('like and unlike a story as another user', async ({ browser }) => {
+   const ctx = await browser.newContext({ storageState: 'playwright/.auth/user2.json' });
+   const page = await ctx.newPage();
+
+   await page.goto('/stories/e2euser1');
+
+   const replyInput = page.locator('input[placeholder="Reply to e2euser1..."]');
+   await expect(replyInput).toBeVisible({ timeout: 10000 });
+
+   const bottomBar = replyInput.locator('xpath=..');
+   const likeButton = bottomBar.locator('button').first();
+
+   await expect(likeButton.locator('svg[style*="color: red"]')).not.toBeVisible();
+   await likeButton.click();
+   await expect(likeButton.locator('svg[style*="color: red"]')).toBeVisible({ timeout: 5000 });
+
+   await likeButton.click();
+   await expect(likeButton.locator('svg[style*="color: red"]')).not.toBeVisible({ timeout: 5000 });
+
+   await ctx.close();
+});
