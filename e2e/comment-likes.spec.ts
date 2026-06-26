@@ -41,7 +41,7 @@ test.afterAll(async () => {
 test('like and unlike a comment on a post', async ({ page }) => {
    await page.goto('/');
    await page.getByRole('button', { name: 'Create' }).click();
-   await page.getByRole('button', { name: 'Post' }).click();
+   await page.getByRole('button', { name: 'Post', exact: true }).click();
 
    const imageBuffer = await createTestImageBuffer(page);
    await page.locator('input[type="file"]').setInputFiles({
@@ -69,6 +69,7 @@ test('like and unlike a comment on a post', async ({ page }) => {
    });
    await createModal.getByRole('button', { name: 'Done' }).click();
 
+   await page.goto('/');
    await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
 
    // Open PostViewModal via the Comment button on the specific post card

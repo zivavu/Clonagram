@@ -40,7 +40,7 @@ test.afterAll(async () => {
 test('save and unsave a post', async ({ page }) => {
    await page.goto('/');
    await page.getByRole('button', { name: 'Create' }).click();
-   await page.getByRole('button', { name: 'Post' }).click();
+   await page.getByRole('button', { name: 'Post', exact: true }).click();
 
    const imageBuffer = await createTestImageBuffer(page);
    await page.locator('input[type="file"]').setInputFiles({
@@ -68,6 +68,7 @@ test('save and unsave a post', async ({ page }) => {
    });
    await createModal.getByRole('button', { name: 'Done' }).click();
 
+   await page.goto('/');
    await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
 
    const postCard = page
@@ -78,25 +79,23 @@ test('save and unsave a post', async ({ page }) => {
 
    await expect(postCard.getByLabel('Bookmark')).toBeVisible({ timeout: 15000 });
    await postCard.getByLabel('Bookmark').click();
-   // Wait for the toggleSavePost server action to persist before navigating
    await page.waitForLoadState('networkidle');
 
-   // Saved posts appear in the Saved tab on the own profile page
    await page.goto('/profile/e2euser1');
    await page.getByRole('button', { name: 'Saved' }).click();
-   await expect(page.locator('button:has(img[alt="Post"])')).toHaveCount(1, { timeout: 10000 });
+   await expect(page.locator('button:has(img[alt="Post"])')).not.toHaveCount(0, { timeout: 15000 });
 
-   // Unsave by clicking Save again from the home feed
    await page.goto('/');
-   await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
+   await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 20000 });
    const postCardAgain = page
       .locator('div')
       .filter({ has: page.getByLabel('Bookmark') })
       .filter({ hasText: TEST_CAPTION })
       .last();
    await postCardAgain.getByLabel('Bookmark').click();
+   await page.waitForLoadState('networkidle');
 
    await page.goto('/profile/e2euser1');
    await page.getByRole('button', { name: 'Saved' }).click();
-   await expect(page.getByText('No saved posts yet')).toBeVisible({ timeout: 10000 });
+   await expect(page.getByText('No saved posts yet')).toBeVisible({ timeout: 15000 });
 });

@@ -42,7 +42,7 @@ test.afterAll(async () => {
 test('reply to a comment on a post', async ({ page }) => {
    await page.goto('/');
    await page.getByRole('button', { name: 'Create' }).click();
-   await page.getByRole('button', { name: 'Post' }).click();
+   await page.getByRole('button', { name: 'Post', exact: true }).click();
 
    const imageBuffer = await createTestImageBuffer(page);
    await page.locator('input[type="file"]').setInputFiles({
@@ -70,6 +70,7 @@ test('reply to a comment on a post', async ({ page }) => {
    });
    await createModal.getByRole('button', { name: 'Done' }).click();
 
+   await page.goto('/');
    await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
 
    // Open PostViewModal via the Comment button on this specific post card
