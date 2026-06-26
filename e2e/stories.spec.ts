@@ -29,12 +29,12 @@ async function createTestImageBuffer(page: import('@playwright/test').Page) {
    return Buffer.from(base64.split(',')[1], 'base64');
 }
 
+let createdStoryId: string | null = null;
+
 test.afterAll(async () => {
+   if (!createdStoryId) return;
    const supabase = makeServiceClient();
-   const { data: users } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
-   const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
-   if (!user) return;
-   await supabase.from('stories').delete().eq('user_id', user.id);
+   await supabase.from('stories').delete().eq('id', createdStoryId);
 });
 
 test('create a story', async ({ page }) => {
@@ -60,6 +60,20 @@ test('create a story', async ({ page }) => {
 
    await modal.getByRole('button', { name: 'Done' }).click();
    await expect(modal).not.toBeVisible();
+
+   const supabase = makeServiceClient();
+   const { data: users } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
+   const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
+   if (user) {
+      const { data } = await supabase
+         .from('stories')
+         .select('id')
+         .eq('user_id', user.id)
+         .order('created_at', { ascending: false })
+         .limit(1)
+         .single();
+      createdStoryId = data?.id ?? null;
+   }
 });
 
 test('view own story in the story viewer', async ({ page }) => {

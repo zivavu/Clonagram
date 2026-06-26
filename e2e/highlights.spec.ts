@@ -6,6 +6,7 @@ test.describe.configure({ mode: 'serial' });
 
 const HIGHLIGHT_NAME = `e2e-highlight-${Date.now()}`;
 const RENAMED_NAME = `${HIGHLIGHT_NAME}-r`;
+let setupStoryId: string | null = null;
 
 function makeServiceClient() {
    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -52,8 +53,21 @@ test.beforeAll(async ({ browser }) => {
    await modal.getByRole('button', { name: 'Share' }).click();
    await expect(modal.getByText('Your story has been shared.')).toBeVisible({ timeout: 30000 });
    await modal.getByRole('button', { name: 'Done' }).click();
-
    await ctx.close();
+
+   const supabase = makeServiceClient();
+   const { data: users } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
+   const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
+   if (user) {
+      const { data } = await supabase
+         .from('stories')
+         .select('id')
+         .eq('user_id', user.id)
+         .order('created_at', { ascending: false })
+         .limit(1)
+         .single();
+      setupStoryId = data?.id ?? null;
+   }
 });
 
 test.afterAll(async () => {
@@ -62,7 +76,9 @@ test.afterAll(async () => {
    const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
    if (!user) return;
    await supabase.from('story_highlights').delete().eq('user_id', user.id);
-   await supabase.from('stories').delete().eq('user_id', user.id);
+   if (setupStoryId) {
+      await supabase.from('stories').delete().eq('id', setupStoryId);
+   }
 });
 
 test('create a highlight', async ({ page }) => {
@@ -82,8 +98,10 @@ test('create a highlight', async ({ page }) => {
 
    await expect(dialog.getByText('Choose Cover Photo')).toBeVisible();
    await dialog.getByRole('button', { name: 'Add' }).click();
+   await expect(dialog).not.toBeVisible({ timeout: 10000 });
 
-   await expect(page.getByText(HIGHLIGHT_NAME)).toBeVisible({ timeout: 15000 });
+   await page.goto('/profile/e2euser1');
+   await expect(page.getByText(HIGHLIGHT_NAME)).toBeVisible({ timeout: 10000 });
 });
 
 test('rename a highlight', async ({ page }) => {
