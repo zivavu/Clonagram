@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../src/types/database';
 
+test.describe.configure({ mode: 'serial' });
+
 function makeServiceClient() {
    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
    const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -39,7 +41,7 @@ test('create a story', async ({ page }) => {
    await page.goto('/');
 
    await page.getByRole('button', { name: 'Create' }).click();
-   await page.getByRole('button', { name: 'Story' }).click();
+   await page.getByRole('button', { name: 'Story', exact: true }).click();
 
    await expect(page.getByText('Upload a photo or video for your story')).toBeVisible();
 
@@ -58,4 +60,11 @@ test('create a story', async ({ page }) => {
 
    await modal.getByRole('button', { name: 'Done' }).click();
    await expect(modal).not.toBeVisible();
+});
+
+test('view own story in the story viewer', async ({ page }) => {
+   await page.goto('/stories/e2euser1');
+
+   await expect(page.getByText('e2euser1')).toBeVisible({ timeout: 10000 });
+   await expect(page.locator('input[placeholder="Reply to e2euser1..."]')).toBeVisible();
 });
