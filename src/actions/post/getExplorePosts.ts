@@ -63,7 +63,7 @@ export async function getExplorePosts(params: {
    } else {
       const excludeIds = [user.id, ...followedIds];
       if (excludeIds.length > 0) {
-         query = query.not('user_id', 'in', excludeIds);
+         query = query.not('user_id', 'in', `(${excludeIds.join(',')})`);
       }
    }
 
