@@ -1,8 +1,10 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { getReelById } from '@/src/actions/post/getReelById';
 import { getReels } from '@/src/actions/post/getReels';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { REELS_PAGE_SIZE, type Reel } from '@/src/queries/posts';
@@ -13,6 +15,15 @@ import { styles } from './index.stylex';
 export default function Reels() {
    const scrollerRef = useRef<HTMLDivElement>(null);
    const [openComments, setOpenComments] = useState<Reel | null>(null);
+   const searchParams = useSearchParams();
+   const initialId = searchParams.get('id');
+
+   const { data: initialReel } = useQuery({
+      queryKey: queryKeys.reelById(initialId ?? ''),
+      queryFn: () => getReelById({ postId: initialId! }),
+      enabled: !!initialId,
+      staleTime: 60_000,
+   });
 
    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
       queryKey: queryKeys.reels(),
@@ -22,7 +33,13 @@ export default function Reels() {
          lastPage.length === REELS_PAGE_SIZE ? lastPage[lastPage.length - 1].created_at : null,
    });
 
-   const reels = data?.pages.flat() ?? [];
+   const feedReels = data?.pages.flat() ?? [];
+
+   const reels = useMemo(() => {
+      if (!initialReel) return feedReels;
+      const withoutDuplicate = feedReels.filter(r => r.id !== initialReel.id);
+      return [initialReel, ...withoutDuplicate];
+   }, [initialReel, feedReels]);
 
    function scrollByItem(direction: 1 | -1) {
       const scroller = scrollerRef.current;

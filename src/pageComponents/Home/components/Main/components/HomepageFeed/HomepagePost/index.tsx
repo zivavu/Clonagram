@@ -2,6 +2,7 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { LuSend } from 'react-icons/lu';
@@ -49,6 +50,7 @@ function getAspectRatio(post: PostWithMedia) {
 
 export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
+   const router = useRouter();
 
    const { open: openOwnerActionsModal } = useOwnerActionsModal();
    const { open: openShareModal } = useSharePostModal();
@@ -115,7 +117,10 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
             onImageChange={index => {
                currentImageIndex.current = index;
             }}
-            onImageClick={(clickedPost, index) => handleOpenPostModal(clickedPost, index)}
+            onImageDoubleClick={() => togglePostLike()}
+            onVideoClick={
+               post.type === 'reel' ? () => router.push(`/reels?id=${post.id}`) : undefined
+            }
             dotsBelow
          />
          <div {...stylex.props(styles.iconsBar)}>

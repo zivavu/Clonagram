@@ -11,6 +11,7 @@ export const queryKeys = {
    comments: (postId: string, hideAi?: boolean) => ['comments', postId, hideAi ?? false] as const,
    replies: (parentId: string, hideAi?: boolean) => ['replies', parentId, hideAi ?? false] as const,
    reels: () => ['reels'] as const,
+   reelById: (id: string) => ['reel', id] as const,
    profileSearch: (query: string, userId?: string) =>
       ['profiles', 'search', query, userId ?? null] as const,
    profileCard: (userId: string) => ['profile-card', userId] as const,

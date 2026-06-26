@@ -12,9 +12,15 @@ interface FeedVideoSlideProps {
    playbackId: string;
    isPlaying: boolean;
    onToggle: () => void;
+   onOverlayClick?: () => void;
 }
 
-export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: FeedVideoSlideProps) {
+export default function FeedVideoSlide({
+   playbackId,
+   isPlaying,
+   onToggle,
+   onOverlayClick,
+}: FeedVideoSlideProps) {
    const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const { volume } = usePlayerStore();
 
@@ -38,7 +44,7 @@ export default function FeedVideoSlide({ playbackId, isPlaying, onToggle }: Feed
          <button
             type="button"
             aria-label={isPlaying ? 'Pause video' : 'Play video'}
-            onClick={onToggle}
+            onClick={onOverlayClick ?? onToggle}
             {...stylex.props(styles.toggleButton)}
          />
          {

@@ -1,5 +1,10 @@
+import { Suspense } from 'react';
 import Reels from '@/src/pageComponents/Reels';
 
 export default function ReelsPage() {
-   return <Reels />;
+   return (
+      <Suspense>
+         <Reels />
+      </Suspense>
+   );
 }

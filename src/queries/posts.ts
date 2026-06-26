@@ -4,7 +4,7 @@ import type { Database } from '@/src/types/database';
 import { scopePostEngagementToUser } from '@/src/utils/posts';
 
 export const POST_WITH_MEDIA_SELECT = `
-   id, caption, created_at, aspect_ratio, hide_likes, comments_off, location_name,
+   id, type, caption, created_at, aspect_ratio, hide_likes, comments_off, location_name,
    like_count, comment_count, repost_count,
    visible_comment_count:comments(count),
    likes(user_id),

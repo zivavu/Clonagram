@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from 'react';
 import { formatAltText } from '../../lib/altText';
 import type { PostWithMedia } from '../../queries/posts';
 import { usePlayerStore } from '../../store/usePlayerStore';
-import { usePostViewModal } from '../../store/usePostViewModalStore';
 import {
    parseUnsplashAttribution,
    type UnsplashAttribution as UnsplashAttributionType,
@@ -15,6 +14,7 @@ import CarouselArrow from '../CarouselArrow';
 import UnsplashAttribution from '../UnsplashAttribution';
 import ImageTagPin from './components/ImageTagPin';
 import FeedVideoSlide from './FeedVideoSlide';
+import HeartAnimation from './HeartAnimation';
 import { styles } from './index.stylex';
 
 interface ImageTag {
@@ -71,6 +71,8 @@ export interface PostMediaCarouselProps {
    playerIdPrefix?: string;
    onImageChange?: (index: number) => void;
    onImageClick?: (post: PostWithMedia, index: number) => void;
+   onImageDoubleClick?: (post: PostWithMedia, index: number) => void;
+   onVideoClick?: () => void;
    imageProps?: Partial<ImageProps>;
    dotsBelow?: boolean;
 }
@@ -86,15 +88,17 @@ export default function PostMediaCarousel({
    playerIdPrefix = 'feed',
    onImageChange,
    onImageClick,
+   onImageDoubleClick,
+   onVideoClick,
    imageProps,
    dotsBelow,
 }: PostMediaCarouselProps) {
-   const { open: openPostFullViewModal, isOpen: isPostFullViewModalOpen } = usePostViewModal();
    const { activePlayerId, claimPlayback, releasePlayback } = usePlayerStore();
 
    const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex ?? 0);
    const [isInViewport, setIsInViewport] = useState(false);
    const [tagsVisible, setTagsVisible] = useState(false);
+   const [heartCount, setHeartCount] = useState(0);
    const rootRef = useRef<HTMLDivElement>(null);
    const touchStartX = useRef(0);
    const touchStartY = useRef(0);
@@ -163,12 +167,12 @@ export default function PostMediaCarousel({
          setTagsVisible(v => !v);
          return;
       }
-      if (isPostFullViewModalOpen) return;
-      if (onImageClick) {
-         onImageClick(post, currentImageIndex);
-      } else {
-         openPostFullViewModal(post, { initialImageIndex: currentImageIndex });
-      }
+      onImageClick?.(post, currentImageIndex);
+   };
+
+   const handleImageDoubleClick = () => {
+      onImageDoubleClick?.(post, currentImageIndex);
+      setHeartCount(c => c + 1);
    };
 
    return (
@@ -210,6 +214,7 @@ export default function PostMediaCarousel({
                                  if (isVideoPlaying) releasePlayback(videoId);
                                  else claimPlayback(videoId);
                               }}
+                              onOverlayClick={onVideoClick}
                            />
                         </div>
                      );
@@ -222,14 +227,11 @@ export default function PostMediaCarousel({
                         role="button"
                         tabIndex={0}
                         onClick={() => handleImageClick(item)}
+                        onDoubleClick={handleImageDoubleClick}
                         onKeyDown={e => {
                            if (e.key === 'Enter' || e.key === ' ') handleImageClick(item);
                         }}
-                        {...stylex.props(
-                           styles.carouselSlide,
-                           styles.imageSlide,
-                           isPostFullViewModalOpen && styles.imageSlideDefault,
-                        )}
+                        {...stylex.props(styles.carouselSlide, styles.imageSlide)}
                         style={{ width: `${width}`, height: `${height}`, aspectRatio }}
                      >
                         <Image
@@ -257,6 +259,7 @@ export default function PostMediaCarousel({
                   );
                })}
             </div>
+            <HeartAnimation triggerCount={heartCount} />
             {hasMultipleMedia && currentImageIndex > 0 && (
                <CarouselArrow direction="left" onClick={handlePrevious} />
             )}
