@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import * as stylex from '@stylexjs/stylex';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { cookies } from 'next/headers';
 import { darkClass } from '@/src/lib/theme';
+import { styles } from './layout.stylex';
 import { Providers } from './providers';
 
 const chivo = localFont({
@@ -23,17 +24,12 @@ export const viewport = {
    initialScale: 1,
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-   const cookieStore = await cookies();
-   const theme = cookieStore.get('theme')?.value;
-   const isDark = theme === 'dark' || theme === undefined;
-   const htmlClass = [chivo.variable, isDark ? darkClass : ''].filter(Boolean).join(' ');
-
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
    return (
       <>
          <SpeedInsights />
-         <html lang="en" className={htmlClass}>
-            <body style={{ backgroundColor: isDark ? 'rgb(12, 16, 20)' : 'rgb(255, 255, 255)' }}>
+         <html lang="en" className={`${chivo.variable} ${darkClass}`}>
+            <body {...stylex.props(styles.body)}>
                <script
                   // biome-ignore lint/security/noDangerouslySetInnerHtml: Required for blocking theme script before first paint
                   dangerouslySetInnerHTML={{
