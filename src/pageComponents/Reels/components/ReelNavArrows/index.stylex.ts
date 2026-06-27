@@ -11,6 +11,9 @@ export const styles = stylex.create({
       flexDirection: 'column',
       gap: '12px',
       zIndex: 2,
+      '@media (max-width: 767px)': {
+         display: 'none',
+      },
    },
    button: {
       display: 'flex',

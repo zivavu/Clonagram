@@ -21,11 +21,19 @@ export const styles = stylex.create({
       background: 'none',
       border: 'none',
       color: colors.textPrimary,
+      '@media (max-width: 767px)': {
+         color: 'white',
+         filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))',
+      },
    },
    count: {
       color: colors.textPrimary,
       fontSize: '13px',
       fontWeight: 600,
+      '@media (max-width: 767px)': {
+         color: 'white',
+         textShadow: '0 1px 3px rgba(0,0,0,0.6)',
+      },
    },
    likedIcon: {
       color: colors.danger,

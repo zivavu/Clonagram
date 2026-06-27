@@ -22,5 +22,9 @@ export const styles = stylex.create({
       position: 'absolute',
       bottom: '12px',
       right: '12px',
+      '@media (max-width: 767px)': {
+         bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)',
+         right: '8px',
+      },
    },
 });

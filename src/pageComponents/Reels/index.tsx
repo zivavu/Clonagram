@@ -74,6 +74,7 @@ export default function Reels() {
 
    return (
       <div {...stylex.props(styles.viewport)}>
+         <span {...stylex.props(styles.reelsLabel)}>Reels</span>
          <div ref={scrollerRef} onScroll={handleScroll} {...stylex.props(styles.scroller)}>
             {isLoading ? (
                <p {...stylex.props(styles.loading)}>Loading reels…</p>
