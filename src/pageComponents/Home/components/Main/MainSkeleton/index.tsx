@@ -9,7 +9,9 @@ function PostSkeleton() {
             <Skeleton width={32} height={32} rounded />
             <Skeleton width={110} height={12} />
          </div>
-         <Skeleton width={468} height={468} />
+         <div {...stylex.props(styles.postImageWrapper)}>
+            <Skeleton width="100%" height="100%" />
+         </div>
       </div>
    );
 }

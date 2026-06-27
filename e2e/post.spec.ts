@@ -39,7 +39,7 @@ test('create a post and verify it appears on profile', async ({ page }) => {
    await page.goto('/');
 
    await page.getByRole('button', { name: 'Create' }).click();
-   await page.getByRole('button', { name: 'Post' }).click();
+   await page.getByRole('button', { name: 'Post', exact: true }).click();
 
    await expect(page.getByText('Create new post')).toBeVisible();
 
