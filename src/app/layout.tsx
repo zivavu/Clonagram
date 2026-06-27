@@ -27,7 +27,7 @@ export const viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
    return (
       <>
-         <SpeedInsights />
+         {process.env.VERCEL ? <SpeedInsights /> : null}
          <html lang="en" className={`${chivo.variable} ${darkClass}`}>
             <body {...stylex.props(styles.body)}>
                <script
