@@ -1,5 +1,7 @@
 import ResetPasswordPage from '@/src/pageComponents/ResetPassword';
 
-export default async function ResetPassword() {
+export const dynamic = 'force-static';
+
+export default function ResetPassword() {
    return <ResetPasswordPage />;
 }
