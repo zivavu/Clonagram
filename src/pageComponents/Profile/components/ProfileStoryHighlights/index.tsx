@@ -51,6 +51,7 @@ export default function ProfileStoryHighlights({
             <div {...stylex.props(styles.highlightItem)}>
                <button
                   type="button"
+                  aria-label="New highlight"
                   onClick={openModal}
                   {...stylex.props(styles.newHighlightButton)}
                >

@@ -59,6 +59,7 @@ test.beforeAll(async ({ browser }) => {
    const { data: users } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
    const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
    if (user) {
+      await supabase.from('story_highlights').delete().eq('user_id', user.id);
       const { data } = await supabase
          .from('stories')
          .select('id')
@@ -84,7 +85,7 @@ test.afterAll(async () => {
 test('create a highlight', async ({ page }) => {
    await page.goto('/profile/e2euser1');
 
-   await page.getByText('New', { exact: true }).locator('xpath=../button').click();
+   await page.getByRole('button', { name: 'New highlight', exact: true }).click();
 
    const dialog = page.getByRole('dialog');
    await expect(dialog.getByText('New Highlight')).toBeVisible();
@@ -107,7 +108,7 @@ test('create a highlight', async ({ page }) => {
 test('rename a highlight', async ({ page }) => {
    await page.goto('/profile/e2euser1');
 
-   await page.getByAltText(HIGHLIGHT_NAME).click();
+   await page.getByAltText(HIGHLIGHT_NAME).first().click();
 
    const dotsButton = page
       .locator('a[href="/profile/e2euser1"]')
@@ -130,7 +131,7 @@ test('rename a highlight', async ({ page }) => {
 test('delete a highlight', async ({ page }) => {
    await page.goto('/profile/e2euser1');
 
-   await page.getByAltText(RENAMED_NAME).click();
+   await page.getByAltText(RENAMED_NAME).first().click();
 
    const dotsButton = page
       .locator('a[href="/profile/e2euser1"]')
