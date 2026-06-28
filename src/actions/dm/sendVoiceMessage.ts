@@ -2,6 +2,7 @@
 import 'server-only';
 import { getAuthUser } from '@/src/actions/getAuthUser';
 import { throwIfError } from '@/src/lib/unwrap';
+import { promoteParticipantToPrimary } from './promoteParticipantToPrimary';
 
 export async function sendVoiceMessage(conversationId: string, audioUrl: string) {
    const { supabase, user } = await getAuthUser();
@@ -13,10 +14,5 @@ export async function sendVoiceMessage(conversationId: string, audioUrl: string)
    });
    throwIfError({ error }, 'Failed to send voice message');
 
-   await supabase
-      .from('conversation_participants')
-      .update({ folder: 'primary' })
-      .eq('conversation_id', conversationId)
-      .eq('user_id', user.id)
-      .eq('folder', 'requests');
+   await promoteParticipantToPrimary(supabase, conversationId, user.id);
 }

@@ -2,6 +2,7 @@
 import 'server-only';
 
 import { findOrCreateDirectConversation } from '@/src/actions/dm/findOrCreateDirectConversation';
+import { promoteParticipantToPrimary } from '@/src/actions/dm/promoteParticipantToPrimary';
 import { getAuthUser } from '@/src/actions/getAuthUser';
 import { getStoryThumbnail } from '@/src/lib/getStoryThumbnail';
 import { throwIfError } from '@/src/lib/unwrap';
@@ -24,12 +25,7 @@ export async function shareStory(params: {
    for (const recipientId of uniqueRecipientIds) {
       const conversationId = await findOrCreateDirectConversation(supabase, user.id, recipientId);
 
-      await supabase
-         .from('conversation_participants')
-         .update({ folder: 'primary' })
-         .eq('conversation_id', conversationId)
-         .eq('user_id', user.id)
-         .eq('folder', 'requests');
+      await promoteParticipantToPrimary(supabase, conversationId, user.id);
 
       const { error: msgError } = await supabase.from('messages').insert({
          conversation_id: conversationId,
