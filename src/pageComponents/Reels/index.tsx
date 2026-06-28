@@ -10,6 +10,7 @@ import { queryKeys } from '@/src/lib/queryKeys';
 import { REELS_PAGE_SIZE, type Reel } from '@/src/queries/posts';
 import ReelItem from './components/ReelItem';
 import ReelNavArrows from './components/ReelNavArrows';
+import ReelsSkeleton from './components/ReelsSkeleton';
 import { styles } from './index.stylex';
 
 export default function Reels() {
@@ -20,7 +21,7 @@ export default function Reels() {
 
    const { data: initialReel } = useQuery({
       queryKey: queryKeys.reelById(initialId ?? ''),
-      queryFn: () => getReelById({ postId: initialId! }),
+      queryFn: () => getReelById({ postId: initialId }),
       enabled: !!initialId,
       staleTime: 60_000,
    });
@@ -77,7 +78,7 @@ export default function Reels() {
          <span {...stylex.props(styles.reelsLabel)}>Reels</span>
          <div ref={scrollerRef} onScroll={handleScroll} {...stylex.props(styles.scroller)}>
             {isLoading ? (
-               <p {...stylex.props(styles.loading)}>Loading reels…</p>
+               <ReelsSkeleton />
             ) : (
                reels.map(reel => (
                   <ReelItem

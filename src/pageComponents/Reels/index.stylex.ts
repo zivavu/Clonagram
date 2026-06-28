@@ -20,10 +20,6 @@ export const styles = stylex.create({
       scrollbarWidth: 'none',
       scrollBehavior: 'smooth',
    },
-   loading: {
-      color: colors.textSecondary,
-      fontSize: '14px',
-   },
    reelsLabel: {
       display: 'none',
       '@media (max-width: 767px)': {

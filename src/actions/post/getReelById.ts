@@ -6,7 +6,8 @@ import { reelsQuery } from '@/src/queries/posts';
 import { hideLikesForNonOwners } from '@/src/utils/posts';
 import { getOptionalUser } from '../getAuthUser';
 
-export async function getReelById(params: { postId: string }) {
+export async function getReelById(params: { postId: string | null }) {
+   if (!params.postId) return null;
    const { postId } = validate(PostIdSchema, params);
    const { supabase, user } = await getOptionalUser();
 
