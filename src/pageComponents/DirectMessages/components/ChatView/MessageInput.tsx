@@ -1,22 +1,18 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { EmojiStyle, Theme } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { IoMicOutline } from 'react-icons/io5';
 import { TbPhoto } from 'react-icons/tb';
 import { toast } from '@/src/components/AppToast';
-import { PICKER_CLASS, pickerOverrideCSS, useEmojiEditor } from '@/src/hooks/useEmojiEditor';
-import { useThemeStore } from '@/src/store/useThemeStore';
+import EmojiPickerPopover from '@/src/components/EmojiPickerPopover';
+import { useEmojiEditor } from '@/src/hooks/useEmojiEditor';
 import { radius } from '../../../../styles/tokens.stylex';
 import { styles } from '../../index.stylex';
 import ImagePreviewStrip, { type PendingImage } from './ImagePreviewStrip';
 
-const EmojiPicker = dynamic(() => import('emoji-picker-react').then(m => m.default), {
-   ssr: false,
-});
 const StickerPicker = dynamic(() => import('./StickerPicker'), { ssr: false });
 
 interface MessageInputProps {
@@ -37,7 +33,6 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
    { onSend, onSendSticker, onSendImages, onStartRecording }: MessageInputProps,
    ref,
 ) {
-   const isDark = useThemeStore(s => s.isDark);
    const [sending, setSending] = useState(false);
    const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
    const fileInputRef = useRef<HTMLInputElement>(null);
@@ -176,18 +171,7 @@ const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function 
                      boxShadow: '0 2px 8px 1px rgba(0, 0, 0, 0.2)',
                   }}
                >
-                  <style href="clonagram-emoji-picker-override" precedence="default">
-                     {pickerOverrideCSS}
-                  </style>
-                  <EmojiPicker
-                     onEmojiClick={insertEmoji}
-                     theme={isDark ? Theme.DARK : Theme.LIGHT}
-                     emojiStyle={EmojiStyle.FACEBOOK}
-                     className={PICKER_CLASS}
-                     width={320}
-                     height={320}
-                     previewConfig={{ showPreview: false }}
-                  />
+                  <EmojiPickerPopover onEmojiClick={insertEmoji} width={320} />
                </div>
             )}
             <div {...stylex.props(styles.inputWrapper)}>

@@ -1,17 +1,11 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { EmojiStyle, Theme } from 'emoji-picker-react';
-import dynamic from 'next/dynamic';
 import { forwardRef, useImperativeHandle } from 'react';
 import { FaRegFaceSmile } from 'react-icons/fa6';
-import { PICKER_CLASS, pickerOverrideCSS, useEmojiEditor } from '@/src/hooks/useEmojiEditor';
-import { useThemeStore } from '@/src/store/useThemeStore';
+import EmojiPickerPopover from '@/src/components/EmojiPickerPopover';
+import { useEmojiEditor } from '@/src/hooks/useEmojiEditor';
 import { styles } from './index.stylex';
-
-const EmojiPicker = dynamic(() => import('emoji-picker-react').then(m => m.default), {
-   ssr: false,
-});
 
 export interface EmojiInputRef {
    getText: () => string;
@@ -30,7 +24,6 @@ const EmojiInput = forwardRef<EmojiInputRef, EmojiInputProps>(function EmojiInpu
    { placeholder, maxLength, onSubmit }: EmojiInputProps,
    ref,
 ) {
-   const isDark = useThemeStore(s => s.isDark);
    const {
       editorRef,
       isEmpty,
@@ -66,18 +59,7 @@ const EmojiInput = forwardRef<EmojiInputRef, EmojiInputProps>(function EmojiInpu
             </button>
             {pickerOpen && (
                <div {...stylex.props(styles.pickerWrapper)}>
-                  <style href="clonagram-emoji-picker-override" precedence="default">
-                     {pickerOverrideCSS}
-                  </style>
-                  <EmojiPicker
-                     onEmojiClick={insertEmoji}
-                     theme={isDark ? Theme.DARK : Theme.LIGHT}
-                     emojiStyle={EmojiStyle.FACEBOOK}
-                     className={PICKER_CLASS}
-                     width={280}
-                     height={320}
-                     previewConfig={{ showPreview: false }}
-                  />
+                  <EmojiPickerPopover onEmojiClick={insertEmoji} width={280} />
                </div>
             )}
          </div>
