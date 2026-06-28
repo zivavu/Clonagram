@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { createConversation } from '@/src/actions/dm/createConversation';
 import { toast } from '@/src/components/AppToast';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { styles } from '../../index.stylex';
 
 interface MessageButtonProps {
@@ -21,7 +22,7 @@ export default function MessageButton({ targetUserId }: MessageButtonProps) {
          const conversationId = await createConversation([targetUserId]);
          router.push(`/direct/${conversationId}`);
       } catch (e) {
-         toast(e instanceof Error ? e.message : 'Something went wrong.');
+         toast(getErrorMessage(e, 'Something went wrong.'));
       } finally {
          setLoading(false);
       }

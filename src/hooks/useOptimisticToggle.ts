@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/src/components/AppToast';
+import { getErrorMessage } from '@/src/lib/unwrap';
 
 type UseOptimisticToggleOptions<T> = {
    queryKey: readonly unknown[];
@@ -28,7 +29,7 @@ export function useOptimisticToggle<T>({
          if (context?.previous !== undefined) {
             queryClient.setQueryData(queryKey, context.previous);
          }
-         toast(err instanceof Error ? err.message : 'Something went wrong');
+         toast(getErrorMessage(err));
       },
       onSettled: () => {
          queryClient.invalidateQueries({ queryKey });

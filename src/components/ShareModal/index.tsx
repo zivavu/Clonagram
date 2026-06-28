@@ -12,6 +12,7 @@ import { UserListItem } from '@/src/components/UserListItem';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { followedUsersQuery } from '@/src/queries/follows';
 import { userProfilesQuery } from '@/src/queries/userProfiles';
 import { sharedStyles } from '@/src/styles/shared.stylex';
@@ -102,7 +103,7 @@ export default function ShareModal({ isOpen, id, onClose, onSend, description }:
          toast('Sent.');
          handleClose();
       } catch (e) {
-         toast(e instanceof Error ? e.message : 'Could not send. Try again.');
+         toast(getErrorMessage(e, 'Could not send. Try again.'));
       } finally {
          setSending(false);
       }

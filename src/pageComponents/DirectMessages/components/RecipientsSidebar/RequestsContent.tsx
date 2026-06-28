@@ -12,6 +12,7 @@ import EmojiText from '@/src/components/EmojiText';
 import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { type ConversationSummaries, getConversationsQuery } from '@/src/queries/conversations';
 import {
    getConversationAvatars,
@@ -173,7 +174,7 @@ export function RequestsContent({ authUserId, initialData }: RequestsContentProp
                            queryKey: queryKeys.allConversations(),
                         });
                      } catch (e) {
-                        toast(e instanceof Error ? e.message : 'Something went wrong.');
+                        toast(getErrorMessage(e, 'Something went wrong.'));
                      } finally {
                         setIsDeleting(false);
                      }

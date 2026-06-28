@@ -11,6 +11,7 @@ import { TbLogout, TbTrash } from 'react-icons/tb';
 import { deleteAccount } from '@/src/actions/auth/deleteAccount';
 import { toggleHideAiContent } from '@/src/actions/profile/toggleHideAiContent';
 import { supabase } from '@/src/lib/supabase/client';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { useSettingsPopoverStore } from '@/src/store/createModalStore';
 import { useThemeStore } from '@/src/store/useThemeStore';
 import { colors } from '../../../styles/tokens.stylex';
@@ -50,7 +51,7 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
       } catch (error) {
          setOptimisticHideAi(hideAiContent);
          setIsTogglingHideAi(false);
-         toast(error instanceof Error ? error.message : 'Could not update setting. Try again.');
+         toast(getErrorMessage(error, 'Could not update setting. Try again.'));
       } finally {
          setIsTogglingHideAi(false);
       }
@@ -70,7 +71,7 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
          queryClient.clear();
          router.push('/login');
       } catch (error) {
-         toast(error instanceof Error ? error.message : 'Could not delete account. Try again.');
+         toast(getErrorMessage(error, 'Could not delete account. Try again.'));
       } finally {
          setIsDeletingAccount(false);
          setShowDeleteConfirm(false);

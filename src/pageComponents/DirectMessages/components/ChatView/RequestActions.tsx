@@ -12,6 +12,7 @@ import { toast } from '@/src/components/AppToast';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { styles } from '../../index.stylex';
 
 interface RequestActionsProps {
@@ -52,7 +53,7 @@ export default function RequestActions({
                   try {
                      await acceptRequest({ conversationId });
                   } catch (e) {
-                     toast(e instanceof Error ? e.message : 'Something went wrong.');
+                     toast(getErrorMessage(e, 'Something went wrong.'));
                   }
                }
             },
@@ -70,7 +71,7 @@ export default function RequestActions({
          await queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
          router.push('/direct/requests');
       } catch (e) {
-         toast(e instanceof Error ? e.message : 'Something went wrong.');
+         toast(getErrorMessage(e, 'Something went wrong.'));
       } finally {
          setLoading(false);
       }

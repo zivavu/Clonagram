@@ -9,6 +9,7 @@ import { Fragment } from 'react/jsx-runtime';
 import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { deletePost } from '../../actions/post/deletePost';
 import { queryKeys } from '../../lib/queryKeys';
+import { getErrorMessage } from '../../lib/unwrap';
 import { useOwnerActionsModal } from '../../store/createModalStore';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
@@ -43,7 +44,7 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
          queryClient.invalidateQueries({ queryKey: queryKeys.homeFeed('following') });
          toast('Post deleted.');
       } catch (error) {
-         toast(error instanceof Error ? error.message : 'Could not delete post. Try again.');
+         toast(getErrorMessage(error, 'Could not delete post. Try again.'));
       } finally {
          setIsLoading(false);
          setShowConfirm(false);

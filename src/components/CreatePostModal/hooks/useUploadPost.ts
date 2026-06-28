@@ -4,6 +4,7 @@ import { createPost } from '@/src/actions/post/createPost';
 import { uploadVideo } from '@/src/actions/uploadVideo';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { bakeImage } from '@/src/utils/bakeImage';
 import { pollMuxAsset } from '@/src/utils/pollMuxAsset';
 import { processVideo } from '@/src/utils/processVideo';
@@ -110,7 +111,7 @@ export function useUploadPost({ postData, onDone }: UseUploadPostParams): UseUpl
       }
 
       run().catch(err => {
-         const message = err instanceof Error ? err.message : 'Upload failed';
+         const message = getErrorMessage(err, 'Upload failed');
          setError(message);
          setStatus('error');
       });

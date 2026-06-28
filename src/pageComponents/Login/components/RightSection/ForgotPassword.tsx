@@ -8,6 +8,7 @@ import z from 'zod';
 import { sendPasswordResetEmail } from '@/src/actions/auth/sendPasswordResetEmail';
 import FloatingInput from '@/src/components/FloatingInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { styles } from './index.stylex';
 
 const forgotSchema = z.object({
@@ -40,7 +41,7 @@ export default function ForgotPassword({ onBack, initialError }: ForgotPasswordP
          await sendPasswordResetEmail({ email: formData.email });
          setResetSent(true);
       } catch (e) {
-         setError('root', { message: e instanceof Error ? e.message : 'Something went wrong' });
+         setError('root', { message: getErrorMessage(e) });
       }
       setIsLoading(false);
    }

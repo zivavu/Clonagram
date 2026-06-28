@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createStory } from '@/src/actions/story/createStory';
 import { uploadVideo } from '@/src/actions/uploadVideo';
 import { supabase } from '@/src/lib/supabase/client';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { bakeStoryImage } from '@/src/utils/bakeStoryImage';
 import { pollMuxAsset } from '@/src/utils/pollMuxAsset';
 import type { StoryMedia } from '../types';
@@ -58,7 +59,7 @@ export function useUploadStory({ media, onDone }: UseUploadStoryParams) {
       }
 
       run().catch(err => {
-         setError(err instanceof Error ? err.message : 'Upload failed');
+         setError(getErrorMessage(err, 'Upload failed'));
          setStatus('error');
       });
    }, []);

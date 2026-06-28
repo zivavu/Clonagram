@@ -21,6 +21,7 @@ import UserAutocomplete from '@/src/components/UserAutocomplete';
 import UserAvatar from '@/src/components/UserAvatar';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
+import { getErrorMessage } from '@/src/lib/unwrap';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import type { PartialUser } from '@/src/types/global';
@@ -130,7 +131,7 @@ export default function ChatDetailsPanel({
          queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
          router.push('/direct');
       } catch (e) {
-         toast(e instanceof Error ? e.message : 'Could not leave chat.');
+         toast(getErrorMessage(e, 'Could not leave chat.'));
          setIsNavigating(false);
       }
    }
@@ -142,7 +143,7 @@ export default function ChatDetailsPanel({
          queryClient.invalidateQueries({ queryKey: queryKeys.allConversations() });
          router.push('/direct');
       } catch (e) {
-         toast(e instanceof Error ? e.message : 'Could not delete chat.');
+         toast(getErrorMessage(e, 'Could not delete chat.'));
          setIsNavigating(false);
       }
    }
