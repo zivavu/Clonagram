@@ -1,5 +1,5 @@
-import DirectMessagesPage from '@/src/pageComponents/DirectMessages';
+import EmptyState from '@/src/pageComponents/DirectMessages/components/EmptyState';
 
-export default function DirectRequests() {
-   return <DirectMessagesPage currentFolderHref="/direct/requests" isRequestsPage />;
+export default function DirectRequestsPage() {
+   return <EmptyState variant="requests" />;
 }

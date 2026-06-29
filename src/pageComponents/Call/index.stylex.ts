@@ -3,6 +3,10 @@ import { colors, radius } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
    root: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      zIndex: 20,
       display: 'flex',
       flexDirection: 'column',
       width: '100%',

@@ -1,5 +1,5 @@
 import EmptyState from '@/src/pageComponents/DirectMessages/components/EmptyState';
 
-export default function DirectGeneralPage() {
+export default function DirectPage() {
    return <EmptyState variant="messages" />;
 }

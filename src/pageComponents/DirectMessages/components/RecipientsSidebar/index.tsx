@@ -8,7 +8,8 @@ import { getNotesForFeed } from '@/src/actions/notes/getNotesForFeed';
 import UserAvatar from '@/src/components/UserAvatar';
 import CurrentUserName from '@/src/components/Username/CurrentUserName';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import type { ConversationSummaries } from '@/src/queries/conversations';
+import { createServerClient } from '@/src/lib/supabase/server';
+import { getConversationsQuery } from '@/src/queries/conversations';
 import { sharedStyles } from '@/src/styles/shared.stylex';
 import { colors } from '../../../../styles/tokens.stylex';
 import ConversationList from '../ConversationList';
@@ -27,20 +28,22 @@ export const messageFolders = [
 interface RecipientsSidebarProps {
    currentFolderHref?: string;
    isRequestsPage?: boolean;
-   authUserId: string;
    folder: 'primary' | 'general' | 'requests';
-   initialConversations: ConversationSummaries;
 }
 
 export default async function RecipientsSidebar({
    currentFolderHref = '/direct',
    isRequestsPage = false,
-   authUserId,
    folder,
-   initialConversations,
 }: RecipientsSidebarProps) {
    const profile = await getAuthProfile();
-   const { ownNote, notes: friendNotes } = await getNotesForFeed();
+   const authUserId = profile?.id ?? '';
+   const supabase = await createServerClient();
+   const [{ data: conversations }, { ownNote, notes: friendNotes }] = await Promise.all([
+      getConversationsQuery(supabase, authUserId, folder),
+      getNotesForFeed(),
+   ]);
+   const initialConversations = conversations ?? [];
 
    return (
       <div {...stylex.props(styles.root)}>
