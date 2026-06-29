@@ -122,7 +122,7 @@ export const styles = stylex.create({
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      width: '100%',
+      padding: '0 16px',
    },
    skeletonWrapper: {
       margin: '16px',

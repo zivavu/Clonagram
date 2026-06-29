@@ -18,7 +18,7 @@ export default function ReelsSkeleton() {
                <Skeleton width="70%" height={14} />
             </div>
             <div {...stylex.props(styles.rail)}>
-               {Array.from({ length: 4 }).map((_, i) => (
+               {Array.from({ length: 6 }).map((_, i) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton
                   <div key={i} {...stylex.props(styles.railItem)}>
                      <Skeleton width={26} height={26} />
