@@ -4,6 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { BiNotificationOff } from 'react-icons/bi';
 import { getHomeFeedPosts } from '@/src/actions/post/getHomeFeedPosts';
+import PostSkeleton from '@/src/components/PostSkeleton';
 import { useInfiniteScrollSentinel } from '@/src/hooks/useInfiniteScrollSentinel';
 import { queryKeys } from '@/src/lib/queryKeys';
 import HomepagePost from './HomepagePost';
@@ -26,7 +27,12 @@ export default function HomepageFeed({ variant }: { variant: 'home' | 'following
    const posts = data?.pages.flatMap(page => page.posts) ?? [];
 
    if (isLoading) {
-      return <div {...stylex.props(styles.postsContainer)} />;
+      return (
+         <div {...stylex.props(styles.postsContainer)}>
+            <PostSkeleton />
+            <PostSkeleton />
+         </div>
+      );
    }
 
    if (posts.length === 0) {
@@ -51,7 +57,11 @@ export default function HomepageFeed({ variant }: { variant: 'home' | 'following
             ))}
          </div>
          <div ref={sentinelRef} />
-         {isFetchingNextPage && <div {...stylex.props(styles.postsContainer)} />}
+         {isFetchingNextPage && (
+            <div {...stylex.props(styles.postsContainer)}>
+               <PostSkeleton />
+            </div>
+         )}
       </>
    );
 }

@@ -12,18 +12,6 @@ export const styles = stylex.create({
          width: '100%',
       },
    },
-   post: {
-      width: '100%',
-      maxWidth: '468px',
-      margin: '0 auto',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
-   },
-   postImageWrapper: {
-      width: '100%',
-      aspectRatio: '1 / 1',
-   },
    storiesSection: {
       display: 'flex',
       flexDirection: 'column',
@@ -50,11 +38,5 @@ export const styles = stylex.create({
       display: 'flex',
       flexDirection: 'column',
       gap: '36px',
-   },
-   postHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '10px',
-      paddingLeft: '16px',
    },
 });

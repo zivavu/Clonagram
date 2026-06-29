@@ -5,3 +5,7 @@ export function throwIfError(result: { error: { message: string } | null }, mess
       throw new ActionError(`${message}: ${result.error.message}`);
    }
 }
+
+export function getErrorMessage(err: unknown, fallback = 'Something went wrong') {
+   return err instanceof Error ? err.message : fallback;
+}
