@@ -1,6 +1,7 @@
 import { expect, test as setup } from '@playwright/test';
-import { createClient } from '@supabase/supabase-js';
+import type { createClient } from '@supabase/supabase-js';
 import type { Database } from '../src/types/database';
+import { makeServiceClient } from './helpers';
 
 const TEST_USER_1 = {
    email: 'e2e-user-1@example.com',
@@ -46,14 +47,7 @@ async function ensureTestUser(
 }
 
 setup('authenticate', async ({ page }) => {
-   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-   if (!url || !serviceRoleKey) {
-      throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
-   }
-
-   const supabase = createClient<Database>(url, serviceRoleKey);
+   const supabase = makeServiceClient();
 
    await ensureTestUser(supabase, TEST_USER_1);
    await ensureTestUser(supabase, TEST_USER_2);

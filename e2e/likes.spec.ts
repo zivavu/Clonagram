@@ -1,33 +1,7 @@
 import { expect, test } from '@playwright/test';
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from '../src/types/database';
+import { createTestImageBuffer, makeServiceClient } from './helpers';
 
 const TEST_CAPTION = `e2e-like-test-${Date.now()}`;
-
-function makeServiceClient() {
-   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-   return createClient<Database>(url, key);
-}
-
-async function createTestImageBuffer(page: import('@playwright/test').Page) {
-   const base64 = await page.evaluate(() => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 500;
-      canvas.height = 500;
-      const ctx = canvas.getContext('2d')!;
-      ctx.fillStyle = '#e24329';
-      ctx.fillRect(0, 0, 500, 500);
-      return new Promise<string>(resolve => {
-         canvas.toBlob(blob => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob!);
-         }, 'image/png');
-      });
-   });
-   return Buffer.from(base64.split(',')[1], 'base64');
-}
 
 test.afterAll(async () => {
    const supabase = makeServiceClient();

@@ -1,12 +1,4 @@
 import { expect, test } from '@playwright/test';
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from '../src/types/database';
-
-function makeServiceClient() {
-   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-   return createClient<Database>(url, key);
-}
 
 test.describe('unauthenticated', () => {
    test.use({ storageState: { cookies: [], origins: [] } });
