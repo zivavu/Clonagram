@@ -71,6 +71,13 @@ export default function CallPage({
       },
    });
 
+   function attachLocalVideo(el: HTMLVideoElement | null) {
+      localVideoRef.current = el;
+      if (el && session.localStream) {
+         el.srcObject = session.localStream;
+      }
+   }
+
    useEffect(() => {
       if (localVideoRef.current && session.localStream) {
          localVideoRef.current.srcObject = session.localStream;
@@ -176,7 +183,7 @@ export default function CallPage({
                   <div {...stylex.props(styles.lobbyPreview)}>
                      {callType === 'video' ? (
                         <video
-                           ref={localVideoRef}
+                           ref={attachLocalVideo}
                            autoPlay
                            muted
                            playsInline
@@ -276,7 +283,7 @@ export default function CallPage({
                   {callType === 'video' && (
                      <div {...stylex.props(styles.localPip)}>
                         <video
-                           ref={localVideoRef}
+                           ref={attachLocalVideo}
                            autoPlay
                            muted
                            playsInline
