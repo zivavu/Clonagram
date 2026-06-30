@@ -193,14 +193,16 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                         </span>
                      )}
                   </div>
-                  <button
-                     type="button"
-                     aria-label="Post owner actions"
-                     onClick={() => openOwnerActions(post.id)}
-                     {...stylex.props(styles.moreButton)}
-                  >
-                     <TbDots size={20} />
-                  </button>
+                  {authUser?.id === post.user.id && (
+                     <button
+                        type="button"
+                        aria-label="Post owner actions"
+                        onClick={() => openOwnerActions(post.id)}
+                        {...stylex.props(styles.moreButton)}
+                     >
+                        <TbDots size={20} />
+                     </button>
+                  )}
                </div>
                {post.caption && (
                   <div {...stylex.props(styles.captionRow)}>

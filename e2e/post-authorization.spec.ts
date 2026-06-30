@@ -34,16 +34,10 @@ test('a user cannot delete another user post', async ({ browser }) => {
    const dialog = page.getByRole('dialog').first();
    await expect(dialog.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
 
-   await dialog.getByRole('button', { name: 'Post owner actions' }).click();
-   await page.getByRole('button', { name: 'Delete', exact: true }).click();
+   // The owner-actions button must not be offered to a non-owner...
+   await expect(dialog.getByRole('button', { name: 'Post owner actions' })).toHaveCount(0);
 
-   const confirm = page.getByRole('dialog').filter({ hasText: 'Delete post?' });
-   await expect(confirm).toBeVisible({ timeout: 5000 });
-   await confirm.getByRole('button', { name: 'Delete', exact: true }).click();
-
-   // Wait for the delete attempt to settle, then confirm RLS preserved the post.
-   await expect(confirm).not.toBeVisible({ timeout: 10000 });
-
+   // ...and RLS must keep the post intact regardless.
    const supabase = makeServiceClient();
    const stillExists = await getPostIdByCaption(supabase, TEST_CAPTION);
    expect(stillExists).toBe(postId);
