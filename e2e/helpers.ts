@@ -6,6 +6,7 @@ type ServiceClient = ReturnType<typeof createClient<Database>>;
 
 export const USER_1_EMAIL = 'e2e-user-1@example.com';
 export const USER_2_EMAIL = 'e2e-user-2@example.com';
+export const USER_PASSWORD = 'MySecureP@ssw0rd123!';
 
 export function makeServiceClient() {
    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -16,6 +17,20 @@ export function makeServiceClient() {
    }
 
    return createClient<Database>(url, key);
+}
+
+export async function makeUserClient(email: string, password: string) {
+   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+   if (!url || !key) {
+      throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
+   }
+
+   const client = createClient<Database>(url, key);
+   const { error } = await client.auth.signInWithPassword({ email, password });
+   if (error) throw error;
+   return client;
 }
 
 export async function getUserId(supabase: ServiceClient, email: string) {

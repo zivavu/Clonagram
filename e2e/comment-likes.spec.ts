@@ -1,5 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { createPostViaUI, deleteTestPostsByCaption, makeServiceClient } from './helpers';
+import {
+   createPostViaUI,
+   deleteTestPostsByCaption,
+   getPostIdByCaption,
+   getUserId,
+   makeServiceClient,
+   USER_1_EMAIL,
+} from './helpers';
 
 const TEST_CAPTION = `e2e-like-${Date.now()}`;
 const TEST_COMMENT = `e2e like comment ${Date.now()}`;
@@ -37,18 +44,27 @@ test('like and unlike a comment on a post', async ({ page }) => {
    });
 
    const supabase = makeServiceClient();
-   const { data: comment } = await supabase
-      .from('comments')
-      .select('id')
-      .eq('content', TEST_COMMENT)
-      .maybeSingle();
-   expect(comment?.id).toBeTruthy();
+   const userId = await getUserId(supabase, USER_1_EMAIL);
+   const postId = await getPostIdByCaption(supabase, TEST_CAPTION);
+
+   async function fetchCommentId() {
+      const { data } = await supabase
+         .from('comments')
+         .select('id')
+         .eq('post_id', postId as string)
+         .eq('user_id', userId as string)
+         .maybeSingle();
+      return data?.id ?? null;
+   }
+
+   await expect.poll(fetchCommentId, { timeout: 10000 }).not.toBeNull();
+   const commentId = await fetchCommentId();
 
    async function commentLikeCount() {
       const { count } = await supabase
          .from('comment_likes')
          .select('*', { count: 'exact', head: true })
-         .eq('comment_id', comment?.id as string);
+         .eq('comment_id', commentId as string);
       return count ?? 0;
    }
 

@@ -85,7 +85,11 @@ test.describe('unauthenticated', () => {
 test.describe('authenticated', () => {
    test.use({ storageState: 'playwright/.auth/user2.json' });
 
-   test('logout redirects to login', async ({ page }) => {
+   test('logout redirects to login', async ({ page }, testInfo) => {
+      test.skip(
+         testInfo.project.name === 'mobile-chrome',
+         'Logout lives in the desktop-only More menu',
+      );
       await page.goto('/');
       await page.getByRole('button', { name: 'More' }).click();
       await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();

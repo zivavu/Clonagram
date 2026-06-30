@@ -9,6 +9,10 @@ test.afterAll(async () => {
    await supabase.from('messages').delete().in('content', [TEST_MESSAGE, REALTIME_MESSAGE]);
 });
 
+function chatBubbleWithText(page: import('@playwright/test').Page, text: string) {
+   return page.getByText(text).last();
+}
+
 async function openConversationWithUser2(page: import('@playwright/test').Page) {
    await page.goto('/profile/e2euser2');
 
@@ -35,7 +39,7 @@ test('send a direct message to another user', async ({ page }) => {
    await page.keyboard.type(TEST_MESSAGE);
    await page.keyboard.press('Enter');
 
-   await expect(page.getByText(TEST_MESSAGE)).toBeVisible({ timeout: 10000 });
+   await expect(chatBubbleWithText(page, TEST_MESSAGE)).toBeVisible({ timeout: 10000 });
 });
 
 test('receives another user message in real time', async ({ page }) => {
@@ -46,7 +50,7 @@ test('receives another user message in real time', async ({ page }) => {
    expect(user2Id).not.toBeNull();
 
    await expect(page.locator('[contenteditable]')).toBeVisible({ timeout: 10000 });
-   await expect(page.getByText(REALTIME_MESSAGE)).not.toBeVisible();
+   await expect(chatBubbleWithText(page, REALTIME_MESSAGE)).not.toBeVisible();
 
    // Insert a message as user2 directly; the open chat must update via realtime, no reload
    const { error } = await supabase.from('messages').insert({
@@ -56,5 +60,5 @@ test('receives another user message in real time', async ({ page }) => {
    });
    expect(error).toBeNull();
 
-   await expect(page.getByText(REALTIME_MESSAGE)).toBeVisible({ timeout: 15000 });
+   await expect(chatBubbleWithText(page, REALTIME_MESSAGE)).toBeVisible({ timeout: 15000 });
 });

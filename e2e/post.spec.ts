@@ -25,5 +25,7 @@ test('create a post and verify it appears on profile', async ({ page }) => {
    await firstPost.click();
 
    const dialog = page.getByRole('dialog').first();
-   await expect(dialog.getByText(TEST_CAPTION)).toBeVisible({ timeout: 10000 });
+   await expect(dialog.locator('span').filter({ hasText: TEST_CAPTION }).first()).toBeVisible({
+      timeout: 10000,
+   });
 });

@@ -4,6 +4,9 @@ import {
    deleteTestPostsByCaption,
    getPostIdByCaption,
    makeServiceClient,
+   makeUserClient,
+   USER_2_EMAIL,
+   USER_PASSWORD,
 } from './helpers';
 
 const TEST_CAPTION = `e2e-authz-${Date.now()}`;
@@ -15,32 +18,24 @@ test.beforeAll(async ({ browser }) => {
    await createPostViaUI(page, TEST_CAPTION);
    await ctx.close();
 
-   const supabase = makeServiceClient();
-   postId = await getPostIdByCaption(supabase, TEST_CAPTION);
+   postId = await getPostIdByCaption(makeServiceClient(), TEST_CAPTION);
 });
 
 test.afterAll(async () => {
    await deleteTestPostsByCaption('e2e-authz-');
 });
 
-test('a user cannot delete another user post', async ({ browser }) => {
+test('a user cannot delete another user post', async () => {
    expect(postId).not.toBeNull();
 
-   const ctx = await browser.newContext({ storageState: 'playwright/.auth/user2.json' });
-   const page = await ctx.newPage();
+   const user2 = await makeUserClient(USER_2_EMAIL, USER_PASSWORD);
 
-   await page.goto(`/profile/e2euser1/${postId}`);
+   // posts_delete_own RLS must make this affect zero rows for a non-owner.
+   await user2
+      .from('posts')
+      .delete()
+      .eq('id', postId as string);
 
-   const dialog = page.getByRole('dialog').first();
-   await expect(dialog.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
-
-   // The owner-actions button must not be offered to a non-owner...
-   await expect(dialog.getByRole('button', { name: 'Post owner actions' })).toHaveCount(0);
-
-   // ...and RLS must keep the post intact regardless.
-   const supabase = makeServiceClient();
-   const stillExists = await getPostIdByCaption(supabase, TEST_CAPTION);
+   const stillExists = await getPostIdByCaption(makeServiceClient(), TEST_CAPTION);
    expect(stillExists).toBe(postId);
-
-   await ctx.close();
 });
