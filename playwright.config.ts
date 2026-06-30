@@ -24,6 +24,11 @@ export default defineConfig({
          use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user1.json' },
          dependencies: ['setup'],
       },
+      {
+         name: 'mobile-chrome',
+         use: { ...devices['Pixel 5'], storageState: 'playwright/.auth/user1.json' },
+         dependencies: ['setup'],
+      },
    ],
    webServer: {
       command: 'bun run start',

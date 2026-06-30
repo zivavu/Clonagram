@@ -1,47 +1,15 @@
 import { expect, test } from '@playwright/test';
-import { createTestImageBuffer, makeServiceClient } from './helpers';
+import { createPostViaUI, deleteTestPostsByCaption, makeServiceClient } from './helpers';
 
 const TEST_CAPTION = `e2e-like-${Date.now()}`;
 const TEST_COMMENT = `e2e like comment ${Date.now()}`;
 
 test.afterAll(async () => {
-   const supabase = makeServiceClient();
-   const { data: users } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
-   const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
-   if (!user) return;
-   await supabase.from('posts').delete().eq('user_id', user.id).like('caption', 'e2e-like-%');
+   await deleteTestPostsByCaption('e2e-like-');
 });
 
 test('like and unlike a comment on a post', async ({ page }) => {
-   await page.goto('/');
-   await page.getByRole('button', { name: 'Create' }).click();
-   await page.getByRole('button', { name: 'Post', exact: true }).click();
-
-   const imageBuffer = await createTestImageBuffer(page);
-   await page.locator('input[type="file"]').setInputFiles({
-      name: 'test-image.png',
-      mimeType: 'image/png',
-      buffer: imageBuffer,
-   });
-
-   const createModal = page.getByRole('dialog');
-   await expect(createModal.getByRole('button', { name: 'Next', exact: true })).toBeVisible({
-      timeout: 10000,
-   });
-   await createModal.getByRole('button', { name: 'Next', exact: true }).click();
-   await expect(createModal.getByRole('button', { name: 'Next', exact: true })).toBeVisible({
-      timeout: 10000,
-   });
-   await createModal.getByRole('button', { name: 'Next', exact: true }).click();
-   await expect(createModal.getByRole('button', { name: 'Share', exact: true })).toBeVisible({
-      timeout: 10000,
-   });
-   await createModal.locator('textarea').fill(TEST_CAPTION);
-   await createModal.getByRole('button', { name: 'Share', exact: true }).click();
-   await expect(createModal.getByText('Your post has been shared.')).toBeVisible({
-      timeout: 30000,
-   });
-   await createModal.getByRole('button', { name: 'Done' }).click();
+   await createPostViaUI(page, TEST_CAPTION);
 
    await page.goto('/');
    await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
@@ -68,15 +36,32 @@ test('like and unlike a comment on a post', async ({ page }) => {
       timeout: 10000,
    });
 
+   const supabase = makeServiceClient();
+   const { data: comment } = await supabase
+      .from('comments')
+      .select('id')
+      .eq('content', TEST_COMMENT)
+      .maybeSingle();
+   expect(comment?.id).toBeTruthy();
+
+   async function commentLikeCount() {
+      const { count } = await supabase
+         .from('comment_likes')
+         .select('*', { count: 'exact', head: true })
+         .eq('comment_id', comment?.id as string);
+      return count ?? 0;
+   }
+
    // Like the comment
    const commentArticle = postDialog.locator('article').filter({ hasText: TEST_COMMENT });
    await commentArticle.getByRole('button', { name: 'Like comment' }).click();
 
-   // Like count should appear
    await expect(postDialog.getByText('1 like')).toBeVisible({ timeout: 5000 });
+   await expect.poll(commentLikeCount, { timeout: 5000 }).toBe(1);
 
    // Unlike the comment
    await commentArticle.getByRole('button', { name: 'Like comment' }).click();
 
    await expect(postDialog.getByText('1 like')).not.toBeVisible({ timeout: 5000 });
+   await expect.poll(commentLikeCount, { timeout: 5000 }).toBe(0);
 });

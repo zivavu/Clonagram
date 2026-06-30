@@ -1,46 +1,35 @@
 import { expect, test } from '@playwright/test';
-import { createTestImageBuffer, makeServiceClient } from './helpers';
+import {
+   createPostViaUI,
+   deleteTestPostsByCaption,
+   getPostIdByCaption,
+   getUserId,
+   makeServiceClient,
+   USER_1_EMAIL,
+} from './helpers';
 
 const TEST_CAPTION = `e2e-save-${Date.now()}`;
 
 test.afterAll(async () => {
-   const supabase = makeServiceClient();
-   const { data: users } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
-   const user = users.users.find(u => u.email === 'e2e-user-1@example.com');
-   if (!user) return;
-   await supabase.from('posts').delete().eq('user_id', user.id).like('caption', 'e2e-save-%');
+   await deleteTestPostsByCaption('e2e-save-');
 });
 
 test('save and unsave a post', async ({ page }) => {
-   await page.goto('/');
-   await page.getByRole('button', { name: 'Create' }).click();
-   await page.getByRole('button', { name: 'Post', exact: true }).click();
+   await createPostViaUI(page, TEST_CAPTION);
 
-   const imageBuffer = await createTestImageBuffer(page);
-   await page.locator('input[type="file"]').setInputFiles({
-      name: 'test-image.png',
-      mimeType: 'image/png',
-      buffer: imageBuffer,
-   });
+   const supabase = makeServiceClient();
+   const userId = await getUserId(supabase, USER_1_EMAIL);
+   const postId = await getPostIdByCaption(supabase, TEST_CAPTION);
+   expect(postId).not.toBeNull();
 
-   const createModal = page.getByRole('dialog');
-   await expect(createModal.getByRole('button', { name: 'Next', exact: true })).toBeVisible({
-      timeout: 10000,
-   });
-   await createModal.getByRole('button', { name: 'Next', exact: true }).click();
-   await expect(createModal.getByRole('button', { name: 'Next', exact: true })).toBeVisible({
-      timeout: 10000,
-   });
-   await createModal.getByRole('button', { name: 'Next', exact: true }).click();
-   await expect(createModal.getByRole('button', { name: 'Share', exact: true })).toBeVisible({
-      timeout: 10000,
-   });
-   await createModal.locator('textarea').fill(TEST_CAPTION);
-   await createModal.getByRole('button', { name: 'Share', exact: true }).click();
-   await expect(createModal.getByText('Your post has been shared.')).toBeVisible({
-      timeout: 30000,
-   });
-   await createModal.getByRole('button', { name: 'Done' }).click();
+   async function saveRowCount() {
+      const { count } = await supabase
+         .from('saves')
+         .select('*', { count: 'exact', head: true })
+         .eq('post_id', postId as string)
+         .eq('user_id', userId as string);
+      return count ?? 0;
+   }
 
    await page.goto('/');
    await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
@@ -53,7 +42,7 @@ test('save and unsave a post', async ({ page }) => {
 
    await expect(postCard.getByLabel('Bookmark')).toBeVisible({ timeout: 15000 });
    await postCard.getByLabel('Bookmark').click();
-   await page.waitForLoadState('networkidle');
+   await expect.poll(saveRowCount, { timeout: 5000 }).toBe(1);
 
    await page.goto('/profile/e2euser1');
    await page.getByRole('button', { name: 'Saved' }).click();
@@ -67,7 +56,7 @@ test('save and unsave a post', async ({ page }) => {
       .filter({ hasText: TEST_CAPTION })
       .last();
    await postCardAgain.getByLabel('Bookmark').click();
-   await page.waitForLoadState('networkidle');
+   await expect.poll(saveRowCount, { timeout: 5000 }).toBe(0);
 
    await page.goto('/profile/e2euser1');
    await page.getByRole('button', { name: 'Saved' }).click();

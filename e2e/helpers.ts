@@ -1,6 +1,11 @@
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../src/types/database';
+
+type ServiceClient = ReturnType<typeof createClient<Database>>;
+
+export const USER_1_EMAIL = 'e2e-user-1@example.com';
+export const USER_2_EMAIL = 'e2e-user-2@example.com';
 
 export function makeServiceClient() {
    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -11,6 +16,53 @@ export function makeServiceClient() {
    }
 
    return createClient<Database>(url, key);
+}
+
+export async function getUserId(supabase: ServiceClient, email: string) {
+   const { data } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
+   return data.users.find(u => u.email === email)?.id ?? null;
+}
+
+export async function deleteTestPostsByCaption(captionPrefix: string, email = USER_1_EMAIL) {
+   const supabase = makeServiceClient();
+   const userId = await getUserId(supabase, email);
+   if (!userId) return;
+   await supabase.from('posts').delete().eq('user_id', userId).like('caption', `${captionPrefix}%`);
+}
+
+export async function getPostIdByCaption(supabase: ServiceClient, caption: string) {
+   const { data } = await supabase.from('posts').select('id').eq('caption', caption).maybeSingle();
+   return data?.id ?? null;
+}
+
+export async function createPostViaUI(page: Page, caption: string) {
+   await page.goto('/');
+   await page.getByRole('button', { name: 'Create' }).click();
+   await page.getByRole('button', { name: 'Post', exact: true }).click();
+
+   const imageBuffer = await createTestImageBuffer(page);
+   await page.locator('input[type="file"]').setInputFiles({
+      name: 'test-image.png',
+      mimeType: 'image/png',
+      buffer: imageBuffer,
+   });
+
+   const modal = page.getByRole('dialog');
+   await expect(modal.getByRole('button', { name: 'Next', exact: true })).toBeVisible({
+      timeout: 10000,
+   });
+   await modal.getByRole('button', { name: 'Next', exact: true }).click();
+   await expect(modal.getByRole('button', { name: 'Next', exact: true })).toBeVisible({
+      timeout: 10000,
+   });
+   await modal.getByRole('button', { name: 'Next', exact: true }).click();
+   await expect(modal.getByRole('button', { name: 'Share', exact: true })).toBeVisible({
+      timeout: 10000,
+   });
+   await modal.locator('textarea').fill(caption);
+   await modal.getByRole('button', { name: 'Share', exact: true }).click();
+   await expect(modal.getByText('Your post has been shared.')).toBeVisible({ timeout: 30000 });
+   await modal.getByRole('button', { name: 'Done' }).click();
 }
 
 export async function createTestImageBuffer(page: Page, fillStyle = '#4f46e5') {
