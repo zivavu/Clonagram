@@ -145,7 +145,14 @@ export const SearchProfilesSchema = z.object({
    excludeId: uuid.optional(),
 });
 
-export const MuxUploadSchema = z.object({ uploadId: uuid });
+// Mux upload IDs are base62-style alphanumeric strings, not UUIDs.
+export const MuxUploadSchema = z.object({
+   uploadId: z
+      .string()
+      .min(1)
+      .max(255)
+      .regex(/^[a-zA-Z0-9]+$/, 'Invalid Mux upload ID'),
+});
 export const NoteContentSchema = z.object({ content: z.string().min(1).max(100) });
 
 export const CreateNoteSchema = z.object({
