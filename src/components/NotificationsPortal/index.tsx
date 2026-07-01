@@ -9,6 +9,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { getNotifications } from '@/src/actions/notifications/getNotifications';
 import { markNotificationsRead } from '@/src/actions/notifications/markNotificationsRead';
 import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
+import Skeleton from '@/src/components/Skeleton';
 import UserAvatar from '@/src/components/UserAvatar';
 import { useAuthUser } from '@/src/hooks/useAuthUser';
 import { queryKeys } from '@/src/lib/queryKeys';
@@ -183,12 +184,31 @@ function NotificationRowComponent({
    return <div {...stylex.props(styles.notificationItem)}>{inner}</div>;
 }
 
+const SKELETON_ROW_COUNT = 6;
+
+function NotificationsSkeleton() {
+   return (
+      <>
+         {Array.from({ length: SKELETON_ROW_COUNT }).map((_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
+            <div key={i} {...stylex.props(styles.skeletonRow)}>
+               <Skeleton width={44} height={44} rounded />
+               <div {...stylex.props(styles.skeletonBody)}>
+                  <Skeleton width="70%" height={14} />
+                  <Skeleton width="40%" height={12} />
+               </div>
+            </div>
+         ))}
+      </>
+   );
+}
+
 export default function NotificationsPortal() {
    const { isOpen, close } = useNotificationsPortalStore();
    const { data: authUser } = useAuthUser();
    const [activeCategory, setActiveCategory] = useState<FilterCategory>('all');
 
-   const { data: notificationRows = [] } = useQuery({
+   const { data: notificationRows = [], isPending } = useQuery({
       queryKey: authUser?.id ? queryKeys.notifications(authUser.id) : ['notifications'],
       queryFn: () => getNotifications() as Promise<NotificationRow[]>,
       enabled: isOpen && !!authUser?.id,
@@ -252,20 +272,28 @@ export default function NotificationsPortal() {
                </div>
 
                <div {...stylex.props(styles.list)}>
-                  {timeGroups.map(group => (
-                     <div key={group.label}>
-                        <div {...stylex.props(styles.groupHeader)}>{group.label}</div>
-                        {group.items.map(n => (
-                           <NotificationRowComponent
-                              key={n.id}
-                              notification={n}
-                              authUsername={authUser?.username}
-                           />
+                  {isPending ? (
+                     <NotificationsSkeleton />
+                  ) : (
+                     <>
+                        {timeGroups.map(group => (
+                           <div key={group.label}>
+                              <div {...stylex.props(styles.groupHeader)}>{group.label}</div>
+                              {group.items.map(n => (
+                                 <NotificationRowComponent
+                                    key={n.id}
+                                    notification={n}
+                                    authUsername={authUser?.username}
+                                 />
+                              ))}
+                           </div>
                         ))}
-                     </div>
-                  ))}
-                  {filtered.length === 0 && (
-                     <div {...stylex.props(styles.emptyState)}>No notifications to show.</div>
+                        {filtered.length === 0 && (
+                           <div {...stylex.props(styles.emptyState)}>
+                              No notifications to show.
+                           </div>
+                        )}
+                     </>
                   )}
                </div>
             </Dialog.Content>

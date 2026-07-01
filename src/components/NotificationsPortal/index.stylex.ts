@@ -256,4 +256,16 @@ export const styles = stylex.create({
       fontSize: '14px',
       color: colors.textSecondary,
    },
+   skeletonRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      padding: '10px 24px',
+   },
+   skeletonBody: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+   },
 });
