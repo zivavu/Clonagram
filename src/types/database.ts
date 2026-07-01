@@ -1507,7 +1507,7 @@ export type Database = {
       get_following_posts: {
         Args: {
           before_cursor?: string
-          follower_id: string
+          p_follower_id: string
           page_size?: number
         }
         Returns: {
