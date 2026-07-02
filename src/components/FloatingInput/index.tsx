@@ -1,7 +1,7 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
-import { forwardRef, type InputHTMLAttributes, useId, useState } from 'react';
-import { styles } from './index.stylex';
+import { forwardRef, type InputHTMLAttributes, useEffect, useId, useRef, useState } from 'react';
+import { onAutoFillCancel, onAutoFillStart, styles } from './index.stylex';
 
 export interface FloatingInputProps
    extends Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
@@ -20,6 +20,33 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(function 
    const [isFocused, setIsFocused] = useState(false);
    const [hasValue, setHasValue] = useState(!!props.value || !!props.defaultValue);
 
+   const innerRef = useRef<HTMLInputElement | null>(null);
+   const setRefs = (node: HTMLInputElement | null) => {
+      innerRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+   };
+
+   // Chrome may autofill on page load *before* React attaches onAnimationStart,
+   // so the autofill animation event is missed. Poll the input for a short
+   // window after mount to catch a value that's already been filled.
+   useEffect(() => {
+      const el = innerRef.current;
+      if (!el) return;
+      const check = () => {
+         let autofilled = false;
+         try {
+            autofilled = el.matches(':-webkit-autofill') || el.matches(':autofill');
+         } catch {
+            // pseudo-class unsupported in this browser
+         }
+         if (autofilled || el.value.length > 0) setHasValue(true);
+      };
+      check();
+      const timer = setTimeout(check, 120);
+      return () => clearTimeout(timer);
+   }, []);
+
    const floated = isFocused || hasValue;
 
    return (
@@ -33,7 +60,7 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(function 
                borderState === 'success' && styles.inputSuccess,
             )}
             {...props}
-            ref={ref}
+            ref={setRefs}
             id={inputId}
             onFocus={e => {
                setIsFocused(true);
@@ -46,6 +73,14 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(function 
             onChange={e => {
                setHasValue(e.target.value.length > 0);
                onChange?.(e);
+            }}
+            onAnimationStart={e => {
+               if (e.animationName === onAutoFillStart) {
+                  setHasValue(true);
+               } else if (e.animationName === onAutoFillCancel) {
+                  setHasValue(e.currentTarget.value.length > 0);
+               }
+               props.onAnimationStart?.(e);
             }}
          />
          <label
