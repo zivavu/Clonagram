@@ -1,21 +1,13 @@
 import * as stylex from '@stylexjs/stylex';
 import { colors, radius } from '../../styles/tokens.stylex';
 
-// Browser autofill fires no input/change event, so the floating label can't
-// react to it via React state. The trick: attach a no-op CSS animation that
-// toggles on the :autofill pseudo-class. Chrome fires `animationstart` when the
-// pseudo-class flips, letting JS detect autofill. `display: block` is used
-// (not `opacity`) because Chrome optimizes away no-op animations that don't
-// change a rendered value, and would then never fire the event.
-// The two keyframes MUST have distinct bodies — StyleX dedupes identical
-// keyframes into one name, which would make them indistinguishable in JS.
-export const onAutoFillStart = stylex.keyframes({
+// Autofill fires no input/change event, so the floating label can't see it via
+// React state. This no-op animation runs when the input starts matching
+// :autofill, firing `animationstart` for JS to detect. `display` (not `opacity`)
+// because Chrome optimizes away animations that change nothing rendered.
+const onAutoFill = stylex.keyframes({
    from: { display: 'block' },
    to: { display: 'block' },
-});
-
-export const onAutoFillCancel = stylex.keyframes({
-   from: { display: 'block' },
 });
 
 export const styles = stylex.create({
@@ -38,11 +30,7 @@ export const styles = stylex.create({
       borderRadius: radius.lg,
       transition: 'border-color 0.15s ease',
       ':autofill': {
-         animationName: onAutoFillStart,
-         animationDuration: '0.001s',
-      },
-      ':not(:autofill)': {
-         animationName: onAutoFillCancel,
+         animationName: onAutoFill,
          animationDuration: '0.001s',
       },
    },

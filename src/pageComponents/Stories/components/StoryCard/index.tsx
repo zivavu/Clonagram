@@ -163,9 +163,11 @@ export default function StoryCard({
             style={{
                width: `${layout.mainWidth}px`,
                height: `${layout.mainHeight}px`,
-               transform: `translate(-50%, -50%) scale(${
-                  isCurrent ? 1 : layout.sideHeight / layout.mainHeight
-               })`,
+               transform: isCurrent
+                  ? 'translate(-50%, -50%) scale(1)'
+                  : `translate(-50%, -50%) scale(${layout.sideWidth / layout.mainWidth}, ${
+                       layout.sideHeight / layout.mainHeight
+                    })`,
             }}
          >
             {isVideo ? (

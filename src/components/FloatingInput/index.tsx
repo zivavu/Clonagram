@@ -1,7 +1,7 @@
 'use client';
 import * as stylex from '@stylexjs/stylex';
 import { forwardRef, type InputHTMLAttributes, useEffect, useId, useRef, useState } from 'react';
-import { onAutoFillCancel, onAutoFillStart, styles } from './index.stylex';
+import { styles } from './index.stylex';
 
 export interface FloatingInputProps
    extends Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
@@ -75,11 +75,8 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(function 
                onChange?.(e);
             }}
             onAnimationStart={e => {
-               if (e.animationName === onAutoFillStart) {
-                  setHasValue(true);
-               } else if (e.animationName === onAutoFillCancel) {
-                  setHasValue(e.currentTarget.value.length > 0);
-               }
+               // The only animation on this input is the autofill detector.
+               setHasValue(true);
                props.onAnimationStart?.(e);
             }}
          />

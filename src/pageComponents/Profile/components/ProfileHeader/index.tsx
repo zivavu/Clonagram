@@ -4,7 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { BiLink } from 'react-icons/bi';
-import { MdPersonAdd, MdVerified } from 'react-icons/md';
+import { MdVerified } from 'react-icons/md';
 import type { ProfileWithPosts } from '@/src/actions/profile/getUserProfileWithPosts';
 import FollowButton from '@/src/components/FollowButton';
 import NoteBubble from '@/src/components/NoteBubble';
@@ -174,13 +174,6 @@ export default function ProfileHeader({
                      variant="profile"
                   />
                   <MessageButton targetUserId={userProfile.id} />
-                  <button
-                     type="button"
-                     {...stylex.props(styles.button, styles.buttonIcon)}
-                     style={{ width: 'fit-content' }}
-                  >
-                     <MdPersonAdd size={16} />
-                  </button>
                </>
             )}
          </div>

@@ -25,6 +25,7 @@ When importing tokens(colors, radius) from `tokens.stylex.ts`, use relative impo
 <!-- BEGIN:package-manager-rules -->
 
 Use bun as a the package manager and code runner, exclusively.
+Also use bunx instead of npx.
 
 <!-- END:package-manager-rules -->
 

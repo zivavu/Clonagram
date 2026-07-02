@@ -61,6 +61,7 @@ export const styles = stylex.create({
       flexShrink: 0,
       overflow: 'hidden',
       cursor: 'pointer',
+      transform: 'translateZ(0)',
       transition:
          'width 380ms cubic-bezier(0.4, 0, 0.2, 1), height 380ms cubic-bezier(0.4, 0, 0.2, 1)',
    },
