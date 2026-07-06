@@ -1,9 +1,9 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MdGridView } from 'react-icons/md';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '@/src/lib/supabase/server';
+import { AlsoFromZetaPopover } from './AlsoFromZetaPopover';
 import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 import { SettingsPopoverButton } from './SettingsPopover';
@@ -42,10 +42,7 @@ export default async function MainNavbar() {
                hideAiContent={profile?.hide_ai_content ?? false}
                isAnonymous={isAnonymous}
             />
-            <button aria-label="Other apps from Zeta" {...stylex.props(styles.navItem)}>
-               <MdGridView size={28} />
-               <span {...stylex.props(styles.navItemLabel)}>Also from Zeta</span>
-            </button>
+            <AlsoFromZetaPopover mainSidebarStyles={styles} />
          </div>
       </div>
    );
