@@ -70,11 +70,12 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
             close();
          },
       },
-      { label: 'Share to...', action: () => {} },
       {
          label: 'Copy link',
          action: () => {
             navigator.clipboard.writeText(window.location.href);
+            close();
+            toast('Link copied to clipboard.');
          },
       },
       {
