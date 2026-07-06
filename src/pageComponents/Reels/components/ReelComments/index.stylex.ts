@@ -73,6 +73,16 @@ export const styles = stylex.create({
       border: 'none',
       flexShrink: 0,
    },
+   emptyState: {
+      flex: 1,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+      fontSize: '14px',
+      color: colors.textSecondary,
+      padding: spacing.md,
+   },
    commentsDisabledText: {
       padding: spacing.md,
       borderTopWidth: '1px',

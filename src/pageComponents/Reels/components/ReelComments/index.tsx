@@ -51,20 +51,24 @@ export default function ReelComments({ reel, onClose }: ReelCommentsProps) {
             </button>
          </div>
          <div {...stylex.props(styles.body)}>
-            {isLoadingComments
-               ? ['a', 'b', 'c'].map(k => <CommentSkeleton key={k} />)
-               : comments.map(comment => (
-                    <CommentItem
-                       key={comment.id}
-                       comment={comment}
-                       commentsKey={commentsKey}
-                       postOwnerId={reel.user.id}
-                       onReply={params => {
-                          setReplyingTo(params);
-                          setInputValue(`@${params.username} `);
-                       }}
-                    />
-                 ))}
+            {isLoadingComments ? (
+               ['a', 'b', 'c'].map(k => <CommentSkeleton key={k} />)
+            ) : comments.length === 0 ? (
+               <div {...stylex.props(styles.emptyState)}>Be the first one to comment.</div>
+            ) : (
+               comments.map(comment => (
+                  <CommentItem
+                     key={comment.id}
+                     comment={comment}
+                     commentsKey={commentsKey}
+                     postOwnerId={reel.user.id}
+                     onReply={params => {
+                        setReplyingTo(params);
+                        setInputValue(`@${params.username} `);
+                     }}
+                  />
+               ))
+            )}
          </div>
          {reel.comments_off ? (
             <div {...stylex.props(styles.commentsDisabledText)}>Comments are disabled</div>

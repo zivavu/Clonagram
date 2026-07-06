@@ -26,7 +26,7 @@ export default function DeleteConfirmModal({
    confirmLabel = 'Delete',
 }: DeleteConfirmModalProps) {
    return (
-      <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Root open={open} onOpenChange={onOpenChange} modal={false}>
          <Dialog.Portal>
             <DialogOverlay />
             <Dialog.Content {...stylex.props(styles.content)}>
