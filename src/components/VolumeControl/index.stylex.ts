@@ -116,6 +116,6 @@ export const styles = stylex.create({
       transform: 'rotate(-90deg)',
    },
    sliderBottom: {
-      transform: 'rotate(90deg)',
+      transform: 'rotate(-90deg)',
    },
 });
