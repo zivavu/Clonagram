@@ -66,7 +66,7 @@ export default function Reels() {
    }, [scrollByItem]);
 
    function handleScroll() {
-      setOpenComments(null);
+      if (!document.querySelector('[role="dialog"]')) setOpenComments(null);
       const scroller = scrollerRef.current;
       if (!scroller || !hasNextPage || isFetchingNextPage) return;
       const remaining = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;

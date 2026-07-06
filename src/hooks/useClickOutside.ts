@@ -9,7 +9,9 @@ export function useClickOutside<T extends HTMLElement>(
    useEffect(() => {
       if (!enabled) return;
       function handleMouseDown(e: MouseEvent) {
-         if (ref.current && !ref.current.contains(e.target as Node)) {
+         const target = e.target as Node;
+         if ((target as Element).closest?.('[role="dialog"]')) return;
+         if (ref.current && !ref.current.contains(target)) {
             onClose();
          }
       }
