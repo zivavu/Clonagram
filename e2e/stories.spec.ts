@@ -66,15 +66,15 @@ test('like and unlike a story as another user', async ({ browser }) => {
    const replyInput = page.locator('input[placeholder="Reply to e2euser1..."]');
    await expect(replyInput).toBeVisible({ timeout: 10000 });
 
-   const bottomBar = replyInput.locator('xpath=..');
-   const likeButton = bottomBar.locator('button').first();
+   const likeButton = page.getByRole('button', { name: 'Like story' });
+   const unlikeButton = page.getByRole('button', { name: 'Unlike story' });
 
-   await expect(likeButton.locator('svg[style*="color: red"]')).not.toBeVisible();
+   await expect(likeButton).toBeVisible();
    await likeButton.click();
-   await expect(likeButton.locator('svg[style*="color: red"]')).toBeVisible({ timeout: 5000 });
+   await expect(unlikeButton).toBeVisible({ timeout: 5000 });
 
-   await likeButton.click();
-   await expect(likeButton.locator('svg[style*="color: red"]')).not.toBeVisible({ timeout: 5000 });
+   await unlikeButton.click();
+   await expect(likeButton).toBeVisible({ timeout: 5000 });
 
    await ctx.close();
 });

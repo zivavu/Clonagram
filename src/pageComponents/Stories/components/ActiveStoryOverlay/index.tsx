@@ -222,7 +222,12 @@ export default function ActiveStoryOverlay({
                   placeholder={`Reply to ${story.username}...`}
                   {...stylex.props(styles.activeStoryReplyToInput, sharedStyles.placeholderPrimary)}
                />
-               <button type="button" onClick={onLike}>
+               <button
+                  type="button"
+                  onClick={onLike}
+                  aria-label={liked ? 'Unlike story' : 'Like story'}
+                  aria-pressed={liked}
+               >
                   {liked ? <MdFavorite size={26} color="red" /> : <MdFavoriteBorder size={26} />}
                </button>
                <button
