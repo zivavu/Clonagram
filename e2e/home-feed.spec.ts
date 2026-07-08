@@ -1,8 +1,16 @@
 import { expect, test } from '@playwright/test';
+import { createPostViaUI, deleteTestPostsByCaption } from './helpers';
 
-test('home feed loads after login', async ({ page }) => {
+const TEST_CAPTION = `e2e-feed-${Date.now()}`;
+
+test.afterAll(async () => {
+   await deleteTestPostsByCaption('e2e-feed-');
+});
+
+test('a newly created post appears in the home feed', async ({ page }) => {
+   await createPostViaUI(page, TEST_CAPTION);
+
    await page.goto('/');
-   await expect(page).toHaveURL('/');
-   // Logo label text is hidden on mobile; the Home nav item is present on every viewport.
    await expect(page.getByRole('link', { name: 'Home' })).toBeVisible({ timeout: 10000 });
+   await expect(page.getByText(TEST_CAPTION)).toBeVisible({ timeout: 15000 });
 });
