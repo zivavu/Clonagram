@@ -21,6 +21,7 @@ import { useTogglePostSave } from '@/src/hooks/useTogglePostSave';
 import { queryKeys } from '@/src/lib/queryKeys';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { useOwnerActionsModal, useSharePostModal } from '@/src/store/createModalStore';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { colors } from '../../../../../../../styles/tokens.stylex';
 import { styles } from './index.stylex';
@@ -182,7 +183,10 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
             {post.caption && (
                <>
                   <OtherUserUsername style={styles.bottomUsername} userProfile={post.user} />
-                  <span {...stylex.props(styles.description)}> {post.caption}</span>
+                  <span {...stylex.props(styles.description, sharedStyles.multilineText)}>
+                     {' '}
+                     {post.caption}
+                  </span>
                </>
             )}
          </div>

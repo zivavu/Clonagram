@@ -17,4 +17,7 @@ export const sharedStyles = stylex.create({
          color: colors.textPrimary,
       },
    },
+   multilineText: {
+      whiteSpace: 'pre-wrap',
+   },
 });

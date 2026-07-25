@@ -32,6 +32,7 @@ import { queryKeys } from '@/src/lib/queryKeys';
 import type { PostWithMedia } from '@/src/queries/posts';
 import { useOwnerActionsModal, useSharePostModal } from '@/src/store/createModalStore';
 import { usePostViewModal } from '@/src/store/usePostViewModalStore';
+import { sharedStyles } from '@/src/styles/shared.stylex';
 import { formatRelativeTimeLongUnit, formatRelativeTimeShortUnit } from '@/src/utils/time';
 import { styles } from './index.stylex';
 
@@ -219,7 +220,9 @@ export default function PostModalComments({ initialPost }: PostModalCommentsProp
                               style={styles.captionUsername}
                               userProfile={post.user}
                            />{' '}
-                           <span {...stylex.props(styles.captionText)}>{post.caption}</span>
+                           <span {...stylex.props(styles.captionText, sharedStyles.multilineText)}>
+                              {post.caption}
+                           </span>
                         </div>
                         <span {...stylex.props(styles.captionTime)}>
                            {post.created_at ? formatRelativeTimeShortUnit(post.created_at) : ''}
