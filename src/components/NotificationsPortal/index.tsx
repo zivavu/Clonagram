@@ -289,9 +289,7 @@ export default function NotificationsPortal() {
                            </div>
                         ))}
                         {filtered.length === 0 && (
-                           <div {...stylex.props(styles.emptyState)}>
-                              No notifications to show.
-                           </div>
+                           <div {...stylex.props(styles.emptyState)}>No notifications to show.</div>
                         )}
                      </>
                   )}
