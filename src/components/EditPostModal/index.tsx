@@ -66,6 +66,7 @@ export default function EditPostModal({ isOpen, postId, onClose }: EditPostModal
          }),
       onSuccess: () => {
          queryClient.invalidateQueries({ queryKey: postId ? queryKeys.post(postId) : ['post'] });
+         if (postId) queryClient.removeQueries({ queryKey: queryKeys.postForEdit(postId) });
          toast('Post updated.');
          handleClose();
       },
