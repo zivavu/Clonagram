@@ -5,10 +5,18 @@ import { createMuxAssetFromUrl } from './lib/muxAdmin';
 import { supabase } from './lib/supabaseAdmin';
 import type { SeedComment, SeedData, SeedProfile } from './types';
 
-function randomPastDate(maxDaysAgo: number) {
-   const d = new Date();
-   d.setDate(d.getDate() - Math.floor(Math.random() * maxDaysAgo));
-   return d.toISOString();
+// Stories are only surfaced while unexpired, so seeded ones must land in the
+// recent past. `expires_at` is derived from `created_at` rather than left to the
+// column default (`now() + 1 month`), which would otherwise be anchored to the
+// seed run instead of the story's own timestamp.
+const STORY_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+function randomStoryDates() {
+   const createdAt = new Date(Date.now() - Math.random() * 20 * 60 * 60 * 1000);
+   return {
+      createdAt: createdAt.toISOString(),
+      expiresAt: new Date(createdAt.getTime() + STORY_TTL_MS).toISOString(),
+   };
 }
 
 function randomPostDate() {
@@ -61,7 +69,14 @@ async function withRetry<T extends { error: unknown }>(
    throw new Error(`${label} failed after 5 attempts: ${lastMsg}`);
 }
 
-const END_DATE = new Date('2028-12-31T23:59:59Z').getTime();
+// Engagement lands somewhere between the post going up and the seed run, never
+// in the future — future timestamps would be filtered out of every feed.
+function randomEngagementDate(postDate: number) {
+   const now = Date.now();
+   if (postDate >= now) return new Date(now).toISOString();
+   return new Date(postDate + Math.random() * (now - postDate)).toISOString();
+}
+
 const postFirstImageId = new Map<string, string>();
 const postCreatedAt = new Map<string, string>();
 
@@ -233,7 +248,7 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
       await Promise.all([
          Promise.all(
             profile.stories.map(async (story, si) => {
-               const createdAt = randomPastDate(730);
+               const { createdAt, expiresAt } = randomStoryDates();
 
                await withRetry(
                   () =>
@@ -242,6 +257,7 @@ async function seedProfile(profile: SeedProfile, display: ProgressDisplay) {
                         user_id: profile.id,
                         is_ai: true,
                         created_at: createdAt,
+                        expires_at: expiresAt,
                      }),
                   'Story insert',
                );
@@ -443,7 +459,7 @@ async function main() {
          return {
             post_id: l.postId,
             user_id: l.profileId,
-            created_at: new Date(postDate + Math.random() * (END_DATE - postDate)).toISOString(),
+            created_at: randomEngagementDate(postDate),
          };
       }),
    );
@@ -455,7 +471,7 @@ async function main() {
          return {
             post_id: s.postId,
             user_id: s.profileId,
-            created_at: new Date(postDate + Math.random() * (END_DATE - postDate)).toISOString(),
+            created_at: randomEngagementDate(postDate),
          };
       }),
    );
@@ -467,7 +483,7 @@ async function main() {
          return {
             post_id: r.postId,
             user_id: r.profileId,
-            created_at: new Date(postDate + Math.random() * (END_DATE - postDate)).toISOString(),
+            created_at: randomEngagementDate(postDate),
          };
       }),
    );
