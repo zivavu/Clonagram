@@ -1,12 +1,12 @@
 'use client';
 
-import type MuxPlayerElement from '@mux/mux-player';
-import MuxPlayer from '@mux/mux-player-react';
 import * as stylex from '@stylexjs/stylex';
-import { useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { usePlayerStore } from '@/src/store/usePlayerStore';
 import VolumeControl from '../../VolumeControl';
 import { styles } from './index.stylex';
+
+const MuxPlayer = dynamic(() => import('@mux/mux-player-react'), { ssr: false });
 
 interface FeedVideoSlideProps {
    playbackId: string;
@@ -21,13 +21,11 @@ export default function FeedVideoSlide({
    onToggle,
    onOverlayClick,
 }: FeedVideoSlideProps) {
-   const muxPlayerRef = useRef<MuxPlayerElement>(null);
    const { volume } = usePlayerStore();
 
    return (
       <div {...stylex.props(styles.root)}>
          <MuxPlayer
-            ref={muxPlayerRef}
             disableCookies
             loop
             style={{
@@ -47,11 +45,9 @@ export default function FeedVideoSlide({
             onClick={onOverlayClick ?? onToggle}
             {...stylex.props(styles.toggleButton)}
          />
-         {
-            <div {...stylex.props(styles.controls)}>
-               <VolumeControl side="top" />
-            </div>
-         }
+         <div {...stylex.props(styles.controls)}>
+            <VolumeControl side="top" />
+         </div>
       </div>
    );
 }

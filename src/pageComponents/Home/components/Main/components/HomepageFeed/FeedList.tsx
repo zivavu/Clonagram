@@ -10,8 +10,6 @@ import { queryKeys } from '@/src/lib/queryKeys';
 import HomepagePost from './HomepagePost';
 import { styles } from './index.stylex';
 
-const FEED_STALE_TIME = 60_000;
-
 interface FeedListProps {
    variant: 'home' | 'following';
    initialPage: HomeFeedPage;
@@ -24,7 +22,6 @@ export default function FeedList({ variant, initialPage }: FeedListProps) {
       initialPageParam: null as string | null,
       getNextPageParam: lastPage => lastPage.nextCursor,
       initialData: { pages: [initialPage], pageParams: [null] },
-      staleTime: FEED_STALE_TIME,
    });
 
    const sentinelRef = useInfiniteScrollSentinel({
