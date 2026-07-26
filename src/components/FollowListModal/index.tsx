@@ -80,7 +80,7 @@ export default function FollowListModal() {
                         fullName={user.full_name}
                         rightElement={
                            authUser && authUser.id !== user.id ? (
-                              <div style={{ marginRight: '16px' }}>
+                              <div {...stylex.props(styles.followButtonWrapper)}>
                                  <FollowButton
                                     targetUserId={user.id}
                                     targetIsPrivate={user.is_private}

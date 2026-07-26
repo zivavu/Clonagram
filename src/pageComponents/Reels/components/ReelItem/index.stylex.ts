@@ -72,7 +72,7 @@ export const styles = stylex.create({
       fontWeight: 600,
    },
    verified: {
-      color: 'rgb(74, 144, 226)',
+      color: colors.accentText,
       display: 'flex',
    },
    followButton: {

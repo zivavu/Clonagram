@@ -2,6 +2,9 @@ import * as stylex from '@stylexjs/stylex';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
+   followButtonWrapper: {
+      marginRight: '16px',
+   },
    content: {
       position: 'fixed',
       top: '50%',

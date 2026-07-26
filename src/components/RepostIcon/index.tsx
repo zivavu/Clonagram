@@ -1,4 +1,6 @@
+import * as stylex from '@stylexjs/stylex';
 import { TbCheck, TbRepeat } from 'react-icons/tb';
+import { styles } from './index.stylex';
 
 interface RepostIconProps {
    size: number;
@@ -8,14 +10,14 @@ interface RepostIconProps {
 
 export default function RepostIcon({ size, isReposted, color }: RepostIconProps) {
    return (
-      <span style={{ position: 'relative', display: 'flex' }}>
+      <span {...stylex.props(styles.wrapper)}>
          <TbRepeat size={size} color={color} />
          {isReposted && (
             <TbCheck
                size={size / 2 - 2}
                strokeWidth={3.5}
                color={color}
-               style={{ position: 'absolute', inset: 0, margin: 'auto' }}
+               {...stylex.props(styles.checkOverlay)}
             />
          )}
       </span>

@@ -12,7 +12,6 @@ import { HiddenDialogDescription } from '@/src/components/HiddenDialogLabel';
 import { queryKeys } from '@/src/lib/queryKeys';
 import { useSearchPortalStore } from '@/src/store/createModalStore';
 import { sharedStyles } from '@/src/styles/shared.stylex';
-import { colors } from '../../styles/tokens.stylex';
 import { UserListItem, UserListSkeleton } from '../UserListItem';
 import { styles } from './index.stylex';
 
@@ -73,10 +72,7 @@ export default function SearchPortal() {
                <div {...stylex.props(styles.list)} role="listbox">
                   {!query && (
                      <div {...stylex.props(styles.emptyState)}>
-                        <IoSearchOutline
-                           size={32}
-                           style={{ color: colors.textSecondary, marginBottom: 8 }}
-                        />
+                        <IoSearchOutline size={32} {...stylex.props(styles.emptyStateIcon)} />
                         <span {...stylex.props(styles.emptyStateText)}>Search for users</span>
                      </div>
                   )}
@@ -94,23 +90,10 @@ export default function SearchPortal() {
                            avatarAlt={user.username}
                            username={user.username}
                            name={
-                              <span
-                                 style={{
-                                    display: 'flex',
-                                    fontWeight: 600,
-                                    alignItems: 'center',
-                                    gap: 4,
-                                 }}
-                              >
+                              <span {...stylex.props(styles.resultName)}>
                                  {user.username}
                                  {isVerified && (
-                                    <MdVerified
-                                       size={14}
-                                       style={{
-                                          color: 'rgb(0, 149, 246)',
-                                          flexShrink: 0,
-                                       }}
-                                    />
+                                    <MdVerified size={14} {...stylex.props(styles.verifiedBadge)} />
                                  )}
                               </span>
                            }

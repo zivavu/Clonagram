@@ -109,7 +109,7 @@ export default function NewNoteModal({ currentUser, ownNote, ownNoteId }: NewNot
                <HiddenDialogTitle>New note</HiddenDialogTitle>
 
                <div {...stylex.props(styles.header)}>
-                  <div style={{ width: 32 }} />
+                  <div {...stylex.props(styles.headerSpacer)} />
                   <span {...stylex.props(styles.title)}>New note</span>
                   <button
                      type="button"

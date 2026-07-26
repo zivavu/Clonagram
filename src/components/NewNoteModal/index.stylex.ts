@@ -2,6 +2,9 @@ import * as stylex from '@stylexjs/stylex';
 import { colors, radius, spacing } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
+   headerSpacer: {
+      width: '32px',
+   },
    content: {
       position: 'fixed',
       top: '50%',

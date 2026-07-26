@@ -2,6 +2,20 @@ import * as stylex from '@stylexjs/stylex';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
+   emptyStateIcon: {
+      color: colors.textSecondary,
+      marginBottom: '8px',
+   },
+   resultName: {
+      display: 'flex',
+      fontWeight: 600,
+      alignItems: 'center',
+      gap: '4px',
+   },
+   verifiedBadge: {
+      color: colors.accentText,
+      flexShrink: 0,
+   },
    overlay: {
       position: 'fixed',
       inset: 0,

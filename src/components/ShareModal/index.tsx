@@ -116,7 +116,7 @@ export default function ShareModal({ isOpen, id, onClose, onSend, description }:
             <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={handleClose}>
                <HiddenDialogDescription>{description}</HiddenDialogDescription>
                <div {...stylex.props(styles.header)}>
-                  <IoCloseOutline size={30} style={{ visibility: 'hidden' }} />
+                  <IoCloseOutline size={30} {...stylex.props(styles.headerSpacerIcon)} />
                   <Dialog.Title {...stylex.props(styles.title)}>Share</Dialog.Title>
                   <Dialog.Close asChild>
                      <button {...stylex.props(styles.closeButton)} aria-label="Close">

@@ -79,7 +79,7 @@ export default function CreateStoryModal() {
                   requestClose();
                }}
             >
-               <input {...getInputProps()} style={{ display: 'none' }} />
+               <input {...getInputProps()} {...stylex.props(styles.hiddenInput)} />
 
                {step === 'upload' && (
                   <>
