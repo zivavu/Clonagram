@@ -1,5 +1,4 @@
-import * as stylex from '@stylexjs/stylex';
-import { FaChevronRight } from 'react-icons/fa6';
+import CarouselArrow from '@/src/components/CarouselArrow';
 import { styles } from '../../index.stylex';
 
 interface StoryNavigationButtonProps {
@@ -16,15 +15,11 @@ export default function StoryNavigationButton({
    isLeft = false,
 }: StoryNavigationButtonProps) {
    return (
-      <button
+      <CarouselArrow
+         direction={isLeft ? 'left' : 'right'}
          onClick={onClick}
-         {...stylex.props(styles.navBtn, isMoving && styles.navBtnHidden)}
-         style={{ left }}
-      >
-         <FaChevronRight
-            aria-label="Story navigation button"
-            {...stylex.props(styles.navIcon, isLeft && styles.navIconLeft)}
-         />
-      </button>
+         inset={false}
+         style={[styles.navBtn, styles.navBtnOffset(left), isMoving && styles.navBtnHidden]}
+      />
    );
 }

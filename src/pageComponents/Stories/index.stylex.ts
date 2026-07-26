@@ -104,33 +104,20 @@ export const styles = stylex.create({
       marginTop: 4,
    },
    navBtn: {
-      position: 'absolute',
-      top: '50%',
-      transform: 'translateY(-50%)',
       zIndex: 10,
-      display: 'flex',
-      padding: '0',
+      color: colors.textPrimary,
       transition: 'left 380ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease',
+      opacity: 0.4,
+      ':hover': { opacity: 1 },
       '@media (hover: none)': {
          display: 'none',
       },
    },
+   navBtnOffset: (left: string) => ({ left }),
    navBtnHidden: {
       opacity: 0,
       pointerEvents: 'none',
    },
-   navIcon: {
-      stroke: colors.textMuted,
-      fill: colors.textMuted,
-      strokeWidth: 0.5,
-      transition: 'all 0.2s ease-in-out',
-      ':hover': {
-         stroke: colors.textPrimary,
-         fill: colors.textPrimary,
-         scale: 1.05,
-      },
-   },
-   navIconLeft: { transform: 'rotate(180deg)' },
    activeStoryOverlay: {
       position: 'absolute',
       width: '100%',
