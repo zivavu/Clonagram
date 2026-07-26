@@ -1,27 +1,15 @@
 'use client';
 
-import * as Dialog from '@radix-ui/react-dialog';
-import { Separator } from '@radix-ui/react-separator';
-import * as stylex from '@stylexjs/stylex';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Fragment } from 'react/jsx-runtime';
-import { HiddenDialogDescription, HiddenDialogTitle } from '@/src/components/HiddenDialogLabel';
 import { deletePost } from '../../actions/post/deletePost';
 import { queryKeys } from '../../lib/queryKeys';
 import { getErrorMessage } from '../../lib/unwrap';
 import { useOwnerActionsModal } from '../../store/createModalStore';
+import ActionSheetModal, { type ActionSheetAction } from '../ActionSheetModal';
 import { toast } from '../AppToast';
 import DeleteConfirmModal from '../DeleteConfirmModal';
-import DialogOverlay from '../DialogOverlay';
 import EditPostModal from '../EditPostModal';
-import { styles } from './index.stylex';
-
-interface Action {
-   label: string;
-   buttonStyle?: React.HTMLAttributes<HTMLButtonElement>['style'];
-   action: () => Promise<void> | void;
-}
 
 interface OwnerActionsModalProps {
    onFinish?: () => void;
@@ -53,11 +41,11 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
       }
    }
 
-   const actions: Action[] = [
+   const actions: ActionSheetAction[] = [
       {
          label: 'Delete',
-         buttonStyle: { color: 'rgb(237, 73, 86)', fontWeight: 700 },
-         action: () => {
+         isDanger: true,
+         onSelect: () => {
             setDeletingPostId(postId);
             close();
             setShowConfirm(true);
@@ -65,14 +53,14 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
       },
       {
          label: 'Edit',
-         action: () => {
+         onSelect: () => {
             setEditingPostId(postId);
             close();
          },
       },
       {
          label: 'Copy link',
-         action: () => {
+         onSelect: () => {
             navigator.clipboard.writeText(window.location.href);
             close();
             toast('Link copied to clipboard.');
@@ -80,46 +68,22 @@ export default function OwnerActionsModal({ onFinish }: OwnerActionsModalProps) 
       },
       {
          label: 'Cancel',
-         action: () => {
-            close();
-         },
+         onSelect: close,
       },
-   ] as const;
+   ];
 
    return (
       <>
-         <Dialog.Root open={isOpen} onOpenChange={close}>
-            <Dialog.Portal>
-               <DialogOverlay zIndex={50} />
-               <Dialog.Content {...stylex.props(styles.content)} onEscapeKeyDown={close}>
-                  <HiddenDialogTitle>Post Actions</HiddenDialogTitle>
-                  <HiddenDialogDescription>
-                     Select an action to perform on this post.
-                  </HiddenDialogDescription>
-                  {actions.map((action, index) => (
-                     <Fragment key={action.label}>
-                        {index === 0 ? null : (
-                           <Separator
-                              orientation="horizontal"
-                              {...stylex.props(styles.separator)}
-                           />
-                        )}
-                        <button
-                           type="button"
-                           style={action.buttonStyle}
-                           disabled={isLoading}
-                           onClick={() => {
-                              action.action();
-                           }}
-                           {...stylex.props(styles.actionButton)}
-                        >
-                           {action.label}
-                        </button>
-                     </Fragment>
-                  ))}
-               </Dialog.Content>
-            </Dialog.Portal>
-         </Dialog.Root>
+         <ActionSheetModal
+            open={isOpen}
+            onOpenChange={close}
+            title="Post Actions"
+            description="Select an action to perform on this post."
+            showHeader={false}
+            isLoading={isLoading}
+            overlayZIndex={50}
+            actions={actions}
+         />
 
          <DeleteConfirmModal
             open={showConfirm}

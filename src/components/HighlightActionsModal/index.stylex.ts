@@ -2,20 +2,6 @@ import * as stylex from '@stylexjs/stylex';
 import { colors, radius } from '../../styles/tokens.stylex';
 
 export const styles = stylex.create({
-   content: {
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      backgroundColor: colors.bgBubble,
-      borderRadius: radius.xl,
-      width: 'min(400px, 90dvw)',
-      display: 'flex',
-      flexDirection: 'column',
-      zIndex: 51,
-      outline: 'none',
-      overflow: 'hidden',
-   },
    header: {
       display: 'flex',
       alignItems: 'center',
@@ -42,8 +28,6 @@ export const styles = stylex.create({
       width: '36px',
       height: '36px',
       borderRadius: radius.full,
-      background: 'none',
-      border: 'none',
       color: colors.textPrimary,
       ':hover': {
          backgroundColor: colors.buttonHover,
@@ -54,29 +38,6 @@ export const styles = stylex.create({
    },
    backButton: {
       left: '8px',
-   },
-   actionButton: {
-      width: '100%',
-      padding: '16px',
-      background: 'none',
-      border: 'none',
-      fontSize: '14px',
-      color: colors.textPrimary,
-      textAlign: 'center',
-      ':hover': {
-         backgroundColor: colors.buttonHover,
-      },
-      ':disabled': {
-         color: colors.textMuted,
-      },
-   },
-   dangerButton: {
-      color: colors.danger,
-   },
-   separator: {
-      height: '1px',
-      backgroundColor: colors.border,
-      flexShrink: 0,
    },
    renameBody: {
       padding: '16px',

@@ -12,6 +12,7 @@ import {
    useEditHighlightStoriesModalStore,
    useHighlightActionsModalStore,
 } from '@/src/store/createModalStore';
+import { styles as actionSheetStyles } from '../ActionSheetModal/index.stylex';
 import DialogOverlay from '../DialogOverlay';
 import { styles } from './index.stylex';
 
@@ -72,7 +73,7 @@ export default function HighlightActionsModal() {
       <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
          <Dialog.Portal>
             <DialogOverlay />
-            <Dialog.Content {...stylex.props(styles.content)}>
+            <Dialog.Content {...stylex.props(actionSheetStyles.content)}>
                <HiddenDialogDescription>Manage this highlight</HiddenDialogDescription>
                {step === 'list' && (
                   <>
@@ -91,23 +92,26 @@ export default function HighlightActionsModal() {
                      <button
                         type="button"
                         onClick={handleEditStories}
-                        {...stylex.props(styles.actionButton)}
+                        {...stylex.props(actionSheetStyles.actionButton)}
                      >
                         Edit stories
                      </button>
-                     <div {...stylex.props(styles.separator)} />
+                     <div {...stylex.props(actionSheetStyles.separator)} />
                      <button
                         type="button"
                         onClick={handleOpenRename}
-                        {...stylex.props(styles.actionButton)}
+                        {...stylex.props(actionSheetStyles.actionButton)}
                      >
                         Rename
                      </button>
-                     <div {...stylex.props(styles.separator)} />
+                     <div {...stylex.props(actionSheetStyles.separator)} />
                      <button
                         type="button"
                         onClick={() => setStep('confirm-delete')}
-                        {...stylex.props(styles.actionButton, styles.dangerButton)}
+                        {...stylex.props(
+                           actionSheetStyles.actionButton,
+                           actionSheetStyles.dangerButton,
+                        )}
                      >
                         Delete
                      </button>
@@ -145,12 +149,12 @@ export default function HighlightActionsModal() {
                            {...stylex.props(styles.input)}
                         />
                      </div>
-                     <div {...stylex.props(styles.separator)} />
+                     <div {...stylex.props(actionSheetStyles.separator)} />
                      <button
                         type="button"
                         onClick={handleSaveRename}
                         disabled={!title.trim() || loading}
-                        {...stylex.props(styles.actionButton)}
+                        {...stylex.props(actionSheetStyles.actionButton)}
                      >
                         Save
                      </button>
@@ -168,20 +172,23 @@ export default function HighlightActionsModal() {
                            anymore.
                         </Dialog.Description>
                      </div>
-                     <div {...stylex.props(styles.separator)} />
+                     <div {...stylex.props(actionSheetStyles.separator)} />
                      <button
                         type="button"
                         onClick={handleDelete}
                         disabled={loading}
-                        {...stylex.props(styles.actionButton, styles.dangerButton)}
+                        {...stylex.props(
+                           actionSheetStyles.actionButton,
+                           actionSheetStyles.dangerButton,
+                        )}
                      >
                         Delete
                      </button>
-                     <div {...stylex.props(styles.separator)} />
+                     <div {...stylex.props(actionSheetStyles.separator)} />
                      <button
                         type="button"
                         onClick={handleClose}
-                        {...stylex.props(styles.actionButton)}
+                        {...stylex.props(actionSheetStyles.actionButton)}
                      >
                         Cancel
                      </button>

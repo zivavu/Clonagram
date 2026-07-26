@@ -1,10 +1,6 @@
 'use client';
 
-import * as Dialog from '@radix-ui/react-dialog';
-import { Separator } from '@radix-ui/react-separator';
-import * as stylex from '@stylexjs/stylex';
-import DialogOverlay from '../DialogOverlay';
-import { styles } from './index.stylex';
+import ActionSheetModal from '../ActionSheetModal';
 
 interface DeleteConfirmModalProps {
    open: boolean;
@@ -26,36 +22,17 @@ export default function DeleteConfirmModal({
    confirmLabel = 'Delete',
 }: DeleteConfirmModalProps) {
    return (
-      <Dialog.Root open={open} onOpenChange={onOpenChange} modal={false}>
-         <Dialog.Portal>
-            <DialogOverlay />
-            <Dialog.Content {...stylex.props(styles.content)}>
-               <div {...stylex.props(styles.header)}>
-                  <Dialog.Title {...stylex.props(styles.title)}>{title}</Dialog.Title>
-                  <Dialog.Description {...stylex.props(styles.description)}>
-                     {description}
-                  </Dialog.Description>
-               </div>
-               <Separator orientation="horizontal" {...stylex.props(styles.separator)} />
-               <button
-                  type="button"
-                  {...stylex.props(styles.actionButton, styles.dangerButton)}
-                  disabled={isLoading}
-                  onClick={onConfirm}
-               >
-                  {confirmLabel}
-               </button>
-               <Separator orientation="horizontal" {...stylex.props(styles.separator)} />
-               <button
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => onOpenChange(false)}
-                  {...stylex.props(styles.actionButton)}
-               >
-                  Cancel
-               </button>
-            </Dialog.Content>
-         </Dialog.Portal>
-      </Dialog.Root>
+      <ActionSheetModal
+         open={open}
+         onOpenChange={onOpenChange}
+         title={title}
+         description={description}
+         isLoading={isLoading}
+         isModal={false}
+         actions={[
+            { label: confirmLabel, onSelect: onConfirm, isDanger: true },
+            { label: 'Cancel', onSelect: () => onOpenChange(false) },
+         ]}
+      />
    );
 }
