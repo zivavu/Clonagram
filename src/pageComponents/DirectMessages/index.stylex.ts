@@ -138,9 +138,10 @@ export const styles = stylex.create({
       gap: '12px',
    },
    chatTopBarActionIcon: {
+      display: 'flex',
+      alignItems: 'center',
       fontSize: '1.7rem',
       color: colors.textPrimary,
-      cursor: 'pointer',
    },
    backButton: {
       display: 'none',

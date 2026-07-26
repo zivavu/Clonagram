@@ -8,7 +8,7 @@ type SaveablePost = Pick<PostWithMedia, 'id' | 'saves'>;
 
 export function useTogglePostSave(post: SaveablePost) {
    const { data: authUser } = useAuthUser();
-   const isSaved = post.saves?.some(s => s.user_id === authUser?.id);
+   const isSaved = post.saves.some(s => s.user_id === authUser?.id);
 
    return useOptimisticToggle<PostWithMedia>({
       queryKey: queryKeys.post(post.id),
@@ -18,8 +18,8 @@ export function useTogglePostSave(post: SaveablePost) {
          return {
             ...old,
             saves: isSaved
-               ? (old.saves ?? []).filter(s => s.user_id !== authUser.id)
-               : [...(old.saves ?? []), { user_id: authUser.id }],
+               ? old.saves.filter(s => s.user_id !== authUser.id)
+               : [...old.saves, { user_id: authUser.id }],
          };
       },
       extraInvalidations: [[...queryKeys.reels()]],

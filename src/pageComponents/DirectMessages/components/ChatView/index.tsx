@@ -33,6 +33,7 @@ import { styles } from '../../index.stylex';
 import CallEventMessage from './CallEventMessage';
 import { useChatScrollAndRead } from './hooks/useChatScrollAndRead';
 import { useMessageWindow } from './hooks/useMessageWindow';
+import { useObjectUrls } from './hooks/useObjectUrls';
 import { useRealtimeChat } from './hooks/useRealtimeChat';
 import ImageMessage from './ImageMessage';
 import ImageViewModal from './ImageViewModal';
@@ -71,6 +72,7 @@ export default function ChatView({
    const [viewingImage, setViewingImage] = useState<string | null>(null);
    const [isRecording, setIsRecording] = useState(false);
    const send = useSendMessage(conversationId);
+   const createObjectUrl = useObjectUrls();
 
    const { getRootProps, isDragActive } = useDropzone({
       noClick: true,
@@ -120,6 +122,14 @@ export default function ChatView({
       initialConversation,
    });
 
+   const participants = conversation?.participants ?? [];
+   const authProfile = participants.find(p => p.user_id === authUserId)?.user;
+   const displayName = getConversationDisplayName(participants, authUserId, conversation?.title);
+   const avatars = getConversationAvatars(participants, authUserId);
+   const isGroup = isGroupConversation(participants);
+   const isRequest = folder === 'requests';
+   const otherParticipant = participants.find(p => p.user_id !== authUserId)?.user;
+
    function createOptimisticMessage(overrides: Partial<ConversationMessage>) {
       const id = `optimistic-${Date.now()}`;
       return {
@@ -147,14 +157,6 @@ export default function ChatView({
          ...overrides,
       } satisfies ConversationMessage;
    }
-
-   const participants = conversation?.participants ?? [];
-   const authProfile = participants.find(p => p.user_id === authUserId)?.user;
-   const displayName = getConversationDisplayName(participants, authUserId, conversation?.title);
-   const avatars = getConversationAvatars(participants, authUserId);
-   const isGroup = isGroupConversation(participants);
-   const isRequest = folder === 'requests';
-   const otherParticipant = participants.find(p => p.user_id !== authUserId)?.user;
 
    return (
       <div {...getRootProps()} {...stylex.props(styles.chatViewRoot)}>
@@ -199,10 +201,14 @@ export default function ChatView({
                >
                   <HiOutlineVideoCamera />
                </Link>
-               <IoInformationCircleOutline
-                  {...stylex.props(styles.chatTopBarActionIcon)}
+               <button
+                  type="button"
                   onClick={onInfoClick}
-               />
+                  aria-label="Conversation details"
+                  {...stylex.props(styles.chatTopBarActionIcon)}
+               >
+                  <IoInformationCircleOutline />
+               </button>
             </div>
          </div>
 
@@ -351,7 +357,7 @@ export default function ChatView({
             <VoiceRecorder
                onCancel={() => setIsRecording(false)}
                onSend={async (blob: Blob) => {
-                  const previewUrl = URL.createObjectURL(blob);
+                  const previewUrl = createObjectUrl(blob);
                   await send(
                      () => createOptimisticMessage({ audio_url: previewUrl }),
                      async () => {
@@ -367,7 +373,6 @@ export default function ChatView({
                      },
                      'Failed to send voice message',
                   );
-                  URL.revokeObjectURL(previewUrl);
                   setIsRecording(false);
                }}
             />
@@ -391,7 +396,7 @@ export default function ChatView({
                }}
                onSendImages={async (files: File[]) => {
                   for (const file of files) {
-                     const previewUrl = URL.createObjectURL(file);
+                     const previewUrl = createObjectUrl(file);
                      await send(
                         () => createOptimisticMessage({ media_url: previewUrl }),
                         async () => {
@@ -409,7 +414,6 @@ export default function ChatView({
                         },
                         'Failed to send image',
                      );
-                     URL.revokeObjectURL(previewUrl);
                   }
                }}
             />
