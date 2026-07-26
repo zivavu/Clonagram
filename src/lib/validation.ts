@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const uuid = z.string().uuid();
+const uuid = z.uuid();
 
 export const GetFollowsSchema = z.object({ userId: uuid });
 export const FollowUserSchema = z.object({ targetUserId: uuid });
@@ -10,11 +10,11 @@ export const SendMessageSchema = z.object({
 });
 export const SendImageSchema = z.object({
    conversationId: uuid,
-   mediaUrl: z.string().url().max(500),
+   mediaUrl: z.url().max(500),
 });
 export const SendStickerSchema = z.object({
    conversationId: uuid,
-   stickerUrl: z.string().url().max(500),
+   stickerUrl: z.url().max(500),
 });
 export const CreateCommentSchema = z.object({
    postId: uuid,
@@ -43,7 +43,7 @@ export const UpdateProfileSchema = z.object({
       .max(30)
       .regex(/^[a-zA-Z0-9_.]+$/),
    bio: z.string().max(150),
-   website: z.string().url().max(100).nullable(),
+   website: z.url().max(100).nullable(),
    gender: z.string().max(20).nullable(),
 });
 
@@ -121,13 +121,13 @@ export const StoryMediaSchema = z.object({
 });
 
 export const UpdateAvatarSchema = z.object({
-   avatarUrl: z.string().url().nullable(),
+   avatarUrl: z.url().nullable(),
 });
 
-export const SendPasswordResetSchema = z.object({ email: z.string().email() });
+export const SendPasswordResetSchema = z.object({ email: z.email() });
 export const ImageAltTextSchema = z.object({
    imageId: uuid,
-   imageUrl: z.string().url(),
+   imageUrl: z.url(),
 });
 
 export const UserIdSchema = z.object({ userId: uuid });
@@ -178,7 +178,7 @@ export const ShareStorySchema = z.object({
    message: z.string().min(1).max(2000).optional(),
 });
 
-export function validate<T>(schema: z.ZodSchema<T>, input: unknown): T {
+export function validate<T>(schema: z.ZodType<T>, input: unknown): T {
    const result = schema.safeParse(input);
    if (!result.success) {
       const issues = result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join(', ');
