@@ -10,6 +10,7 @@ import { RiLoader4Line, RiMenuFill, RiRobot2Line } from 'react-icons/ri';
 import { TbLogout, TbTrash } from 'react-icons/tb';
 import { deleteAccount } from '@/src/actions/auth/deleteAccount';
 import { toggleHideAiContent } from '@/src/actions/profile/toggleHideAiContent';
+import { queryKeys } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { getErrorMessage } from '@/src/lib/unwrap';
 import { useSettingsPopoverStore } from '@/src/store/createModalStore';
@@ -48,6 +49,14 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
       setIsTogglingHideAi(true);
       try {
          await toggleHideAiContent(next);
+         // The setting is applied server-side by every content query, so the
+         // whole client cache is stale. revalidatePath in the action only clears
+         // Next's cache — React Query keeps serving its own. Refresh the auth
+         // profile first, since queries keyed on hide_ai_content rebuild off it.
+         await queryClient.invalidateQueries({ queryKey: queryKeys.authUser() });
+         await queryClient.invalidateQueries({
+            predicate: query => query.queryKey[0] !== 'authUser',
+         });
       } catch (error) {
          setOptimisticHideAi(hideAiContent);
          setIsTogglingHideAi(false);
