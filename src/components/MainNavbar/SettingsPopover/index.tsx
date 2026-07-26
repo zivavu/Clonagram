@@ -49,10 +49,6 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
       setIsTogglingHideAi(true);
       try {
          await toggleHideAiContent(next);
-         // The setting is applied server-side by every content query, so the
-         // whole client cache is stale. revalidatePath in the action only clears
-         // Next's cache — React Query keeps serving its own. Refresh the auth
-         // profile first, since queries keyed on hide_ai_content rebuild off it.
          await queryClient.invalidateQueries({ queryKey: queryKeys.authUser() });
          await queryClient.invalidateQueries({
             predicate: query => query.queryKey[0] !== 'authUser',

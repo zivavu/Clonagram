@@ -5,10 +5,6 @@ import { createMuxAssetFromUrl } from './lib/muxAdmin';
 import { supabase } from './lib/supabaseAdmin';
 import type { SeedComment, SeedData, SeedProfile } from './types';
 
-// Stories are only surfaced while unexpired, so seeded ones must land in the
-// recent past. `expires_at` is derived from `created_at` rather than left to the
-// column default (`now() + 1 month`), which would otherwise be anchored to the
-// seed run instead of the story's own timestamp.
 const STORY_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 function randomStoryDates() {
@@ -69,8 +65,6 @@ async function withRetry<T extends { error: unknown }>(
    throw new Error(`${label} failed after 5 attempts: ${lastMsg}`);
 }
 
-// Engagement lands somewhere between the post going up and the seed run, never
-// in the future — future timestamps would be filtered out of every feed.
 function randomEngagementDate(postDate: number) {
    const now = Date.now();
    if (postDate >= now) return new Date(now).toISOString();

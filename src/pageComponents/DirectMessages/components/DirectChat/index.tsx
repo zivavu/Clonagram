@@ -1,7 +1,7 @@
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { createServerClient } from '@/src/lib/supabase/server';
 import { getConversationQuery } from '@/src/queries/conversations';
-import { getMessagesQuery } from '@/src/queries/messages';
+import { fetchMessageWindow } from '@/src/queries/messages';
 import { isGroupConversation } from '@/src/utils/conversations';
 import ChatLayout from '../ChatLayout';
 import EmptyState from '../EmptyState';
@@ -22,9 +22,9 @@ export default async function DirectChat({
    const profile = await getAuthProfile();
    const authUserId = profile?.id ?? '';
    const supabase = await createServerClient();
-   const [{ data: conversation }, { data: messages }] = await Promise.all([
+   const [{ data: conversation }, messages] = await Promise.all([
       getConversationQuery(supabase, chatId),
-      getMessagesQuery(supabase, chatId),
+      fetchMessageWindow(supabase, chatId),
    ]);
 
    if (!conversation) {
@@ -37,7 +37,7 @@ export default async function DirectChat({
          authUserId={authUserId}
          folder={folder}
          currentFolderHref={currentFolderHref}
-         initialMessages={messages ?? []}
+         initialMessages={messages}
          initialConversation={conversation}
          isGroup={isGroupConversation(conversation.participants ?? [])}
       />

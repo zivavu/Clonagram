@@ -20,10 +20,6 @@ test('upcoming story media is fetched before the viewer clicks to it', async ({ 
    const userId = await getUserId(supabase, USER_1_EMAIL);
    if (!userId) throw new Error(`Missing e2e user ${USER_1_EMAIL}`);
 
-   // Three media on one entry, so the viewer opens on the first and the next
-   // two are the ones the prefetch should warm. The images have to live on the
-   // Supabase host — the CSP blocks other image origins, so a prefetch of an
-   // outside URL would fail and prove nothing.
    await page.goto('/');
    for (const [i, color] of ['#111827', '#7c3aed', '#059669'].entries()) {
       const buffer = await createTestImageBuffer(page, color);
@@ -50,8 +46,6 @@ test('upcoming story media is fetched before the viewer clicks to it', async ({ 
       if (imageError) throw imageError;
    }
 
-   // Read back in the order the viewer groups them, so extra stories left by
-   // another spec cannot shift which media count as "upcoming".
    const { data: activeStories, error: readError } = await supabase
       .from('stories')
       .select('id, created_at, story_images(url)')
@@ -73,10 +67,6 @@ test('upcoming story media is fetched before the viewer clicks to it', async ({ 
       timeout: 10000,
    });
 
-   // Both lookahead media should be on the wire without a single click. The
-   // window has to stay under PICTURE_DURATION (6s) — past that the viewer
-   // auto-advances and would request them on its own, which would pass whether
-   // or not anything was prefetched.
    await expect.poll(() => requested.has(orderedUrls[1]), { timeout: 3000 }).toBe(true);
    expect(requested.has(orderedUrls[2])).toBe(true);
 });

@@ -1,7 +1,13 @@
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/src/types/database';
 
-export function getMessagesQuery(supabase: SupabaseClient<Database>, conversationId: string) {
+export const MESSAGES_PAGE_SIZE = 50;
+
+export function getMessagesQuery(
+   supabase: SupabaseClient<Database>,
+   conversationId: string,
+   limit: number = MESSAGES_PAGE_SIZE,
+) {
    return supabase
       .from('messages')
       .select(
@@ -17,8 +23,20 @@ export function getMessagesQuery(supabase: SupabaseClient<Database>, conversatio
       )
       .eq('conversation_id', conversationId)
       .eq('is_deleted', false)
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
+      .limit(limit);
 }
 
 export type ConversationMessages = QueryData<ReturnType<typeof getMessagesQuery>>;
 export type ConversationMessage = ConversationMessages[number];
+
+export async function fetchMessageWindow(
+   supabase: SupabaseClient<Database>,
+   conversationId: string,
+   limit: number = MESSAGES_PAGE_SIZE,
+) {
+   const { data, error } = await getMessagesQuery(supabase, conversationId, limit);
+   if (error) throw error;
+   return (data ?? []).reverse();
+}

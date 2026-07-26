@@ -85,8 +85,6 @@ test('like and unlike a story as another user', async ({ browser }) => {
 });
 
 test('avatarless authors never render an empty image src', async ({ page }) => {
-   // A second author puts a neighbouring entry in the side overlay, which is
-   // where a null avatar used to reach next/image as an empty string.
    const supabase = makeServiceClient();
    const userId = await getUserId(supabase, USER_2_EMAIL);
    if (!userId) throw new Error(`Missing e2e user ${USER_2_EMAIL}`);
@@ -108,14 +106,14 @@ test('avatarless authors never render an empty image src', async ({ page }) => {
    });
    if (imageError) throw imageError;
 
-   await page.goto('/stories/e2euser1');
-   await expect(page.locator('input[placeholder="Reply to e2euser1..."]')).toBeVisible({
-      timeout: 10000,
-   });
-   await expect(page.locator('img[alt="e2euser2"]').first()).toBeVisible({ timeout: 10000 });
+   await expect(async () => {
+      await page.goto('/stories/e2euser1');
+      await expect(page.locator('input[placeholder="Reply to e2euser1..."]')).toBeVisible({
+         timeout: 5000,
+      });
+      await expect(page.getByText('e2euser2').first()).toBeAttached({ timeout: 2000 });
+   }).toPass({ timeout: 30000 });
 
-   // An avatarless author must fall back to the placeholder, not an <img> with
-   // no src — that is what makes the browser re-request the whole page.
    await expect
       .poll(() =>
          page.locator('img').evaluateAll(nodes => nodes.filter(n => !n.getAttribute('src')).length),

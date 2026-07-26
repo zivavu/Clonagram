@@ -16,15 +16,12 @@ import { sendVoiceMessage } from '@/src/actions/dm/sendVoiceMessage';
 import { toast } from '@/src/components/AppToast';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
+import { useInfiniteScrollSentinel } from '@/src/hooks/useInfiniteScrollSentinel';
 import { useSendMessage } from '@/src/hooks/useSendMessage';
 import { queryKeys, staleTime } from '@/src/lib/queryKeys';
 import { supabase } from '@/src/lib/supabase/client';
 import { type ConversationDetail, getConversationQuery } from '@/src/queries/conversations';
-import {
-   type ConversationMessage,
-   type ConversationMessages,
-   getMessagesQuery,
-} from '@/src/queries/messages';
+import type { ConversationMessage, ConversationMessages } from '@/src/queries/messages';
 import { compressMessageImage } from '@/src/utils/compressMessageImage';
 import {
    getConversationAvatars,
@@ -35,6 +32,7 @@ import { DAY_MS, formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
 import CallEventMessage from './CallEventMessage';
 import { useChatScrollAndRead } from './hooks/useChatScrollAndRead';
+import { useMessageWindow } from './hooks/useMessageWindow';
 import { useRealtimeChat } from './hooks/useRealtimeChat';
 import ImageMessage from './ImageMessage';
 import ImageViewModal from './ImageViewModal';
@@ -70,7 +68,6 @@ export default function ChatView({
    const messagesEndRef = useRef<HTMLDivElement>(null);
    const messagesContainerRef = useRef<HTMLDivElement>(null);
    const inputRef = useRef<MessageInputHandle>(null);
-   const messagesKey = queryKeys.messages(conversationId);
    const [viewingImage, setViewingImage] = useState<string | null>(null);
    const [isRecording, setIsRecording] = useState(false);
    const send = useSendMessage(conversationId);
@@ -88,15 +85,17 @@ export default function ChatView({
       },
    });
 
-   const { data: messages = initialMessages } = useQuery({
-      queryKey: messagesKey,
-      queryFn: async () => {
-         const { data, error } = await getMessagesQuery(supabase, conversationId);
-         if (error) throw error;
-         return data ?? [];
-      },
-      initialData: initialMessages,
-      staleTime: staleTime.always,
+   const { messages, loadOlderMessages, hasOlderMessages, isLoadingOlder } = useMessageWindow({
+      conversationId,
+      initialMessages,
+      containerRef: messagesContainerRef,
+   });
+
+   const olderMessagesSentinelRef = useInfiniteScrollSentinel({
+      hasNextPage: hasOlderMessages,
+      isFetchingNextPage: isLoadingOlder,
+      fetchNextPage: loadOlderMessages,
+      rootMargin: '300px 0px 0px 0px',
    });
 
    const { data: conversation = initialConversation } = useQuery({
@@ -215,7 +214,9 @@ export default function ChatView({
          )}
 
          <div ref={messagesContainerRef} {...stylex.props(styles.messagesContainer)}>
-            {!isGroup && otherParticipant && (
+            {hasOlderMessages && <div ref={olderMessagesSentinelRef} />}
+
+            {!isGroup && !hasOlderMessages && otherParticipant && (
                <div {...stylex.props(styles.chatProfileHeader)}>
                   <UserAvatar
                      src={otherParticipant.avatar_url}
