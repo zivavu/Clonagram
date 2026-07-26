@@ -10,7 +10,7 @@ export async function getSavedPosts() {
 
    if (!user) return [];
 
-   const hideAi = await getHideAiContent(supabase);
+   const hideAi = await getHideAiContent();
    const { data, error } = await savedPostsQuery(supabase, user.id, hideAi);
    throwIfError({ error }, 'Failed to get saved posts');
 

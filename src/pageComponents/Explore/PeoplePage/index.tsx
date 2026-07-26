@@ -6,7 +6,7 @@ import FollowButton from '@/src/components/FollowButton';
 import { UserListItem } from '@/src/components/UserListItem';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getRequestClient } from '@/src/lib/supabase/getCachedUser';
 import { type FollowState, getBatchFollowStatuses } from '@/src/queries/followStatus';
 import { getMutualFollowerSubtitles } from '@/src/queries/mutualFollowers';
 import { userProfilesQuery } from '@/src/queries/userProfiles';
@@ -14,8 +14,7 @@ import { styles } from './index.stylex';
 
 export default async function PeoplePage({ tab }: { tab: string | null }) {
    const isMore = tab === 'more';
-   const supabase = await createServerClient();
-   const profile = await getAuthProfile(supabase);
+   const [supabase, profile] = await Promise.all([getRequestClient(), getAuthProfile()]);
 
    const { data: users, error } = await userProfilesQuery(supabase, {
       limit: 30,

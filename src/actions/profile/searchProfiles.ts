@@ -12,7 +12,7 @@ export async function searchProfiles(options: {
 }) {
    const validated = validate(SearchProfilesSchema, options);
    const { supabase, user } = await getOptionalUser();
-   const hideAi = user ? await getHideAiContent(supabase) : false;
+   const hideAi = user ? await getHideAiContent() : false;
 
    let q = supabase
       .from('profiles')

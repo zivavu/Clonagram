@@ -8,7 +8,7 @@ export async function getNotifications() {
    const { supabase, user } = await getOptionalUser();
    if (!user) return [];
 
-   const hideAi = await getHideAiContent(supabase);
+   const hideAi = await getHideAiContent();
 
    let query = supabase
       .from('notifications')

@@ -25,7 +25,7 @@ export async function getExplorePosts(params: {
 }) {
    const { variant, cursor } = validate(CursorSchema, params);
    const { supabase, user } = await getOptionalUser();
-   const hideAi = user ? await getHideAiContent(supabase) : false;
+   const hideAi = user ? await getHideAiContent() : false;
 
    let query = supabase
       .from('posts')

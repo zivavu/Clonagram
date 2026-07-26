@@ -10,7 +10,7 @@ import { getOptionalUser } from '../getAuthUser';
 export async function getRepostedPosts(params: { userId: string }) {
    const { userId } = validate(UserIdSchema, params);
    const { supabase, user } = await getOptionalUser();
-   const hideAi = user ? await getHideAiContent(supabase) : false;
+   const hideAi = user ? await getHideAiContent() : false;
 
    let query = supabase
       .from('reposts')

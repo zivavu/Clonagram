@@ -8,18 +8,14 @@ import FollowButton from '@/src/components/FollowButton';
 import UserAvatar from '@/src/components/UserAvatar';
 import OtherUserUsername from '@/src/components/Username/OtherUserUsername';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { createServerClient } from '@/src/lib/supabase/server';
 import { styles } from './index.stylex';
 import LogoutButton from './LogoutButton';
 
 export default async function RightSidebar() {
-   const supabase = await createServerClient();
-   const profile = await getAuthProfile(supabase);
-
-   const suggestedUsers = await searchProfiles({
-      limit: 6,
-      excludeId: profile?.id,
-   });
+   const [profile, suggestedUsers] = await Promise.all([
+      getAuthProfile(),
+      searchProfiles({ limit: 6 }),
+   ]);
 
    const followStatuses = profile
       ? await getBatchFollowStatuses(suggestedUsers.map(u => u.id))

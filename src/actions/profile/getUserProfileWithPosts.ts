@@ -10,7 +10,7 @@ import { getAuthUser } from '../getAuthUser';
 export async function getUserProfileWithPosts(params: { username: string }) {
    const { username } = validate(UsernameParamSchema, params);
    const { supabase, user } = await getAuthUser();
-   const hideAi = await getHideAiContent(supabase);
+   const hideAi = await getHideAiContent();
 
    let query = supabase
       .from('profiles')

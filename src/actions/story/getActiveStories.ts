@@ -10,7 +10,7 @@ import { getOptionalUser } from '../getAuthUser';
 export async function getActiveStories() {
    const { supabase, user } = await getOptionalUser();
    const currentUserId = user?.id ?? null;
-   const hideAi = user ? await getHideAiContent(supabase) : false;
+   const hideAi = user ? await getHideAiContent() : false;
 
    const { data, error } = await activeStoriesQuery(supabase, hideAi);
 

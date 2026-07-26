@@ -16,7 +16,7 @@ export async function getUserHighlights(params: { userId: string }) {
    const { userId } = validate(UserIdSchema, params);
    const supabase = await createServerClient();
    const { data: authData } = await supabase.auth.getUser();
-   const hideAi = authData.user ? await getHideAiContent(supabase) : false;
+   const hideAi = authData.user ? await getHideAiContent() : false;
 
    let query = supabase
       .from('story_highlights')

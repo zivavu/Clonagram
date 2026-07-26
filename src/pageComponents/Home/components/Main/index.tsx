@@ -1,21 +1,17 @@
 import * as stylex from '@stylexjs/stylex';
 import { getActiveStories } from '@/src/actions/story/getActiveStories';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getCachedUser } from '@/src/lib/supabase/getCachedUser';
 import HomepageFeed from './components/HomepageFeed';
 import StoriesRow from './components/StoriesRow';
 import { styles } from './index.stylex';
 
 export default async function Main({ variant }: { variant: 'home' | 'following' | null }) {
-   const supabase = await createServerClient();
-   const [{ entries, viewedStoryIds }, profile] = await Promise.all([
+   const [{ entries, viewedStoryIds }, profile, user] = await Promise.all([
       getActiveStories(),
-      getAuthProfile(supabase),
+      getAuthProfile(),
+      getCachedUser(),
    ]);
-
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
    const isAnonymous = user?.is_anonymous ?? false;
 
    return (

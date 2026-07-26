@@ -9,7 +9,7 @@ export async function getRingState(params: { targetUserId: string }) {
    const { targetUserId } = validate(TargetUserIdSchema, params);
    const { supabase, user } = await getOptionalUser();
    const authUserId = user?.id ?? null;
-   const hideAi = user ? await getHideAiContent(supabase) : false;
+   const hideAi = user ? await getHideAiContent() : false;
 
    return getStoryRingState(supabase, targetUserId, authUserId, hideAi);
 }

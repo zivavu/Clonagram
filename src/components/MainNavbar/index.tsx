@@ -2,18 +2,14 @@ import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
-import { createServerClient } from '@/src/lib/supabase/server';
+import { getCachedUser } from '@/src/lib/supabase/getCachedUser';
 import { AlsoFromZetaPopover } from './AlsoFromZetaPopover';
 import { styles } from './index.stylex';
 import { NavItems } from './NavItems';
 import { SettingsPopoverButton } from './SettingsPopover';
 
 export default async function MainNavbar() {
-   const supabase = await createServerClient();
-   const profile = await getAuthProfile(supabase);
-   const {
-      data: { user },
-   } = await supabase.auth.getUser();
+   const [profile, user] = await Promise.all([getAuthProfile(), getCachedUser()]);
    const isAnonymous = user?.is_anonymous ?? false;
 
    return (

@@ -40,7 +40,7 @@ export async function getHighlightEntries(params: { username: string }) {
    const { username } = validate(UsernameParamSchema, params);
    const supabase = await createServerClient();
    const { data: authData } = await supabase.auth.getUser();
-   const hideAi = authData.user ? await getHideAiContent(supabase) : false;
+   const hideAi = authData.user ? await getHideAiContent() : false;
 
    const { data: profile, error: profileError } = await supabase
       .from('profiles')

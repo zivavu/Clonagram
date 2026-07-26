@@ -18,7 +18,7 @@ export type ArchivedStory = {
 
 export async function getArchivedStories() {
    const { supabase, user } = await getAuthUser();
-   const hideAi = await getHideAiContent(supabase);
+   const hideAi = await getHideAiContent();
 
    let query = supabase
       .from('stories')
