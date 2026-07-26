@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { getUserId, makeServiceClient, USER_1_EMAIL } from './helpers';
 
-const AI_CAPTION = `e2e-hideai-${Date.now()}`;
+const AI_CAPTION = `e2e-hideai-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
 test.beforeAll(async () => {
    const supabase = makeServiceClient();
@@ -37,7 +37,7 @@ test.afterAll(async () => {
    const supabase = makeServiceClient();
    const userId = await getUserId(supabase, USER_1_EMAIL);
    if (!userId) return;
-   await supabase.from('posts').delete().eq('user_id', userId).like('caption', 'e2e-hideai-%');
+   await supabase.from('posts').delete().eq('user_id', userId).eq('caption', AI_CAPTION);
    await supabase.from('profiles').update({ hide_ai_content: false }).eq('id', userId);
 });
 
