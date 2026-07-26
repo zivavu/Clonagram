@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { DB_NOW } from '@/src/lib/dbTime';
 import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { UsernameParamSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
@@ -29,7 +30,7 @@ export async function getUserProfileWithPosts(params: { username: string }) {
            )`,
       )
       .eq('username', username)
-      .lte('posts.created_at', new Date().toISOString())
+      .lte('posts.created_at', DB_NOW)
       .order('created_at', { referencedTable: 'posts', ascending: false });
 
    if (hideAi) query = query.eq('posts.is_ai', false);

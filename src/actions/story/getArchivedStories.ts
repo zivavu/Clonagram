@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 
+import { DB_NOW } from '@/src/lib/dbTime';
 import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { throwIfError } from '@/src/lib/unwrap';
 import { extractStoryMedia } from '@/src/queries/stories';
@@ -28,7 +29,7 @@ export async function getArchivedStories() {
           story_videos(mux_playback_id)`,
       )
       .eq('user_id', user.id)
-      .lte('created_at', new Date().toISOString())
+      .lte('created_at', DB_NOW)
       .order('created_at', { ascending: false });
 
    if (hideAi) query = query.eq('is_ai', false);

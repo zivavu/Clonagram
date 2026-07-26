@@ -1,4 +1,5 @@
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
+import { DB_NOW } from '@/src/lib/dbTime';
 import type { Database } from '@/src/types/database';
 import { parseUnsplashAttribution } from '@/src/types/unsplash';
 
@@ -18,13 +19,12 @@ function getOneMonthAgoISO() {
 }
 
 export function activeStoriesQuery(supabase: SupabaseClient<Database>, hideAi = false) {
-   const now = new Date().toISOString();
    const oneMonthAgo = getOneMonthAgoISO();
    let query = supabase
       .from('stories')
       .select(ACTIVE_STORIES_SELECT)
-      .gt('expires_at', now)
-      .lte('created_at', now)
+      .gt('expires_at', DB_NOW)
+      .lte('created_at', DB_NOW)
       .gte('created_at', oneMonthAgo)
       .order('created_at', { ascending: true });
 

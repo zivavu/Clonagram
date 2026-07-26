@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { DB_NOW } from '@/src/lib/dbTime';
 import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { CursorSchema, validate } from '@/src/lib/validation';
 import { throwIfError } from '../../lib/unwrap';
@@ -30,7 +31,7 @@ export async function getExplorePosts(params: {
    let query = supabase
       .from('posts')
       .select(POST_WITH_MEDIA_SELECT)
-      .lte('created_at', new Date().toISOString())
+      .lte('created_at', DB_NOW)
       .order('created_at', { ascending: false });
 
    if (cursor) query = query.lt('created_at', cursor);

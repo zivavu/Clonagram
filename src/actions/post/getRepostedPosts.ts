@@ -1,5 +1,6 @@
 'use server';
 import 'server-only';
+import { DB_NOW } from '@/src/lib/dbTime';
 import { getHideAiContent } from '@/src/lib/getHideAiContent';
 import { throwIfError } from '@/src/lib/unwrap';
 import { UserIdSchema, validate } from '@/src/lib/validation';
@@ -16,7 +17,7 @@ export async function getRepostedPosts(params: { userId: string }) {
       .from('reposts')
       .select(`post:posts!post_id(${POST_WITH_MEDIA_SELECT})`)
       .eq('user_id', userId)
-      .lte('post.created_at', new Date().toISOString())
+      .lte('post.created_at', DB_NOW)
       .order('created_at', { ascending: false });
 
    if (hideAi) query = query.eq('post.is_ai', false);

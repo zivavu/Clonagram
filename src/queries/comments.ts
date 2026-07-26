@@ -1,4 +1,5 @@
 import type { QueryData, SupabaseClient } from '@supabase/supabase-js';
+import { DB_NOW } from '@/src/lib/dbTime';
 import type { Database } from '@/src/types/database';
 
 export function postCommentsQuery(
@@ -18,7 +19,7 @@ export function postCommentsQuery(
       .eq('post_id', postId)
       .eq('is_deleted', false)
       .is('parent_id', null)
-      .lte('created_at', new Date().toISOString())
+      .lte('created_at', DB_NOW)
       .order('created_at', { ascending: true });
 
    if (hideAi) {
@@ -44,7 +45,7 @@ export function commentRepliesQuery(
       )
       .eq('parent_id', parentId)
       .eq('is_deleted', false)
-      .lte('created_at', new Date().toISOString())
+      .lte('created_at', DB_NOW)
       .order('created_at', { ascending: true });
 
    if (hideAi) {
@@ -67,7 +68,7 @@ export async function fetchVisibleReplyCounts(
       .select('parent_id')
       .in('parent_id', parentIds)
       .eq('is_deleted', false)
-      .lte('created_at', new Date().toISOString());
+      .lte('created_at', DB_NOW);
 
    if (hideAi) {
       query = query.eq('is_ai', false);

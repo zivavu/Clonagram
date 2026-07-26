@@ -1,3 +1,4 @@
+import { DB_NOW } from '@/src/lib/dbTime';
 import { getMuxThumbnailUrl } from './mux';
 
 interface PostMediaSource {
@@ -56,9 +57,7 @@ interface CommentFilterChainable<T> extends EqChainable<T> {
 }
 
 export function filterVisibleCommentCount<T extends CommentFilterChainable<T>>(query: T): T {
-   return query
-      .lte('comments.created_at', new Date().toISOString())
-      .eq('comments.is_deleted', false);
+   return query.lte('comments.created_at', DB_NOW).eq('comments.is_deleted', false);
 }
 
 interface PostWithVisibleCommentCount {
