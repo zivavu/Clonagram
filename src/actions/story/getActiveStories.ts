@@ -22,7 +22,7 @@ export async function getActiveStories() {
          userId: string;
          slug: string;
          username: string;
-         avatarUrl: string;
+         avatarUrl: string | null;
          timestamp: string;
          stories: Array<{
             storyId: string;
@@ -59,7 +59,7 @@ export async function getActiveStories() {
             userId: row.user_id,
             slug: profile.username,
             username: profile.username,
-            avatarUrl: profile.avatar_url ?? '',
+            avatarUrl: profile.avatar_url,
             timestamp: row.created_at ?? '',
             stories: [],
          });

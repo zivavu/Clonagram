@@ -14,7 +14,7 @@ export default async function ArchiveStoryViewerRoute({
       userId: profile?.id ?? '',
       slug: story.id,
       username: profile?.username ?? '',
-      avatarUrl: profile?.avatar_url ?? '',
+      avatarUrl: profile?.avatar_url ?? null,
       timestamp: story.createdAt,
       stories: [
          {

@@ -89,7 +89,7 @@ export async function getHighlightEntries(params: { username: string }) {
             userId: profile.id,
             slug: highlight.id,
             username: highlight.title,
-            avatarUrl: profile.avatar_url ?? '',
+            avatarUrl: profile.avatar_url,
             timestamp: highlight.updated_at ?? '',
             stories,
          };

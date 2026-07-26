@@ -1,14 +1,19 @@
 import { expect, test } from '@playwright/test';
-import { createTestImageBuffer, makeServiceClient } from './helpers';
+import { createTestImageBuffer, getUserId, makeServiceClient, USER_2_EMAIL } from './helpers';
 
 test.describe.configure({ mode: 'serial' });
 
 let createdStoryId: string | null = null;
+let sideStoryId: string | null = null;
 
 test.afterAll(async () => {
-   if (!createdStoryId) return;
    const supabase = makeServiceClient();
-   await supabase.from('stories').delete().eq('id', createdStoryId);
+   if (createdStoryId) {
+      await supabase.from('stories').delete().eq('id', createdStoryId);
+   }
+   if (sideStoryId) {
+      await supabase.from('stories').delete().eq('id', sideStoryId);
+   }
 });
 
 test('create a story', async ({ page }) => {
@@ -77,4 +82,43 @@ test('like and unlike a story as another user', async ({ browser }) => {
    await expect(likeButton).toBeVisible({ timeout: 5000 });
 
    await ctx.close();
+});
+
+test('avatarless authors never render an empty image src', async ({ page }) => {
+   // A second author puts a neighbouring entry in the side overlay, which is
+   // where a null avatar used to reach next/image as an empty string.
+   const supabase = makeServiceClient();
+   const userId = await getUserId(supabase, USER_2_EMAIL);
+   if (!userId) throw new Error(`Missing e2e user ${USER_2_EMAIL}`);
+
+   await supabase.from('profiles').update({ avatar_url: null }).eq('id', userId);
+
+   const { data: story, error } = await supabase
+      .from('stories')
+      .insert({ user_id: userId })
+      .select('id')
+      .single();
+   if (error) throw error;
+   sideStoryId = story.id;
+
+   const { error: imageError } = await supabase.from('story_images').insert({
+      story_id: story.id,
+      position: 0,
+      url: 'https://picsum.photos/seed/e2e-side-story/400/700',
+   });
+   if (imageError) throw imageError;
+
+   await page.goto('/stories/e2euser1');
+   await expect(page.locator('input[placeholder="Reply to e2euser1..."]')).toBeVisible({
+      timeout: 10000,
+   });
+   await expect(page.locator('img[alt="e2euser2"]').first()).toBeVisible({ timeout: 10000 });
+
+   // An avatarless author must fall back to the placeholder, not an <img> with
+   // no src — that is what makes the browser re-request the whole page.
+   await expect
+      .poll(() =>
+         page.locator('img').evaluateAll(nodes => nodes.filter(n => !n.getAttribute('src')).length),
+      )
+      .toBe(0);
 });
