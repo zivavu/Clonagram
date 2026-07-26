@@ -137,6 +137,9 @@ export const styles = stylex.create({
       alignItems: 'center',
       gap: '12px',
    },
+   messageGroup: {
+      display: 'contents',
+   },
    chatTopBarActionIcon: {
       display: 'flex',
       alignItems: 'center',

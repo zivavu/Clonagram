@@ -8,7 +8,6 @@ import { useDropzone } from 'react-dropzone';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { HiOutlineVideoCamera } from 'react-icons/hi2';
 import { IoCallOutline, IoInformationCircleOutline } from 'react-icons/io5';
-import type { CallEvent } from '@/src/actions/dm/sendCallEvent';
 import { sendImage } from '@/src/actions/dm/sendImage';
 import { sendMessage } from '@/src/actions/dm/sendMessage';
 import { sendSticker } from '@/src/actions/dm/sendSticker';
@@ -28,22 +27,15 @@ import {
    getConversationDisplayName,
    isGroupConversation,
 } from '@/src/utils/conversations';
-import { DAY_MS, formatGroupSeparator } from '@/src/utils/time';
 import { styles } from '../../index.stylex';
-import CallEventMessage from './CallEventMessage';
 import { useChatScrollAndRead } from './hooks/useChatScrollAndRead';
 import { useMessageWindow } from './hooks/useMessageWindow';
 import { useObjectUrls } from './hooks/useObjectUrls';
 import { useRealtimeChat } from './hooks/useRealtimeChat';
-import ImageMessage from './ImageMessage';
 import ImageViewModal from './ImageViewModal';
 import MessageInput, { type MessageInputHandle } from './MessageInput';
-import MessageText from './MessageText';
-import PostShareMessage from './PostShareMessage';
+import MessageList from './MessageList';
 import RequestActions from './RequestActions';
-import StickerMessage from './StickerMessage';
-import StoryLikeMessage from './StoryLikeMessage';
-import VoiceMessage from './VoiceMessage';
 import VoiceRecorder from './VoiceRecorder';
 
 interface ChatViewProps {
@@ -245,104 +237,11 @@ export default function ChatView({
                </div>
             )}
 
-            {messages.map((msg, idx) => {
-               const isSent = msg.sender_id === authUserId;
-               const prevMsg = idx > 0 ? messages[idx - 1] : null;
-               const nextMsg = idx < messages.length - 1 ? messages[idx + 1] : null;
-               const isLastInGroup = !nextMsg || nextMsg.sender_id !== msg.sender_id;
-               const gapToPrev = prevMsg
-                  ? new Date(msg.created_at ?? '').getTime() -
-                    new Date(prevMsg.created_at ?? '').getTime()
-                  : Infinity;
-               const showSeparator = gapToPrev > DAY_MS;
-
-               const hasReadReceipt = isSent && msg.read_at && isLastInGroup;
-
-               return (
-                  <div key={msg.id} style={{ display: 'contents' }}>
-                     {showSeparator && msg.created_at && (
-                        <div {...stylex.props(styles.dateSeparator)}>
-                           <span {...stylex.props(styles.dateSeparatorText)}>
-                              {formatGroupSeparator(msg.created_at)}
-                           </span>
-                        </div>
-                     )}
-                     <div
-                        {...stylex.props(
-                           styles.messageRow,
-                           isSent ? styles.messageRowSent : styles.messageRowReceived,
-                        )}
-                     >
-                        {!isSent && (
-                           <div {...stylex.props(styles.messageAvatarSlot)}>
-                              {isLastInGroup && (
-                                 <UserAvatar
-                                    src={msg.sender.avatar_url}
-                                    alt={msg.sender.username}
-                                    size={28}
-                                    username={msg.sender.username}
-                                    userId={msg.sender.id}
-                                 />
-                              )}
-                           </div>
-                        )}
-                        {msg.call_event ? (
-                           <CallEventMessage
-                              event={msg.call_event as CallEvent}
-                              senderUsername={msg.sender.username}
-                              isSelf={isSent}
-                           />
-                        ) : msg.sticker_url ? (
-                           <StickerMessage src={msg.sticker_url} />
-                        ) : msg.story_id ? (
-                           <StoryLikeMessage
-                              storyId={msg.story_id}
-                              storyUsername={msg.story?.profiles?.username ?? ''}
-                              thumbnailUrl={msg.media_url}
-                           />
-                        ) : msg.post_id && msg.post ? (
-                           <PostShareMessage post={msg.post} />
-                        ) : msg.audio_url ? (
-                           <VoiceMessage src={msg.audio_url} />
-                        ) : msg.media_url ? (
-                           <ImageMessage src={msg.media_url} onOpen={setViewingImage} />
-                        ) : (
-                           <div
-                              {...stylex.props(
-                                 styles.messageBubble,
-                                 isSent ? styles.messageBubbleSent : styles.messageBubbleReceived,
-                              )}
-                           >
-                              <MessageText content={msg.content ?? ''} />
-                           </div>
-                        )}
-                     </div>
-                     {msg.story_id && msg.content && (
-                        <div
-                           {...stylex.props(
-                              styles.messageRow,
-                              isSent ? styles.messageRowSent : styles.messageRowReceived,
-                           )}
-                        >
-                           {!isSent && <div {...stylex.props(styles.messageAvatarSlot)} />}
-                           <div
-                              {...stylex.props(
-                                 styles.messageBubble,
-                                 isSent ? styles.messageBubbleSent : styles.messageBubbleReceived,
-                              )}
-                           >
-                              <MessageText content={msg.content} />
-                           </div>
-                        </div>
-                     )}
-                     {hasReadReceipt && (
-                        <div {...stylex.props(styles.messageRow, styles.messageRowSent)}>
-                           <div {...stylex.props(styles.readReceipt)}>Seen</div>
-                        </div>
-                     )}
-                  </div>
-               );
-            })}
+            <MessageList
+               messages={messages}
+               authUserId={authUserId}
+               onOpenImage={setViewingImage}
+            />
             <div ref={messagesEndRef} />
          </div>
 
