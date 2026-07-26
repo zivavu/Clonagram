@@ -1,22 +1,16 @@
 'use server';
 import 'server-only';
-import { throwIfError } from '@/src/lib/unwrap';
 import { TogglePostSaveSchema, validate } from '@/src/lib/validation';
-import { getAuthUser } from '../../getAuthUser';
+import { togglePostRelation } from '../togglePostRelation';
 
 export async function toggleSavePost(params: { postId: string; isSaved: boolean }) {
    const { postId, isSaved } = validate(TogglePostSaveSchema, params);
-   const { supabase, user } = await getAuthUser();
 
-   if (isSaved) {
-      const { error } = await supabase
-         .from('saves')
-         .delete()
-         .eq('post_id', postId)
-         .eq('user_id', user.id);
-      throwIfError({ error }, 'Failed to unsave post');
-   } else {
-      const { error } = await supabase.from('saves').insert({ post_id: postId, user_id: user.id });
-      throwIfError({ error }, 'Failed to save post');
-   }
+   await togglePostRelation({
+      table: 'saves',
+      postId,
+      isActive: isSaved,
+      removeErrorMessage: 'Failed to unsave post',
+      addErrorMessage: 'Failed to save post',
+   });
 }
