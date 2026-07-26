@@ -49,7 +49,7 @@ function getAspectRatio(post: PostWithMedia) {
    }
 }
 
-export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
+export default function HomepagePost({ post: initialPost, index }: HomepagePostProps) {
    const { data: currentUser } = useAuthUser();
    const router = useRouter();
 
@@ -115,8 +115,9 @@ export default function HomepagePost({ post: initialPost }: HomepagePostProps) {
             height="auto"
             sizes="(max-width: 767px) calc(100vw - 32px), 468px"
             aspectRatio={getAspectRatio(post)}
-            onImageChange={index => {
-               currentImageIndex.current = index;
+            imageProps={index === 0 ? { priority: true } : undefined}
+            onImageChange={imageIndex => {
+               currentImageIndex.current = imageIndex;
             }}
             onImageDoubleClick={() => togglePostLike()}
             onVideoClick={
