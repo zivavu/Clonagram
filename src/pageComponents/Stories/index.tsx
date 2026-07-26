@@ -10,6 +10,7 @@ import HighlightActionsModal from '../../components/HighlightActionsModal';
 import StoryCard from './components/StoryCard';
 import StoryNavigationButton from './components/StoryNavigationButton';
 import { DESKTOP_GAP, DESKTOP_SIDE_H, DESKTOP_SIDE_W, SWIPE_THRESHOLD } from './constants';
+import { useStoryMediaPrefetch } from './hooks/useStoryMediaPrefetch';
 import { styles } from './index.stylex';
 import type { Layout, StoriesPageProps } from './types';
 import { computeLayout } from './utils';
@@ -49,6 +50,8 @@ export default function StoriesPage({
    const touchStartX = useRef(0);
    const touchStartY = useRef(0);
    const recordedSet = useRef(new Set<string>(viewedStoryIds));
+
+   useStoryMediaPrefetch(entries, currentUserIndex, currentStoryMediaIndex);
 
    const recordView = (userIdx: number, mediaIdx: number) => {
       const entry = entries[userIdx];
