@@ -121,10 +121,12 @@ export default function StoriesPage({
       const dx = e.changedTouches[0].clientX - touchStartX.current;
       const dy = e.changedTouches[0].clientY - touchStartY.current;
       if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
+         e.preventDefault();
          goToStoryUserCard(currentUserIndexRef.current + (dx < 0 ? 1 : -1));
       } else if (Math.abs(dx) < SWIPE_THRESHOLD && Math.abs(dy) < SWIPE_THRESHOLD) {
          const target = e.target as HTMLElement;
          if (target.closest('button, a, input, textarea')) return;
+         e.preventDefault();
          if (e.changedTouches[0].clientX < window.innerWidth / 2) {
             goToPreviousStoryMedia();
          } else {
