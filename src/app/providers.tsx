@@ -4,6 +4,7 @@ import { ToastProvider } from '@radix-ui/react-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import AppToast from '@/src/components/AppToast';
+import MediaContextMenuBlocker from '@/src/components/MediaContextMenuBlocker';
 import { ThemeProvider } from '@/src/components/ThemeProvider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -15,6 +16,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <ThemeProvider>
                {children}
                <AppToast />
+               <MediaContextMenuBlocker />
             </ThemeProvider>
          </ToastProvider>
       </QueryClientProvider>

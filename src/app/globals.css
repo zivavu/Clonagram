@@ -16,6 +16,7 @@
 
    html {
       color-scheme: light dark;
+      -webkit-tap-highlight-color: transparent;
    }
 
    body {
@@ -28,7 +29,15 @@
    video {
       display: block;
       max-width: 100%;
+      -webkit-user-select: none;
       user-select: none;
+   }
+
+   @media (pointer: coarse) {
+      img,
+      video {
+         -webkit-touch-callout: none;
+      }
    }
 
    input,
