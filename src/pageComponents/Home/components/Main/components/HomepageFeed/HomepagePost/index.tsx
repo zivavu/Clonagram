@@ -115,7 +115,7 @@ export default function HomepagePost({ post: initialPost, index }: HomepagePostP
             height="auto"
             sizes="(max-width: 767px) calc(100vw - 32px), 468px"
             aspectRatio={getAspectRatio(post)}
-            imageProps={index === 0 ? { priority: true } : undefined}
+            imageProps={{ style: { objectFit: 'cover' }, priority: index === 0 }}
             onImageChange={imageIndex => {
                currentImageIndex.current = imageIndex;
             }}
