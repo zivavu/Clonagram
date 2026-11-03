@@ -1,5 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { demoAccounts } from '@/src/lib/demoAccounts';
+import loginCardPeople from '@/src/pageComponents/Login/loginCardPeople';
 import type { Database } from '@/src/types/database';
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -39,10 +41,32 @@ for (const account of demoAccounts) {
         });
    if (error) throw error;
 
+   const avatarPath = `${data.user.id}/demo-avatar.webp`;
+   const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(avatarPath, readFileSync(`public${account.avatar}`), {
+         contentType: 'image/webp',
+         upsert: true,
+      });
+   if (uploadError) throw uploadError;
+
+   const {
+      data: { publicUrl },
+   } = supabase.storage.from('avatars').getPublicUrl(avatarPath);
+   const sourcePhoto = loginCardPeople.find(person => person.src === account.avatarSourcePhoto);
+
    const { error: profileError } = await supabase.from('profiles').upsert({
       id: data.user.id,
       username: account.username,
       full_name: account.fullName,
+      avatar_url: `${publicUrl}?v=${Date.now()}`,
+      avatar_attribution: sourcePhoto
+         ? {
+              photographerName: sourcePhoto.photographerName,
+              photographerUrl: sourcePhoto.photographerUrl,
+              photoUrl: sourcePhoto.photoUrl,
+           }
+         : null,
    });
    if (profileError) throw profileError;
 

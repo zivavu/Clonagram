@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { MdPerson } from 'react-icons/md';
+import Image from 'next/image';
 import { type DemoAccount, demoAccounts } from '@/src/lib/demoAccounts';
 import { styles } from './index.stylex';
 
@@ -22,9 +22,13 @@ export default function DemoAccounts({ disabled, onSelect }: DemoAccountsProps) 
                   aria-label={`Log in as ${account.username}`}
                   {...stylex.props(styles.chip)}
                >
-                  <span {...stylex.props(styles.avatar)}>
-                     <MdPerson size={26} />
-                  </span>
+                  <Image
+                     src={account.avatar}
+                     alt=""
+                     width={44}
+                     height={44}
+                     {...stylex.props(styles.avatar)}
+                  />
                   <span {...stylex.props(styles.username)}>{account.username}</span>
                </button>
             ))}

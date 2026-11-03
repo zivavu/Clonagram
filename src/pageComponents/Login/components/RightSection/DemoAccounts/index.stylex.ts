@@ -41,17 +41,8 @@ export const styles = stylex.create({
       },
    },
    avatar: {
-      width: '44px',
-      height: '44px',
       borderRadius: radius.full,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      borderColor: colors.border,
-      backgroundColor: colors.bgSecondary,
-      color: colors.textSecondary,
+      objectFit: 'cover',
    },
    username: {
       maxWidth: '100%',
