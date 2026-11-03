@@ -31,9 +31,9 @@ export const demoAccounts = [
    },
    {
       email: 'example5@example.com',
-      username: 'demo_sam',
-      fullName: 'Sam Demo',
-      avatar: '/demoAvatars/demo_sam.webp',
+      username: 'demo_zoe',
+      fullName: 'Zoe Demo',
+      avatar: '/demoAvatars/demo_zoe.webp',
       avatarSourcePhoto: 'brooke-cagle-oTweoxMKdkA-unsplash.jpg',
    },
 ] as const;
