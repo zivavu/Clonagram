@@ -1,11 +1,13 @@
 'use server';
 import 'server-only';
+import { assertNotDemoAccount } from '@/src/lib/demoAccounts';
 import { throwIfError } from '@/src/lib/unwrap';
 import { getMuxClient } from '../../lib/mux';
 import { getAuthUser } from '../getAuthUser';
 
 export async function deleteAccount() {
    const { supabase, user } = await getAuthUser();
+   assertNotDemoAccount(user);
 
    const [{ data: postVideos }, { data: storyVideos }] = await Promise.all([
       supabase

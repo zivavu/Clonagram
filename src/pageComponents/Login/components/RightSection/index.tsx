@@ -7,11 +7,14 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
+import { signInDemoAccount } from '@/src/actions/auth/signInDemoAccount';
 import FloatingInput from '@/src/components/FloatingInput';
 import LoginPageButton from '@/src/components/LoginPageButton';
 import ZetaLogo from '@/src/components/ZetaLogo';
+import type { DemoAccount } from '@/src/lib/demoAccounts';
 import { supabase } from '@/src/lib/supabase/client';
 import { colors } from '../../../../styles/tokens.stylex';
+import DemoAccounts from './DemoAccounts';
 import ForgotPassword from './ForgotPassword';
 import { styles } from './index.stylex';
 import ResetPassword from './ResetPassword';
@@ -59,10 +62,22 @@ export default function RightSection({ initialReset, initialError }: RightSectio
       const { error } = await supabase.auth.signInAnonymously();
       if (error) {
          setError('root', { message: error.message });
+         setIsLoading(false);
          return;
       }
 
-      setIsLoading(false);
+      window.location.href = '/';
+   }
+
+   async function signInAsDemoAccount(account: DemoAccount) {
+      setIsLoading(true);
+      const { error } = await signInDemoAccount({ email: account.email });
+      if (error) {
+         setError('root', { message: error });
+         setIsLoading(false);
+         return;
+      }
+
       window.location.href = '/';
    }
 
@@ -131,13 +146,13 @@ export default function RightSection({ initialReset, initialError }: RightSectio
                   text="Forgot password?"
                   onClick={() => setShowForgot(true)}
                />
+               <DemoAccounts disabled={disableButtons} onSelect={signInAsDemoAccount} />
                <LoginPageButton
                   disabled={disableButtons}
                   variant="outlined"
                   text="Log in with Google"
                   icon={GoogleIcon}
                   onClick={signInWithGoogle}
-                  style={{ marginTop: '42px' }}
                />
                <LoginPageButton
                   variant="outlined"

@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import Link from 'next/link';
+import { isDemoAccount } from '@/src/lib/demoAccounts';
 import { getAuthProfile } from '@/src/lib/supabase/getAuthProfile';
 import { getCachedUser } from '@/src/lib/supabase/getCachedUser';
 import { AlsoFromZetaPopover } from './AlsoFromZetaPopover';
@@ -37,6 +38,7 @@ export default async function MainNavbar() {
             <SettingsPopoverButton
                hideAiContent={profile?.hide_ai_content ?? false}
                isAnonymous={isAnonymous}
+               isDemoAccount={isDemoAccount(user)}
             />
             <AlsoFromZetaPopover mainSidebarStyles={styles} />
          </div>

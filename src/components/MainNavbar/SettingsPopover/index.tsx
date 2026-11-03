@@ -24,9 +24,14 @@ import { styles } from './index.stylex';
 interface SettingsPopoverButtonProps {
    hideAiContent: boolean;
    isAnonymous: boolean;
+   isDemoAccount: boolean;
 }
 
-export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPopoverButtonProps) {
+export function SettingsPopoverButton({
+   hideAiContent,
+   isAnonymous,
+   isDemoAccount,
+}: SettingsPopoverButtonProps) {
    const { isOpen, toggle, close } = useSettingsPopoverStore();
    const { isDark, toggle: toggleTheme } = useThemeStore();
    const router = useRouter();
@@ -164,19 +169,23 @@ export function SettingsPopoverButton({ hideAiContent, isAnonymous }: SettingsPo
                   Log out
                </button>
 
-               <div {...stylex.props(styles.separator)} />
+               {!isDemoAccount && (
+                  <>
+                     <div {...stylex.props(styles.separator)} />
 
-               <button
-                  type="button"
-                  onClick={() => {
-                     close();
-                     setShowDeleteConfirm(true);
-                  }}
-                  {...stylex.props(styles.item, styles.itemDanger)}
-               >
-                  <TbTrash size={18} />
-                  Delete account
-               </button>
+                     <button
+                        type="button"
+                        onClick={() => {
+                           close();
+                           setShowDeleteConfirm(true);
+                        }}
+                        {...stylex.props(styles.item, styles.itemDanger)}
+                     >
+                        <TbTrash size={18} />
+                        Delete account
+                     </button>
+                  </>
+               )}
             </PopoverContent>
          </Popover>
 

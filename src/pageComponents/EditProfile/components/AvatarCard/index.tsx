@@ -7,6 +7,7 @@ interface AvatarCardProps {
    username: string;
    fullName: string;
    onChangePhoto: () => void;
+   changePhotoDisabled: boolean;
 }
 
 export default function AvatarCard({
@@ -14,6 +15,7 @@ export default function AvatarCard({
    username,
    fullName,
    onChangePhoto,
+   changePhotoDisabled,
 }: AvatarCardProps) {
    return (
       <div {...stylex.props(styles.root)}>
@@ -22,7 +24,12 @@ export default function AvatarCard({
             <span {...stylex.props(styles.username)}>{username}</span>
             {fullName && <span {...stylex.props(styles.fullName)}>{fullName}</span>}
          </div>
-         <button type="button" {...stylex.props(styles.changeBtn)} onClick={onChangePhoto}>
+         <button
+            type="button"
+            {...stylex.props(styles.changeBtn)}
+            onClick={onChangePhoto}
+            disabled={changePhotoDisabled}
+         >
             Change photo
          </button>
       </div>

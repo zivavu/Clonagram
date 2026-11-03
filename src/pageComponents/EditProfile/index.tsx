@@ -45,7 +45,12 @@ function parseLinks(website: string | null): LinkEntry[] {
    return [];
 }
 
-export default function EditProfile({ profile }: { profile: AuthProfile }) {
+interface EditProfileProps {
+   profile: AuthProfile;
+   isDemoAccount: boolean;
+}
+
+export default function EditProfile({ profile, isDemoAccount }: EditProfileProps) {
    const router = useRouter();
    const [isPending, startTransition] = useTransition();
 
@@ -126,6 +131,7 @@ export default function EditProfile({ profile }: { profile: AuthProfile }) {
                username={username}
                fullName={fullName}
                onChangePhoto={() => setPhotoModalOpen(true)}
+               changePhotoDisabled={isDemoAccount}
             />
             <ChangePhotoModal
                isOpen={photoModalOpen}
@@ -188,13 +194,15 @@ export default function EditProfile({ profile }: { profile: AuthProfile }) {
                <p {...stylex.props(styles.hint)}>This won't be part of your public profile.</p>
             </section>
             <p {...stylex.props(styles.footerNote)}>
-               Certain profile info, like your name, bio and links, is visible to everyone.
+               {isDemoAccount
+                  ? 'This is a shared demo account, so its profile cannot be edited.'
+                  : 'Certain profile info, like your name, bio and links, is visible to everyone.'}
             </p>
             <button
                type="button"
                {...stylex.props(styles.submitButton)}
                onClick={handleSubmit(onSubmit)}
-               disabled={isPending}
+               disabled={isPending || isDemoAccount}
             >
                {isPending ? 'Saving...' : 'Submit'}
             </button>

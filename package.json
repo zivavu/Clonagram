@@ -20,7 +20,8 @@
       "seed:generate": "bun run scripts/seed/generate.ts",
       "seed:process": "bun run scripts/seed/process.ts",
       "seed:seed": "bun run scripts/seed/seed.ts",
-      "seed:cleanup": "bun run scripts/seed/helpers/cleanup.ts"
+      "seed:cleanup": "bun run scripts/seed/helpers/cleanup.ts",
+      "seed:demo": "bun run scripts/seedDemoAccounts.ts"
    },
    "dependencies": {
       "@ffmpeg/ffmpeg": "^0.12.15",

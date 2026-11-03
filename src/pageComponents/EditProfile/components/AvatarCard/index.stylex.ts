@@ -33,5 +33,9 @@ export const styles = stylex.create({
       fontSize: '14px',
       fontWeight: 600,
       flexShrink: 0,
+      ':disabled': {
+         opacity: 0.6,
+         cursor: 'not-allowed',
+      },
    },
 });

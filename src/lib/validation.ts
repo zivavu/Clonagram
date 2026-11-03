@@ -124,6 +124,7 @@ export const UpdateAvatarSchema = z.object({
    avatarUrl: z.url().nullable(),
 });
 
+export const SignInDemoAccountSchema = z.object({ email: z.email() });
 export const SendPasswordResetSchema = z.object({ email: z.email() });
 export const ImageAltTextSchema = z.object({
    imageId: uuid,

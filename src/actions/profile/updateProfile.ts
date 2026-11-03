@@ -1,6 +1,7 @@
 'use server';
 import 'server-only';
 import { revalidatePath } from 'next/cache';
+import { assertNotDemoAccount } from '@/src/lib/demoAccounts';
 import { throwIfError } from '../../lib/unwrap';
 import { UpdateProfileSchema, validate } from '../../lib/validation';
 import { getAuthUser } from '../getAuthUser';
@@ -17,6 +18,7 @@ export async function updateProfile(params: UpdateProfileParams) {
    const { fullName, username, bio, website, gender } = validate(UpdateProfileSchema, params);
 
    const { supabase, user } = await getAuthUser();
+   assertNotDemoAccount(user);
 
    const { data: taken } = await supabase
       .from('profiles')
